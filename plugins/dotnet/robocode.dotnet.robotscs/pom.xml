@@ -8,12 +8,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <description>.NET test robots for Robocode</description>
     <parent>
         <artifactId>robocode.dotnet</artifactId>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <version>${robocode.nversion}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.dotnet.api</artifactId>
             <version>${project.version}</version>
             <type>dotnet:library</type>

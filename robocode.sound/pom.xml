@@ -5,13 +5,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <artifactId>robocode.sound</artifactId>
     <name>Robocode Sound</name>
     <parent>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <artifactId>robocode</artifactId>
         <version>${robocode.version}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.core</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -5,18 +5,18 @@
     <artifactId>robocode.tests</artifactId>
     <name>Robocode Tests</name>
     <parent>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <artifactId>robocode</artifactId>
         <version>${robocode.version}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.tests.robots</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -26,31 +26,31 @@
             <version>4.9</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.core</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.samples</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.host</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.battle</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.repository</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

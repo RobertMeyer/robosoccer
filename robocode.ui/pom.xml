@@ -6,27 +6,27 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <name>Robocode UI</name>
     <parent>
         <artifactId>robocode</artifactId>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <version>${robocode.version}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.battle</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.sound</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>

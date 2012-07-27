@@ -6,23 +6,23 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <name>.NET Robocode Host</name>
     <version>${robocode.version}</version>
     <parent>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <artifactId>robocode.dotnet</artifactId>
         <version>${robocode.nversion}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.host</artifactId>
             <version>${robocode.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.repository</artifactId>
             <version>${robocode.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.dotnet.nhost</artifactId>
             <version>${robocode.nversion}</version>
             <type>dotnet:library</type>

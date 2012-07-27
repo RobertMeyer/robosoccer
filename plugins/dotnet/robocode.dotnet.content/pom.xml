@@ -5,18 +5,18 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <artifactId>robocode.dotnet.content</artifactId>
     <name>.NET Robocode Static Content</name>
     <parent>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <artifactId>robocode.dotnet</artifactId>
         <version>${robocode.nversion}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.dotnet.host</artifactId>
             <version>${robocode.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>net.sf.robocode</groupId>
+                    <groupId>au.edu.uq.csse2003</groupId>
                     <artifactId>robocode.api</artifactId>
                 </exclusion>
             </exclusions>

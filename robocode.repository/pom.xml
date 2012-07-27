@@ -5,23 +5,23 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <artifactId>robocode.repository</artifactId>
     <name>Robocode Repository</name>
     <parent>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <artifactId>robocode</artifactId>
         <version>${robocode.version}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>codesize</artifactId>
             <version>1.1</version>
         </dependency>

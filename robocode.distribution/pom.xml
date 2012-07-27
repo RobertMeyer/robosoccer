@@ -5,37 +5,37 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <artifactId>robocode.distribution</artifactId>
     <name>Robocode Distribution</name>
     <parent>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <artifactId>robocode</artifactId>
         <version>${robocode.version}</version>
     </parent>
     <dependencies>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.api</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.roborumble</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.ui.editor</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.installer</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>net.sf.robocode</groupId>
+            <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.content</artifactId>
             <version>${project.version}</version>
             <type>jar</type>

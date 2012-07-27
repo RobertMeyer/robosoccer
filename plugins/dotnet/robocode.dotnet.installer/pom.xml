@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <name>.NET Robocode Installer</name>
     <parent>
         <artifactId>robocode.dotnet</artifactId>
-        <groupId>net.sf.robocode</groupId>
+        <groupId>au.edu.uq.csse2003</groupId>
         <version>${robocode.nversion}</version>
     </parent>
     <build>
