@@ -8,7 +8,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <parent>
         <artifactId>super-pom</artifactId>
         <groupId>au.edu.uq.csse2003</groupId>
-        <version>${robocode.version}</version>
+        <version>2012.0.1-SNAPSHOT</version>
         <relativePath>super-pom</relativePath>
     </parent>
     <modules>

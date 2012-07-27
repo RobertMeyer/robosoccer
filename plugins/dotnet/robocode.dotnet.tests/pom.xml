@@ -13,42 +13,42 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.core</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.host</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.battle</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.repository</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.samples</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.tests</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.tests.robots</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.dotnet.host</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>

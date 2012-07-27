@@ -7,7 +7,7 @@
     <parent>
         <groupId>au.edu.uq.csse2003</groupId>
         <artifactId>robocode</artifactId>
-        <version>${robocode.version}</version>
+        <version>2012.0.1-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>

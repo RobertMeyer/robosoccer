@@ -13,7 +13,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.dotnet.host</artifactId>
-            <version>${robocode.version}</version>
+            <version>2012.0.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>au.edu.uq.csse2003</groupId>
