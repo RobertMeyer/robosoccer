@@ -9,7 +9,7 @@
         <!-- robocode.api -> robocode.jar -->
         <dependencySet>
             <includes>
-                <include>net.sf.robocode:robocode.api</include>
+                <include>au.edu.uq.csse2003:robocode.api</include>
             </includes>
             <outputDirectory>libs</outputDirectory>
             <unpack>false</unpack>
@@ -18,7 +18,7 @@
         <!-- robocode.roborumble -> roborumble.jar -->
         <dependencySet>
             <includes>
-                <include>net.sf.robocode:robocode.roborumble</include>
+                <include>au.edu.uq.csse2003:robocode.roborumble</include>
             </includes>
             <outputDirectory>libs</outputDirectory>
             <unpack>false</unpack>
@@ -28,15 +28,15 @@
         <dependencySet>
             <excludes>
                 <!-- Used for creating this assembly -->
-                <exclude>net.sf.robocode:robocode.distribution</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.distribution</exclude>
                 <!-- These are unpacked in distribution files -->
-                <exclude>net.sf.robocode:robocode.installer</exclude>
-                <exclude>net.sf.robocode:robocode.content</exclude>
-                <exclude>net.sf.robocode:robocode.samples</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.installer</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.content</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.samples</exclude>
                 <!-- Handled independently and renamed into robocode.jar -->
-                <exclude>net.sf.robocode:robocode.api</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.api</exclude>
                 <!-- Handled independently and renamed into roborumble.jar -->
-                <exclude>net.sf.robocode:robocode.roborumble</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.roborumble</exclude>
             </excludes>
             <outputDirectory>libs</outputDirectory>
             <unpack>false</unpack>
@@ -44,8 +44,8 @@
         <!-- installer and content -->
         <dependencySet>
             <includes>
-                <include>net.sf.robocode:robocode.content</include>
-                <include>net.sf.robocode:robocode.installer</include>
+                <include>au.edu.uq.csse2003:robocode.content</include>
+                <include>au.edu.uq.csse2003:robocode.installer</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
@@ -57,7 +57,7 @@
         <!-- robot samples -->
         <dependencySet>
             <includes>
-                <include>net.sf.robocode:robocode.samples</include>
+                <include>au.edu.uq.csse2003:robocode.samples</include>
             </includes>
             <unpack>true</unpack>
             <unpackOptions>
