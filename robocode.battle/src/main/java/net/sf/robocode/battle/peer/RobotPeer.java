@@ -728,7 +728,8 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			final Random random = RandomFactory.getRandom();
 
 			for (int j = 0; j < 1000; j++) {
-				x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
+				// The "0.5" in the line below doesn't seem right
+				x = RobotPeer.WIDTH + 0.5 * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
 				y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
 				bodyHeading = 2 * Math.PI * random.nextDouble();
 				gunHeading = radarHeading = bodyHeading;
@@ -1349,8 +1350,9 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		currentCommands.setDistanceRemaining(distance - velocity);
 
 		if (velocity != 0) {
-			x += velocity * sin(bodyHeading);
-			y += velocity * cos(bodyHeading);
+			// This doesn't seem right...
+			x -= velocity * sin(bodyHeading);
+			y -= velocity * cos(bodyHeading);
 			updateBoundingBox();
 		}
 	}

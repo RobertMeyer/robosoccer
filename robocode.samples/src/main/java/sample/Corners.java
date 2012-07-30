@@ -92,7 +92,7 @@ public class Corners extends Robot {
 			// Stop everything!  You can safely call stop multiple times.
 			stop();
 			// Call our custom firing method
-			smartFire(e.getDistance());
+			smartFire(-e.getDistance());
 			// Look for another robot.
 			// NOTE:  If you call scan() inside onScannedRobot, and it sees a robot,
 			// the game will interrupt the event handler and start it over
@@ -101,7 +101,7 @@ public class Corners extends Robot {
 			// Okay, we didn't see another robot... start moving or turning again.
 			resume();
 		} else {
-			smartFire(e.getDistance());
+			smartFire(-e.getDistance());
 		}
 	}
 
@@ -115,7 +115,7 @@ public class Corners extends Robot {
 			fire(1);
 		} else if (robotDistance > 50) {
 			fire(2);
-		} else {
+		} else if (robotDistance >= 0) {
 			fire(3);
 		}
 	}

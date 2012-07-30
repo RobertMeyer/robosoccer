@@ -146,7 +146,7 @@ public final class ExecCommands implements Serializable {
 	}
 
 	public void setBodyTurnRemaining(double bodyTurnRemaining) {
-		this.bodyTurnRemaining = bodyTurnRemaining;
+		this.bodyTurnRemaining = Math.abs(bodyTurnRemaining); // This doesn't seem right...
 	}
 
 	public double getRadarTurnRemaining() {
