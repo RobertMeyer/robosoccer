@@ -14,12 +14,15 @@ package net.sf.robocode.test.robots;
 
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Assert;
+import org.junit.Ignore;
+
 import robocode.control.events.TurnEndedEvent;
 
 
 /**
  * @author Flemming N. Larsen (original)
  */
+@Ignore("This test has been unreliable in student builds, and is not important for CSSE2003")
 public class TestFileOutputStreamAttack extends RobocodeTestBed {
 
 	private boolean messagedAccessDenied;
