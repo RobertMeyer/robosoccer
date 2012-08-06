@@ -29,7 +29,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.recording.IRecordManager;
 import net.sf.robocode.settings.ISettingsManager;
@@ -53,9 +52,9 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
-
 
 /**
  * @author Mathew Nelson (original)
@@ -73,8 +72,10 @@ public class RobocodeFrame extends JFrame {
 	private final static int UPDATE_TITLE_INTERVAL = 500; // milliseconds
 	private final static String INSTALL_URL = "http://robocode.sourceforge.net/installer";
 
-	private static final Cursor BUSY_CURSOR = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
-	private static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+	private static final Cursor BUSY_CURSOR = Cursor
+			.getPredefinedCursor(Cursor.WAIT_CURSOR);
+	private static final Cursor DEFAULT_CURSOR = Cursor
+			.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 
 	private final EventHandler eventHandler = new EventHandler();
 	private BattleObserver battleObserver;
@@ -118,15 +119,11 @@ public class RobocodeFrame extends JFrame {
 	final List<RobotButton> robotButtons = new ArrayList<RobotButton>();
 
 	public RobocodeFrame(ISettingsManager properties,
-			IWindowManager windowManager,
-			IRobotDialogManager dialogManager,
-			IVersionManager versionManager,
-			IBattleManager battleManager,
+			IWindowManager windowManager, IRobotDialogManager dialogManager,
+			IVersionManager versionManager, IBattleManager battleManager,
 			IRecordManager recordManager,
-			InteractiveHandler interactiveHandler,
-			MenuBar menuBar,
-			BattleView battleView
-			) {
+			InteractiveHandler interactiveHandler, MenuBar menuBar,
+			BattleView battleView) {
 		this.windowManager = (IWindowManagerExt) windowManager;
 		this.properties = properties;
 		this.interactiveHandler = interactiveHandler;
@@ -194,7 +191,8 @@ public class RobocodeFrame extends JFrame {
 			if (Version.compare(newVersion, currentVersion) > 0) {
 				newVersionAvailable = true;
 				if (Version.isFinal(newVersion)
-						|| (Version.isBeta(newVersion) && properties.getOptionsCommonNotifyAboutNewBetaVersions())) {
+						|| (Version.isBeta(newVersion) && properties
+								.getOptionsCommonNotifyAboutNewBetaVersions())) {
 					showNewVersion(newVersion);
 				}
 			}
@@ -215,25 +213,34 @@ public class RobocodeFrame extends JFrame {
 	}
 
 	private void showLatestVersion(String version) {
-		JOptionPane.showMessageDialog(this, "You have version " + version + ".  This is the latest version of Robocode.",
+		JOptionPane.showMessageDialog(this, "You have version " + version
+				+ ".  This is the latest version of Robocode.",
 				"No update available", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void showNewVersion(String newVersion) {
-		if (JOptionPane.showConfirmDialog(this,
-				"Version " + newVersion + " of Robocode is now available.  Would you like to download it?",
-				"Version " + newVersion + " available", JOptionPane.YES_NO_OPTION)
-				== JOptionPane.YES_OPTION) {
+		if (JOptionPane
+				.showConfirmDialog(
+						this,
+						"Version "
+								+ newVersion
+								+ " of Robocode is now available.  Would you like to download it?",
+						"Version " + newVersion + " available",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 			try {
 				BrowserManager.openURL(INSTALL_URL);
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, e.getMessage(), "Unable to open browser!",
+				JOptionPane.showMessageDialog(this, e.getMessage(),
+						"Unable to open browser!",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else if (Version.isFinal(newVersion)) {
-			JOptionPane.showMessageDialog(this,
-					"It is highly recommended that you always download the latest version.  You may get it at " + INSTALL_URL,
-					"Update when you can!", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane
+					.showMessageDialog(
+							this,
+							"It is highly recommended that you always download the latest version.  You may get it at "
+									+ INSTALL_URL, "Update when you can!",
+							JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -249,7 +256,7 @@ public class RobocodeFrame extends JFrame {
 	/**
 	 * Return the MainPanel (which contains the BattleView and the robot
 	 * buttons)
-	 *
+	 * 
 	 * @return JPanel
 	 */
 	private JPanel getMainPanel() {
@@ -265,7 +272,7 @@ public class RobocodeFrame extends JFrame {
 	/**
 	 * Return the BattleViewMainPanel (which contains the BattleView and a
 	 * spacer)
-	 *
+	 * 
 	 * @return JPanel
 	 */
 	private JPanel getBattleViewPanel() {
@@ -281,7 +288,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the JFrameContentPane.
-	 *
+	 * 
 	 * @return JPanel
 	 */
 	private JPanel getRobocodeContentPane() {
@@ -296,7 +303,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the sidePanel.
-	 *
+	 * 
 	 * @return JPanel
 	 */
 	private JPanel getSidePanel() {
@@ -304,7 +311,8 @@ public class RobocodeFrame extends JFrame {
 			sidePanel = new JPanel();
 			sidePanel.setLayout(new BorderLayout());
 			sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
-			final BattleButton btn = net.sf.robocode.core.Container.getComponent(BattleButton.class);
+			final BattleButton btn = net.sf.robocode.core.Container
+					.getComponent(BattleButton.class);
 
 			btn.attach();
 			sidePanel.add(btn, BorderLayout.SOUTH);
@@ -314,13 +322,14 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the robotButtons panel.
-	 *
+	 * 
 	 * @return JPanel
 	 */
 	private JPanel getRobotButtonsPanel() {
 		if (robotButtonsPanel == null) {
 			robotButtonsPanel = new JPanel();
-			robotButtonsPanel.setLayout(new BoxLayout(robotButtonsPanel, BoxLayout.Y_AXIS));
+			robotButtonsPanel.setLayout(new BoxLayout(robotButtonsPanel,
+					BoxLayout.Y_AXIS));
 			robotButtonsPanel.addContainerListener(eventHandler);
 		}
 		return robotButtonsPanel;
@@ -328,15 +337,17 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the robotButtonsScrollPane
-	 *
+	 * 
 	 * @return JScrollPane
 	 */
 	private JScrollPane getRobotButtonsScrollPane() {
 		if (robotButtonsScrollPane == null) {
 			robotButtonsScrollPane = new JScrollPane();
 			robotButtonsScrollPane.setAutoscrolls(false);
-			robotButtonsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			robotButtonsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			robotButtonsScrollPane
+					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			robotButtonsScrollPane
+					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			robotButtonsScrollPane.setAlignmentY(Component.TOP_ALIGNMENT);
 			robotButtonsScrollPane.setMaximumSize(new Dimension(113, 32767));
 			robotButtonsScrollPane.setPreferredSize(new Dimension(113, 28));
@@ -349,7 +360,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the statusLabel
-	 *
+	 * 
 	 * @return JLabel
 	 */
 	public JLabel getStatusLabel() {
@@ -362,7 +373,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the pauseButton
-	 *
+	 * 
 	 * @return JToggleButton
 	 */
 	private JToggleButton getPauseButton() {
@@ -378,7 +389,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the nextTurnButton
-	 *
+	 * 
 	 * @return JButton
 	 */
 	private Component getNextTurnButton() {
@@ -396,7 +407,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the stopButton
-	 *
+	 * 
 	 * @return JButton
 	 */
 	private JButton getStopButton() {
@@ -414,7 +425,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the restartButton
-	 *
+	 * 
 	 * @return JButton
 	 */
 	private JButton getRestartButton() {
@@ -433,7 +444,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the replayButton
-	 *
+	 * 
 	 * @return JButton
 	 */
 	public JButton getReplayButton() {
@@ -447,12 +458,15 @@ public class RobocodeFrame extends JFrame {
 
 			ISettingsManager props = properties;
 
-			replayButton.setVisible(props.getOptionsCommonEnableReplayRecording());
+			replayButton.setVisible(props
+					.getOptionsCommonEnableReplayRecording());
 
 			props.addPropertyListener(new ISettingsListener() {
 				public void settingChanged(String property) {
-					if (property.equals(ISettingsManager.OPTIONS_COMMON_ENABLE_REPLAY_RECORDING)) {
-						replayButton.setVisible(properties.getOptionsCommonEnableReplayRecording());
+					if (property
+							.equals(ISettingsManager.OPTIONS_COMMON_ENABLE_REPLAY_RECORDING)) {
+						replayButton.setVisible(properties
+								.getOptionsCommonEnableReplayRecording());
 					}
 				}
 			});
@@ -464,7 +478,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the tpsSlider
-	 *
+	 * 
 	 * @return JSlider
 	 */
 	private JSlider getTpsSlider() {
@@ -473,7 +487,8 @@ public class RobocodeFrame extends JFrame {
 
 			int tps = Math.max(props.getOptionsBattleDesiredTPS(), 1);
 
-			tpsSlider = new JSlider(0, MAX_TPS_SLIDER_VALUE, tpsToSliderValue(tps));
+			tpsSlider = new JSlider(0, MAX_TPS_SLIDER_VALUE,
+					tpsToSliderValue(tps));
 			tpsSlider.setPaintLabels(true);
 			tpsSlider.setPaintTicks(true);
 			tpsSlider.setMinorTickSpacing(1);
@@ -499,11 +514,13 @@ public class RobocodeFrame extends JFrame {
 			tpsSlider.setMajorTickSpacing(5);
 			tpsSlider.setLabelTable(labels);
 
-			WindowUtil.setFixedSize(tpsSlider, new Dimension((MAX_TPS_SLIDER_VALUE + 1) * 6, 40));
+			WindowUtil.setFixedSize(tpsSlider, new Dimension(
+					(MAX_TPS_SLIDER_VALUE + 1) * 6, 40));
 
 			props.addPropertyListener(new ISettingsListener() {
 				public void settingChanged(String property) {
-					if (property.equals(ISettingsManager.OPTIONS_BATTLE_DESIREDTPS)) {
+					if (property
+							.equals(ISettingsManager.OPTIONS_BATTLE_DESIREDTPS)) {
 						setTpsOnSlider(props.getOptionsBattleDesiredTPS());
 					}
 				}
@@ -514,7 +531,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the tpsLabel
-	 *
+	 * 
 	 * @return JLabel
 	 */
 	private JLabel getTpsLabel() {
@@ -526,7 +543,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Return the toolBar.
-	 *
+	 * 
 	 * @return JToolBar
 	 */
 	private JToolBar getToolBar() {
@@ -557,7 +574,8 @@ public class RobocodeFrame extends JFrame {
 	private void initialize() {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setTitle("Robocode");
-		setIconImage(ImageUtil.getImage("/net/sf/robocode/ui/icons/robocode-icon.png"));
+		setIconImage(ImageUtil
+				.getImage("/net/sf/robocode/ui/icons/robocode-icon.png"));
 		setResizable(true);
 		setVisible(false);
 
@@ -572,7 +590,8 @@ public class RobocodeFrame extends JFrame {
 		battleView.addMouseMotionListener(interactiveHandler);
 		battleView.addMouseWheelListener(interactiveHandler);
 		battleView.setFocusable(true);
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(interactiveHandler);
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+				.addKeyEventDispatcher(interactiveHandler);
 
 		if (windowManager.isSlave()) {
 			menuBar.getBattleMenu().setEnabled(false);
@@ -584,6 +603,27 @@ public class RobocodeFrame extends JFrame {
 			getReplayButton().setEnabled(false);
 			exitOnClose = false;
 		}
+		setWindowCanFullScreen(this);
+	}
+
+	/*
+	 * 
+	 * 
+	 * @see
+	 * http://netbeans.org/projects/platform/lists/dev/archive/2011-12/message
+	 * /226
+	 */
+	public static void setWindowCanFullScreen(Window window) {
+		try {
+			Class<?> fullScreenUtil = Class
+					.forName("com.apple.eawt.FullScreenUtilities");
+			Method m = fullScreenUtil.getDeclaredMethod(
+					"setWindowCanFullScreen", Window.class, Boolean.TYPE);
+			m.invoke(null, window, true);
+		} catch (Exception e) {
+			// Catch all exceptions.
+			// Mainly because the Class.forName is for OS X Only.
+		}
 	}
 
 	private void pauseResumeButtonActionPerformed() {
@@ -592,7 +632,7 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Gets the iconified.
-	 *
+	 * 
 	 * @return Returns a boolean
 	 */
 	public boolean isIconified() {
@@ -607,8 +647,9 @@ public class RobocodeFrame extends JFrame {
 
 	/**
 	 * Sets the iconified.
-	 *
-	 * @param iconified The iconified to set
+	 * 
+	 * @param iconified
+	 *            The iconified to set
 	 */
 	private void setIconified(boolean iconified) {
 		this.iconified = iconified;
@@ -707,8 +748,8 @@ public class RobocodeFrame extends JFrame {
 		return "  " + ((tps == MAX_TPS) ? "max" : "" + tps) + "  ";
 	}
 
-	private class EventHandler implements ComponentListener, ActionListener, ContainerListener, WindowListener,
-			ChangeListener {
+	private class EventHandler implements ComponentListener, ActionListener,
+			ContainerListener, WindowListener, ChangeListener {
 
 		public void actionPerformed(ActionEvent e) {
 			final Object source = e.getSource();
@@ -732,17 +773,23 @@ public class RobocodeFrame extends JFrame {
 			}
 		}
 
-		public void componentShown(ComponentEvent e) {}
+		public void componentShown(ComponentEvent e) {
+		}
 
-		public void componentHidden(ComponentEvent e) {}
+		public void componentHidden(ComponentEvent e) {
+		}
 
-		public void componentRemoved(ContainerEvent e) {}
+		public void componentRemoved(ContainerEvent e) {
+		}
 
-		public void componentAdded(ContainerEvent e) {}
+		public void componentAdded(ContainerEvent e) {
+		}
 
-		public void componentMoved(ComponentEvent e) {}
+		public void componentMoved(ComponentEvent e) {
+		}
 
-		public void windowActivated(WindowEvent e) {}
+		public void windowActivated(WindowEvent e) {
+		}
 
 		public void windowClosed(WindowEvent e) {
 			if (exitOnClose) {
@@ -753,7 +800,8 @@ public class RobocodeFrame extends JFrame {
 		public void windowClosing(WindowEvent e) {
 			exitOnClose = true;
 			if (windowManager.isSlave()) {
-				WindowUtil.message("If you wish to exit Robocode, please exit the program controlling it.");
+				WindowUtil
+						.message("If you wish to exit Robocode, please exit the program controlling it.");
 				exitOnClose = false;
 				return;
 			}
@@ -765,7 +813,8 @@ public class RobocodeFrame extends JFrame {
 			properties.saveProperties();
 		}
 
-		public void windowDeactivated(WindowEvent e) {}
+		public void windowDeactivated(WindowEvent e) {
+		}
 
 		public void windowDeiconified(WindowEvent e) {
 			setIconified(false);
@@ -774,7 +823,8 @@ public class RobocodeFrame extends JFrame {
 
 		public void windowIconified(WindowEvent e) {
 			setIconified(true);
-			battleManager.setManagedTPS(properties.getOptionsViewPreventSpeedupWhenMinimized());
+			battleManager.setManagedTPS(properties
+					.getOptionsViewPreventSpeedupWhenMinimized());
 		}
 
 		public void windowOpened(WindowEvent e) {
@@ -791,14 +841,16 @@ public class RobocodeFrame extends JFrame {
 				} else {
 					// Only set desired TPS if it is not set to zero
 					properties.setOptionsBattleDesiredTPS(tps);
-					battleManager.resumeIfPausedBattle(); // TODO causing problems when called from PreferencesViewOptionsTab.storePreferences()
+					battleManager.resumeIfPausedBattle(); // TODO causing
+															// problems when
+															// called from
+															// PreferencesViewOptionsTab.storePreferences()
 				}
 
 				tpsLabel.setText(getTpsFromSliderAsString());
 			}
 		}
 	}
-
 
 	private class BattleObserver extends BattleAdaptor {
 		private int tps;
@@ -829,14 +881,18 @@ public class RobocodeFrame extends JFrame {
 			isBattleReplay = event.isReplay();
 
 			getStopButton().setEnabled(true);
-			getRestartButton().setEnabled(battleManager.getBattleProperties().getSelectedRobots() != null);
+			getRestartButton()
+					.setEnabled(
+							battleManager.getBattleProperties()
+									.getSelectedRobots() != null);
 			getReplayButton().setEnabled(event.isReplay());
 			menuBar.getBattleSaveRecordAsMenuItem().setEnabled(false);
 			menuBar.getBattleExportRecordMenuItem().setEnabled(false);
 			menuBar.getBattleSaveAsMenuItem().setEnabled(true);
 			menuBar.getBattleSaveMenuItem().setEnabled(true);
 
-			JCheckBoxMenuItem rankingCheckBoxMenuItem = menuBar.getOptionsShowRankingCheckBoxMenuItem();
+			JCheckBoxMenuItem rankingCheckBoxMenuItem = menuBar
+					.getOptionsShowRankingCheckBoxMenuItem();
 
 			rankingCheckBoxMenuItem.setEnabled(!isBattleReplay);
 			if (rankingCheckBoxMenuItem.isSelected()) {
@@ -852,7 +908,8 @@ public class RobocodeFrame extends JFrame {
 			if (event.getRound() == 0) {
 				getRobotButtonsPanel().removeAll();
 
-				final List<IRobotSnapshot> robots = Arrays.asList(event.getStartSnapshot().getRobots());
+				final List<IRobotSnapshot> robots = Arrays.asList(event
+						.getStartSnapshot().getRobots());
 
 				dialogManager.trim(robots);
 
@@ -869,9 +926,11 @@ public class RobocodeFrame extends JFrame {
 				for (int index = 0; index < robots.size(); index++) {
 					final IRobotSnapshot robot = robots.get(index);
 					final boolean attach = index < RobotDialogManager.MAX_PRE_ATTACHED;
-					final RobotButton button = net.sf.robocode.core.Container.createComponent(RobotButton.class);
+					final RobotButton button = net.sf.robocode.core.Container
+							.createComponent(RobotButton.class);
 
-					button.setup(robot.getName(), maxEnergy, index, robot.getContestantIndex(), attach);
+					button.setup(robot.getName(), maxEnergy, index,
+							robot.getContestantIndex(), attach);
 					button.setText(robot.getShortName());
 					addRobotButton(button);
 				}
@@ -889,14 +948,17 @@ public class RobocodeFrame extends JFrame {
 			robotButtons.clear();
 
 			final boolean canReplayRecord = recordManager.hasRecord();
-			final boolean enableSaveRecord = (properties.getOptionsCommonEnableReplayRecording() & canReplayRecord);
+			final boolean enableSaveRecord = (properties
+					.getOptionsCommonEnableReplayRecording() & canReplayRecord);
 
 			getStopButton().setEnabled(false);
 			getReplayButton().setEnabled(canReplayRecord);
 			getNextTurnButton().setEnabled(false);
 
-			menuBar.getBattleSaveRecordAsMenuItem().setEnabled(enableSaveRecord);
-			menuBar.getBattleExportRecordMenuItem().setEnabled(enableSaveRecord);
+			menuBar.getBattleSaveRecordAsMenuItem()
+					.setEnabled(enableSaveRecord);
+			menuBar.getBattleExportRecordMenuItem()
+					.setEnabled(enableSaveRecord);
 			menuBar.getOptionsShowRankingCheckBoxMenuItem().setEnabled(false);
 
 			updateTitle();
@@ -963,7 +1025,8 @@ public class RobocodeFrame extends JFrame {
 					title.append(currentTurn);
 
 					title.append(", Round ");
-					title.append(currentRound + 1).append(" of ").append(numberOfRounds);
+					title.append(currentRound + 1).append(" of ")
+							.append(numberOfRounds);
 
 					if (!isBattlePaused) {
 						boolean dispTps = properties.getOptionsViewTPS();
@@ -979,7 +1042,8 @@ public class RobocodeFrame extends JFrame {
 								title.append(", ");
 							}
 							if (dispFps) {
-								title.append(windowManager.getFPS()).append(" FPS");
+								title.append(windowManager.getFPS()).append(
+										" FPS");
 							}
 						}
 					}
@@ -989,8 +1053,9 @@ public class RobocodeFrame extends JFrame {
 				title.append(" (paused)");
 			}
 
-			MemoryUsage memUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-			
+			MemoryUsage memUsage = ManagementFactory.getMemoryMXBean()
+					.getHeapMemoryUsage();
+
 			long usedMem = memUsage.getUsed() / (1024 * 1024);
 
 			title.append(", Used mem: ").append(usedMem);
