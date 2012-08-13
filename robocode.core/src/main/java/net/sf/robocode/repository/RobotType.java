@@ -103,6 +103,10 @@ public class RobotType implements Serializable {
 	public boolean isJuniorRobot() {
 		return (code & JUNIOR.code) != 0;
 	}
+	
+	public boolean isHouseRobot() {
+		return false;
+	}
 
 	@Override
 	public int hashCode() {
