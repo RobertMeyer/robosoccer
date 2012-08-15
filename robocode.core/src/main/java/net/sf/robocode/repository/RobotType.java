@@ -28,6 +28,7 @@ public class RobotType implements Serializable {
 	transient public static final RobotType DROID = new RobotType(16);
 	transient public static final RobotType INTERACTIVE = new RobotType(32);
 	transient public static final RobotType PAINTING = new RobotType(64);
+	transient public static final RobotType HOUSE = new RobotType(128);
 
 	private int code;
 
@@ -42,7 +43,8 @@ public class RobotType implements Serializable {
 			boolean isPaintRobot,
 			boolean isAdvancedRobot,
 			boolean isTeamRobot,
-			boolean isDroid
+			boolean isDroid,
+			boolean isHouse
 			) {
 		this.code = 0;
 		if (isJuniorRobot) {
@@ -65,6 +67,9 @@ public class RobotType implements Serializable {
 		}
 		if (isDroid) {
 			code += DROID.getCode();
+		}
+		if (isHouse) {
+			code += HOUSE.getCode();
 		}
 	}
 
@@ -105,7 +110,7 @@ public class RobotType implements Serializable {
 	}
 	
 	public boolean isHouseRobot() {
-		return false;
+		return (code & HOUSE.code) != 0;
 	}
 
 	@Override
