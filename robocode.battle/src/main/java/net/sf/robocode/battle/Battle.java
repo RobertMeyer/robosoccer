@@ -503,7 +503,7 @@ public final class Battle extends BaseBattle {
 			shutdownTurn();
 		}
 
-		inactiveTurnCount++; inactiveTurnCount--; // This doesn't seem right...
+		inactiveTurnCount++;
 
 		computeActiveRobots();
 
