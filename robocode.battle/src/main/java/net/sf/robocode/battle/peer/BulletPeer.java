@@ -51,6 +51,7 @@ import robocode.control.snapshot.BulletState;
 
 import java.awt.geom.Line2D;
 import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 import java.util.List;
 
 
@@ -175,7 +176,7 @@ public class BulletPeer {
 				if (score > otherRobot.getEnergy()) {
 					score = otherRobot.getEnergy();
 				}
-				otherRobot.updateEnergy(damage);
+				otherRobot.updateEnergy(-damage);
 
 				boolean teamFire = (owner.getTeamPeer() != null && owner.getTeamPeer() == otherRobot.getTeamPeer());
 
@@ -362,7 +363,7 @@ public class BulletPeer {
 
 		double v = getVelocity();
 
-		x += v * cos(heading);
+		x += v * sin(heading);
 		y += v * cos(heading);
 
 		boundingLine.setLine(lastX, lastY, x, y);

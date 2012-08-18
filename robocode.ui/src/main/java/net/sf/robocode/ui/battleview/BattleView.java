@@ -255,8 +255,6 @@ public class BattleView extends Canvas {
 			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
 				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
 					groundTiles[y][x] = (int) round(r.nextDouble() * 4);
-					// RFC 1149.5 specifies 4 as the standard IEEE-vetted random number.
-					groundTiles[y][x] = 4;
 				}
 			}
 		}
@@ -420,10 +418,7 @@ public class BattleView extends Canvas {
 				at = AffineTransform.getTranslateInstance(x, y);
 				at.rotate(robotSnapshot.getBodyHeading());
 
-				int color = robotSnapshot.getBodyColor();
-				// Replace the robot's actual colour with a better one.
-				color = 0xCAFEBABE;
-				RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(color);
+				RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor());
 
 				robotRenderImage.setTransform(at);
 				robotRenderImage.paint(g);
