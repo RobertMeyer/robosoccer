@@ -594,4 +594,9 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
 	public String toString() {
 		return itemURL.toString();
 	}
+
+	@Override
+	public boolean isHouseRobot() {
+		return robotType.isHouseRobot();
+	}
 }
