@@ -61,7 +61,7 @@ public class Fire extends Robot {
 			fire(1);
 		}
 		// Call scan again, before we turn the gun
-		scan();
+//		scan();
 	}
 
 	/**

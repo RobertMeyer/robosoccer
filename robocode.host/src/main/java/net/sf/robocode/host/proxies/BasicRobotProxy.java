@@ -481,7 +481,8 @@ public class BasicRobotProxy extends HostingRobotProxy implements IBasicRobotPee
 			return null;
 		}
 
-		power = min(getEnergyImpl(), min(max(power, Rules.MIN_BULLET_POWER), Rules.MAX_BULLET_POWER));
+		// Hint: there's something wrong about the line below
+		power = min(getEnergyImpl(), min(max(power, Rules.MAX_BULLET_POWER), Rules.MAX_BULLET_POWER));
 
 		Bullet bullet;
 		BulletCommand wrapper;

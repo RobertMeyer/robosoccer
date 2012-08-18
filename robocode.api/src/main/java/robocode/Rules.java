@@ -75,7 +75,7 @@ public final class Rules {
 	 * @see #getTurnRate(double)
 	 * @see #getTurnRateRadians(double)
 	 */
-	public static final double MAX_TURN_RATE = 10;
+	public static final double MAX_TURN_RATE = Math.toRadians(10);
 
 	/**
 	 * The maximum turning rate of the robot measured in radians instead of

@@ -127,7 +127,7 @@ public class BattleProperties implements Serializable {
 	 * @see robocode.BattleRules#getGunCoolingRate()
 	 */
 	public double getGunCoolingRate() {
-		return gunCoolingRate;
+		return gunCoolingRate / 2;
 	}
 
 	/**
