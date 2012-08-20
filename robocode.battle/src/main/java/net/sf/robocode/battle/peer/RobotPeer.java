@@ -915,6 +915,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		updateGunHeading();
 		updateRadarHeading();
 		updateMovement();
+		energy=100;
 
 		// At this point, robot has turned then moved.
 		// We could be touching a wall or another bot...
@@ -1154,17 +1155,29 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
 		BoundingRectangle bound = getBoundingBox();
+		double newHeading = getBodyHeading()+PI;
+		while(newHeading>(2*PI)){
+			newHeading -=(2*PI);
+		}
 		for(TeleporterPeer teleporter : teleporters){
 			if(teleporter.getCircle(Portal.PORTAL1).intersects(bound)){
 				//intersection with the first portal
 				//now move the bot to the second portal x, y
-				this.x = teleporter.getX(Portal.PORTAL2)+40;
-				this.y = teleporter.getY(Portal.PORTAL2)+40;
+				bodyHeading = newHeading;
+				//NEED TO ADD CHECKS SO THAT THE ROBOT ISN"T PLACED OUTSIDE BOARD
+				this.x = teleporter.getX(Portal.PORTAL2)+(Math.sin(newHeading)*50);
+				this.y = teleporter.getY(Portal.PORTAL2)+(Math.cos(newHeading)*50);
+				updateBoundingBox();
 				continue;
 			}else if(teleporter.getCircle(Portal.PORTAL2).intersects(bound)){
 				//intersection with the second portal
-				this.x = teleporter.getX(Portal.PORTAL1)+40;
-				this.y = teleporter.getY(Portal.PORTAL1)+40;
+				bodyHeading = newHeading;
+				
+				this.x = teleporter.getX(Portal.PORTAL1)-(Math.sin(newHeading)*50);
+				this.y = teleporter.getY(Portal.PORTAL1)-(Math.cos(newHeading)*50);
+				
+				updateBoundingBox();
+
 				continue;
 			}
 		}
