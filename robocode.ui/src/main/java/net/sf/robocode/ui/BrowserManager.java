@@ -14,10 +14,12 @@
 package net.sf.robocode.ui;
 
 
+import java.awt.Window;
 import net.sf.robocode.io.FileUtil;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -34,7 +36,7 @@ public class BrowserManager {
 		if (System.getProperty("java.version").charAt(2) >= '6') {
 			// Try calling java.awt.Desktop.getDesktop().browse(new URI(url)) that is available from Java 6
 			try {
-				Class<?> desktopClass = Class.forName("java.awt.Desktop"); 
+				Class<?> desktopClass = Class.forName("java.awt.Desktop");
 				Object desktop = desktopClass.getDeclaredMethod("getDesktop", (Class<?>[]) null).invoke((Object) null,
 						(Object[]) null);
 

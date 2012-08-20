@@ -287,6 +287,10 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isDroid() {
 		return statics.isDroid();
 	}
+	
+	public boolean isHouseRobot() {
+		return statics.isHouseRobot();
+	}
 
 	public boolean isJuniorRobot() {
 		return statics.isJuniorRobot();
@@ -751,6 +755,8 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 200;
 		} else if (statics.isDroid()) {
 			energy = 120;
+		} else if (statics.isHouseRobot()){
+			energy = 500;
 		} else {
 			energy = 100;
 		}
