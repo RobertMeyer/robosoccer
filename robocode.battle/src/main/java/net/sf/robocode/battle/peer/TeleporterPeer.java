@@ -14,6 +14,8 @@ public class TeleporterPeer implements ITeleporter {
 	private double y2;
 	
 	public TeleporterPeer(double x1, double y1, double x2, double y2) {
+		width = 32;
+		height = 32;
 		setXY(x1, y1, Portal.PORTAL1);
 		setXY(x2, y2, Portal.PORTAL2);
 	}
