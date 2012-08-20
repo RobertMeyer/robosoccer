@@ -8,6 +8,9 @@ package net.sf.robocode.teleporters;
  *
  */
 public interface ITeleporter {
+	
+	public enum Portal {PORTAL1, PORTAL2};
+	
 	/**
 	 * Sets the teleporter's position to x & y coordinates. Requires both x and
 	 * y coordinates. Use setX or setY for individual axes.
@@ -15,35 +18,35 @@ public interface ITeleporter {
 	 * @param x
 	 * @param y
 	 */
-	void setXY(double x, double y);
+	void setXY(double x, double y, Portal target);
 	
 	/**
 	 * Sets the teleporter's x position.
 	 * 
 	 * @param x
 	 */
-	void setX(double x);
+	void setX(double x, Portal target);
 	
 	/**
 	 * Sets the teleporter's y position.
 	 * 
 	 * @param y
 	 */
-	void setY(double y);
+	void setY(double y, Portal target);
 	
 	/**
 	 * Returns the x coordinate of the teleporter.
 	 * 
 	 * @return
 	 */
-	double getX();
+	double getX(Portal target);
 	
 	/**
 	 * Get the y coordinate of the teleporter.
 	 * 
 	 * @return
 	 */
-	double getY();
+	double getY(Portal target);
 	
 	/**
 	 * Forms a pair with another teleporter. The paired teleporter will be the
