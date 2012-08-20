@@ -129,7 +129,7 @@ public class JavaHost implements IHost {
 			isAdvancedRobot = true;
 		}
 		
-		if (IAdvancedRobot.class.isAssignableFrom(robotClass)) {
+		if (IHouseRobot.class.isAssignableFrom(robotClass)) {
 			isHouseRobot = true;
 		}
 

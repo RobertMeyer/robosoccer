@@ -116,78 +116,78 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
  */
-public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
+public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public static final int
 			WIDTH = 40,
 			HEIGHT = 40;
 
-	private static final int
+	protected static final int
 			HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
 
-	private static final int MAX_SKIPPED_TURNS = 30;
-	private static final int MAX_SKIPPED_TURNS_WITH_IO = 240;
+	protected static final int MAX_SKIPPED_TURNS = 30;
+	protected static final int MAX_SKIPPED_TURNS_WITH_IO = 240;
 
-	private Battle battle;
-	private RobotStatistics statistics;
-	private final TeamPeer teamPeer;
-	private final RobotSpecification robotSpecification;
+	protected Battle battle;
+	protected RobotStatistics statistics;
+	protected final TeamPeer teamPeer;
+	protected final RobotSpecification robotSpecification;
 
-	private IHostingRobotProxy robotProxy;
-	private AtomicReference<RobotStatus> status = new AtomicReference<RobotStatus>();
-	private AtomicReference<ExecCommands> commands = new AtomicReference<ExecCommands>();
-	private AtomicReference<EventQueue> events = new AtomicReference<EventQueue>(new EventQueue());
-	private AtomicReference<List<TeamMessage>> teamMessages = new AtomicReference<List<TeamMessage>>(
+	protected IHostingRobotProxy robotProxy;
+	protected AtomicReference<RobotStatus> status = new AtomicReference<RobotStatus>();
+	protected AtomicReference<ExecCommands> commands = new AtomicReference<ExecCommands>();
+	protected AtomicReference<EventQueue> events = new AtomicReference<EventQueue>(new EventQueue());
+	protected AtomicReference<List<TeamMessage>> teamMessages = new AtomicReference<List<TeamMessage>>(
 			new ArrayList<TeamMessage>());
-	private AtomicReference<List<BulletStatus>> bulletUpdates = new AtomicReference<List<BulletStatus>>(
+	protected AtomicReference<List<BulletStatus>> bulletUpdates = new AtomicReference<List<BulletStatus>>(
 			new ArrayList<BulletStatus>());
 
 	// thread is running
-	private final AtomicBoolean isRunning = new AtomicBoolean(false);
+	protected final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-	private final StringBuilder battleText = new StringBuilder(1024);
-	private final StringBuilder proxyText = new StringBuilder(1024);
-	private RobotStatics statics;
-	private BattleRules battleRules;
+	protected final StringBuilder battleText = new StringBuilder(1024);
+	protected final StringBuilder proxyText = new StringBuilder(1024);
+	protected RobotStatics statics;
+	protected BattleRules battleRules;
 
 	// for battle thread, during robots processing
-	private ExecCommands currentCommands;
-	private double lastHeading;
-	private double lastGunHeading;
-	private double lastRadarHeading;
+	protected ExecCommands currentCommands;
+	protected double lastHeading;
+	protected double lastGunHeading;
+	protected double lastRadarHeading;
 
-	private double energy;
-	private double velocity;
-	private double bodyHeading;
-	private double radarHeading;
-	private double gunHeading;
-	private double gunHeat;
-	private double x;
-	private double y;
-	private int skippedTurns;
+	protected double energy;
+	protected double velocity;
+	protected double bodyHeading;
+	protected double radarHeading;
+	protected double gunHeading;
+	protected double gunHeat;
+	protected double x;
+	protected double y;
+	protected int skippedTurns;
 
-	private boolean scan;
-	private boolean turnedRadarWithGun; // last round
+	protected boolean scan;
+	protected boolean turnedRadarWithGun; // last round
 
-	private boolean isIORobot;
-	private boolean isPaintEnabled;
-	private boolean sgPaintEnabled;
+	protected boolean isIORobot;
+	protected boolean isPaintEnabled;
+	protected boolean sgPaintEnabled;
 
 	// waiting for next tick
-	private final AtomicBoolean isSleeping = new AtomicBoolean(false);
-	private final AtomicBoolean halt = new AtomicBoolean(false);
+	protected final AtomicBoolean isSleeping = new AtomicBoolean(false);
+	protected final AtomicBoolean halt = new AtomicBoolean(false);
 
-	private boolean isExecFinishedAndDisabled;
-	private boolean isEnergyDrained;
-	private boolean isWinner;
-	private boolean inCollision;
-	private boolean isOverDriving;
+	protected boolean isExecFinishedAndDisabled;
+	protected boolean isEnergyDrained;
+	protected boolean isWinner;
+	protected boolean inCollision;
+	protected boolean isOverDriving;
 
-	private RobotState state;
-	private final Arc2D scanArc;
-	private final BoundingRectangle boundingBox;
-	private final RbSerializer rbSerializer;
+	protected RobotState state;
+	protected final Arc2D scanArc;
+	protected final BoundingRectangle boundingBox;
+	protected final RbSerializer rbSerializer;
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
@@ -585,7 +585,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				isHalt(), shouldWait, false);
 	}
 
-	private void validateCommands(ExecCommands newCommands) {
+	protected void validateCommands(ExecCommands newCommands) {
 		if (Double.isNaN(newCommands.getMaxTurnRate())) {
 			println("You cannot setMaxTurnRate to: " + newCommands.getMaxTurnRate());
 		}
@@ -597,19 +597,19 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		newCommands.setMaxVelocity(Math.min(abs(newCommands.getMaxVelocity()), Rules.MAX_VELOCITY));
 	}
 
-	private List<Event> readoutEvents() {
+	protected List<Event> readoutEvents() {
 		return events.getAndSet(new EventQueue());
 	}
 
-	private List<TeamMessage> readoutTeamMessages() {
+	protected List<TeamMessage> readoutTeamMessages() {
 		return teamMessages.getAndSet(new ArrayList<TeamMessage>());
 	}
 
-	private List<BulletStatus> readoutBullets() {
+	protected List<BulletStatus> readoutBullets() {
 		return bulletUpdates.getAndSet(new ArrayList<BulletStatus>());
 	}
 
-	private void waitForNextTurn() {
+	protected void waitForNextTurn() {
 		synchronized (isSleeping) {
 			// Notify the battle that we are now asleep.
 			// This ends any pending wait() call in battle.runRound().
@@ -757,6 +757,9 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 120;
 		} else if (statics.isHouseRobot()){
 			energy = 500;
+			//TODO: Change to actual starting spots [Team Awesome]
+			x = 0;
+			y = 0;
 		} else {
 			energy = 100;
 		}
@@ -793,7 +796,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		commands = new AtomicReference<ExecCommands>(newExecCommands);
 	}
 
-	private boolean validSpot(List<RobotPeer> robots) {
+	protected boolean validSpot(List<RobotPeer> robots) {
 		for (RobotPeer otherRobot : robots) {
 			if (otherRobot != null && otherRobot != this) {
 				if (getBoundingBox().intersects(otherRobot.getBoundingBox())) {
@@ -859,7 +862,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private void fireBullets(List<BulletCommand> bulletCommands) {
+	protected void fireBullets(List<BulletCommand> bulletCommands) {
 		BulletPeer newBullet = null;
 
 		for (BulletCommand bulletCmd : bulletCommands) {
@@ -976,13 +979,13 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		lastRadarHeading = -1;
 	}
 
-	private void addTeamMessage(TeamMessage message) {
+	protected void addTeamMessage(TeamMessage message) {
 		final List<TeamMessage> queue = teamMessages.get();
 
 		queue.add(message);
 	}
 
-	private boolean checkDispatchToMember(RobotPeer member, String recipient) {
+	protected boolean checkDispatchToMember(RobotPeer member, String recipient) {
 		if (member.isAlive()) {
 			if (recipient == null) {
 				if (member != this) {
@@ -1014,7 +1017,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return otherRobot.getName();
 	}		
 
-	private void checkRobotCollision(List<RobotPeer> robots) {
+	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
 
 		for (RobotPeer otherRobot : robots) {
@@ -1076,7 +1079,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private void checkWallCollision() {
+	protected void checkWallCollision() {
 		boolean hitWall = false;
 		double fixx = 0, fixy = 0;
 		double angle = 0;
@@ -1150,11 +1153,11 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private double getBattleFieldHeight() {
+	protected double getBattleFieldHeight() {
 		return battleRules.getBattlefieldHeight();
 	}
 
-	private double getBattleFieldWidth() {
+	protected double getBattleFieldWidth() {
 		return battleRules.getBattlefieldWidth();
 	}
 
@@ -1180,7 +1183,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private void updateGunHeading() {
+	protected void updateGunHeading() {
 		if (currentCommands.getGunTurnRemaining() > 0) {
 			if (currentCommands.getGunTurnRemaining() < Rules.GUN_TURN_RATE_RADIANS) {
 				gunHeading += currentCommands.getGunTurnRemaining();
@@ -1221,7 +1224,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		gunHeading = normalAbsoluteAngle(gunHeading);
 	}
 
-	private void updateHeading() {
+	protected void updateHeading() {
 		boolean normalizeHeading = true;
 
 		double turnRate = min(currentCommands.getMaxTurnRate(),
@@ -1295,7 +1298,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private void updateRadarHeading() {
+	protected void updateRadarHeading() {
 		if (currentCommands.getRadarTurnRemaining() > 0) {
 			if (currentCommands.getRadarTurnRemaining() < Rules.RADAR_TURN_RATE_RADIANS) {
 				radarHeading += currentCommands.getRadarTurnRemaining();
@@ -1325,7 +1328,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * This is Nat Pavasants method described here:
 	 *   http://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
 	 */
-	private void updateMovement() {
+	protected void updateMovement() {
 		double distance = currentCommands.getDistanceRemaining();
 
 		if (Double.isNaN(distance)) {
@@ -1361,7 +1364,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private double getDistanceTraveledUntilStop(double velocity) {
+	protected double getDistanceTraveledUntilStop(double velocity) {
 		double distance = 0;
 
 		velocity = Math.abs(velocity);
@@ -1381,7 +1384,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * This is Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive's method described here:
 	 *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
 	 */
-	private double getNewVelocity(double velocity, double distance) {
+	protected double getNewVelocity(double velocity, double distance) {
 		if (distance < 0) {
 			// If the distance is negative, then change it to be positive
 			// and change the sign of the input velocity and the result
@@ -1417,21 +1420,21 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return ((decelTime - 1) * Rules.DECELERATION) + ((distance - decelDist) / decelTime);
 	}
 
-	private static double maxDecel(double speed) {
+	protected static double maxDecel(double speed) {
 		double decelTime = speed / Rules.DECELERATION;
 		double accelTime = (1 - decelTime);
 
 		return Math.min(1, decelTime) * Rules.DECELERATION + Math.max(0, accelTime) * Rules.ACCELERATION;
 	}
 
-	private void updateGunHeat() {
+	protected void updateGunHeat() {
 		gunHeat -= battleRules.getGunCoolingRate();
 		if (gunHeat < 0) {
 			gunHeat = 0;
 		}
 	}
 
-	private void scan(double lastRadarHeading, List<RobotPeer> robots) {
+	protected void scan(double lastRadarHeading, List<RobotPeer> robots) {
 		if (statics.isDroid()) {
 			return;
 		}
@@ -1473,13 +1476,13 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private boolean intersects(Arc2D arc, Rectangle2D rect) {
+	protected boolean intersects(Arc2D arc, Rectangle2D rect) {
 		return (rect.intersectsLine(arc.getCenterX(), arc.getCenterY(), arc.getStartPoint().getX(),
 				arc.getStartPoint().getY()))
 				|| arc.intersects(rect);
 	}
 
-	private void zap(double zapAmount) {
+	protected void zap(double zapAmount) {
 		if (energy == 0) {
 			kill();
 			return;
@@ -1548,7 +1551,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	private void setEnergy(double newEnergy, boolean resetInactiveTurnCount) {
+	protected void setEnergy(double newEnergy, boolean resetInactiveTurnCount) {
 		if (resetInactiveTurnCount && (energy != newEnergy)) {
 			battle.resetInactiveTurnCount(energy - newEnergy);
 		}
