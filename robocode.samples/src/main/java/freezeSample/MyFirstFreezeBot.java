@@ -1,6 +1,7 @@
 package freezeSample;
 
 import robocode.FreezeRobot;
+import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;
 
 
@@ -16,6 +17,17 @@ public class MyFirstFreezeBot extends FreezeRobot {
 			// Continually scan for robots
 			turnRadarRight(360);
 		}
+	}
+	
+	
+	/**
+	 * (non-Javadoc)
+	 * @see robocode.Robot#onHitRobot(robocode.HitRobotEvent)
+	 */
+	public void onHitRobot(HitRobotEvent e) { 
+		// Hit the target. Move away and search for another
+		setAhead(-100);
+		setTurnRadarRight(270);
 	}
 	
 	
