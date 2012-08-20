@@ -758,8 +758,8 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isHouseRobot()){
 			energy = 500;
 			//TODO: Change to actual starting spots [Team Awesome]
-			x = 0;
-			y = 0;
+			//x = 0;
+			//y = 0;
 		} else {
 			energy = 100;
 		}
