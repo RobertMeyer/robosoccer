@@ -79,6 +79,7 @@ import net.sf.robocode.peer.*;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.serialization.RbSerializer;
+import net.sf.robocode.teleporters.ITeleporter.Portal;
 import robocode.*;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
@@ -1155,16 +1156,16 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
 		BoundingRectangle bound = getBoundingBox();
 		for(TeleporterPeer teleporter : teleporters){
-			if(bound.intersects(teleporter.getBoundingBox(0)){
+			if(bound.intersects(teleporter.getBoundingBox(Portal.PORTAL1))){
 				//intersection with the first portal
 				//now move the bot to the second portal x, y
-				self.x = teleporter.getX(1);
-				self.y = teleporter.getY(1);
+				this.x = teleporter.getX(Portal.PORTAL2);
+				this.y = teleporter.getY(Portal.PORTAL2);
 				continue;
-			}else if(bound.intersects(teleporter.getBoundingBox(1))){
+			}else if(bound.intersects(teleporter.getBoundingBox(Portal.PORTAL2))){
 				//intersection with the second portal
-				self.x = teleporter.getX(0);
-				self.y = teleporter.getY(0);
+				this.x = teleporter.getX(Portal.PORTAL1);
+				this.y = teleporter.getY(Portal.PORTAL1);
 				continue;
 			}
 		}
