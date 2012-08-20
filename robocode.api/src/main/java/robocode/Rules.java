@@ -26,44 +26,70 @@ import static java.lang.Math.max;
  * @author Flemming N. Larsen (original)
  * @since 1.1.4
  */
-public class Rules {
-	
-	private Robot robot; // The robot the rules are being defined for.
-	
-	/*** Rules for Robot ***/
-	// The maximum acceleration of the robot
-	public double ACCELERATION = getAcceleration();
-	// The maximum deceleration of the robot
-	public double DECELERATION = getDeceleration();
-	// The maximum velocity of the robot
-	public double MAX_VELOCITY = getMaxVelocity();
-	// The radar scan radius of the robot
-	public double RADAR_SCAN_RADIUS = getRadarScanRadius();
-	// The minimum bullet power of the robot
-	public double MIN_BULLET_POWER = getMinBulletPower();
-	// The maximum bullet power of the robot
-	public double MAX_BULLET_POWER = getMaxBulletPower();
-	/*
-	 * The maximum turning rate of the robot, in degrees.
+public final class Rules {
+
+	// Hide the constructor in the Javadocs as it should not be used
+	private Rules() {}
+
+	/**
+	 * The acceleration of a robot, i.e. the increase of velocity when the
+	 * robot moves forward, which is 1 pixel/turn.
+	 */
+	public static final double ACCELERATION = 1;
+
+	/**
+	 * The deceleration of a robot, i.e. the decrease of velocity when the
+	 * robot moves backwards (or brakes), which is 2 pixels/turn.
+	 */
+	public static final double DECELERATION = 2;
+
+	/**
+	 * The maximum velocity of a robot, which is 8 pixels/turn.
+	 */
+	public static final double MAX_VELOCITY = 8;
+
+	/**
+	 * The radar scan radius, which is 1200 pixels.
+	 * Robots which is more than 1200 pixels away cannot be seen on the radar.
+	 */
+	public static final double RADAR_SCAN_RADIUS = 1200;
+
+	/**
+	 * The minimum bullet power, i.e the amount of energy required for firing a
+	 * bullet, which is 0.1 energy points.
+	 */
+	public static final double MIN_BULLET_POWER = 0.1;
+
+	/**
+	 * The maximum bullet power, i.e. the maximum amount of energy that can be
+	 * transferred to a bullet when it is fired, which is 3 energy points.
+	 */
+	public static final double MAX_BULLET_POWER = 3;
+
+	/**
+	 * The maximum turning rate of the robot, in degrees, which is
+	 * 10 degress/turn.
 	 * Note, that the turn rate of the robot depends on it's velocity.
-	 * 
+	 *
 	 * @see #MAX_TURN_RATE_RADIANS
 	 * @see #getTurnRate(double)
 	 * @see #getTurnRateRadians(double)
 	 */
-	public double MAX_TURN_RATE = getMaxTurnRate();
-	/*
+	public static final double MAX_TURN_RATE = 10;
+
+	/**
 	 * The maximum turning rate of the robot measured in radians instead of
 	 * degrees.
-	 * 
+	 *
 	 * @see #MAX_TURN_RATE
 	 * @see #getTurnRate(double)
 	 * @see #getTurnRateRadians(double)
 	 */
-	public double MAX_TURN_RATE_RADIANS = Math.toRadians(MAX_TURN_RATE);
-	
-	/*
-	 * The turning rate of the gun measured in degrees.
+	public static final double MAX_TURN_RATE_RADIANS = Math.toRadians(MAX_TURN_RATE);
+
+	/**
+	 * The turning rate of the gun measured in degrees, which is
+	 * 20 degrees/turn.
 	 * Note, that if setAdjustGunForRobotTurn(true) has been called, the gun
 	 * turn is independent of the robot turn.
 	 * In this case the gun moves relatively to the screen. If
@@ -75,17 +101,18 @@ public class Rules {
 	 * @see #GUN_TURN_RATE_RADIANS
 	 * @see Robot#setAdjustGunForRobotTurn(boolean)
 	 */
-	public double GUN_TURN_RATE = getGunTurnRate();
+	public static final double GUN_TURN_RATE = 20;
 
-	/*
+	/**
 	 * The turning rate of the gun measured in radians instead of degrees.
 	 *
 	 * @see #GUN_TURN_RATE
 	 */
-	public double GUN_TURN_RATE_RADIANS = Math.toRadians(GUN_TURN_RATE);
-	
-	/*
-	 * The turning rate of the radar measured in degrees.
+	public static final double GUN_TURN_RATE_RADIANS = Math.toRadians(GUN_TURN_RATE);
+
+	/**
+	 * The turning rate of the radar measured in degrees, which is
+	 * 45 degrees/turn.
 	 * Note, that if setAdjustRadarForRobotTurn(true) and/or
 	 * setAdjustRadarForGunTurn(true) has been called, the radar turn is
 	 * independent of the robot and/or gun turn. If both methods has been set to
@@ -99,31 +126,26 @@ public class Rules {
 	 * @see Robot#setAdjustGunForRobotTurn(boolean)
 	 * @see Robot#setAdjustRadarForGunTurn(boolean)
 	 */
-	public double RADAR_TURN_RATE = getRadarTurnRate();
+	public static final double RADAR_TURN_RATE = 45;
 
-	/*
+	/**
 	 * The turning rate of the radar measured in radians instead of degrees.
 	 *
 	 * @see #RADAR_TURN_RATE
 	 */
-	public double RADAR_TURN_RATE_RADIANS = Math.toRadians(RADAR_TURN_RATE);
+	public static final double RADAR_TURN_RATE_RADIANS = Math.toRadians(RADAR_TURN_RATE);
 
-	// The amount of damage taken when a robot hits or is hit by another robot.
-	public double ROBOT_HIT_DAMAGE = getRobotHitDamage();
-	 // The amount of bonus given when a robot moving forward hits an opponent robot (ramming).
-	public double ROBOT_HIT_BONUS = getRobotHitBonus();
-	/*** End of Rules for Robot ***/
-	
 	/**
-	 * Intialises a new set of rules for a specific robot.
-	 * 
-	 * @param robot
-	 * 			The robot for the rules to be generated for.
+	 * The amount of damage taken when a robot hits or is hit by another robot,
+	 * which is 0.6 energy points.
 	 */
-	public Rules(Robot robot) {
-		this.robot = robot;
-	}
-	
+	public static final double ROBOT_HIT_DAMAGE = 0.6;
+
+	/**
+	 * The amount of bonus given when a robot moving forward hits an opponent
+	 * robot (ramming), which is 1.2 energy points.
+	 */
+	public static final double ROBOT_HIT_BONUS = 1.2;
 
 	/**
 	 * Returns the turn rate of a robot given a specific velocity measured in
@@ -133,7 +155,7 @@ public class Rules {
 	 * @return turn rate in degrees/turn.
 	 * @see #getTurnRateRadians(double)
 	 */
-	public double getTurnRate(double velocity) {
+	public static double getTurnRate(double velocity) {
 		return MAX_TURN_RATE - 0.75 * abs(velocity);
 	}
 
@@ -145,7 +167,7 @@ public class Rules {
 	 * @return turn rate in radians/turn.
 	 * @see #getTurnRate(double)
 	 */
-	public double getTurnRateRadians(double velocity) {
+	public static double getTurnRateRadians(double velocity) {
 		return Math.toRadians(getTurnRate(velocity));
 	}
 
@@ -156,7 +178,7 @@ public class Rules {
 	 * @param velocity the velocity of the robot.
 	 * @return wall hit damage in energy points.
 	 */
-	public double getWallHitDamage(double velocity) {
+	public static double getWallHitDamage(double velocity) {
 		return max(abs(velocity) / 2 - 1, 0);
 	}
 
@@ -166,7 +188,7 @@ public class Rules {
 	 * @param bulletPower the energy power of the bullet.
 	 * @return bullet damage in energy points.
 	 */
-	public double getBulletDamage(double bulletPower) {
+	public static double getBulletDamage(double bulletPower) {
 		double damage = 4 * bulletPower;
 
 		if (bulletPower > 1) {
@@ -182,7 +204,7 @@ public class Rules {
 	 * @param bulletPower the energy power of the bullet.
 	 * @return bullet hit bonus in energy points.
 	 */
-	public double getBulletHitBonus(double bulletPower) {
+	public static double getBulletHitBonus(double bulletPower) {
 		return 3 * bulletPower;
 	}
 
@@ -192,7 +214,7 @@ public class Rules {
 	 * @param bulletPower the energy power of the bullet.
 	 * @return bullet speed in pixels/turn
 	 */
-	public double getBulletSpeed(double bulletPower) {
+	public static double getBulletSpeed(double bulletPower) {
 		bulletPower = Math.min(Math.max(bulletPower, MIN_BULLET_POWER), MAX_BULLET_POWER);
 		return 20 - 3 * bulletPower;
 	}
@@ -204,221 +226,7 @@ public class Rules {
 	 * @param bulletPower the energy power of the bullet.
 	 * @return gun heat
 	 */
-	public  double getGunHeat(double bulletPower) {
+	public static double getGunHeat(double bulletPower) {
 		return 1 + (bulletPower / 5);
 	}
-	
-	
-	/*** DETERMINING RULE METHODS ***/
-	
-	/**
-	 * Method to check for the maximum acceleration of a certain robot.
-	 * 
-	 * @return
-	 * 			the maximum acceleration of the robot in question.
-	 */
-	private double getAcceleration(){
-		double acceleration = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard acceleration.
-		if(acceleration == 0){
-			return 1;
-		}
-		else{
-			return acceleration;
-		}
-	}
-	
-	/**
-	 * Method to check for the maximum deceleration of a certain robot.
-	 * 
-	 * @return
-	 * 			the maximum deceleration of the robot in question.
-	 */
-	private double getDeceleration(){
-		double deceleration = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard deceleration.
-		if(deceleration == 0){
-			return 2;
-		}
-		else{
-			return deceleration;
-		}
-	}
-	
-	/**
-	 * Method to check for the maximum velocity of a certain robot.
-	 * 
-	 * @return
-	 * 			the maximum velocity of the robot in question.
-	 */
-	private double getMaxVelocity(){
-		double maxVelocity = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard velocity.
-		if(maxVelocity == 0){
-			return 8;
-		}
-		else{
-			return maxVelocity;
-		}
-	}
-	
-	/**
-	 * Method to check for the radar scan radius of a certain robot.
-	 * 
-	 * @return
-	 * 			the radar scan radius of the robot in question.
-	 */
-	private double getRadarScanRadius(){
-		double radarScanRadius = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard radarScanRadius.
-		if(radarScanRadius == 0){
-			return 1200;
-		}
-		else{
-			return radarScanRadius;
-		}
-	}
-	
-	/**
-	 * Method to check for the minimum bullet power of a certain robot.
-	 * 
-	 * @return
-	 * 			the minimum of the robot in question.
-	 */
-	private double getMinBulletPower(){
-		double bulletPower = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard bullet power.
-		if(bulletPower == 0){
-			return 0.1;
-		}
-		else{
-			return bulletPower;
-		}
-	}
-	
-	/**
-	 * Method to check for the maximum bullet power of a certain robot.
-	 * 
-	 * @return
-	 * 			the maximum bullet power of the robot in question.
-	 */
-	private double getMaxBulletPower(){
-		double bulletPower = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard bulletPower.
-		if(bulletPower == 0){
-			return 3;
-		}
-		else{
-			return bulletPower;
-		}
-	}
-	
-	/**
-	 * Method to check for the maximum turn rate of a certain robot.
-	 * 
-	 * @return
-	 * 			the maximum turn rate of the robot in question.
-	 */
-	private double getMaxTurnRate(){
-		double turnRate = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard turn rate.
-		if(turnRate == 0){
-			return 10;
-		}
-		else{
-			return turnRate;
-		}
-	}
-	
-	/**
-	 * Method to check for the gun turn rate of a certain robot.
-	 * 
-	 * @return
-	 * 			the gun turn rate of the robot in question.
-	 */
-	private double getGunTurnRate(){
-		double turnRate = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard gun turn rate.
-		if(turnRate == 0){
-			return 20;
-		}
-		else{
-			return turnRate;
-		}
-	}
-	
-	/**
-	 * Method to check for the radar turn rate of a certain robot.
-	 * 
-	 * @return
-	 * 			the radar turn rate of the robot in question.
-	 */
-	private double getRadarTurnRate(){
-		double turnRate = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard radar turn rate.
-		if(turnRate == 0){
-			return 45;
-		}
-		else{
-			return turnRate;
-		}
-	}
-	
-	/**
-	 * Method to check for the robot hit damage of a certain robot.
-	 * 
-	 * @return
-	 * 			the robot hit damage of the robot in question.
-	 */
-	private double getRobotHitDamage(){
-		double hitDamage = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard hit damage.
-		if(hitDamage == 0){
-			return 0.6;
-		}
-		else{
-			return hitDamage;
-		}
-	}
-	
-	/**
-	 * Method to check for the robot hit bonus of a certain robot.
-	 * 
-	 * @return
-	 * 			the robot hit bonus of the robot in question.
-	 */
-	private double getRobotHitBonus(){
-		double hitBonus = 0;
-		// Check for Equipment
-		// Check for Power-Ups
-		 // Make sure a standard robot gets standard hit bonus.
-		if(hitBonus == 0){
-			return 1.2;
-		}
-		else{
-			return hitBonus;
-		}
-	}
-	
-	/*** END OF DETERMINING RULE METHODS ***/
 }
