@@ -890,7 +890,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public final void performMove(List<RobotPeer> robots, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, double zapEnergy, List<TeleporterPeer> teleporters) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -928,7 +928,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		 * REMOVE BEFORE MERGE
 		 */
 		
-		//checkTeleporterCollision(teleporters);
+		checkTeleporterCollision(teleporters);
 		
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -947,6 +947,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+	
 	public void performScan(List<RobotPeer> robots) {
 		if (isDead()) {
 			return;
@@ -1151,6 +1152,10 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
+		
+	}
+	
 	private double getBattleFieldHeight() {
 		return battleRules.getBattlefieldHeight();
 	}
