@@ -739,7 +739,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				}
 			}
 		}
-
+		
 		setState(RobotState.ACTIVE);
 
 		isWinner = false;
@@ -923,7 +923,12 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		// Now check for robot collision
 		checkRobotCollision(robots);
-
+		
+		/* We will add check for teleporter collision
+		 * REMOVE BEFORE MERGE
+		 */
+		//checkTeleporterCollision(teleporters);
+		
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
 		if (!scan) {
@@ -1128,7 +1133,8 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			y = (HALF_HEIGHT_OFFSET >= y)
 					? HALF_HEIGHT_OFFSET
 					: ((getBattleFieldHeight() - HALF_HEIGHT_OFFSET < y) ? getBattleFieldHeight() - HALF_HEIGHT_OFFSET : y);
-
+			x = 20;
+			y = 20;
 			// Update energy, but do not reset inactiveTurnCount
 			if (statics.isAdvancedRobot()) {
 				setEnergy(energy - Rules.getWallHitDamage(velocity), false);

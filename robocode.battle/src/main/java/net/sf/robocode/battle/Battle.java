@@ -181,6 +181,10 @@ public final class Battle extends BaseBattle {
 				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames());
 		robotsCount = battlingRobotsList.length;
 		computeInitialPositions(battleProperties.getInitialPositions());
+		/* This is where we will initialise the teleporter(s)
+		 * REMOVE BEFORE MERGE
+		 */
+		//createTeleporters();
 		createPeers(battlingRobotsList);
 	}
 
