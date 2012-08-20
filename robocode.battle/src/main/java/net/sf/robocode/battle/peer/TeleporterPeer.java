@@ -67,7 +67,7 @@ public class TeleporterPeer implements ITeleporter {
 		BoundingRectangle rect = new BoundingRectangle();
 		if (target == Portal.PORTAL1) {
 			rect.setRect(x1-(width/2), y1-(height/2), width, height);
-		} else if (target == Portal.PORTAL1) {
+		} else if (target == Portal.PORTAL2) {
 			rect.setRect(x2-(width/2), y2-(height/2), width, height);
 		}
 		return rect;
