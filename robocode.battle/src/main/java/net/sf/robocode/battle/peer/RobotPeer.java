@@ -1136,8 +1136,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			y = (HALF_HEIGHT_OFFSET >= y)
 					? HALF_HEIGHT_OFFSET
 					: ((getBattleFieldHeight() - HALF_HEIGHT_OFFSET < y) ? getBattleFieldHeight() - HALF_HEIGHT_OFFSET : y);
-			x = 20;
-			y = 20;
+
 			// Update energy, but do not reset inactiveTurnCount
 			if (statics.isAdvancedRobot()) {
 				setEnergy(energy - Rules.getWallHitDamage(velocity), false);
@@ -1156,16 +1155,16 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
 		BoundingRectangle bound = getBoundingBox();
 		for(TeleporterPeer teleporter : teleporters){
-			if(bound.intersects(teleporter.getBoundingBox(Portal.PORTAL1))){
+			if(teleporter.getCircle(Portal.PORTAL1).intersects(bound)){
 				//intersection with the first portal
 				//now move the bot to the second portal x, y
-				this.x = teleporter.getX(Portal.PORTAL2);
-				this.y = teleporter.getY(Portal.PORTAL2);
+				this.x = teleporter.getX(Portal.PORTAL2)+40;
+				this.y = teleporter.getY(Portal.PORTAL2)+40;
 				continue;
-			}else if(bound.intersects(teleporter.getBoundingBox(Portal.PORTAL2))){
+			}else if(teleporter.getCircle(Portal.PORTAL2).intersects(bound)){
 				//intersection with the second portal
-				this.x = teleporter.getX(Portal.PORTAL1);
-				this.y = teleporter.getY(Portal.PORTAL1);
+				this.x = teleporter.getX(Portal.PORTAL1)+40;
+				this.y = teleporter.getY(Portal.PORTAL1)+40;
 				continue;
 			}
 		}

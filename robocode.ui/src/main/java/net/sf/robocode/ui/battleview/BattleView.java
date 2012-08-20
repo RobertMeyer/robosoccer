@@ -312,6 +312,9 @@ public class BattleView extends Canvas {
 
 		// Draw ground
 		drawGround(g);
+		
+		// Draw Teleport
+		
 
 		if (snapShot != null) {
 			// Draw scan arcs

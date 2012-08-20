@@ -14,8 +14,8 @@ public class TeleporterPeer implements ITeleporter {
 	private double y2;
 	
 	public TeleporterPeer(double x1, double y1, double x2, double y2) {
-		width = 32;
-		height = 32;
+		width = 40;
+		height = 40;
 		setXY(x1, y1, Portal.PORTAL1);
 		setXY(x2, y2, Portal.PORTAL2);
 	}
@@ -63,6 +63,18 @@ public class TeleporterPeer implements ITeleporter {
 			return y2;
 		}
 		return 0;
+	}
+	
+
+	
+	public java.awt.geom.Ellipse2D.Float getCircle(Portal target){
+		java.awt.geom.Ellipse2D.Float circle = new java.awt.geom.Ellipse2D.Float();
+		if (target == Portal.PORTAL1) {
+			circle.setFrame(x1-(width/2), y1-(height/2), width, height);
+		} else if (target == Portal.PORTAL2) {
+			circle.setFrame(x2-(width/2), y2-(height/2), width, height);
+		}
+		return circle;
 	}
 	
 	public BoundingRectangle getBoundingBox(Portal target) {
