@@ -927,6 +927,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		/* We will add check for teleporter collision
 		 * REMOVE BEFORE MERGE
 		 */
+		
 		//checkTeleporterCollision(teleporters);
 		
 		// Scan false means robot did not call scan() manually.

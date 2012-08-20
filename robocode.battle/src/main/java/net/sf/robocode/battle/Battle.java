@@ -101,6 +101,9 @@ import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
+
+import net.sf.robocode.battle.peer.TeleporterPeer;
+
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
@@ -156,6 +159,7 @@ public final class Battle extends BaseBattle {
 	private List<RobotPeer> robots = new ArrayList<RobotPeer>();
 	private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
+	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private int activeRobots;
 
 	// Death events
@@ -184,10 +188,23 @@ public final class Battle extends BaseBattle {
 		/* This is where we will initialise the teleporter(s)
 		 * REMOVE BEFORE MERGE
 		 */
-		//createTeleporters();
+		createTeleporters(battleProperties);
 		createPeers(battlingRobotsList);
 	}
 
+	private void createTeleporters(BattleProperties battleProperties){
+		//pull the battlefields width and height
+		int width = battleProperties.getBattlefieldWidth();
+		int height = battleProperties.getBattlefieldWidth();
+		//randomise some x and y co-ordinates that are away from the walls by 5
+		double x1 = Math.random()*(width-10)+5;
+		double x2 = Math.random()*(width-10)+5;
+		double y1 = Math.random()*(height-10)+5;
+		double y2 = Math.random()*(height-10)+5;
+		//add a new TeleporterPeer
+		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
+	}
+	
 	private void createPeers(RobotSpecification[] battlingRobotsList) {
 		// create teams
 		Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
@@ -683,7 +700,7 @@ public final class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), zapEnergy, teleporters);
 		}
 
 		// Scan after moved all
