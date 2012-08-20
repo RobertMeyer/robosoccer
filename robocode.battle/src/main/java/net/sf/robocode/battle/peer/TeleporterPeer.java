@@ -1,8 +1,12 @@
 package net.sf.robocode.battle.peer;
 
+import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.teleporters.ITeleporter;
 
 public class TeleporterPeer implements ITeleporter {
+	
+	private double width;
+	private double height;
 	
 	private double x1;
 	private double y1;
@@ -57,6 +61,16 @@ public class TeleporterPeer implements ITeleporter {
 			return y2;
 		}
 		return 0;
+	}
+	
+	public BoundingRectangle getBoundingBox(Portal target) {
+		BoundingRectangle rect = new BoundingRectangle();
+		if (target == Portal.PORTAL1) {
+			rect.setRect(x1-(width/2), y1-(height/2), width, height);
+		} else if (target == Portal.PORTAL1) {
+			rect.setRect(x2-(width/2), y2-(height/2), width, height);
+		}
+		return rect;
 	}
 
 	// Ignore the following... 
