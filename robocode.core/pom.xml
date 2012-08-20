@@ -74,7 +74,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                         <![CDATA[<h1>Robocode ${project.version} Core</h1>]]>
 </doctitle>
                     <links>
-                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                        <link>http://docs.oracle.com/javase/6/docs/api/</link>
                     </links>
                     <use>false</use>
                 </configuration>
