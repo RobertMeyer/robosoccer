@@ -129,9 +129,10 @@ public class JavaHost implements IHost {
 			isAdvancedRobot = true;
 		}
 		
-		if (IAdvancedRobot.class.isAssignableFrom(robotClass)) {
+		//TODO Create an IHouseRobot
+		/*if (IHouseRobot.class.isAssignableFrom(robotClass)) {
 			isHouseRobot = true;
-		}
+		}*/
 
 		if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
 			// in this case we make sure that robot don't waste time
