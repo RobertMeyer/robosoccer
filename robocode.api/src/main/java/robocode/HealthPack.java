@@ -8,10 +8,10 @@ package robocode;
 
 public class HealthPack extends ItemDrop {
 
+		
 	public HealthPack(){
 		System.out.println("Health Pack");
 	}
-	
 	
 	
 }
