@@ -9,6 +9,11 @@ package net.sf.robocode.teleporters;
  */
 public interface ITeleporter {
 	
+	/**
+	 * Enumerator used to distinguish between the two teleporters.
+	 * Use Portal.PORTAL1 for the first and Portal.PORTAL2 for the second.
+	 * 
+	 */
 	public enum Portal {PORTAL1, PORTAL2};
 	
 	/**

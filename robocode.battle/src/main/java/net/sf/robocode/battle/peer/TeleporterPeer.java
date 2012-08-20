@@ -14,7 +14,6 @@ public class TeleporterPeer implements ITeleporter {
 		setXY(x2, y2, Portal.PORTAL2);
 	}
 
-	@Override
 	public void setXY(double x, double y, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			x1 = x;
@@ -25,7 +24,6 @@ public class TeleporterPeer implements ITeleporter {
 		}
 	}
 
-	@Override
 	public void setX(double x, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			x1 = x;
@@ -34,7 +32,6 @@ public class TeleporterPeer implements ITeleporter {
 		}
 	}
 
-	@Override
 	public void setY(double y, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			y1 = y;
@@ -45,16 +42,25 @@ public class TeleporterPeer implements ITeleporter {
 
 	@Override
 	public double getX(Portal target) {
-		
+		if (target == Portal.PORTAL1) {
+			return x1;
+		} else if (target == Portal.PORTAL2) {
+			return x2;
+		}
 		return 0;
 	}
 
-	@Override
 	public double getY(Portal target) {
-		// TODO Auto-generated method stub
+		if (target == Portal.PORTAL1) {
+			return y1;
+		} else if (target == Portal.PORTAL2) {
+			return y2;
+		}
 		return 0;
 	}
 
+	// Ignore the following... 
+	
 	@Override
 	public void setPair(ITeleporter pair) {
 		// TODO Auto-generated method stub
