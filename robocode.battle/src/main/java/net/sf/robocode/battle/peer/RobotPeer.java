@@ -1153,6 +1153,21 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
+		BoundingRectangle bound = getBoundingBox();
+		for(TeleporterPeer teleporter : teleporters){
+			if(bound.intersects(teleporter.getBoundingBox(0)){
+				//intersection with the first portal
+				//now move the bot to the second portal x, y
+				self.x = teleporter.getX(1);
+				self.y = teleporter.getY(1);
+				continue;
+			}else if(bound.intersects(teleporter.getBoundingBox(1))){
+				//intersection with the second portal
+				self.x = teleporter.getX(0);
+				self.y = teleporter.getY(0);
+				continue;
+			}
+		}
 		
 	}
 	
