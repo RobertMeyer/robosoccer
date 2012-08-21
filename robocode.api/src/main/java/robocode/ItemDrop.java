@@ -1,5 +1,7 @@
 package robocode;
 
+import net.sf.robocode.battle.BoundingRectangle;
+
 /**
  * Abstract class for item/powerup drops
  * 
@@ -19,12 +21,27 @@ public abstract	class ItemDrop {
 	private int lifespan;
 	private double health;
 	private boolean isEquippable;
+	private final BoundingRectangle boundingBox;
 	
 	
-	ItemDrop(){
+	ItemDrop(double xLocation, double yLocation, double width, double height, boolean isDestroyable, int lifespan,
+			double health, boolean isEquippable){
+		this.xLocation = xLocation;
+		this.yLocation = yLocation;
+		this.width = width;
+		this.height = height;
+		this.isDestroyable = isDestroyable;
+		this.lifespan = lifespan;
+		this.health = health;
+		this.isEquippable = isEquippable;
 		System.out.println("Item made");
+		this.boundingBox = new BoundingRectangle(xLocation, yLocation, width, height);
 	}
 
+	public BoundingRectangle getBoundingBox(){
+		return boundingBox;
+	}
+	
 	public double getXLocation() {
 		return xLocation;
 	}
