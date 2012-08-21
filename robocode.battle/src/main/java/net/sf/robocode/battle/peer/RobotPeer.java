@@ -1400,10 +1400,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		double velocityIncrement = 0d;
 		if (velocity >= 0) {
 			velocityIncrement = Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
+		} else {
+			velocityIncrement = Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
 		}
-		// else
-		velocityIncrement = Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
-		
 		return battle.getBattleMode().modifyVelocity(velocityIncrement);
 	}
 
