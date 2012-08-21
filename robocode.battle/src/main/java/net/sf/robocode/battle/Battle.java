@@ -157,6 +157,7 @@ public final class Battle extends BaseBattle {
 	private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private int activeRobots;
+	private List<ItemDrop> items = new ArrayList<ItemDrop>();
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -417,6 +418,9 @@ public final class Battle extends BaseBattle {
 
 		for (RobotPeer robotPeer : robots) {
 			robotPeer.initializeRound(robots, initialRobotPositions);
+			for(ItemDrop itemDrop : items){
+				itemDrop.initialiseRoundItems(robots, items);
+			}
 			robotPeer.println("=========================");
 			robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
 			robotPeer.println("=========================");
