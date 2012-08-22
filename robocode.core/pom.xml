@@ -67,17 +67,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <windowtitle>Robocode ${project.version} Core</windowtitle>
-                    <docfilessubdirs>true</docfilessubdirs>
-                    <doctitle>
+				<configuration>
+					<windowtitle>Robocode ${project.version} Core</windowtitle>
+					<docfilessubdirs>true</docfilessubdirs>
+					<doctitle>
                         <![CDATA[<h1>Robocode ${project.version} Core</h1>]]>
-</doctitle>
-                    <links>
-                        <link>http://docs.oracle.com/javase/6/docs/api/</link>
-                    </links>
-                    <use>false</use>
-                </configuration>
+					</doctitle>
+					<use>false</use>
+					<doclet>ydoc.doclets.YStandard</doclet>
+					<docletPath>/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/lib/ydoc.jar:/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/lib/class2svg.jar:/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/resources</docletPath>
+					 <additionalparam>-link http://docs.oracle.com/javase/6/docs/api/ -umlautogen</additionalparam>
+				</configuration>
             </plugin>
         </plugins>
     </build>

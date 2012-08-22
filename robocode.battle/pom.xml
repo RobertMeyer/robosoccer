@@ -51,11 +51,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					<doctitle>
                         <![CDATA[<h1>Robocode ${project.version} Battle</h1>]]>
 					</doctitle>
-					<links>
-						<link>http://docs.oracle.com/javase/6/docs/api/</link>
-					</links>
 					<use>false</use>
-					<excludePackageNames>robocode.exception:net.sf.robocode.*</excludePackageNames>
+					<doclet>ydoc.doclets.YStandard</doclet>
+					<docletPath>/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/lib/ydoc.jar:/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/lib/class2svg.jar:/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/resources</docletPath>
+					 <additionalparam>-link http://docs.oracle.com/javase/6/docs/api/ -umlautogen</additionalparam>
 				</configuration>
 			</plugin>
 		</plugins>
