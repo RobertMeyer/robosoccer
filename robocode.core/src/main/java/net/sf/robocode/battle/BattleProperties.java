@@ -190,11 +190,6 @@ public class BattleProperties implements Serializable {
 		this.hideEnemyNames = hideEnemyNames;
 		props.setProperty(BATTLE_HIDE_ENEMY_NAMES, "" + hideEnemyNames);
 	}
-	
-	public void setModeContext(IMode mode) {
-		
-		
-	}
 
 	/**
 	 * Returns true if the enemy names are hidden for robots during a battle; false otherwise.

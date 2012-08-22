@@ -32,7 +32,11 @@ public class NewBattleModeTab extends JPanel {
 	}
 	
 	public IMode getSelectedMode() {
-		return (IMode) modeList.getSelectedValues()[0];
+		Object[] selected = modeList.getSelectedValues();
+		if(selected.length > 0){
+			return (IMode) selected[0];
+		}
+		return null;
 	}
 	
 	private void initialize() {

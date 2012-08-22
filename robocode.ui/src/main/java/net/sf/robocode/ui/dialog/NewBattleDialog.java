@@ -24,6 +24,7 @@ package net.sf.robocode.ui.dialog;
 
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRepositoryItem;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
@@ -105,6 +106,11 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 				return;
 			}
 		}
+		IMode selectedMode = getBattleModeTab().getSelectedMode();
+		if(selectedMode == null) {
+			selectedMode = new ClassicMode();
+		}
+		
 		battleProperties.setSelectedRobots(getRobotSelectionPanel().getSelectedRobotsAsString());
 		battleProperties.setBattlefieldWidth(getBattleFieldTab().getBattleFieldWidth());
 		battleProperties.setBattlefieldHeight(getBattleFieldTab().getBattleFieldHeight());
@@ -112,7 +118,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		battleProperties.setGunCoolingRate(getRulesTab().getGunCoolingRate());
 		battleProperties.setInactivityTime(getRulesTab().getInactivityTime());
 		battleProperties.setHideEnemyNames(getRulesTab().getHideEnemyNames());
-		battleProperties.setBattleMode(getBattleModeTab().getSelectedMode());
+		battleProperties.setBattleMode(selectedMode);
 
 		// Dispose this dialog before starting the battle due to pause/resume battle state
 		dispose();
