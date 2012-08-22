@@ -54,7 +54,7 @@ public class BattleProperties implements Serializable {
 	private boolean hideEnemyNames;
 	private String selectedRobots;
 	private String initialPositions;
-	private ModeContext battleMode = new ModeContext();
+	private ModeContext battleMode;
 
 	private final Properties props = new Properties();
 
@@ -190,6 +190,11 @@ public class BattleProperties implements Serializable {
 		this.hideEnemyNames = hideEnemyNames;
 		props.setProperty(BATTLE_HIDE_ENEMY_NAMES, "" + hideEnemyNames);
 	}
+	
+	public void setModeContext(IMode mode) {
+		
+		
+	}
 
 	/**
 	 * Returns true if the enemy names are hidden for robots during a battle; false otherwise.
@@ -260,7 +265,7 @@ public class BattleProperties implements Serializable {
 	
 	/**
 	 * Gets the current battle mode.
-	 * @return mode as a string
+	 * @return mode as a ModeContext object
 	 */
 	public ModeContext getBattleMode() {
 		return battleMode;
@@ -269,8 +274,9 @@ public class BattleProperties implements Serializable {
 	/**
 	 * Sets the battle mode.
 	 */
-	public void setBattleMode(IMode battleMode) {
-		this.battleMode.setMode(battleMode);
+	public void setBattleMode(IMode mode) {
+		this.battleMode = new ModeContext();
+		this.battleMode.setMode(mode);
 	}
 
 	public void store(FileOutputStream out, String desc) throws IOException {

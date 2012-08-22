@@ -15,4 +15,6 @@ public class ModeContext {
 	public double modifyVelocity(double velocityIncrement){
 		return currentMode.modifyVelocity(velocityIncrement);
 	}
+	
+	
 }

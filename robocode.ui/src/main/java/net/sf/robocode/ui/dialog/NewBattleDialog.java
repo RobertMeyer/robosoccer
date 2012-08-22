@@ -60,6 +60,8 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
 	private NewBattleRulesTab rulesTab;
 	private WizardController wizardController;
+	
+	private NewBattleModeTab modeTab;
 
 	private RobotSelectionPanel robotSelectionPanel;
 
@@ -110,6 +112,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		battleProperties.setGunCoolingRate(getRulesTab().getGunCoolingRate());
 		battleProperties.setInactivityTime(getRulesTab().getInactivityTime());
 		battleProperties.setHideEnemyNames(getRulesTab().getHideEnemyNames());
+		battleProperties.setBattleMode(getBattleModeTab().getSelectedMode());
 
 		// Dispose this dialog before starting the battle due to pause/resume battle state
 		dispose();
@@ -206,6 +209,18 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 		return wizardController;
 	}
+	
+	/**
+	 * Return the modeTab
+	 * @return JPanel
+	 */
+	private NewBattleModeTab getBattleModeTab() {
+		if (modeTab == null) {
+			modeTab = new NewBattleModeTab();
+			modeTab.setup();
+		}
+		return modeTab;
+	}
 
 	/**
 	 * Return the Page property value.
@@ -236,6 +251,9 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private WizardTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
 			tabbedPane = new WizardTabbedPane(this);
+			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 0);
+			//tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
+			//tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
 			tabbedPane.insertTab("Robots", null, getRobotSelectionPanel(), null, 0);
 			tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
 			tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
