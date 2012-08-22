@@ -12,4 +12,8 @@ public class ClassicMode implements IMode {
 		
 	}
 	
+	public String toString() {
+		return new String("Classic Mode");
+	}
+	
 }
