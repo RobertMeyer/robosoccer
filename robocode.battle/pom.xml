@@ -34,7 +34,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     </dependencies>
 	<build>
 		<plugins>
-			<plugin>
+						<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<executions>
@@ -51,12 +51,50 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					<doctitle>
                         <![CDATA[<h1>Robocode ${project.version} Battle</h1>]]>
 					</doctitle>
+					<links>
+						<link>http://docs.oracle.com/javase/6/docs/api/</link>
+					</links>
 					<use>false</use>
-					<doclet>ydoc.doclets.YStandard</doclet>
-					<docletPath>/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/lib/ydoc.jar:/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/lib/class2svg.jar:/usr/local/yworks-uml-doclet-3.0_02-jdk1.5/resources</docletPath>
-					 <additionalparam>-link http://docs.oracle.com/javase/6/docs/api/ -umlautogen</additionalparam>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>yuml-active</id>
+			<activation>
+				<property>
+					<name>yDoc.path</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>javadoc</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<windowtitle>Robocode ${project.version} Battle</windowtitle>
+							<docfilessubdirs>true</docfilessubdirs>
+							<doctitle>
+                        <![CDATA[<h1>Robocode ${project.version} Battle</h1>]]>
+							</doctitle>
+							<use>false</use>
+							<doclet>ydoc.doclets.YStandard</doclet>
+							<docletPath>${yDoc.path}/lib/ydoc.jar:${yDoc.path}/lib/class2svg.jar:${yDoc.path}/resources</docletPath>
+							<additionalparam>-link http://docs.oracle.com/javase/6/docs/api/
+								-umlautogen</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
