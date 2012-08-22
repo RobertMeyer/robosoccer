@@ -10,4 +10,8 @@ public class SlowMode extends ClassicMode {
 		System.out.println("SLow MODE");
 	}
 	
+	public String toString() {
+		return new String("Slow Mode");
+	}
+	
 }
