@@ -1406,7 +1406,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
 	}
 
-	final static double getMaxVelocity(double distance) {
+	protected double getMaxVelocity(double distance) {
 		final double decelTime = Math.max(1, Math.ceil(// sum of 0... decelTime, solving for decelTime using quadratic formula
 				(Math.sqrt((4 * 2 / Rules.DECELERATION) * distance + 1) - 1) / 2));
 
@@ -1420,7 +1420,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return ((decelTime - 1) * Rules.DECELERATION) + ((distance - decelDist) / decelTime);
 	}
 
-	protected static double maxDecel(double speed) {
+	protected double maxDecel(double speed) {
 		double decelTime = speed / Rules.DECELERATION;
 		double accelTime = (1 - decelTime);
 
