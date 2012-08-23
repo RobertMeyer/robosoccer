@@ -13,6 +13,7 @@ package robocode;
  * @author Andrew Schaul
  * @author Jarred Filmer
  */
-public class CustomRobot extends AdvancedRobot {
-
+public class StatRobot extends AdvancedRobot {
+	
+	
 }
