@@ -712,7 +712,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions) {
 		boolean valid = false;
-
 		if (initialRobotPositions != null) {
 			int robotIndex = statics.getRobotIndex();
 
@@ -1398,12 +1397,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else {
 			goalVel = Math.min(getMaxVelocity(distance), currentCommands.getMaxVelocity());
 		}
-
+		double velocityIncrement = 0d;
 		if (velocity >= 0) {
-			return Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
+			velocityIncrement = Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
+		} else {
+			velocityIncrement = Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
 		}
-		// else
-		return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
+		return battle.getBattleMode().modifyVelocity(velocityIncrement);
 	}
 
 	protected double getMaxVelocity(double distance) {
