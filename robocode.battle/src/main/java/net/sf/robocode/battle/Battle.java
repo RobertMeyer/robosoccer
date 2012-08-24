@@ -418,12 +418,12 @@ public final class Battle extends BaseBattle {
 
 		for (RobotPeer robotPeer : robots) {
 			robotPeer.initializeRound(robots, initialRobotPositions);
-			for(ItemDrop itemDrop : items){
-				itemDrop.initialiseRoundItems(robots, items);
-			}
 			robotPeer.println("=========================");
 			robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
 			robotPeer.println("=========================");
+		}
+		for(ItemDrop itemDrop : items){
+			itemDrop.initialiseRoundItems(robots, items);
 		}
 
 		if (getRoundNum() == 0) {
