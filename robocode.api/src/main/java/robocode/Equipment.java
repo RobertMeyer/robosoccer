@@ -9,9 +9,25 @@ This is a static class that stores a hashmap of all available equitable items
 public class Equipment {
 	public static HashMap<String, Object> equipment = new HashMap<String, Object>();
 	public static void main(String[] args){
-		equipment.put("LightGun", new Gun(1,30,20,100));
-		equipment.put("MediumGun", new Gun(2,15,15,100));
-		equipment.put("HeavyGun", new Gun(3,5,5,150));
+		equipment.put("LightGun", new Gun(0,0,0,0,0,"",""));
+		equipment.put("MediumGun", new Gun(0,0,0,0,0,"",""));
+		equipment.put("HeavyGun", new Gun(0,0,0,0,0,"",""));
+		
+		equipment.put("LightLazer", new Gun(0,0,0,0,0,"",""));
+		equipment.put("MediumLazer", new Gun(0,0,0,0,0,"",""));
+		equipment.put("HeavyLazer", new Gun(0,0,0,0,0,"",""));
+		
+		equipment.put("LightChassis", new Chassis("",0,0,0));
+		equipment.put("MediumChassis", new Chassis("",0,0,0));
+		equipment.put("HeavyChassis", new Chassis("",0,0,0));
+		
+		equipment.put("LightChassis", new Chassis("",0,0,0));
+		equipment.put("MediumChassis", new Chassis("",0,0,0));
+		equipment.put("HeavyChassis", new Chassis("",0,0,0));
+		
+		equipment.put("LightBattery", new Battery(0,0));
+		equipment.put("MediumBattery", new Battery(0,0));
+		equipment.put("HeavyBattery", new Battery(0,0));
 	}
 	
 	
