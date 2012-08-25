@@ -37,4 +37,8 @@ public class Equipment {
 					.speed(-5)
 					.build());
 	}
+	
+	public EquipmentPart getPart(String partName) {
+		return parts.get(partName);
+	}
 }
