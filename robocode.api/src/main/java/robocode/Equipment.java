@@ -11,6 +11,7 @@ import java.util.Map;
  *
  */
 public class Equipment {
+	
 	/**
 	 * Maps names to EquipmentPart objects, such that the robot programmer
 	 * can refer to the defined EquipmentParts (by name), and equip them.
