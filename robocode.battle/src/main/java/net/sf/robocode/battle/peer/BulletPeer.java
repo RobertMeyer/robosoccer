@@ -45,11 +45,15 @@
 package net.sf.robocode.battle.peer;
 
 
+import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.peer.BulletStatus;
+import net.sf.robocode.teleporters.ITeleporter.Portal;
 import robocode.*;
 import robocode.control.snapshot.BulletState;
 
 import java.awt.geom.Line2D;
+import java.awt.geom.Line2D.Double;
+
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.util.List;
@@ -67,7 +71,12 @@ public class BulletPeer {
 	private static final int EXPLOSION_LENGTH = 17;
 
 	private static final int RADIUS = 3;
-
+	//new bounding box used in get of collision with teleporter
+	private final BoundingRectangle boundingBox;
+	//width and height of the bounding box
+	private static final int WIDTH = 40;
+	private static final int HEIGHT = 40;
+	
 	protected final RobotPeer owner;
 
 	private final BattleRules battleRules;
@@ -104,6 +113,8 @@ public class BulletPeer {
 		this.battleRules = battleRules;
 		this.bulletId = bulletId;
 		state = BulletState.FIRED;
+		//init the boudning box
+		this.boundingBox = new BoundingRectangle();
 		color = owner.getBulletColor(); // Store current bullet color set on robot
 	}
 
@@ -124,6 +135,47 @@ public class BulletPeer {
 				b.owner.addEvent(new BulletHitBulletEvent(b.createBullet(false), createBullet(true)));
 				break;
 			}
+		}
+	}
+	
+	private void checkTeleporterCollsion(List<TeleporterPeer> teleporters) {
+		//x & y are the final result on where to place teleported bullets after checking new teleported location is within bounds of the battlefield
+		double x, y;	
+		for (TeleporterPeer t : teleporters) {
+			if(t.getCircle(Portal.PORTAL1).intersects(boundingBox)){
+				//set x to portal position + WIDTH. If this is will place it outside the battlefield, set it to -WIDTH
+				x = t.getX(Portal.PORTAL2)+WIDTH;
+				if (x > this.battleRules.getBattlefieldWidth()) {
+					x = t.getX(Portal.PORTAL2)-WIDTH;
+				}
+				//set y to portal position + HEIGHT. If this is larger than battlefield, set to -HEIGHT
+				y = t.getY(Portal.PORTAL2)+HEIGHT;
+				if (y > this.battleRules.getBattlefieldWidth()) {
+					y = t.getY(Portal.PORTAL2)-HEIGHT;
+				}
+				setX(x);
+				setY(y);
+				setHeading(getHeading()*Math.random()*Math.PI);
+				//setHeading(getHeading());
+				updateBoundingBox();
+				continue;
+			} else if(t.getCircle(Portal.PORTAL2).intersects(boundingBox)){
+				//same as above but for other portal
+				x = t.getX(Portal.PORTAL1)+WIDTH;
+				if (x > this.battleRules.getBattlefieldWidth()) {
+					x = t.getX(Portal.PORTAL1)-WIDTH;
+				}
+				y = t.getY(Portal.PORTAL1)+HEIGHT;
+				if (y > this.battleRules.getBattlefieldHeight()) {
+					y = t.getY(Portal.PORTAL1)-HEIGHT;
+				}
+				setX(x);
+				setY(y);
+				setHeading(getHeading()*Math.random()*Math.PI);
+				//setHeading(getHeading());
+				updateBoundingBox();
+			}
+		
 		}
 	}
 
@@ -318,11 +370,13 @@ public class BulletPeer {
 		state = newState;
 	}
 
-	public void update(List<RobotPeer> robots, List<BulletPeer> bullets) {
+	public void update(List<RobotPeer> robots, List<BulletPeer> bullets, List<TeleporterPeer> teleporters) {
 		frame++;
 		if (isActive()) {
 			updateMovement();
 			checkWallCollision();
+			checkTeleporterCollsion(teleporters);
+			
 			if (isActive()) {
 				checkRobotCollision(robots);
 			}
@@ -365,10 +419,13 @@ public class BulletPeer {
 
 		x += v * sin(heading);
 		y += v * cos(heading);
-
+		updateBoundingBox();
 		boundingLine.setLine(lastX, lastY, x, y);
 	}
-
+	//a method to update the bounding box after every move of the bullet
+	private void updateBoundingBox() {
+		boundingBox.setRect(getX() - WIDTH / 2 + 2, getY() - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+	}
 	public int getExplosionImageIndex() {
 		return explosionImageIndex;
 	}

@@ -202,7 +202,6 @@ public final class Battle extends BaseBattle {
 		double y1 = Math.random()*(height-80)+40;
 		double y2 = Math.random()*(height-80)+40;
 		
-		
 	
 		
 		//add a new TeleporterPeer
@@ -690,7 +689,7 @@ public final class Battle extends BaseBattle {
 
 	private void updateBullets() {
 		for (BulletPeer bullet : getBulletsAtRandom()) {
-			bullet.update(getRobotsAtRandom(), getBulletsAtRandom());
+			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), teleporters);
 			if (bullet.getState() == BulletState.INACTIVE) {
 				bullets.remove(bullet);
 			}

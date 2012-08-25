@@ -55,7 +55,7 @@ public class ExplosionPeer extends BulletPeer {
 	}
 
 	@Override
-	public final void update(List<RobotPeer> robots, List<BulletPeer> bullets) {
+	public final void update(List<RobotPeer> robots, List<BulletPeer> bullets, List<TeleporterPeer> teleporters) {
 		frame++;
 
 		x = owner.getX();
