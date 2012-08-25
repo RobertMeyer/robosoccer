@@ -8,7 +8,7 @@ import net.sf.robocode.peer.BulletCommand;
 import robocode.control.RobotSpecification;
 
 /**
- * StatRobotPeer is an object that deals with game mechanics and rules, and
+ * StatsRobotPeer is an object that deals with game mechanics and rules, and
  * makes sure the robot abides by the rules, specifically stat robots, that
  * equip a variety of different items.
  * 
@@ -18,9 +18,9 @@ import robocode.control.RobotSpecification;
  * @author Malcolm Inglis
  *
  */
-public final class StatRobotPeer extends RobotPeer {
+public final class StatsRobotPeer extends RobotPeer {
 
-	public StatRobotPeer(Battle battle, IHostManager hostManager, 
+	public StatsRobotPeer(Battle battle, IHostManager hostManager, 
 			RobotSpecification robotSpecification, int duplicate, TeamPeer team,
 			int robotIndex) {
 
