@@ -13,7 +13,14 @@ public class EquipmentPart {
 		BODY, WEAPON, TRACKS, RADAR, POWER;
 	}
 
+	/** The position that the part occupes on the robot. */
 	private final Position position;
+	
+	/**
+	 * The various attributes of the robot that the part modifies, where the
+	 * attribute's value represents a percentage-based increase or decrease in
+	 * the effectiveness of that attribute for the robot equipping this part.
+	 */
 	private final double speed, energy, energyRegen, armor, bulletDamage,
 			bulletSpeed, bulletRate, gunHeatRate, ramAttack, ramDefense,
 			radarAngle;
