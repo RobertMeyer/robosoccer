@@ -11,19 +11,18 @@ import java.util.Map;
  *
  */
 public class Equipment {
-	public static final Map<String, EquipmentPart> equipment =
+	private static final Map<String, EquipmentPart> parts =
 			new HashMap<String, EquipmentPart>();
 
 	static {
-		
-		equipment.put("Division 9 Plasmaprojector",
+		parts.put("Division 9 Plasmaprojector",
 				new EquipmentPart.Builder(EquipmentPart.Position.WEAPON)
 					.speed(-20)
 					.bulletDamage(200)
 					.bulletRate(-70)
 					.build());
 		
-		equipment.put("Guardian Tank Armor",
+		parts.put("Guardian Tank Armor",
 				new EquipmentPart.Builder(EquipmentPart.Position.BODY)
 					.armor(40)
 					.speed(-20)
@@ -31,7 +30,7 @@ public class Equipment {
 					.ramDefense(80)
 					.build());
 		
-		equipment.put("Thorium Power Cell",
+		parts.put("Thorium Power Cell",
 				new EquipmentPart.Builder(EquipmentPart.Position.POWER)
 					.energy(30)
 					.energyRegen(50)
