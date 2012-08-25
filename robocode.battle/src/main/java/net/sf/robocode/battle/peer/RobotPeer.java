@@ -95,7 +95,9 @@ import java.io.IOException;
 import static java.lang.Math.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -115,6 +117,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Patrick Cupka (contributor)
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
+ * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
@@ -189,6 +192,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final BoundingRectangle boundingBox;
 	protected final RbSerializer rbSerializer;
 
+	/**
+	 * An association of values to every RobotAttribute, such that game
+	 * mechanics can be uniquely determined for each robot based on a variety
+	 * of factors (such as, e.g., equipment).
+	 *
+	 * Attribute values are defined as 1=100%. Thus, in RobotPeer's
+	 * constructor, all attribute values are initialised to 1.
+	 *
+	 * @see RobotAttribute
+	 */
+	protected AtomicReference<Map<RobotAttribute, Double>> attributes =
+			new AtomicReference<Map<RobotAttribute, Double>>(
+					new HashMap<RobotAttribute, Double>()
+			);
+
+	/**
+	 * Keeps track of the equipment parts equipped to slots to prevent multiple
+	 * parts being equipped to the same slot.
+	 *
+	 * @see #equip()
+	 * @see #unequip()
+	 */
+	protected AtomicReference<Map<EquipmentPartSlot, EquipmentPart>> equipment =
+			new AtomicReference<Map<EquipmentPartSlot, EquipmentPart>>(
+					new HashMap<EquipmentPartSlot, EquipmentPart>()
+			);
+
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
 
@@ -207,7 +237,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			team.add(this);
 		}
 		String teamName;
-		List<String> teamMembers; 
+		List<String> teamMembers;
 		boolean isTeamLeader;
 		int teamIndex;
 
@@ -221,6 +251,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			teamMembers = team.getMemberNames();
 			isTeamLeader = team.size() == 1; // That is current team size, more might follow later. First robot is leader
 			teamIndex = team.getTeamIndex();
+		}
+
+		// Default all attributes to 1.0, such that all game mechanics are
+		// at default for this robot. (until the attributes are changed by,
+		// e.g., equipment)
+		for (RobotAttribute attribute : RobotAttribute.values()) {
+			attributes.get().put(attribute, Double.valueOf(1.0));
 		}
 
 		this.statics = new RobotStatics(robotSpecification, duplicate, isTeamLeader, battleRules, teamName, teamMembers,
@@ -281,13 +318,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	// -------------------
-	// statics 
+	// statics
 	// -------------------
 
 	public boolean isDroid() {
 		return statics.isDroid();
 	}
-	
+
 	public boolean isHouseRobot() {
 		return statics.isHouseRobot();
 	}
@@ -341,7 +378,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	// -------------------
-	// status 
+	// status
 	// -------------------
 
 	public void setPaintEnabled(boolean enabled) {
@@ -482,11 +519,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (otherRobot == mate) {
 					return true;
 				}
-			}	
+			}
 		}
 		return false;
 	}
-	
+
 	// -----------
 	// execute
 	// -----------
@@ -580,7 +617,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		final boolean shouldWait = battle.isAborted() || (battle.isLastRound() && !isWinner());
 
 		readoutTeamMessages(); // throw away
-		
+
 		return new ExecResults(resCommands, resStatus, readoutEvents(), new ArrayList<TeamMessage>(), readoutBullets(),
 				isHalt(), shouldWait, false);
 	}
@@ -1014,7 +1051,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return otherRobot.getAnnonymousName();
 		}
 		return otherRobot.getName();
-	}		
+	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
@@ -1174,7 +1211,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				println(
 						"Not adding to " + statics.getShortName() + "'s queue, exceeded " + EventManager.MAX_QUEUE_SIZE
 						+ " events in queue.");
-				// clean up old stuff                
+				// clean up old stuff
 				queue.clear(battle.getTime() - EventManager.MAX_EVENT_STACK);
 				return;
 			}
@@ -1379,7 +1416,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @param velocity the current velocity
 	 * @param distance the distance to move
 	 * @return the new velocity based on the current velocity and distance to move
-	 * 
+	 *
 	 * This is Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive's method described here:
 	 *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
 	 */
@@ -1537,7 +1574,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 
 		if (disableInRepository) {
-			repositoryItem.setValid(false);			
+			repositoryItem.setValid(false);
 			message.append(" This ").append(repositoryItem.isTeam() ? "team" : "robot").append(
 					" has been banned and will not be allowed to participate in battles.");
 		}
@@ -1659,6 +1696,50 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void addBulletStatus(BulletStatus bulletStatus) {
 		if (isAlive()) {
 			bulletUpdates.get().add(bulletStatus);
+		}
+	}
+
+	/**
+	 * If the part's slot attribute matches the given slot, it equips the part
+	 * in that slot and loads the attributes provided by the part.
+	 */
+	public void equip(EquipmentPartSlot slot, EquipmentPart part) {
+		if (part.getSlot().equals(slot)) {
+			unequip(slot);
+
+			for (RobotAttribute attribute : RobotAttribute.values()) {
+				double partValue = part.get(attribute);
+				double currentValue = part.get(attribute);
+
+				// EquipmentPart modifiers are represented as 1=+1%, hence the
+				// division by 100.
+				double newValue = currentValue + (partValue / 100.0);
+
+				attributes.get().put(attribute, newValue);
+			}
+		}
+	}
+
+	/**
+	 * Unequips the part equipped to the given slot, if any, and resets all
+	 * attributes provided by the part.
+	 *
+	 * @param slot the slot to clear
+	 */
+	public void unequip(EquipmentPartSlot slot) {
+		EquipmentPart part = equipment.get().get(slot);
+
+		if (part != null) {
+			for (RobotAttribute attribute : RobotAttribute.values()) {
+				double partValue = part.get(attribute);
+				double currentValue = attributes.get().get(attribute);
+
+				// EquipmentPart modifiers are represented as 1=+1%, hence the
+				// division by 100.
+				double newValue = currentValue - (partValue / 100.0);
+
+				attributes.get().put(attribute, newValue);
+			}
 		}
 	}
 

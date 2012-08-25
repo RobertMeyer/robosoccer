@@ -1,199 +1,84 @@
 package robocode;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+
 /**
  * A piece of equipment. This class defines all the stats that a piece of
  * equipment can change. Note that the actual mechanical change is performed in
  * the StatRobotPeer class.
  * 
- * @author Malcolm Inglis
+ * @author Malcolm Inglis (CSSE2003)
  * 
  */
 public class EquipmentPart {
-	public enum Position {
-		BODY, WEAPON, TRACKS, RADAR, POWER;
-	}
 
 	/** The position that the part occupes on the robot. */
-	private final Position position;
-	
+	private final EquipmentPartSlot slot;
+
 	/**
-	 * The various attributes of the robot that the part modifies, where the
-	 * attribute's value represents a percentage-based increase or decrease in
-	 * the effectiveness of that attribute for the robot equipping this part.
+	 * This map holds various attributes of the robot that the part modifies,
+	 * where the attribute's value represents a percentage-based increase or
+	 * decrease in the effectiveness of that attribute for the robot equipping
+	 * this part.
 	 */
-	private final double speed, energy, energyRegen, armor, bulletDamage,
-			bulletSpeed, bulletRate, gunHeatRate, ramAttack, ramDefense,
-			radarAngle;
+	private Map<RobotAttribute, Double> attributes =
+			new HashMap<RobotAttribute, Double>();
 
 	public static class Builder {
-		// Required parameters
-		private final Position position;
+		// Required for builder initialization
+		private final EquipmentPartSlot slot;
 
-		// Optional parameters - initialized to default values
-		private double speed = 0, energy = 0, energyRegen = 0, armor = 0,
-				bulletDamage = 0, bulletSpeed = 0, bulletRate = 0,
-				gunHeatRate = 0, ramAttack = 0, ramDefense = 0, radarAngle = 0;
+		private Map<RobotAttribute, Double> attributes =
+				new HashMap<RobotAttribute, Double>();
 
-		public Builder(Position position) {
-			this.position = position;
+		public Builder(EquipmentPartSlot slot) {
+			this.slot = slot;
 		}
 
 		public EquipmentPart build() {
 			return new EquipmentPart(this);
 		}
-
-		public Builder speed(double val) {
-			speed = val;
+		
+		public Builder set(RobotAttribute attribute, double value) {
+			attributes.put(attribute, value);
 			return this;
 		}
-
-		public Builder energy(double val) {
-			energy = val;
-			return this;
-		}
-
-		public Builder energyRegen(double val) {
-			energyRegen = val;
-			return this;
-		}
-
-		public Builder armor(double val) {
-			armor = val;
-			return this;
-		}
-
-		public Builder bulletDamage(double val) {
-			bulletDamage = val;
-			return this;
-		}
-
-		public Builder bulletSpeed(double val) {
-			bulletSpeed = val;
-			return this;
-		}
-
-		public Builder bulletRate(double val) {
-			bulletRate = val;
-			return this;
-		}
-
-		public Builder gunHeatRate(double val) {
-			gunHeatRate = val;
-			return this;
-		}
-
-		public Builder ramAttack(double val) {
-			ramAttack = val;
-			return this;
-		}
-
-		public Builder ramDefense(double val) {
-			ramDefense = val;
-			return this;
-		}
-
-		public Builder radarAngle(double val) {
-			radarAngle = val;
-			return this;
+		
+		public Double get(RobotAttribute attribute) {
+			return attributes.get(attribute);
 		}
 	}
 
 	private EquipmentPart(Builder builder) {
-		position = builder.position;
-		speed = builder.speed;
-		energy = builder.energy;
-		energyRegen = builder.energyRegen;
-		armor = builder.armor;
-		bulletDamage = builder.bulletDamage;
-		bulletSpeed = builder.bulletSpeed;
-		bulletRate = builder.bulletRate;
-		gunHeatRate = builder.gunHeatRate;
-		ramAttack = builder.ramAttack;
-		ramDefense = builder.ramDefense;
-		radarAngle = builder.radarAngle;
+		slot = builder.slot;
+		
+		// Copy attributes from builder; default to 0 if attribute wasn't set.
+		for (RobotAttribute attribute : RobotAttribute.values()) {
+			Double value = builder.get(attribute);
+			if (value == null) {
+				value = Double.valueOf(0);
+			}
+			attributes.put(attribute, value);
+		}
 	}
 
 	/**
-	 * @return the position
+	 * @return the equipment slot this part may be equipped to
 	 */
-	public Position getPosition() {
-		return position;
+	public EquipmentPartSlot getSlot() {
+		return slot;
 	}
-
+	
 	/**
-	 * @return the speed
+	 * Returns the part's modifier for the given attribute. Part modifiers
+	 * are defined as 1=+1% effectiveness.
+	 * 
+	 * @param attribute the attribute modifier value to return
+	 * @return the part's modifier value for the given attribute
 	 */
-	public double getSpeed() {
-		return speed;
-	}
-
-	/**
-	 * @return the energy
-	 */
-	public double getEnergy() {
-		return energy;
-	}
-
-	/**
-	 * @return the energyRegen
-	 */
-	public double getEnergyRegen() {
-		return energyRegen;
-	}
-
-	/**
-	 * @return the armor
-	 */
-	public double getArmor() {
-		return armor;
-	}
-
-	/**
-	 * @return the bulletDamage
-	 */
-	public double getBulletDamage() {
-		return bulletDamage;
-	}
-
-	/**
-	 * @return the bulletSpeed
-	 */
-	public double getBulletSpeed() {
-		return bulletSpeed;
-	}
-
-	/**
-	 * @return the bulletRate
-	 */
-	public double getBulletRate() {
-		return bulletRate;
-	}
-
-	/**
-	 * @return the gunHeatRate
-	 */
-	public double getGunHeatRate() {
-		return gunHeatRate;
-	}
-
-	/**
-	 * @return the ramAttack
-	 */
-	public double getRamAttack() {
-		return ramAttack;
-	}
-
-	/**
-	 * @return the ramDefense
-	 */
-	public double getRamDefense() {
-		return ramDefense;
-	}
-
-	/**
-	 * @return the radarAngle
-	 */
-	public double getRadarAngle() {
-		return radarAngle;
+	public double get(RobotAttribute attribute) {
+		return attributes.get(attribute);
 	}
 }
