@@ -5,8 +5,6 @@ package robocode;
  * equipment can change. Note that the actual mechanical change is performed in
  * the StatRobotPeer class.
  * 
- * Please note that all
- * 
  * @author Malcolm Inglis
  * 
  */

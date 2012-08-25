@@ -3,6 +3,13 @@ package robocode;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A container for all the parts that can be equipped by StatRobots.
+ * TODO: equipping API and implementation.
+ * 
+ * @author Malcolm Inglis
+ *
+ */
 public class Equipment {
 	public static final Map<String, EquipmentPart> equipment =
 			new HashMap<String, EquipmentPart>();
