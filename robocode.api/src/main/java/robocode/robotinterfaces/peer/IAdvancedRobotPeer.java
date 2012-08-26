@@ -760,5 +760,5 @@ public interface IAdvancedRobotPeer extends IStandardRobotPeer {
 	 * @param slot the slot to equip the part in
 	 * @param part the part to equip
 	 */
-	void equip(EquipmentPartSlot slot, EquipmentPart part);
+	void equip(EquipmentSlot slot, EquipmentPart part);
 }

@@ -2,7 +2,7 @@ package tested.robots;
 
 import robocode.AdvancedRobot;
 import robocode.Equipment;
-import robocode.EquipmentPartSlot;
+import robocode.EquipmentSlot;
 
 /**
  * Tests the equipment feature provided by Team Forkbomb.
@@ -13,7 +13,7 @@ import robocode.EquipmentPartSlot;
 public class EquipmentTest1 extends AdvancedRobot {
 
 	public void equipment() {
-		equip(EquipmentPartSlot.BODY,
+		equip(EquipmentSlot.BODY,
 				Equipment.getPart("Guardian Tank Armor"));
 	}
 

@@ -21,14 +21,14 @@ public class Equipment {
 
 	static {
 		parts.put("Division 9 Plasmaprojector",
-				new EquipmentPart.Builder(EquipmentPartSlot.WEAPON)
+				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
 					.set(RobotAttribute.SPEED, -20)
 					.set(RobotAttribute.BULLET_DAMAGE, 200)
 					.set(RobotAttribute.GUN_HEAT_RATE, 70)
 					.build());
 
 		parts.put("Guardian Tank Armor",
-				new EquipmentPart.Builder(EquipmentPartSlot.BODY)
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
 					.set(RobotAttribute.ARMOR, 40)
 					.set(RobotAttribute.SPEED, -20)
 					.set(RobotAttribute.RAM_ATTACK, 10)
@@ -36,14 +36,14 @@ public class Equipment {
 					.build());
 
 		parts.put("Thorium Power Cell",
-				new EquipmentPart.Builder(EquipmentPartSlot.POWER)
+				new EquipmentPart.Builder(EquipmentSlot.POWER)
 					.set(RobotAttribute.ENERGY, 30)
 					.set(RobotAttribute.ENERGY_REGEN, 50)
 					.set(RobotAttribute.SPEED, -5)
 					.build());
 
 		parts.put("Stealth Tracks",
-				new EquipmentPart.Builder(EquipmentPartSlot.TRACKS)
+				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
 					.set(RobotAttribute.SPEED, 40)
 					.set(RobotAttribute.GUN_HEAT_RATE, 50)
 					.set(RobotAttribute.BULLET_SPEED, 90)

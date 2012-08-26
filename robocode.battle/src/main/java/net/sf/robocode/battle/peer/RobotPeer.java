@@ -214,9 +214,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @see #equip()
 	 * @see #unequip()
 	 */
-	protected AtomicReference<Map<EquipmentPartSlot, EquipmentPart>> equipment =
-			new AtomicReference<Map<EquipmentPartSlot, EquipmentPart>>(
-					new HashMap<EquipmentPartSlot, EquipmentPart>()
+	protected AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment =
+			new AtomicReference<Map<EquipmentSlot, EquipmentPart>>(
+					new HashMap<EquipmentSlot, EquipmentPart>()
 			);
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
@@ -1703,7 +1703,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
 	 */
-	public void equip(EquipmentPartSlot slot, EquipmentPart part) {
+	public void equip(EquipmentSlot slot, EquipmentPart part) {
 		if (part.getSlot().equals(slot)) {
 			unequip(slot);
 
@@ -1726,7 +1726,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 *
 	 * @param slot the slot to clear
 	 */
-	public void unequip(EquipmentPartSlot slot) {
+	public void unequip(EquipmentSlot slot) {
 		EquipmentPart part = equipment.get().get(slot);
 
 		if (part != null) {

@@ -15,7 +15,7 @@ import java.util.Set;
 public class EquipmentPart {
 
 	/** The position that the part occupes on the robot. */
-	private final EquipmentPartSlot slot;
+	private final EquipmentSlot slot;
 
 	/**
 	 * This map holds various attributes of the robot that the part modifies,
@@ -28,12 +28,12 @@ public class EquipmentPart {
 
 	public static class Builder {
 		// Required for builder initialization
-		private final EquipmentPartSlot slot;
+		private final EquipmentSlot slot;
 
 		private Map<RobotAttribute, Double> attributes =
 				new HashMap<RobotAttribute, Double>();
 
-		public Builder(EquipmentPartSlot slot) {
+		public Builder(EquipmentSlot slot) {
 			this.slot = slot;
 		}
 
@@ -67,7 +67,7 @@ public class EquipmentPart {
 	/**
 	 * @return the equipment slot this part may be equipped to
 	 */
-	public EquipmentPartSlot getSlot() {
+	public EquipmentSlot getSlot() {
 		return slot;
 	}
 	

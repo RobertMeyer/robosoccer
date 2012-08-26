@@ -2035,7 +2035,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 * @param slot the slot to equip the part in
 	 * @param part the part to equip
 	 */
-	public void equip(EquipmentPartSlot slot, EquipmentPart part) {
+	public void equip(EquipmentSlot slot, EquipmentPart part) {
 		if (peer != null) {
 			((IAdvancedRobotPeer) peer).equip(slot, part);
 		}

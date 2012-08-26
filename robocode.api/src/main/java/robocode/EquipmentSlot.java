@@ -6,7 +6,7 @@ package robocode;
  * @author Malcolm Inglis (CSSE2003)
  *
  */
-public enum EquipmentPartSlot {
+public enum EquipmentSlot {
 	BODY,
 	WEAPON,
 	TRACKS,

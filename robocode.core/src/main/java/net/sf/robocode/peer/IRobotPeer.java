@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import robocode.EquipmentPart;
-import robocode.EquipmentPartSlot;
+import robocode.EquipmentSlot;
 
 
 /**
@@ -44,5 +44,5 @@ public interface IRobotPeer {
 
 	void setupThread();
 
-	void equip(EquipmentPartSlot slot, EquipmentPart part);
+	void equip(EquipmentSlot slot, EquipmentPart part);
 }
