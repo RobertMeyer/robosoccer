@@ -5,7 +5,7 @@ import robocode.Equipment;
 import robocode.EquipmentSlot;
 
 /**
- * Tests the equipment feature provided by Team Forkbomb.
+ * Tests the equipment API provided by Team Forkbomb.
  *
  * @author Malcolm Inglis (CSSE2003)
  *
@@ -13,8 +13,9 @@ import robocode.EquipmentSlot;
 public class EquipmentTest1 extends AdvancedRobot {
 
 	public void equipment() {
-		equip(EquipmentSlot.BODY,
-				Equipment.getPart("Guardian Tank Armor"));
+		equip("Guardian Tank Armor");
+		equip("Thorium Power Cell");
+		equip("Stealth Tracks");
 	}
 
 	public void run() {

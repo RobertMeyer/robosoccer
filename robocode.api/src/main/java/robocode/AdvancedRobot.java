@@ -2032,12 +2032,12 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot.
 	 *
-	 * @param slot the slot to equip the part in
-	 * @param part the part to equip
+	 * @param partName the name of the part to equip
+	 * @see Equipment
 	 */
-	public void equip(EquipmentSlot slot, EquipmentPart part) {
+	public void equip(String partName) {
 		if (peer != null) {
-			((IAdvancedRobotPeer) peer).equip(slot, part);
+			((IAdvancedRobotPeer) peer).equip(partName);
 		}
 	}
 

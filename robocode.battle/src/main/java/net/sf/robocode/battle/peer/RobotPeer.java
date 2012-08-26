@@ -1702,21 +1702,25 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
+	 *
+	 * @param partName the name of the part to equip
+	 * @see Equipment
 	 */
-	public void equip(EquipmentSlot slot, EquipmentPart part) {
-		if (part.getSlot().equals(slot)) {
-			unequip(slot);
+	public void equip(String partName) {
+		EquipmentPart part = Equipment.getPart(partName);
 
-			for (RobotAttribute attribute : RobotAttribute.values()) {
-				double partValue = part.get(attribute);
-				double currentValue = part.get(attribute);
+		// Unequip whatever's currently occupying this slot (if anything)
+		unequip(part.getSlot());
 
-				// EquipmentPart modifiers are represented as 1=+1%, hence the
-				// division by 100.
-				double newValue = currentValue + (partValue / 100.0);
+		for (RobotAttribute attribute : RobotAttribute.values()) {
+			double partValue = part.get(attribute);
+			double currentValue = part.get(attribute);
 
-				attributes.get().put(attribute, newValue);
-			}
+			// EquipmentPart modifiers are represented as 1=+1%, hence the
+			// division by 100.
+			double newValue = currentValue + (partValue / 100.0);
+
+			attributes.get().put(attribute, newValue);
 		}
 	}
 

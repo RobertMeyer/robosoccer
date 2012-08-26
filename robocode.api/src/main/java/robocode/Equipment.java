@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A container for all the parts that can be equipped by StatRobots.
- * TODO: equipping API and implementation.
+ * A container for all the parts that can be equipped by AdvancedRobots.
  *
  * @author Malcolm Inglis (CSSE2003)
  *
@@ -14,7 +13,7 @@ public class Equipment {
 
 	/**
 	 * Maps names to EquipmentPart objects, such that the robot programmer
-	 * can refer to the defined EquipmentParts (by name), and equip them.
+	 * can equip parts just by referring to their name.
 	 */
 	private static final Map<String, EquipmentPart> parts =
 			new HashMap<String, EquipmentPart>();

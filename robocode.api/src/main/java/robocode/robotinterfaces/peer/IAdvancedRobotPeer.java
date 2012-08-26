@@ -752,13 +752,13 @@ public interface IAdvancedRobotPeer extends IStandardRobotPeer {
 	 * @see #getDataFile(String)
 	 */
 	long getDataQuotaAvailable();
-	
+
 	/**
-	 * If the part's slot attribute matches the given slot, it equips the part
-	 * in that slot.
-	 * 
-	 * @param slot the slot to equip the part in
-	 * @param part the part to equip
+	 * Equips the part associated with the given name, unequipping any part
+	 * previously equipped to the slot of this new part.
+	 *
+	 * @param partName the name of the part to equip
+	 * @see Equipment
 	 */
-	void equip(EquipmentSlot slot, EquipmentPart part);
+	void equip(String partName);
 }

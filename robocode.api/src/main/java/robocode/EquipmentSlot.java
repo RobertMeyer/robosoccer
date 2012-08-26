@@ -1,8 +1,8 @@
 package robocode;
 
 /**
- * The slots on the robot that a single EquipmentPart instance may occupy.
- * 
+ * The slots of a the robot that a single equipment part may occupy.
+ *
  * @author Malcolm Inglis (CSSE2003)
  *
  */
