@@ -257,7 +257,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// at default for this robot. (until the attributes are changed by,
 		// e.g., equipment)
 		for (RobotAttribute attribute : RobotAttribute.values()) {
-			attributes.get().put(attribute, Double.valueOf(1.0));
+			attributes.get().put(attribute, 1.0);
 		}
 
 		this.statics = new RobotStatics(robotSpecification, duplicate, isTeamLeader, battleRules, teamName, teamMembers,
@@ -1712,12 +1712,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// Unequip whatever's currently occupying this slot (if anything)
 		unequip(part.getSlot());
 
+		/* Add all the attribute modifiers of the part to the current
+		 * attribute modifiers (many attributes of the part may be 0).
+		 */
 		for (RobotAttribute attribute : RobotAttribute.values()) {
 			double partValue = part.get(attribute);
 			double currentValue = part.get(attribute);
 
-			// EquipmentPart modifiers are represented as 1=+1%, hence the
-			// division by 100.
+			/* Part modifiers are represented as 1=+1% effectiveness, hence
+			 * the division by 100 (as this.attributes represents 1.0 as 100%
+			 * effectiveness for easy multiplication).
+			 */
 			double newValue = currentValue + (partValue / 100.0);
 
 			attributes.get().put(attribute, newValue);
@@ -1733,13 +1738,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void unequip(EquipmentSlot slot) {
 		EquipmentPart part = equipment.get().get(slot);
 
+		/* If there is any part in the given slot, add all the attribute
+		 * modifiers of the part to the current attribute modifiers (many
+		 * attributes of the part may be 0).
+		 */
 		if (part != null) {
 			for (RobotAttribute attribute : RobotAttribute.values()) {
 				double partValue = part.get(attribute);
 				double currentValue = attributes.get().get(attribute);
 
-				// EquipmentPart modifiers are represented as 1=+1%, hence the
-				// division by 100.
+				/* Part modifiers are represented as 1=+1% effectiveness,
+				 * hence the division by 100 (as this.attributes represents
+				 * 1.0 as 100% effectiveness for easy multiplication).
+				 */
 				double newValue = currentValue - (partValue / 100.0);
 
 				attributes.get().put(attribute, newValue);
