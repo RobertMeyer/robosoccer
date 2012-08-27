@@ -213,7 +213,10 @@ public final class Rules {
 	 *
 	 * @param bulletPower the energy power of the bullet.
 	 * @return bullet speed in pixels/turn
+	 * @deprecated It is called through the robotPeer interface instead to check for
+	 * 			a robots individual attributes.  Left in place for older versions.
 	 */
+	@Deprecated
 	public static double getBulletSpeed(double bulletPower) {
 		bulletPower = Math.min(Math.max(bulletPower, MIN_BULLET_POWER), MAX_BULLET_POWER);
 		return 20 - 3 * bulletPower;

@@ -11,22 +11,22 @@ package robocode;
  */
 public enum RobotAttribute {
 	/** The acceleration of the robot */
-	ACCELERATION, // done
+	ACCELERATION,
 	
 	/** The deceleration of the robot */
-	DECELERATION, // done
+	DECELERATION,
 	
 	/** The scan radius of the robot */
-	SCAN_RADIUS, // done
+	SCAN_RADIUS,
 	
 	/** The gun turn rate of the robot */
-	GUN_TURN_ANGLE, // done
+	GUN_TURN_ANGLE,
 	
 	/** The chasis turn rate of the robot */
-	ROBOT_TURN_ANGLE, // done
+	ROBOT_TURN_ANGLE,
 
 	/** How fast the robot moves. */
-	SPEED, // done
+	SPEED,
 
 	/** The energy (aka life) of the robot. */
 	ENERGY,
@@ -38,13 +38,13 @@ public enum RobotAttribute {
 	ARMOR,
 
 	/** The damage done by the robot's bullets. */
-	BULLET_DAMAGE, // done
+	BULLET_DAMAGE,
 
 	/** The speed of the bullets fired by the robot. */
 	BULLET_SPEED,
 
 	/** The rate that the robot's gun heats at. */
-	GUN_HEAT_RATE, // done
+	GUN_HEAT_RATE,
 
 	/** The damage done by the robot from physical contact. */
 	RAM_ATTACK,
@@ -53,5 +53,5 @@ public enum RobotAttribute {
 	RAM_DEFENSE,
 
 	/** The angle that the robot's radar can view. */
-	RADAR_ANGLE; // done
+	RADAR_ANGLE;
 }
