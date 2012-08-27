@@ -2,20 +2,18 @@ package robocode;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
- * A piece of equipment. This class defines all the stats that a piece of
- * equipment can change. Note that the actual mechanical change is performed in
- * the StatRobotPeer class.
+ * A piece of equipment; an association of a value with every robot attribute.
  * 
  * @author Malcolm Inglis (CSSE2003)
+ * @see Equipment
  * 
  */
 public class EquipmentPart {
-
-	/** The position that the part occupes on the robot. */
+	
 	private final EquipmentSlot slot;
+	private final String imagePath;
 
 	/**
 	 * This map holds various attributes of the robot that the part modifies,
@@ -32,6 +30,8 @@ public class EquipmentPart {
 
 		private Map<RobotAttribute, Double> attributes =
 				new HashMap<RobotAttribute, Double>();
+		
+		private String imagePath;
 
 		public Builder(EquipmentSlot slot) {
 			this.slot = slot;
@@ -39,6 +39,11 @@ public class EquipmentPart {
 
 		public EquipmentPart build() {
 			return new EquipmentPart(this);
+		}
+		
+		public Builder image(String path) {
+			imagePath = path;
+			return this;
 		}
 		
 		public Builder set(RobotAttribute attribute, double value) {
@@ -53,6 +58,7 @@ public class EquipmentPart {
 
 	private EquipmentPart(Builder builder) {
 		slot = builder.slot;
+		imagePath = builder.imagePath;
 		
 		// Copy attributes from builder; default to 0 if attribute wasn't set.
 		for (RobotAttribute attribute : RobotAttribute.values()) {
@@ -69,6 +75,13 @@ public class EquipmentPart {
 	 */
 	public EquipmentSlot getSlot() {
 		return slot;
+	}
+	
+	/**
+	 * @return the path to the image to be used for this part
+	 */
+	public String getImagePath() {
+		return imagePath;
 	}
 	
 	/**
