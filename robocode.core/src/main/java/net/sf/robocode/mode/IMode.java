@@ -6,6 +6,9 @@ public interface IMode {
 	
 	double modifyVelocity(double velocityIncrement);
 	
+	// MICROSLOTHS
+	//public double modifyScanRadius(double radius);
+	
 	String toString();
 
 }

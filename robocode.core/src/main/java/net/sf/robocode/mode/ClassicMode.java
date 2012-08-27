@@ -12,6 +12,11 @@ public class ClassicMode implements IMode {
 		
 	}
 	
+	// MICROSLOTHS
+	// public double modifyScanRadius(double radius) {
+	// 	return radius;
+	// }
+	
 	public String toString() {
 		return new String("Classic Mode");
 	}

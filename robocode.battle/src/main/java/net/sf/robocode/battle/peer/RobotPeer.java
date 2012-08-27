@@ -1475,7 +1475,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (statics.isDroid()) {
 			return;
 		}
-
+		
+		// MICROSLOTHS
+		// This is our new radius
+		// double newRadarScanRadius;
+		// newRadarScanRadius = 0;
+		// Battle.getBattleMode().modifyScanRadius();
+		
 		double startAngle = lastRadarHeading;
 		double scanRadians = getRadarHeading() - startAngle;
 
