@@ -48,6 +48,16 @@ public class Equipment {
 					.set(RobotAttribute.BULLET_SPEED, 90)
 					.set(RobotAttribute.ENERGY, -60)
 					.build());
+		
+		// Start Team Telos addition - Flag
+		parts.put("Flag", 
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
+					.set(RobotAttribute.GUN_HEAT_RATE, 
+							Double.POSITIVE_INFINITY)
+					.set(RobotAttribute.RAM_DEFENSE, 50)
+					.set(RobotAttribute.RAM_ATTACK, 50)
+					.build());
+		// End Team Telos addition - Flag
 	}
 
 	/**
