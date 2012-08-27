@@ -127,18 +127,4 @@ public class TeleporterPeer implements ITeleporter {
 		}
 		return a;
 	}
-	
-	// Ignore the following... 
-	
-	@Override
-	public void setPair(ITeleporter pair) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ITeleporter getPair() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
