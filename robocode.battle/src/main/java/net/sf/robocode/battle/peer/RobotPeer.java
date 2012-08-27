@@ -1836,35 +1836,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	/**
-<<<<<<< HEAD
-=======
-	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
-	 *
-	 * @param bulletPower the energy power of the bullet.
-	 * @return bullet speed in pixels/turn
-	 */
-	public double getBulletSpeed(double bulletPower) {
-		bulletPower = Math.min(Math.max(bulletPower, Rules.MIN_BULLET_POWER *
-				attributes.get().get(RobotAttribute.BULLET_SPEED)), Rules.MAX_BULLET_POWER
-				* attributes.get().get(RobotAttribute.BULLET_SPEED));
-		return 20 - 3 * bulletPower;
-	}
-	
-	/**
->>>>>>> Revert "Revert "Finished modifying and changing the methods for ruleChecking on RobotAttributes""
+	Revert "Revert "Finished modifying and changing the methods for ruleChecking on RobotAttributes""
 	 * Returns of energy the robot gains from ramming another bonus with the
 	 * robots attribute factor taken into account.
 	 * 
 	 * @return Robot's ramming bonus with attribute factor
 	 */
 	public double getRamAttack(){
-<<<<<<< HEAD
 		return attributes.get().get(RobotAttribute.RAM_ATTACK) * Rules.ROBOT_HIT_BONUS;
 	}
-=======
-		return attributes.get().get(RobotAttribute.RAM_ATTACK) * Rules.ROBOT_HIT_BONUS;
-	}
->>>>>>> Revert "Revert "Finished modifying and changing the methods for ruleChecking on RobotAttributes""
 
 	public int compareTo(ContestantPeer cp) {
 		double myScore = statistics.getTotalScore();
