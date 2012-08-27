@@ -6,10 +6,6 @@ public class SlowMode extends ClassicMode {
 		return velocityIncrement/2;
 	}
 	
-	public void execute() {
-		System.out.println("SLow MODE");
-	}
-	
 	public String toString() {
 		return new String("Slow Mode");
 	}
