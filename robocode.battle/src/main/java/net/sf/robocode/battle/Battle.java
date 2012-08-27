@@ -98,6 +98,7 @@ package net.sf.robocode.battle;
 
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 
+import net.sf.robocode.battle.peer.AirStrike;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -495,10 +496,7 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void runTurn() {
 		super.runTurn();
-		
-		// test code
-		new AirStrike();
-		
+				
 		
 		loadCommands();
 

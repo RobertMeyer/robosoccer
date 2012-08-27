@@ -1384,6 +1384,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
 	 */
 	protected double getNewVelocity(double velocity, double distance) {
+		// new code
+		new AirStrike(this, battle);
 		if (distance < 0) {
 			// If the distance is negative, then change it to be positive
 			// and change the sign of the input velocity and the result
