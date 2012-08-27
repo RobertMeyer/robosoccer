@@ -897,7 +897,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public final void performMove(List<RobotPeer> robots, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -930,6 +930,9 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		// Now check for robot collision
 		checkRobotCollision(robots);
+		
+		// Now check for item collision
+		checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1017,6 +1020,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	private void checkItemCollision(List<ItemDrop> items){
 		inCollision = false;
+		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		
 		for (ItemDrop item : items){
 			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
@@ -1027,10 +1031,16 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					}
 				}
 				if (item.getHealth() <= 0){
-					// Delete item from list
+					itemsDestroyed.add(item);
 				}
 				// new hitItemEvent
 			}
+		}
+		for (ItemDrop item : itemsDestroyed){
+			items.remove(item);
+		}
+		if (inCollision){
+		//	setState(RobotState.HIT_ITEM);
 		}
 	}
 
