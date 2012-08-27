@@ -95,6 +95,7 @@ import java.io.IOException;
 import static java.lang.Math.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1756,6 +1757,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				attributes.get().put(attribute, newValue);
 			}
 		}
+	}
+	
+	/**
+	 * @return a collection of all equipment parts equipped to the robot
+	 */
+	public Collection<EquipmentPart> getEquipment() {
+		return equipment.get().values();
 	}
 
 	public int compareTo(ContestantPeer cp) {
