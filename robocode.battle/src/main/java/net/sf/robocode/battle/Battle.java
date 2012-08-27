@@ -716,6 +716,12 @@ public final class Battle extends BaseBattle {
 	private void handleDeadRobots() {
 
 		for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
+			//spawn teleporter on dead robot
+			double y2 = 100;
+			double x2 = 100;
+			double x1 = deadRobot.getX();
+			double y1 = deadRobot.getY();
+			teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
 			// Compute scores for dead robots
 			if (deadRobot.getTeamPeer() == null) {
 				deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
