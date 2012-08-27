@@ -67,6 +67,7 @@ package net.sf.robocode.battle.peer;
 
 
 import static net.sf.robocode.io.Logger.logMessage;
+import net.sf.robocode.battle.AirStrike;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.host.IHostManager;
@@ -1384,8 +1385,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
 	 */
 	protected double getNewVelocity(double velocity, double distance) {
-		// new code
-		new AirStrike(this, battle);
 		if (distance < 0) {
 			// If the distance is negative, then change it to be positive
 			// and change the sign of the input velocity and the result
@@ -1572,6 +1571,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public void kill() {
+		// new code
+		new AirStrike(this, battle);
 		battle.resetInactiveTurnCount(10.0);
 		if (isAlive()) {
 			addEvent(new DeathEvent());
