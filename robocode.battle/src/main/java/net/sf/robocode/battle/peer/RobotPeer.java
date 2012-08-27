@@ -192,6 +192,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final Arc2D scanArc;
 	protected final BoundingRectangle boundingBox;
 	protected final RbSerializer rbSerializer;
+	
 
 	/**
 	 * An association of values to every RobotAttribute, such that game
@@ -803,7 +804,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			x = 0;
 			y = 0;
 		} else {
-			energy = 100;
+			energy = 100 * attributes.get().get(RobotAttribute.ENERGY);
 		}
 		gunHeat = 3;
 
@@ -922,7 +923,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 			double firePower = min(energy,
 					min(max(bulletCmd.getPower(), minBulletPower), maxBulletPower));
-
+			
+			// Adjust firepower to take into account the energy regeneration factor
+			firePower = firePower * attributes.get().get(RobotAttribute.ENERGY_REGEN);
+			
 			updateEnergy(-firePower);
 
 			gunHeat += Rules.getGunHeat(firePower);
@@ -1093,9 +1097,21 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					if (!teamFire) {
 						statistics.scoreRammingDamage(otherRobot.getName());
 					}
+					
+					// The amount of robot energy lost with a factor of ram defense
+					// and also a factor of armor.
+					double collisionEnergyLostThis = this.attributes.get().
+							get(RobotAttribute.RAM_DEFENSE) * Rules.ROBOT_HIT_DAMAGE *
+							this.attributes.get().get(RobotAttribute.ARMOR);
+					
+					// The amount of energy the other robot lost with ram defense
+					// and robot armor factor.
+					double collisionEnergyLostOther = otherRobot.attributes.get().
+							get(RobotAttribute.RAM_DEFENSE) * Rules.ROBOT_HIT_DAMAGE *
+							otherRobot.attributes.get().get(RobotAttribute.ARMOR);
 
-					this.updateEnergy(-Rules.ROBOT_HIT_DAMAGE);
-					otherRobot.updateEnergy(-Rules.ROBOT_HIT_DAMAGE);
+					this.updateEnergy(-collisionEnergyLostThis);
+					otherRobot.updateEnergy(-collisionEnergyLostOther);
 
 					if (otherRobot.energy == 0) {
 						if (otherRobot.isAlive()) {
@@ -1800,10 +1816,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	/**
+<<<<<<< HEAD
 	 * @return a collection of all equipment parts equipped to the robot
 	 */
 	public Collection<EquipmentPart> getEquipment() {
 		return equipment.get().values();
+=======
+	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
+	 *
+	 * @param bulletPower the energy power of the bullet.
+	 * @return bullet speed in pixels/turn
+	 */
+	public double getBulletSpeed(double bulletPower) {
+		bulletPower = Math.min(Math.max(bulletPower, Rules.MIN_BULLET_POWER *
+				attributes.get().get(RobotAttribute.BULLET_SPEED)), Rules.MAX_BULLET_POWER
+				* attributes.get().get(RobotAttribute.BULLET_SPEED));
+		return 20 - 3 * bulletPower;
+	}
+	
+	/**
+	 * Returns of energy the robot gains from ramming another bonus with the
+	 * robots attribute factor taken into account.
+	 * 
+	 * @return Robot's ramming bonus with attribute factor
+	 */
+	public double getRamAttack(){
+		return attributes.get().get(RobotAttribute.RAM_ATTACK) * Rules.ROBOT_HIT_BONUS;
+>>>>>>> Finished modifying and changing the methods for ruleChecking on RobotAttributes
 	}
 
 	public int compareTo(ContestantPeer cp) {
@@ -1828,4 +1867,5 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
 				+ (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
 	}
+	
 }
