@@ -24,6 +24,7 @@ package net.sf.robocode.ui.dialog;
 
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRepositoryItem;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
@@ -60,6 +61,8 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
 	private NewBattleRulesTab rulesTab;
 	private WizardController wizardController;
+	
+	private NewBattleModeTab modeTab;
 
 	private RobotSelectionPanel robotSelectionPanel;
 
@@ -103,6 +106,11 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 				return;
 			}
 		}
+		IMode selectedMode = getBattleModeTab().getSelectedMode();
+		if(selectedMode == null) {
+			selectedMode = new ClassicMode();
+		}
+		
 		battleProperties.setSelectedRobots(getRobotSelectionPanel().getSelectedRobotsAsString());
 		battleProperties.setBattlefieldWidth(getBattleFieldTab().getBattleFieldWidth());
 		battleProperties.setBattlefieldHeight(getBattleFieldTab().getBattleFieldHeight());
@@ -110,6 +118,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		battleProperties.setGunCoolingRate(getRulesTab().getGunCoolingRate());
 		battleProperties.setInactivityTime(getRulesTab().getInactivityTime());
 		battleProperties.setHideEnemyNames(getRulesTab().getHideEnemyNames());
+		battleProperties.setBattleMode(selectedMode);
 
 		// Dispose this dialog before starting the battle due to pause/resume battle state
 		dispose();
@@ -206,6 +215,18 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 		return wizardController;
 	}
+	
+	/**
+	 * Return the modeTab
+	 * @return JPanel
+	 */
+	private NewBattleModeTab getBattleModeTab() {
+		if (modeTab == null) {
+			modeTab = new NewBattleModeTab();
+			modeTab.setup();
+		}
+		return modeTab;
+	}
 
 	/**
 	 * Return the Page property value.
@@ -236,6 +257,9 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private WizardTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
 			tabbedPane = new WizardTabbedPane(this);
+			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 0);
+			//tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
+			//tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
 			tabbedPane.insertTab("Robots", null, getRobotSelectionPanel(), null, 0);
 			tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
 			tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
