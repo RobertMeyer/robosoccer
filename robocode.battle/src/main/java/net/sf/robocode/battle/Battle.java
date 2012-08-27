@@ -202,7 +202,8 @@ public final class Battle extends BaseBattle {
 		double y1 = Math.random()*(height-80)+40;
 		double y2 = Math.random()*(height-80)+40;
 		
-	
+		x1 = 100;
+		y1 = 100;
 		
 		//add a new TeleporterPeer
 		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));

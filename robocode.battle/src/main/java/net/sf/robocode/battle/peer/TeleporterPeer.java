@@ -2,11 +2,14 @@ package net.sf.robocode.battle.peer;
 
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.teleporters.ITeleporter;
+import net.sf.robocode.teleporters.ITeleporter.Portal;
 
 public class TeleporterPeer implements ITeleporter {
 	
 	private double width;
 	private double height;
+	
+	private boolean blackHole;
 	
 	private double x1;
 	private double y1;
@@ -18,8 +21,14 @@ public class TeleporterPeer implements ITeleporter {
 		height = 40;
 		setXY(x1, y1, Portal.PORTAL1);
 		setXY(x2, y2, Portal.PORTAL2);
+		
+		if(x2 < 0 || y2 < 0){
+			blackHole = true;
+		}
 	}
 
+	
+	
 	public void setXY(double x, double y, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			x1 = x;
@@ -87,6 +96,38 @@ public class TeleporterPeer implements ITeleporter {
 		return rect;
 	}
 
+	/* Function is called by RobotPeer to test for teleporter
+	 * collision on the pair of teleporters.
+	 * 
+	 * Returns (int x, int y)
+	 * 		- x,y > 0 if there is a collision,
+	 * which is the corresponding x and y position for the robot
+	 * to teleport to.
+	 * 		- x,y = -1 if there is no collision
+	 * 		- x,y = -2 if the 
+	 * 		
+	 * 
+	 */
+	
+	public double[] getCollisionReaction(BoundingRectangle bound){
+		double[] a = {-1, -1};
+		if(this.getCircle(Portal.PORTAL1).intersects(bound)){
+			//it collided
+			//check for new location
+			if(blackHole){
+				a[0] = -2;
+				a[1] = -2;
+			}else{
+				a[0] = this.getX(Portal.PORTAL2);
+				a[1] = this.getY(Portal.PORTAL2);
+			}
+		}else if(this.getCircle(Portal.PORTAL2).intersects(bound)){
+			a[0] = this.getX(Portal.PORTAL1);
+			a[1] = this.getY(Portal.PORTAL1);
+		}
+		return a;
+	}
+	
 	// Ignore the following... 
 	
 	@Override
