@@ -15,8 +15,13 @@ public class NewBattleModeTab extends JPanel {
 		
 		// ----- Add your mode here! ------
 		new ClassicMode(), 
+<<<<<<< HEAD
+		new SlowMode()
+		
+=======
 		new SlowMode(),
 		new DifferentWeapons()
+>>>>>>> master
 	};
 	
 	public NewBattleModeTab() {
