@@ -21,8 +21,8 @@ public abstract	class ItemDrop {
 
 	private double xLocation;
 	private double yLocation;
-	private final static double width = 40; //Same width and height as robots
-	private final static double height =40;
+	protected final static double width = 40; //Same width and height as robots
+	protected final static double height = 40;
 	private boolean isDestroyable;
 	private int lifespan;
 	private double health;
@@ -154,10 +154,19 @@ public abstract	class ItemDrop {
 		this.health = health;
 	}
 
+	/**
+	 * Returns whether the item is equippable or not
+	 * Equippable items will be extended for various items (eg. a flag in CTF)
+	 * @return a boolean representing whether the item is equippable or not
+	 */
 	public boolean getIsEquippable(){
 		return isEquippable;
 	}
 	
+	/**
+	 * Set whether the item is equippable or not
+	 * @param A boolean representing whether the item is equippable or not
+	 */
 	public void setIsEquippable(boolean isEquippable){
 		this.isEquippable = isEquippable;
 	}
