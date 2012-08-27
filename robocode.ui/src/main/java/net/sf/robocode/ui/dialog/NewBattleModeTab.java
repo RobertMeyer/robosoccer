@@ -19,7 +19,9 @@ public class NewBattleModeTab extends JPanel {
 	
 	private IMode modes[] = { 
 		new ClassicMode(), 
-		new SlowMode()
+		new SlowMode(),
+		new DifferentWeapons(),
+		new RaceMode()
 	};
 	
 	public NewBattleModeTab() {
