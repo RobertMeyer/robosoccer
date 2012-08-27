@@ -2,10 +2,12 @@ package net.sf.robocode.mode;
 
 
 /**
- * This interface defines all the methods in Robocode's ClassicMode.
+ * This interface defines all the methods in every Mode in Robocode.
  */
 public interface IMode {
 
+	
+	
 	/**
 	 * Modifies the velocity of Robots in a battle
 	 * @param velocityIncrement
@@ -14,6 +16,7 @@ public interface IMode {
 	public double modifyVelocity(double velocityIncrement);
 	
 	/**
+	 * Returns a string representation of the current Mode
 	 * @return A string representation of a Mode
 	 */
 	public String toString();
