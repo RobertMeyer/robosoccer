@@ -3,13 +3,7 @@ package net.sf.robocode.ui.dialog;
 import javax.swing.*;
 
 import net.sf.robocode.mode.*;
-import net.sf.robocode.ui.dialog.RobotSelectionPanel.SelectedRobotsModel;
-
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class NewBattleModeTab extends JPanel {
 	
@@ -18,8 +12,11 @@ public class NewBattleModeTab extends JPanel {
 	private DefaultListModel modeListModel;
 	
 	private IMode modes[] = { 
+		
+		// ----- Add your mode here! ------
 		new ClassicMode(), 
 		new SlowMode()
+		
 	};
 	
 	public NewBattleModeTab() {
