@@ -185,6 +185,7 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 		
 		battleMode = battleProperties.getBattleMode();
+		battleMode.execute();
 		computeInitialPositions(battleProperties.getInitialPositions());
 		createPeers(battlingRobotsList);
 	}
