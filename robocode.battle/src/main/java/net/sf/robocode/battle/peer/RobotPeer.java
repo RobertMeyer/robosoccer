@@ -69,6 +69,7 @@ package net.sf.robocode.battle.peer;
 import static net.sf.robocode.io.Logger.logMessage;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.ItemDrop;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -1012,7 +1013,26 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return otherRobot.getAnnonymousName();
 		}
 		return otherRobot.getName();
-	}		
+	}
+	
+	private void checkItemCollision(List<ItemDrop> items){
+		inCollision = false;
+		
+		for (ItemDrop item : items){
+			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
+				inCollision = true;
+				if (item.getHealth() > 0){
+					if (item.getIsDestroyable()){
+						item.setHealth(item.getHealth() - 20);
+					}
+				}
+				if (item.getHealth() <= 0){
+					// Delete item from list
+				}
+				// new hitItemEvent
+			}
+		}
+	}
 
 	private void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;

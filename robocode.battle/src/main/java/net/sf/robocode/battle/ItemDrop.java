@@ -27,8 +27,8 @@ public abstract	class ItemDrop {
 	private int lifespan;
 	private double health;
 	private boolean isEquippable;
-	private final BoundingRectangle boundingBox;
 	private BattleRules battleRules;
+	private final BoundingRectangle boundingBox;
 	
 	
 	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
@@ -124,6 +124,23 @@ public abstract	class ItemDrop {
 			}
 		}
 	}
+	
+	public boolean initialiseNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){
+		xLocation = x;
+		yLocation = y;
+		setBoundingBox();
+		if (validSpotRobot(robots)) {
+			if (validSpotItem(items)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	} 
 	
 	private boolean validSpotRobot(List<RobotPeer> robots) {
 		for (RobotPeer otherRobot : robots) {
