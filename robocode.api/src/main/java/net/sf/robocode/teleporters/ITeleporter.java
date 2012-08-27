@@ -52,19 +52,4 @@ public interface ITeleporter {
 	 * @return
 	 */
 	double getY(Portal target);
-	
-	/**
-	 * Forms a pair with another teleporter. The paired teleporter will be the
-	 * destination of the current teleporter and vice versa.
-	 * 
-	 * @param pair
-	 */
-	void setPair(ITeleporter pair);
-	
-	/**
-	 * Returns this teleporter's paired teleporter.
-	 * 
-	 * @return
-	 */
-	ITeleporter getPair();
 }

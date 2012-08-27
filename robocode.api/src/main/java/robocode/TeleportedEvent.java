@@ -1,35 +1,30 @@
 package robocode;
 
 import net.sf.robocode.teleporters.ITeleportedEvent;
+import net.sf.robocode.teleporters.ITeleporter;
 
-public final class TeleportedEvent extends Event implements ITeleportedEvent {
-	
-	// TODO: update interface, add getters for event.
-	
-	private final double fromX;
-	private final double fromY;
-	private final double toX;
-	private final double toY;
-	private final double previousBearing;
-	private final double newBearing;
+public final class TeleportedEvent extends Event implements ITeleportedEvent {	
+	private final ITeleporter teleporter;
 
 	/**
 	 * Eclipse generated serial.
 	 */
-	private static final long serialVersionUID = 7129762240849651643L; // Ignore.
+	private static final long serialVersionUID = 7129762240849651643L;
 	
-	public TeleportedEvent(double x1, double y1, double x2, double y2, 
-			double bearing) {
-		fromX = x1;
-		fromY = y1;
-		toX = x2;
-		toY = y2;
-		previousBearing = bearing;
-		newBearing = bearing; // make new bearing perpendicular to portal.
+	/**
+	 * Called to create a Teleport event.
+	 * @param teleporter the teleporter.
+	 */
+	public TeleportedEvent(ITeleporter teleporter) {
+		super();
+		this.teleporter = teleporter;
 	}
 	
-	public double getNewBearing() {
-		return newBearing;
+	/**
+	 * Returns the teleporter that teleported the robot.
+	 * @return a teleporter object.
+	 */
+	public ITeleporter getTeleporter() {
+		return teleporter;
 	}
-	
 }
