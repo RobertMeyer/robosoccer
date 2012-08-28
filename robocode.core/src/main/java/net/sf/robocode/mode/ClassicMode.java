@@ -11,22 +11,22 @@ public class ClassicMode implements IMode {
 	private final String description = "Original robocode mode.";
 	
 	/**
-	 * Modifies the velocity of Robots in a battle
-	 * @param velocityIncrement
-	 * @return a modified Velocity
+	 * {@inheritDoc}
 	 */
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
 	}
 	
 	/**
-	 * @return Returns the string "Classic Mode"
+	 * {@inheritDoc}
 	 */
 	
 	public String toString() {
 		return "Classic Mode";
 	}
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getDescription() {
 		return description;
 	}

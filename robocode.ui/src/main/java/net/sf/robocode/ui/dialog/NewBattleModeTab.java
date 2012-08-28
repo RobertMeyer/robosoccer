@@ -7,7 +7,9 @@ import java.awt.*;
 
 public class NewBattleModeTab extends JPanel {
 	
+	//list of available modes
 	private ModeList modeList;
+	//description of each mode
 	private JLabel description;
 	
 	private DefaultListModel modeListModel;
