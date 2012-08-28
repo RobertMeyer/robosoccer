@@ -45,6 +45,10 @@ public class ImageManager implements IImageManager {
 	private Image bodyImage;
 	private Image gunImage;
 	private Image radarImage;
+	
+	private final String BODY_DEFAULT_IMAGE = "/net/sf/robocode/ui/images/body.png";
+	private final String GUN_DEFAULT_IMAGE = "/net/sf/robocode/ui/images/turret.png";
+	private final String RADAR_DEFAULT_IMAGE = "/net/sf/robocode/ui/images/radar.png";
 
 	private static final int MAX_NUM_COLORS = 256;
 
@@ -71,9 +75,9 @@ public class ImageManager implements IImageManager {
 		robotRadarImageCache = new RenderCache<Integer, RenderImage>();
 
 		// Read images into the cache
-		getBodyImage();
-		getGunImage();
-		getRadarImage();
+		getBodyImage(BODY_DEFAULT_IMAGE);
+		getGunImage(GUN_DEFAULT_IMAGE);
+		getRadarImage(RADAR_DEFAULT_IMAGE);
 		getExplosionRenderImage(0, 0);
 	}
 
@@ -144,9 +148,12 @@ public class ImageManager implements IImageManager {
 	 *
 	 * @return the body image
 	 */
-	private Image getBodyImage() {
+	private Image getBodyImage(String imageDirectory) {
 		if (bodyImage == null) {
-			bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
+			if(imageDirectory != null)
+				bodyImage = getImage(imageDirectory);
+			else
+				bodyImage = getImage(BODY_DEFAULT_IMAGE);
 		}
 		return bodyImage;
 	}
@@ -157,9 +164,12 @@ public class ImageManager implements IImageManager {
 	 *
 	 * @return the gun image
 	 */
-	private Image getGunImage() {
+	private Image getGunImage(String imageDirectory) {
 		if (gunImage == null) {
-			gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
+			if(imageDirectory != null)
+				gunImage = getImage(imageDirectory);
+			else 
+				gunImage = getImage(GUN_DEFAULT_IMAGE);
 		}
 		return gunImage;
 	}
@@ -170,38 +180,41 @@ public class ImageManager implements IImageManager {
 	 *
 	 * @return the radar image
 	 */
-	private Image getRadarImage() {
+	private Image getRadarImage(String imageDirectory) {
 		if (radarImage == null) {
-			radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
+			if(imageDirectory != null)
+				radarImage = getImage(imageDirectory);
+			else
+				radarImage = getImage(RADAR_DEFAULT_IMAGE);
 		}
 		return radarImage;
 	}
 
-	public RenderImage getColoredBodyRenderImage(Integer color) {
+	public RenderImage getColoredBodyRenderImage(Integer color, String imageDirectory) {
 		RenderImage img = robotBodyImageCache.get(color);
 
 		if (img == null) {
-			img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(), new Color(color, true)));
+			img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(imageDirectory), new Color(color, true)));
 			robotBodyImageCache.put(color, img);
 		}
 		return img;
 	}
 
-	public RenderImage getColoredGunRenderImage(Integer color) {
+	public RenderImage getColoredGunRenderImage(Integer color, String imageDirectory) {
 		RenderImage img = robotGunImageCache.get(color);
 
 		if (img == null) {
-			img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(), new Color(color, true)));
+			img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(imageDirectory), new Color(color, true)));
 			robotGunImageCache.put(color, img);
 		}
 		return img;
 	}
 
-	public RenderImage getColoredRadarRenderImage(Integer color) {
+	public RenderImage getColoredRadarRenderImage(Integer color, String imageDirectory) {
 		RenderImage img = robotRadarImageCache.get(color);
 
 		if (img == null) {
-			img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(), new Color(color, true)));
+			img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(imageDirectory), new Color(color, true)));
 			robotRadarImageCache.put(color, img);
 		}
 		return img;

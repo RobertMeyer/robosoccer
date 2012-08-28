@@ -29,9 +29,9 @@ public interface IImageManager {
 
 	RenderImage getExplosionDebriseRenderImage();
 
-	RenderImage getColoredBodyRenderImage(Integer color);
+	RenderImage getColoredBodyRenderImage(Integer color, String imageDirectory);
 
-	RenderImage getColoredGunRenderImage(Integer color);
+	RenderImage getColoredGunRenderImage(Integer color, String imageDirectory);
 
-	RenderImage getColoredRadarRenderImage(Integer color);
+	RenderImage getColoredRadarRenderImage(Integer color, String imageDirecetory);
 }

@@ -27,6 +27,8 @@ import net.sf.robocode.ui.IWindowManagerExt;
 import net.sf.robocode.ui.gfx.GraphicsState;
 import net.sf.robocode.ui.gfx.RenderImage;
 import net.sf.robocode.ui.gfx.RobocodeLogo;
+import robocode.EquipmentPart;
+import robocode.EquipmentSlot;
 import robocode.control.events.BattleAdaptor;
 import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
@@ -42,6 +44,8 @@ import java.awt.geom.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import static java.lang.Math.*;
+
+import java.util.Collection;
 import java.util.Random;
 
 
@@ -412,13 +416,34 @@ public class BattleView extends Canvas {
 
 		for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
 			if (robotSnapshot.getState().isAlive()) {
+				
+				Collection<EquipmentPart> robotEquipment = robotSnapshot.getEquipment();
+				String bodyImageDirectory = null;
+				String gunImageDirectory = null;
+				String radarImageDirectory = null;
+				
+				if(robotEquipment != null) {
+					for(EquipmentPart ePart : robotEquipment)
+					{
+						if(ePart.getSlot() == EquipmentSlot.BODY)
+							bodyImageDirectory = ePart.getImagePath();
+						
+						if(ePart.getSlot() == EquipmentSlot.WEAPON)
+							gunImageDirectory = ePart.getImagePath();
+						
+						if(ePart.getSlot() == EquipmentSlot.RADAR)
+							radarImageDirectory = ePart.getImagePath();
+					}
+				}
+				
+				
 				x = robotSnapshot.getX();
 				y = battleFieldHeight - robotSnapshot.getY();
 
 				at = AffineTransform.getTranslateInstance(x, y);
 				at.rotate(robotSnapshot.getBodyHeading());
 
-				RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor());
+				RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor(), bodyImageDirectory);
 
 				robotRenderImage.setTransform(at);
 				robotRenderImage.paint(g);
@@ -426,7 +451,7 @@ public class BattleView extends Canvas {
 				at = AffineTransform.getTranslateInstance(x, y);
 				at.rotate(robotSnapshot.getGunHeading());
 
-				RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor());
+				RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor(), gunImageDirectory);
 
 				gunRenderImage.setTransform(at);
 				gunRenderImage.paint(g);
@@ -435,7 +460,7 @@ public class BattleView extends Canvas {
 					at = AffineTransform.getTranslateInstance(x, y);
 					at.rotate(robotSnapshot.getRadarHeading());
 
-					RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor());
+					RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor(), radarImageDirectory);
 
 					radarRenderImage.setTransform(at);
 					radarRenderImage.paint(g);
