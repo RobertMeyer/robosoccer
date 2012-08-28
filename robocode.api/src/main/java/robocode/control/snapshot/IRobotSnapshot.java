@@ -13,6 +13,10 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
+import java.util.Collection;
+
+import robocode.EquipmentPart;
+
 
 /**
  * Interface of a robot snapshot at a specific time in a battle.
@@ -215,7 +219,14 @@ public interface IRobotSnapshot {
 	 * @return {@code true} if RobocodeSG painting is enabled for this robot; {@code false} otherwise.
 	 */
 	boolean isSGPaintEnabled();
-
+	
+	/**
+	 * Returns a collection of all of the equipment on the robot.
+	 * 
+	 * @return a collection of all of the equipment on the robot.
+	 */
+	Collection<EquipmentPart> getEquipment();
+	
 	/**
 	 * Returns a snapshot of debug properties.
 	 * 

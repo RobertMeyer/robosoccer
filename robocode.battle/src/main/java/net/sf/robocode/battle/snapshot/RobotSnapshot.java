@@ -21,6 +21,7 @@ import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlWriter;
+import robocode.EquipmentPart;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.RobotState;
@@ -28,6 +29,7 @@ import robocode.control.snapshot.RobotState;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -118,6 +120,9 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 
 	/** Snapshot of the object with queued calls for Graphics object */
 	private Object graphicsCalls;
+	
+	/** Snapshot of the equipment currently on the robot. */
+	private Collection<EquipmentPart> equipment;
 
 	/** Snapshot of debug properties */
 	private DebugProperty[] debugProperties;
@@ -177,6 +182,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 		scanArc = robot.getScanArc() != null ? new SerializableArc((Arc2D.Double) robot.getScanArc()) : null;
 
 		graphicsCalls = robot.getGraphicsCalls();
+		
+		equipment = robot.getEquipment();
 
 		final List<DebugProperty> dp = robot.getDebugProperties();
 
@@ -374,6 +381,13 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	 */
 	public boolean isSGPaintEnabled() {
 		return isSGPaintEnabled;
+	}
+	
+	/**
+	 *  {@inheritDoc}
+	 */
+	public Collection<EquipmentPart> getEquipment() {
+		return equipment;
 	}
 
 	/**
