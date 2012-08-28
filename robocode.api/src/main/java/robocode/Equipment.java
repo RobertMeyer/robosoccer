@@ -50,6 +50,14 @@ public class Equipment {
 					.set(RobotAttribute.BULLET_SPEED, 90)
 					.set(RobotAttribute.ENERGY, -60)
 					.build());
+		
+		parts.put("Heavy Cannon",
+				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+					.image("/net/sf/robocode/ui/images/heavyCannon.png")
+					.set(RobotAttribute.SPEED, -20)
+					.set(RobotAttribute.BULLET_DAMAGE, 200)
+					.set(RobotAttribute.GUN_HEAT_RATE, 70)
+					.build());
 	}
 
 	/**
