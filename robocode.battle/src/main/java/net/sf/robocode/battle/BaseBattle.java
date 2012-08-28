@@ -23,7 +23,6 @@ import robocode.BattleRules;
 import robocode.control.events.BattlePausedEvent;
 import robocode.control.events.BattleResumedEvent;
 import net.sf.robocode.mode.IMode;
-import net.sf.robocode.mode.ModeContext;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -49,7 +48,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 	protected BattleRules battleRules;
 	
 	// mode
-	protected ModeContext battleMode;
+	protected IMode battleMode;
 
 	// Current round items
 	private int roundNum;
@@ -138,7 +137,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 		return tps;
 	}
 	
-	public ModeContext getBattleMode(){
+	public IMode getBattleMode(){
 		return battleMode;
 	}
 
