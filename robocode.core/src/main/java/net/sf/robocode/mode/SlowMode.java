@@ -14,4 +14,7 @@ public class SlowMode extends ClassicMode {
 		return new String("Slow Mode");
 	}
 	
+	public String getDescription() {
+		return new String("Robots move at half speed.");
+	}
 }

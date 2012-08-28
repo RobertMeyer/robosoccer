@@ -13,7 +13,8 @@ import java.awt.event.MouseListener;
 
 public class NewBattleModeTab extends JPanel {
 	
-	private JList modeList;
+	private ModeList modeList;
+	private JLabel description;
 	
 	private DefaultListModel modeListModel;
 	
@@ -26,7 +27,15 @@ public class NewBattleModeTab extends JPanel {
 	
 	public NewBattleModeTab() {
 		super();
+		
+		description = new JLabel("");
+		
+		modeList = new ModeList(description);
+		modeList.setModel(modeListModel());
+		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		initialize();
+		
 	}
 	
 	public void setup() {
@@ -44,20 +53,19 @@ public class NewBattleModeTab extends JPanel {
 	private void initialize() {
 		JPanel j = new JPanel();
 
-		j.setLayout(new GridLayout(3, 2, 5, 5));
+		j.setLayout(new FlowLayout());
 		j.setBorder(BorderFactory.createEtchedBorder());
 		j.add(getModeList());
-		
+		j.add(getDescriptionLabel());
 		add(j);
 	}
 	
 	private JList getModeList() {
-		if (modeList == null) {
-			modeList = new JList();
-			modeList.setModel(modeListModel());
-			modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		}
 		return modeList;
+	}
+	
+	public JLabel getDescriptionLabel() {
+		return description;
 	}
 	
 	private ListModel modeListModel() {
@@ -68,6 +76,4 @@ public class NewBattleModeTab extends JPanel {
 		}
 		return modeListModel;
 	}
-	
-	
 }

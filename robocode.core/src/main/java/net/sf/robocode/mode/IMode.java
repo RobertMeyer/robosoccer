@@ -7,5 +7,7 @@ public interface IMode {
 	double modifyVelocity(double velocityIncrement);
 	
 	String toString();
+	
+	String getDescription();
 
 }
