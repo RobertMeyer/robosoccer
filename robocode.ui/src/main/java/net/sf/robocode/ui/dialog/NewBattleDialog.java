@@ -263,9 +263,6 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private WizardTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
 			tabbedPane = new WizardTabbedPane(this);
-			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 0);
-			//tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
-			//tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
 			tabbedPane.insertTab("Robots", null, getRobotSelectionPanel(), null, 0);
 			tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
 			tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
@@ -275,6 +272,9 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 			tabbedPane.insertTab("Rules", null, getRulesTab(), null, 2);
 			tabbedPane.setMnemonicAt(2, KeyEvent.VK_U);
 			tabbedPane.setDisplayedMnemonicIndexAt(2, 1);
+			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 3);
+			tabbedPane.setMnemonicAt(3, KeyEvent.VK_M);
+			tabbedPane.setDisplayedMnemonicIndexAt(3, 0);
 		}
 		return tabbedPane;
 	}
