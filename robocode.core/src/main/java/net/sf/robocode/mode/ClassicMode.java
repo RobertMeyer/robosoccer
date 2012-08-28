@@ -7,6 +7,15 @@ package net.sf.robocode.mode;
  *
  */
 public class ClassicMode implements IMode {
+<<<<<<< HEAD
+=======
+	
+	private final String description = "Original robocode mode.";
+	
+	public void execute(){
+		System.out.println("Classic Mode!!!");
+	}
+>>>>>>> master
 
 
 	/**
@@ -24,6 +33,10 @@ public class ClassicMode implements IMode {
 	
 	public String toString() {
 		return new String("Classic Mode");
+	}
+	
+	public String getDescription() {
+		return new String(description);
 	}
 	
 }

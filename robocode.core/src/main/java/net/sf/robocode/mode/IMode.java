@@ -6,6 +6,7 @@ package net.sf.robocode.mode;
  */
 public interface IMode {
 
+	void execute();
 	
 	
 	/**
@@ -22,5 +23,3 @@ public interface IMode {
 	public String toString();
 
 }
-
-

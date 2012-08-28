@@ -223,7 +223,13 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private NewBattleModeTab getBattleModeTab() {
 		if (modeTab == null) {
 			modeTab = new NewBattleModeTab();
-			modeTab.setup();
+			
+			//modeTab.setup(); // this was calling NewBattleModeTab.initialise() twice (once already in the constructor).
+			// which was making
+			//the UI bugged, by adding the label twice. if we want to use the setup() in the future,
+			//go to NewBattleModeTab and add whatever u want, but remove initialise() from it.
+			
+			
 		}
 		return modeTab;
 	}
