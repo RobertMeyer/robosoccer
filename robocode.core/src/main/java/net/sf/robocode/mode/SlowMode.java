@@ -7,10 +7,10 @@ public class SlowMode extends ClassicMode {
 	}
 	
 	public String toString() {
-		return new String("Slow Mode");
+		return "Slow Mode";
 	}
 	
 	public String getDescription() {
-		return new String("Robots move at half speed.");
+		return "Robots move at half speed.";
 	}
 }

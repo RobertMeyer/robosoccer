@@ -6,9 +6,6 @@ package net.sf.robocode.mode;
  */
 public interface IMode {
 
-	void execute();
-	
-	
 	/**
 	 * Modifies the velocity of Robots in a battle
 	 * @param velocityIncrement
