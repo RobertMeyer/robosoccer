@@ -4,7 +4,11 @@ import javax.swing.*;
 
 import net.sf.robocode.mode.*;
 import java.awt.*;
-
+/**
+ * 
+ * add javadoc here! eventually
+ *
+ */
 public class NewBattleModeTab extends JPanel {
 	
 	//list of available modes
@@ -18,8 +22,8 @@ public class NewBattleModeTab extends JPanel {
 		
 		// ----- Add your mode here! ------
 		new ClassicMode(), 
-		new SlowMode(),
-		new DifferentWeapons(),
+		new SlowMode(), 
+		new DifferentWeapons(), 
 		new RaceMode()
 	};
 	
