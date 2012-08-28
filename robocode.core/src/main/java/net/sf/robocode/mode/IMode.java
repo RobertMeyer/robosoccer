@@ -15,8 +15,14 @@ public interface IMode {
 	
 	/**
 	 * Returns a string representation of the current Mode
-	 * @return A string representation of a Mode
+	 * @return string representation of a Mode
 	 */
 	public String toString();
+	
+	/**
+	 * Returns a string representing the Mode's description.
+	 * @return String description
+	 */
+	public String getDescription();
 
 }
