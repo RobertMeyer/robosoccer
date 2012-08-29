@@ -16,8 +16,6 @@ package net.sf.robocode.test.robots;
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import static org.hamcrest.CoreMatchers.is;
-
-import org.junit.Ignore;
 import org.junit.Test;
 import robocode.control.events.RoundStartedEvent;
 import robocode.control.events.TurnEndedEvent;
@@ -29,7 +27,6 @@ import robocode.control.snapshot.IRobotSnapshot;
  *
  * @author Pavel Savara (original)
  */
-@Ignore("Temporarily disabled failing test for students' robot due date")
 public class TestPosition extends RobocodeTestBed {
 	int lastTurn;
 

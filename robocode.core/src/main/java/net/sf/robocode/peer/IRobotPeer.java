@@ -15,7 +15,6 @@ package net.sf.robocode.peer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-
 /**
  * @author Pavel Savara (original)
  */
@@ -40,4 +39,6 @@ public interface IRobotPeer {
 	void waitForBattleEndImplSerial() throws IOException;
 
 	void setupThread();
+
+	void equip(String partName);
 }

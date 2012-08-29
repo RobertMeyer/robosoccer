@@ -26,7 +26,7 @@ package robocode;
 
 
 import robocode.robotinterfaces.IAdvancedEvents;
-import robocode.robotinterfaces.IAdvancedRobot;
+import robocode.robotinterfaces.IHouseRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
 
 import java.io.File;
@@ -35,8 +35,8 @@ import java.util.Vector;
 
 /**
  * A more advanced type of robot than Robot that allows non-blocking calls,
- * custom events, writes to the filesystem, and may equip equipment parts.
- *
+ * custom events, and writes to the filesystem.
+ * <p/>
  * If you have not already, you should create a {@link Robot} first.
  *
  * @author Mathew A. Nelson (original)
@@ -52,7 +52,7 @@ import java.util.Vector;
  * @see TeamRobot
  * @see Droid
  */
-public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRobot, IAdvancedEvents {
+public class HouseRobot extends _AdvancedRadiansRobot implements IHouseRobot, IAdvancedEvents {
 
 	/**
 	 * Returns the distance remaining in the robot's current move measured in
@@ -1480,13 +1480,13 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 *                If {@code radians} > 0 the robot is set to turn left.
 	 *                If {@code radians} < 0 the robot is set to turn right.
 	 *                If {@code radians} = 0 the robot is set to stop turning.
-	 * @see AdvancedRobot#setTurnLeft(double) setTurnLeft(double)
+	 * @see HouseRobot#setTurnLeft(double) setTurnLeft(double)
 	 * @see #turnLeft(double)
 	 * @see #turnLeftRadians(double)
 	 * @see #turnRight(double)
 	 * @see #turnRightRadians(double)
-	 * @see AdvancedRobot#setTurnRight(double) setTurnRight(double)
-	 * @see AdvancedRobot#setTurnRightRadians(double) setTurnRightRadians(double)
+	 * @see HouseRobot#setTurnRight(double) setTurnRight(double)
+	 * @see HouseRobot#setTurnRightRadians(double) setTurnRightRadians(double)
 	 */
 	public void setTurnLeftRadians(double radians) {
 		super.setTurnLeftRadians(radians);
@@ -1521,13 +1521,13 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 *                If {@code radians} > 0 the robot is set to turn right.
 	 *                If {@code radians} < 0 the robot is set to turn left.
 	 *                If {@code radians} = 0 the robot is set to stop turning.
-	 * @see AdvancedRobot#setTurnRight(double) setTurnRight(double)
+	 * @see HouseRobot#setTurnRight(double) setTurnRight(double)
 	 * @see #turnRight(double)
 	 * @see #turnRightRadians(double)
 	 * @see #turnLeft(double)
 	 * @see #turnLeftRadians(double)
-	 * @see AdvancedRobot#setTurnLeft(double) setTurnLeft(double)
-	 * @see AdvancedRobot#setTurnLeftRadians(double) setTurnLeftRadians(double)
+	 * @see HouseRobot#setTurnLeft(double) setTurnLeft(double)
+	 * @see HouseRobot#setTurnLeftRadians(double) setTurnLeftRadians(double)
 	 */
 	public void setTurnRightRadians(double radians) {
 		super.setTurnRightRadians(radians);
@@ -1673,13 +1673,13 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 *                If {@code radians} > 0 the robot's gun is set to turn left.
 	 *                If {@code radians} < 0 the robot's gun is set to turn right.
 	 *                If {@code radians} = 0 the robot's gun is set to stop turning.
-	 * @see AdvancedRobot#setTurnGunLeft(double) setTurnGunLeft(double)
+	 * @see HouseRobot#setTurnGunLeft(double) setTurnGunLeft(double)
 	 * @see #turnGunLeft(double)
 	 * @see #turnGunLeftRadians(double)
 	 * @see #turnGunRight(double)
 	 * @see #turnGunRightRadians(double)
-	 * @see AdvancedRobot#setTurnGunRight(double) setTurnGunRight(double)
-	 * @see AdvancedRobot#setTurnGunRightRadians(double) setTurnGunRightRadians(double)
+	 * @see HouseRobot#setTurnGunRight(double) setTurnGunRight(double)
+	 * @see HouseRobot#setTurnGunRightRadians(double) setTurnGunRightRadians(double)
 	 * @see #setAdjustGunForRobotTurn(boolean)
 	 */
 	public void setTurnGunLeftRadians(double radians) {
@@ -1715,13 +1715,13 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 *                If {@code radians} > 0 the robot's gun is set to turn left.
 	 *                If {@code radians} < 0 the robot's gun is set to turn right.
 	 *                If {@code radians} = 0 the robot's gun is set to stop turning.
-	 * @see AdvancedRobot#setTurnGunRight(double) setTurnGunRight(double)
+	 * @see HouseRobot#setTurnGunRight(double) setTurnGunRight(double)
 	 * @see #turnGunRight(double)
 	 * @see #turnGunRightRadians(double)
 	 * @see #turnGunLeft(double)
 	 * @see #turnGunLeftRadians(double)
-	 * @see AdvancedRobot#setTurnGunLeft(double) setTurnGunLeft(double)
-	 * @see AdvancedRobot#setTurnGunLeftRadians(double) setTurnGunLeftRadians(double)
+	 * @see HouseRobot#setTurnGunLeft(double) setTurnGunLeft(double)
+	 * @see HouseRobot#setTurnGunLeftRadians(double) setTurnGunLeftRadians(double)
 	 * @see #setAdjustGunForRobotTurn(boolean)
 	 */
 	public void setTurnGunRightRadians(double radians) {
@@ -1757,13 +1757,13 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 *                If {@code radians} > 0 the robot's radar is set to turn left.
 	 *                If {@code radians} < 0 the robot's radar is set to turn right.
 	 *                If {@code radians} = 0 the robot's radar is set to stop turning.
-	 * @see AdvancedRobot#setTurnRadarLeft(double) setTurnRadarLeft(double)
+	 * @see HouseRobot#setTurnRadarLeft(double) setTurnRadarLeft(double)
 	 * @see #turnRadarLeft(double)
 	 * @see #turnRadarLeftRadians(double)
 	 * @see #turnRadarRight(double)
 	 * @see #turnRadarRightRadians(double)
-	 * @see AdvancedRobot#setTurnRadarRight(double) setTurnRadarRight(double)
-	 * @see AdvancedRobot#setTurnRadarRightRadians(double) setTurnRadarRightRadians(double)
+	 * @see HouseRobot#setTurnRadarRight(double) setTurnRadarRight(double)
+	 * @see HouseRobot#setTurnRadarRightRadians(double) setTurnRadarRightRadians(double)
 	 * @see #setAdjustRadarForRobotTurn(boolean)
 	 * @see #setAdjustRadarForGunTurn(boolean)
 	 */
@@ -1800,13 +1800,13 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 *                If {@code radians} > 0 the robot's radar is set to turn left.
 	 *                If {@code radians} < 0 the robot's radar is set to turn right.
 	 *                If {@code radians} = 0 the robot's radar is set to stop turning.
-	 * @see AdvancedRobot#setTurnRadarRight(double) setTurnRadarRight(double)
+	 * @see HouseRobot#setTurnRadarRight(double) setTurnRadarRight(double)
 	 * @see #turnRadarRight(double)
 	 * @see #turnRadarRightRadians(double)
 	 * @see #turnRadarLeft(double)
 	 * @see #turnRadarLeftRadians(double)
-	 * @see AdvancedRobot#setTurnRadarLeft(double) setTurnRadarLeft(double)
-	 * @see AdvancedRobot#setTurnRadarLeftRadians(double) setTurnRadarLeftRadians(double)
+	 * @see HouseRobot#setTurnRadarLeft(double) setTurnRadarLeft(double)
+	 * @see HouseRobot#setTurnRadarLeftRadians(double) setTurnRadarLeftRadians(double)
 	 * @see #setAdjustRadarForRobotTurn(boolean)
 	 * @see #setAdjustRadarForGunTurn(boolean)
 	 */
@@ -1982,10 +1982,10 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 * means that the gun is currently turning to the left.
 	 *
 	 * @return the angle remaining in the gun's turn, in radians
-	 * @see AdvancedRobot#getGunTurnRemaining()
-	 * @see AdvancedRobot#getTurnRemaining() getTurnRemaining()
+	 * @see HouseRobot#getGunTurnRemaining()
+	 * @see HouseRobot#getTurnRemaining() getTurnRemaining()
 	 * @see #getTurnRemainingRadians()
-	 * @see AdvancedRobot#getRadarTurnRemaining() getRadarTurnRemaining()
+	 * @see HouseRobot#getRadarTurnRemaining() getRadarTurnRemaining()
 	 * @see #getRadarTurnRemainingRadians()
 	 */
 	public double getGunTurnRemainingRadians() {
@@ -2000,10 +2000,10 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 * means that the radar is currently turning to the left.
 	 *
 	 * @return the angle remaining in the radar's turn, in radians
-	 * @see AdvancedRobot#getRadarTurnRemaining()
-	 * @see AdvancedRobot#getTurnRemaining() getTurnRemaining()
+	 * @see HouseRobot#getRadarTurnRemaining()
+	 * @see HouseRobot#getTurnRemaining() getTurnRemaining()
 	 * @see #getTurnRemainingRadians()
-	 * @see AdvancedRobot#getGunTurnRemaining() getGunTurnRemaining()
+	 * @see HouseRobot#getGunTurnRemaining() getGunTurnRemaining()
 	 * @see #getGunTurnRemainingRadians()
 	 */
 	public double getRadarTurnRemainingRadians() {
@@ -2018,27 +2018,14 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 * means that the robot is currently turning to the left.
 	 *
 	 * @return the angle remaining in the robot's turn, in radians
-	 * @see AdvancedRobot#getTurnRemaining()
-	 * @see AdvancedRobot#getGunTurnRemaining() getGunTurnRemaining()
+	 * @see HouseRobot#getTurnRemaining()
+	 * @see HouseRobot#getGunTurnRemaining() getGunTurnRemaining()
 	 * @see #getGunTurnRemainingRadians()
-	 * @see AdvancedRobot#getRadarTurnRemaining() getRadarTurnRemaining()
+	 * @see HouseRobot#getRadarTurnRemaining() getRadarTurnRemaining()
 	 * @see #getRadarTurnRemainingRadians()
 	 */
 	public double getTurnRemainingRadians() {
 		return super.getTurnRemainingRadians();
-	}
-
-	/**
-	 * If the part's slot attribute matches the given slot, it equips the part
-	 * in that slot.
-	 *
-	 * @param partName the name of the part to equip
-	 * @see Equipment
-	 */
-	public void equip(String partName) {
-		if (peer != null) {
-			((IAdvancedRobotPeer) peer).equip(partName);
-		}
 	}
 
 	/**
