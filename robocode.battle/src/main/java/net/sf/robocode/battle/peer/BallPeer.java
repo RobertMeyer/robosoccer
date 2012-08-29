@@ -56,62 +56,33 @@ public final class BallPeer extends RobotPeer {
 	
 	protected void updateHeading() {
 		boolean normalizeHeading = true;
-
-		double turnRate = min(currentCommands.getMaxTurnRate()*5,
-				(.4 + .6 * (1 - (abs(velocity) / Rules.MAX_VELOCITY))) * Rules.MAX_TURN_RATE_RADIANS * 5);
-
-		if (currentCommands.getBodyTurnRemaining() > 0) {
-			if (currentCommands.getBodyTurnRemaining() < turnRate) {
-				bodyHeading += currentCommands.getBodyTurnRemaining();
-				gunHeading += currentCommands.getBodyTurnRemaining();
-				radarHeading += currentCommands.getBodyTurnRemaining();
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(
-							currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(
-							currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				currentCommands.setBodyTurnRemaining(0);
-			} else {
-				bodyHeading += turnRate;
-				gunHeading += turnRate;
-				radarHeading += turnRate;
-				currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() - turnRate);
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() - turnRate);
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() - turnRate);
-				}
+		
+		if (currentCommands.getBodyTurnRemaining() > 0) {	
+			bodyHeading += currentCommands.getBodyTurnRemaining();
+			gunHeading += currentCommands.getBodyTurnRemaining();
+			radarHeading += currentCommands.getBodyTurnRemaining();
+			if (currentCommands.isAdjustGunForBodyTurn()) {
+				currentCommands.setGunTurnRemaining(
+						currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
 			}
+			if (currentCommands.isAdjustRadarForBodyTurn()) {
+				currentCommands.setRadarTurnRemaining(
+						currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
+			}
+			currentCommands.setBodyTurnRemaining(0);
 		} else if (currentCommands.getBodyTurnRemaining() < 0) {
-			if (currentCommands.getBodyTurnRemaining() > -turnRate) {
-				bodyHeading += currentCommands.getBodyTurnRemaining();
-				gunHeading += currentCommands.getBodyTurnRemaining();
-				radarHeading += currentCommands.getBodyTurnRemaining();
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(
-							currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(
-							currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				currentCommands.setBodyTurnRemaining(0);
-			} else {
-				bodyHeading -= turnRate;
-				gunHeading -= turnRate;
-				radarHeading -= turnRate;
-				currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() + turnRate);
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() + turnRate);
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() + turnRate);
-				}
+			bodyHeading += currentCommands.getBodyTurnRemaining();
+			gunHeading += currentCommands.getBodyTurnRemaining();
+			radarHeading += currentCommands.getBodyTurnRemaining();
+			if (currentCommands.isAdjustGunForBodyTurn()) {
+				currentCommands.setGunTurnRemaining(
+						currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
 			}
+			if (currentCommands.isAdjustRadarForBodyTurn()) {
+				currentCommands.setRadarTurnRemaining(
+						currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
+			}
+			currentCommands.setBodyTurnRemaining(0);
 		} else {
 			normalizeHeading = false;
 		}
