@@ -54,6 +54,11 @@ public final class BallPeer extends RobotPeer {
 		return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
 	}
 	
+
+	public void updateEnergy(double delta) {
+		// Do nothing
+	}
+	
 	protected void updateHeading() {
 		boolean normalizeHeading = true;
 		
