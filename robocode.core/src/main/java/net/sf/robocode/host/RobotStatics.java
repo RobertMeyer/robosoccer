@@ -40,6 +40,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	private final boolean isTeamLeader;
 	private final boolean isDroid;
 	private final boolean isHouseRobot;
+	private final boolean isFreezeRobot;
 	private final String name;
 	private final String shortName;
 	private final String veryShortName;
@@ -79,6 +80,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.isTeamRobot = specification.isTeamRobot();
 		this.isDroid = specification.isDroid();
 		this.isHouseRobot = specification.isHouseRobot();
+		this.isFreezeRobot = specification.isFreezeRobot();
 		this.isTeamLeader = isLeader;
 		this.battleRules = rules;
 
@@ -120,6 +122,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.robotIndex = robotIndex;
 		this.teamIndex = teamIndex;
 		this.isHouseRobot = false;
+		this.isFreezeRobot = false;
 	}
 	
 	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
@@ -145,6 +148,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.robotIndex = robotIndex;
 		this.teamIndex = teamIndex;
 		this.isHouseRobot = isHouseRobot;
+		this.isFreezeRobot = false;
 	}
 
 	public String getAnnonymousName() {
@@ -181,6 +185,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	
 	public boolean isHouseRobot() {
 		return isHouseRobot;
+	}
+	
+	public boolean isFreezeRobot() {
+		return isFreezeRobot;
 	}
 
 	public String getName() {

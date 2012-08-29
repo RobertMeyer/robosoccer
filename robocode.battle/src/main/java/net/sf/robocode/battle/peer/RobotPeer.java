@@ -291,6 +291,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isHouseRobot() {
 		return statics.isHouseRobot();
 	}
+	
+	public boolean isFreezeRobot() {
+		return statics.isFreezeRobot();
+	}
 
 	public boolean isJuniorRobot() {
 		return statics.isJuniorRobot();
@@ -760,6 +764,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//TODO: Change to actual starting spots [Team Awesome]
 			x = 0;
 			y = 0;
+		} else if (statics.isFreezeRobot()){
+			energy = 600;
 		} else {
 			energy = 100;
 		}
@@ -1065,6 +1071,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 							}
 						}
 					}
+					
+					boolean freeze = otherRobot.isFreezeRobot();
+					boolean advanced = otherRobot.isAdvancedRobot();
+					String other = otherRobot.getName();
+					
+					boolean meFreeze = this.isFreezeRobot();
+					boolean meAdvanced = this.isAdvancedRobot();
+					String me = this.getName();
+					
+
+					
 					addEvent(
 							new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
 							otherRobot.energy, atFault));

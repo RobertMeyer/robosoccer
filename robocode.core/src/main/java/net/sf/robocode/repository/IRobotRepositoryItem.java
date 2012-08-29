@@ -30,6 +30,8 @@ public interface IRobotRepositoryItem extends IRepositoryItem {
 	boolean isDroid();
 	
 	boolean isHouseRobot();
+	
+	boolean isFreezeRobot();
 
 	boolean isTeamRobot();
 

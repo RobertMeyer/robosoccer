@@ -27,6 +27,7 @@ package robocode;
 
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IAdvancedRobot;
+import robocode.robotinterfaces.IFreezeRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
 
 import java.io.File;
@@ -56,7 +57,7 @@ import java.util.Vector;
  * @see TeamRobot
  * @see Droid
  */
-public class FreezeRobot extends _AdvancedRadiansRobot implements IAdvancedRobot, IAdvancedEvents {
+public class FreezeRobot extends _AdvancedRadiansRobot implements IFreezeRobot, IAdvancedRobot, IAdvancedEvents {
 
 	/**
 	 * Returns the distance remaining in the robot's current move measured in

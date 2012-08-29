@@ -116,6 +116,7 @@ public class JavaHost implements IHost {
 		boolean isTeamRobot = false;
 		boolean isDroid = false;
 		boolean isHouseRobot = false;
+		boolean isFreezeRobot = false;
 
 		if (Droid.class.isAssignableFrom(robotClass)) {
 			isDroid = true;
@@ -131,6 +132,10 @@ public class JavaHost implements IHost {
 		
 		if (IHouseRobot.class.isAssignableFrom(robotClass)) {
 			isHouseRobot = true;
+		}
+		
+		if (IFreezeRobot.class.isAssignableFrom(robotClass)) {
+			isFreezeRobot = true;
 		}
 
 		if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
@@ -179,7 +184,7 @@ public class JavaHost implements IHost {
 			}
 		}
 		return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-				isTeamRobot, isDroid, isHouseRobot);
+				isTeamRobot, isDroid, isHouseRobot, isFreezeRobot);
 	}
 
 	private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {
