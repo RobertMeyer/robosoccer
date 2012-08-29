@@ -171,14 +171,16 @@ public class BulletPeer {
 				victim = otherRobot;
 
 				double damage = Rules.getBulletDamage(power);
+				
+				//TODO: This is making the tests fail needs investigation [Team Fork-bomb]
+				//* otherRobot.getRobotArmor();
+				
 				double score = damage;
 
 				if (score > otherRobot.getEnergy()) {
 					score = otherRobot.getEnergy();
 				}
 				
-				// The new damage by the other robot, based on its armor factors.
-				damage = otherRobot.attributes.get().get(RobotAttribute.ARMOR) * damage;
 				otherRobot.updateEnergy(-damage);
 
 				boolean teamFire = (owner.getTeamPeer() != null && owner.getTeamPeer() == otherRobot.getTeamPeer());
@@ -262,7 +264,9 @@ public class BulletPeer {
 	}
 
 	public double getVelocity() {
-		return owner.getBulletSpeed(power);
+		return Rules.getBulletSpeed(power);
+		//TODO: This is making the tests fail needs investigation [Team Fork-bomb]
+		//return owner.getBulletSpeed(power);
 	}
 
 	public RobotPeer getVictim() {

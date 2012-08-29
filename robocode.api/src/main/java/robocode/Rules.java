@@ -213,7 +213,7 @@ public final class Rules {
 	 *
 	 * @param bulletPower the energy power of the bullet.
 	 * @return bullet speed in pixels/turn
-	 * @deprecated It is called through the robotPeer interface instead to check for
+	 * @deprecated It is called through robotPeer instead to check for
 	 * 			a robots individual attributes.  Left in place for older versions.
 	 */
 	@Deprecated
@@ -228,7 +228,10 @@ public final class Rules {
 	 *
 	 * @param bulletPower the energy power of the bullet.
 	 * @return gun heat
+	 * @deprecated It is called through robotPeer instead to check for a robots
+	 * 			individual attributes.  Left in place for older versions.
 	 */
+	@Deprecated
 	public static double getGunHeat(double bulletPower) {
 		return 1 + (bulletPower / 5);
 	}
