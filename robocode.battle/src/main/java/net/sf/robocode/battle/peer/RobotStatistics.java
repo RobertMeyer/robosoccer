@@ -64,6 +64,8 @@ public class RobotStatistics implements ContestantStatistics {
 	private double bulletKillBonus;
 	private double rammingDamageScore;
 	private double rammingKillBonus;
+	// Team-Telos addition
+	private double flagScore;
 
 	private Map<String, Double> robotDamageMap;
 
@@ -74,6 +76,8 @@ public class RobotStatistics implements ContestantStatistics {
 	private double totalBulletKillBonus;
 	private double totalRammingDamageScore;
 	private double totalRammingKillBonus;
+	// Team-Telos addition
+	private double totalFlagScore;
 
 	private int totalFirsts;
 	private int totalSeconds;
@@ -95,6 +99,7 @@ public class RobotStatistics implements ContestantStatistics {
 		totalBulletKillBonus = results.getBulletDamageBonus();
 		totalRammingDamageScore = results.getRamDamage();
 		totalRammingKillBonus = results.getRamDamageBonus();
+		totalFlagScore = results.getFlagScore();
 		totalFirsts = results.getFirsts();
 		totalSeconds = results.getSeconds();
 		totalThirds = results.getThirds();
@@ -119,6 +124,7 @@ public class RobotStatistics implements ContestantStatistics {
 		bulletKillBonus = 0;
 		rammingDamageScore = 0;
 		rammingKillBonus = 0;
+		flagScore = 0;
 	}
 
 	public void generateTotals() {
@@ -128,6 +134,9 @@ public class RobotStatistics implements ContestantStatistics {
 		totalBulletKillBonus += bulletKillBonus;
 		totalRammingDamageScore += rammingDamageScore;
 		totalRammingKillBonus += rammingKillBonus;
+		totalFlagScore += flagScore;
+		
+		// Unsure as to whether or not we should add flagScore into totalScore
 
 		totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
 				+ totalBulletKillBonus + totalLastSurvivorBonus;
@@ -160,6 +169,10 @@ public class RobotStatistics implements ContestantStatistics {
 
 	public double getTotalRammingKillBonus() {
 		return totalRammingKillBonus;
+	}
+	
+	public double getTotalFlagScore() {
+		return totalFlagScore;
 	}
 
 	public int getTotalFirsts() {
@@ -306,8 +319,8 @@ public class RobotStatistics implements ContestantStatistics {
 
 	public BattleResults getFinalResults() {
 		return new BattleResults(robotPeer.getTeamName(), rank, totalScore, totalSurvivalScore, totalLastSurvivorBonus,
-				totalBulletDamageScore, totalBulletKillBonus, totalRammingDamageScore, totalRammingKillBonus, totalFirsts,
-				totalSeconds, totalThirds);
+				totalBulletDamageScore, totalBulletKillBonus, totalRammingDamageScore, totalRammingKillBonus,
+				totalFlagScore, totalFirsts, totalSeconds, totalThirds);
 	}
 
 	private double getRobotDamage(String robot) {
@@ -331,4 +344,5 @@ public class RobotStatistics implements ContestantStatistics {
 	public boolean isInRound() {
 		return isInRound;
 	}
+
 }
