@@ -24,6 +24,7 @@ public class ClassicMode implements IMode {
 	public String toString() {
 		return "Classic Mode";
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
