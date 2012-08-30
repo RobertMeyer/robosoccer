@@ -52,4 +52,29 @@ public interface ITeleporter {
 	 * @return
 	 */
 	double getY(Portal target);
+	
+	/**
+	* Checks to see if the current teleporter is a black hole
+	* @return true if is a black hole, false if it is not 
+	*/
+	boolean isBlackHole();
+	
+	/**
+	* Sets a new width and height for the black hole
+	*/
+	void updateBlackHoleSize();
+	
+	/**
+	 * Gets and returns the width of the teleporter
+	 * @return the width of the teleporter
+	 */
+	double getWidth();
+	/**
+	 * Gets and returns the height of the teleporter
+	 * @return the height of the teleporter
+	 */
+	double getHeight();
+	
+	
+	
 }

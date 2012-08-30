@@ -29,4 +29,21 @@ public interface ITeleporterSnapshot {
 	 * @return the Y position of the second teleporter.
 	 */
 	double getPortal2Y();
+	/**
+	 * Return boolean based on whether it is a black hole
+	 * @return boolean if is black hole
+	 */
+	boolean isBlackHole();
+	
+	/**
+	 * Gets the width of the teleporter
+	 * @return the width of the teleporter
+	 */
+	double getWidth();
+	
+	/**
+	 * Gets the height of the teleporter
+	 * @return the height of the teleporter
+	 */
+	double getHeight();
 }

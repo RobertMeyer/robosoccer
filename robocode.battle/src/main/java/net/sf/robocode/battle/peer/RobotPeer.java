@@ -167,6 +167,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private double x;
 	private double y;
 	private int skippedTurns;
+	private boolean collidedWithBlackHole;
 
 	private boolean scan;
 	private boolean turnedRadarWithGun; // last round
@@ -1165,7 +1166,13 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			xy = teleporter.getCollisionReaction(bound);
 			if(xy.equals(fail)){
 				
-			}else if(xy.equals(death)){
+			}else if(xy[0] == -2 && xy[1] == -2){
+				//if there is a collision with a black hole, update size, set
+				//the collision to true and kill the robot
+				teleporter.updateBlackHoleSize();
+				collidedWithBlackHole = true;
+				kill();
+				
 				
 			}else if(xy[0]>0 && xy[1]>0){
 				this.x = xy[0]+(Math.sin(newHeading)*50);
@@ -1179,6 +1186,10 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	private double getBattleFieldHeight() {
 		return battleRules.getBattlefieldHeight();
+	}
+	
+	public boolean collidedWithBlackHole() {
+		return collidedWithBlackHole;
 	}
 
 	private double getBattleFieldWidth() {
