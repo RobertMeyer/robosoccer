@@ -194,8 +194,10 @@ public final class Battle extends BaseBattle {
 
 	private void createTeleporters(BattleProperties battleProperties){
 		//pull the battlefields width and height
-		int width = battleProperties.getBattlefieldWidth();
-		int height = battleProperties.getBattlefieldWidth();
+		//int width = battleProperties.getBattlefieldWidth();
+		int width = battleRules.getBattlefieldWidth();
+		//int height = battleProperties.getBattlefieldWidth();
+		int height = battleRules.getBattlefieldHeight();
 		//randomise some x and y co-ordinates that are away from the walls by 5
 		double x1 = Math.random()*(width-80)+40;
 		double x2 = Math.random()*(width-80)+40;
