@@ -1072,6 +1072,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						}
 					}
 					
+					
 					boolean freeze = otherRobot.isFreezeRobot();
 					boolean advanced = otherRobot.isAdvancedRobot();
 					String other = otherRobot.getName();
@@ -1079,9 +1080,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					boolean meFreeze = this.isFreezeRobot();
 					boolean meAdvanced = this.isAdvancedRobot();
 					String me = this.getName();
-					
-
-					
+									
 					addEvent(
 							new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
 							otherRobot.energy, atFault));
