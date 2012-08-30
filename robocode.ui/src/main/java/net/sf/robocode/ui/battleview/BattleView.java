@@ -16,6 +16,7 @@
 package net.sf.robocode.ui.battleview;
 
 
+import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
@@ -33,6 +34,7 @@ import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
+import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 
 import java.awt.*;
@@ -333,6 +335,8 @@ public class BattleView extends Canvas {
 		if (snapShot != null) {
 			// Draw all bullets
 			drawBullets(g, snapShot);
+			
+			drawTeleporters(g, snapShot);
 
 			// Draw all text
 			drawText(g, snapShot);
@@ -529,6 +533,28 @@ public class BattleView extends Canvas {
 		return robotGraphics[robotIndex];
 	}
 
+	private void drawTeleporters(Graphics2D g, ITurnSnapshot snapShot) {
+		final Shape savedClip = g.getClip();
+
+		g.setClip(null);
+
+		double x1, y1, x2, y2;
+		for (ITeleporterSnapshot teleportSnapshot : snapShot.getTeleporters()) {
+			x1 = teleportSnapshot.getPortal1X();
+			y1 = teleportSnapshot.getPortal1Y();
+			x2 = teleportSnapshot.getPortal2X();
+			y2 = teleportSnapshot.getPortal2Y();
+			
+			g.setColor(Color.GREEN);
+		    Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
+		    Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
+		    
+			g.fill(portal1);
+			g.fill(portal2);
+			
+		}
+		g.setClip(savedClip);
+	}
 	private void drawBullets(Graphics2D g, ITurnSnapshot snapShot) {
 		final Shape savedClip = g.getClip();
 

@@ -17,6 +17,7 @@ package net.sf.robocode.battle.snapshot;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.TeleporterPeer;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
@@ -44,6 +45,9 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 	/** List of snapshots for the bullets that are currently on the battlefield */
 	private List<IBulletSnapshot> bullets;
+	
+	//List of snapshots for teleporters on the current battefield
+	private List<ITeleporterSnapshot> teleports;
 
 	/** Current TPS (turns per second) */
 	private int tps;
@@ -68,9 +72,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	 * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
 	 *                    {@code false} otherwise.
 	 */
-	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, boolean readoutText) {
+	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<TeleporterPeer> battleTeleporters, boolean readoutText) {
 		robots = new ArrayList<IRobotSnapshot>();
 		bullets = new ArrayList<IBulletSnapshot>();
+		teleports = new ArrayList<ITeleporterSnapshot>();
 
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
@@ -78,6 +83,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 		for (BulletPeer bulletPeer : battleBullets) {
 			bullets.add(new BulletSnapshot(bulletPeer));
+		}
+		
+		for (TeleporterPeer teleporterPeer : battleTeleporters) {
+			teleports.add(new TeleporterSnapshot(teleporterPeer));
 		}
 
 		tps = battle.getTPS();
@@ -102,6 +111,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	 */
 	public IBulletSnapshot[] getBullets() {
 		return bullets.toArray(new IBulletSnapshot[bullets.size()]);
+	}
+	
+	public ITeleporterSnapshot[] getTeleporters() {
+		return teleports.toArray(new ITeleporterSnapshot[teleports.size()]);
 	}
 
 	/**

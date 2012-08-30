@@ -202,8 +202,6 @@ public final class Battle extends BaseBattle {
 		double y1 = Math.random()*(height-80)+40;
 		double y2 = Math.random()*(height-80)+40;
 		
-		x1 = 100;
-		y1 = 100;
 		
 		//add a new TeleporterPeer
 		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
@@ -485,7 +483,7 @@ public final class Battle extends BaseBattle {
 
 		Logger.logMessage(""); // puts in a new-line in the log message
 
-		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, false);
+		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, teleporters, false);
 
 		eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
 	}
@@ -605,7 +603,7 @@ public final class Battle extends BaseBattle {
 
 	@Override
 	protected void finalizeTurn() {
-		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, true)));
+		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, teleporters, true)));
 
 		super.finalizeTurn();
 	}
@@ -717,8 +715,8 @@ public final class Battle extends BaseBattle {
 
 		for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
 			//spawn teleporter on dead robot
-			double y2 = 100;
-			double x2 = 100;
+			double y2 = -1;
+			double x2 = -1;
 			double x1 = deadRobot.getX();
 			double y1 = deadRobot.getY();
 			teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
