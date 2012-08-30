@@ -41,6 +41,7 @@ public class ImageManager implements IImageManager {
 
 	private RenderImage[][] explosionRenderImages;
 	private RenderImage debriseRenderImage;
+	private RenderImage teleporterImage;
 
 	private Image bodyImage;
 	private Image gunImage;
@@ -127,6 +128,14 @@ public class ImageManager implements IImageManager {
 			debriseRenderImage = new RenderImage(getImage("/net/sf/robocode/ui/images/ground/explode_debris.png"));
 		}
 		return debriseRenderImage;
+	}
+	
+	public RenderImage getTeleporterRenderImage() {
+		if (teleporterImage == null) {
+			//do this
+			//teleporterImage = new RenderImage(getImage(""));
+		}
+		return teleporterImage;
 	}
 
 	private Image getImage(String filename) {

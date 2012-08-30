@@ -28,6 +28,8 @@ public interface IImageManager {
 	RenderImage getExplosionRenderImage(int which, int frame);
 
 	RenderImage getExplosionDebriseRenderImage();
+	
+	RenderImage getTeleporterRenderImage();
 
 	RenderImage getColoredBodyRenderImage(Integer color);
 

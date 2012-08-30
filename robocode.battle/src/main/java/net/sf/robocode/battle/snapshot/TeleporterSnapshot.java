@@ -32,19 +32,16 @@ public class TeleporterSnapshot implements ITeleporterSnapshot {
 
 	@Override
 	public double getPortal1Y() {
-		// TODO Auto-generated method stub
 		return y1;
 	}
 
 	@Override
 	public double getPortal2X() {
-		// TODO Auto-generated method stub
 		return x2;
 	}
 
 	@Override
 	public double getPortal2Y() {
-		// TODO Auto-generated method stub
 		return y2;
 	}
 
