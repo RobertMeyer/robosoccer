@@ -57,6 +57,8 @@ public class RobotStatistics implements ContestantStatistics {
 	private final int robots;
 	private boolean isActive;
 	private boolean isInRound;
+	/* Does the Robot have the flag */
+	private boolean hasFlag; 
 
 	private double survivalScore;
 	private double lastSurvivorBonus;
@@ -114,6 +116,7 @@ public class RobotStatistics implements ContestantStatistics {
 
 		isActive = true;
 		isInRound = true;
+		hasFlag = false;
 	}
 
 	public void resetScores() {
@@ -304,6 +307,14 @@ public class RobotStatistics implements ContestantStatistics {
 			totalThirds++;
 			break;
 		}
+	}
+	
+	/** 
+	 * Team-Telos - Score the flag points 
+	 */
+	public void scoreFlag() {
+		if(hasFlag)
+		flagScore++;
 	}
 
 	public void scoreFirsts() {
