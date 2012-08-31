@@ -24,6 +24,8 @@ public interface IImageManager {
 	void initialize();
 
 	Image getGroundTileImage(int index);
+	
+	Image getFieldTileImage(int index);
 
 	RenderImage getExplosionRenderImage(int which, int frame);
 

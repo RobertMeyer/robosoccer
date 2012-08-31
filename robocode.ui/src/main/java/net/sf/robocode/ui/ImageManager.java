@@ -38,6 +38,7 @@ public class ImageManager implements IImageManager {
 	private final ISettingsManager properties;
 
 	private Image[] groundImages;
+	private Image[] soccerField;
 
 	private RenderImage[][] explosionRenderImages;
 	private RenderImage debriseRenderImage;
@@ -61,6 +62,7 @@ public class ImageManager implements IImageManager {
 
 		// Reset image cache
 		groundImages = new Image[5];
+		soccerField = new Image[130];
 		explosionRenderImages = null;
 		debriseRenderImage = null;
 		bodyImage = null;
@@ -76,10 +78,17 @@ public class ImageManager implements IImageManager {
 		getRadarImage();
 		getExplosionRenderImage(0, 0);
 	}
+	
+	public Image getFieldTileImage(int index) {
+		if (soccerField[index] == null) {
+			soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/field_tile-" + index + ".png");
+		}
+		return soccerField[index];
+	}
 
 	public Image getGroundTileImage(int index) {
 		if (groundImages[index] == null) {
-			groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
+			groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/field_tile-" + index + ".png");
 		}
 		return groundImages[index];
 	}
