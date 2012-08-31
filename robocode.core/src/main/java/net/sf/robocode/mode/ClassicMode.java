@@ -31,4 +31,11 @@ public class ClassicMode implements IMode {
 		return description;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void respawn() {
+		return;
+	}
+	
 }
