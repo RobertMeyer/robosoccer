@@ -132,8 +132,7 @@ public class ImageManager implements IImageManager {
 	
 	public RenderImage getTeleporterRenderImage() {
 		if (teleporterImage == null) {
-			//do this
-			//teleporterImage = new RenderImage(getImage(""));
+			teleporterImage = new RenderImage(getImage("/net/sf/robocode/ui/images/portal.png"));
 		}
 		return teleporterImage;
 	}
