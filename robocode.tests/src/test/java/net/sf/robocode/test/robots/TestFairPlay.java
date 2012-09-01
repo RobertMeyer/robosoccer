@@ -15,7 +15,7 @@ package net.sf.robocode.test.robots;
 import junit.framework.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
-
+import org.junit.Ignore;
 import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IScoreSnapshot;
@@ -25,6 +25,8 @@ import robocode.control.snapshot.ITurnSnapshot;
 /**
  * @author Flemming N. Larsen (original)
  */
+@Ignore("This test is based on statistics, and thus fails occasionaly when" +
+		"it shouldn't.  On the advice of Will this test has been ignored.")
 public class TestFairPlay extends RobocodeTestBed {
 
 	ITurnSnapshot lastTurnSnapshot;

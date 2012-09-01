@@ -223,7 +223,13 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private NewBattleModeTab getBattleModeTab() {
 		if (modeTab == null) {
 			modeTab = new NewBattleModeTab();
-			modeTab.setup();
+			
+			//modeTab.setup(); // this was calling NewBattleModeTab.initialise() twice (once already in the constructor).
+			// which was making
+			//the UI bugged, by adding the label twice. if we want to use the setup() in the future,
+			//go to NewBattleModeTab and add whatever u want, but remove initialise() from it.
+			
+			
 		}
 		return modeTab;
 	}
@@ -257,9 +263,6 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private WizardTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
 			tabbedPane = new WizardTabbedPane(this);
-			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 0);
-			//tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
-			//tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
 			tabbedPane.insertTab("Robots", null, getRobotSelectionPanel(), null, 0);
 			tabbedPane.setMnemonicAt(0, KeyEvent.VK_R);
 			tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
@@ -269,6 +272,9 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 			tabbedPane.insertTab("Rules", null, getRulesTab(), null, 2);
 			tabbedPane.setMnemonicAt(2, KeyEvent.VK_U);
 			tabbedPane.setDisplayedMnemonicIndexAt(2, 1);
+			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 3);
+			tabbedPane.setMnemonicAt(3, KeyEvent.VK_M);
+			tabbedPane.setDisplayedMnemonicIndexAt(3, 0);
 		}
 		return tabbedPane;
 	}
