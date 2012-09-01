@@ -22,25 +22,24 @@ import robocode.Robot;
  */
 public class Weapon {
 
-	/**
-	 * @param coolDown		Cool-down rate of the weapon.
-	 * @param energyCost	Cost to shoot the weapon once.
-	 * @param minDamage		Minimum damage of the weapon's projectile.
-	 * @param maxDamage		Maximum damage of the weapon's projectile.
-	 */
-	private WeaponType wpn;
 	private final double coolDown;
-	private final double energyCost;
+	private final double projectilePower;
 	private final double minDamage;
 	private final double maxDamage;
 	private final double riochet;
+	private final double accuracy;
+	private final double criticalHit;
+	private final double weaponTurnRate;
 
 	public Weapon(WeaponType w) {
 		coolDown = w.getCoolDown();
-		energyCost = w.getEnergyCost();
+		projectilePower = w.getProjectilePower();
 		minDamage = w.getMinDamage();
 		maxDamage = w.getMaxDamage();
 		riochet = w.getRiochet();
+		accuracy = w.getAccuracy();
+		criticalHit = w.getCriticalHit();
+		weaponTurnRate = w.getWeaponTurnRate();
 	}
 	
 }
