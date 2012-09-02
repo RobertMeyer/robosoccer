@@ -15,6 +15,9 @@ package net.sf.robocode.peer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import robocode.EquipmentPart;
+import robocode.EquipmentPartSlot;
+
 
 /**
  * @author Pavel Savara (original)
@@ -40,4 +43,6 @@ public interface IRobotPeer {
 	void waitForBattleEndImplSerial() throws IOException;
 
 	void setupThread();
+
+	void equip(EquipmentPartSlot slot, EquipmentPart part);
 }
