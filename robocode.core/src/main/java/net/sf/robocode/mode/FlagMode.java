@@ -1,5 +1,8 @@
 package net.sf.robocode.mode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Basic Construct for the CTF mode:
  *  Contains methods for initialising settings
@@ -27,6 +30,8 @@ public class FlagMode extends ClassicMode {
 	// Class Variables
 	private double pointLimit;
 	private double timeLimit;
+	
+	List<Integer> items = new ArrayList<Integer>();
 	
 	public String getDescription() {
 		return "Robots score points per turn they are holding the flag.";
@@ -83,6 +88,21 @@ public class FlagMode extends ClassicMode {
 	}
 	
 	public String toString() {
-		return "Capture The Flag.";
+		return "Capture the Flag";
+	}
+	
+	/**
+	 * Get the items needed for the items
+	 * @return the items needed
+	 */
+	public List<Integer> getItemIds() {
+		return items;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setItemIds() {
+		items.add(1); //Flag
 	}
 }

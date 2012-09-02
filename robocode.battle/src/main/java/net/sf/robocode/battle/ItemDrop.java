@@ -15,14 +15,14 @@ import robocode.*;
  *
  */
 
-
+/*
+ * Changes made by team-Telos */
 public abstract	class ItemDrop {
-
-
+	
 	private double xLocation;
 	private double yLocation;
 	private final static double width = 40; //Same width and height as robots
-	private final static double height =40;
+	private final static double height = 40;
 	private boolean isDestroyable;
 	private int lifespan;
 	private double health;
@@ -30,7 +30,6 @@ public abstract	class ItemDrop {
 	private final BoundingRectangle boundingBox;
 	private BattleRules battleRules;
 	private static int id;
-	
 	
 	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;
@@ -40,6 +39,8 @@ public abstract	class ItemDrop {
 		System.out.println("Item made");
 		this.boundingBox = new BoundingRectangle(xLocation, yLocation, width, height);
 		this.battleRules = battle.getBattleRules();
+		
+		/* Set the ID of the item */
 	}
 
 	public BoundingRectangle getBoundingBox(){
@@ -155,6 +156,5 @@ public abstract	class ItemDrop {
 		}
 		return true;
 	}
-	
 
 }

@@ -159,7 +159,11 @@ public final class Battle extends BaseBattle {
 	private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private int activeRobots;
+	
+	/* List of items that are going to be dropped */
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
+	/* Item Map, mapping the item ids to their class names */
+	private Map<Integer, String> itemMap = new TreeMap<Integer, String>();
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -426,6 +430,20 @@ public final class Battle extends BaseBattle {
 			robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
 			robotPeer.println("=========================");
 		}
+		
+		/* Get the item IDs needed for the mode and add them to items */
+		for (Integer id : this.getBattleMode().getItemIds()) {
+			try {
+				items.add((ItemDrop) itemMap.get(id)
+						.getClass()
+						.getMethod("createForMode", IMode.class, Battle.class)
+						.invoke(null, this.getBattleMode(), this));
+			} catch (Exception e) {
+				/* TODO team-Telos Write a better description */
+				System.out.println("SOMETHING WENT WRONG");
+			}
+		}
+
 		for(ItemDrop itemDrop : items){
 			itemDrop.initialiseRoundItems(robots, items);
 		}
@@ -586,7 +604,6 @@ public final class Battle extends BaseBattle {
 
 		super.shutdownTurn();
 	}
-
 	@Override
 	protected void finalizeTurn() {
 		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, true)));
