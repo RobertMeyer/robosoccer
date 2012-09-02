@@ -24,9 +24,4 @@ public interface IMode {
 	 * @return String description
 	 */
 	public String getDescription();
-	
-	/**
-	 * Respawns the robot in a random place.
-	 */
-	public void respawn();
 }

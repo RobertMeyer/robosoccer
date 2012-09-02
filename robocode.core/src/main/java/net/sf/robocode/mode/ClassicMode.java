@@ -24,18 +24,12 @@ public class ClassicMode implements IMode {
 	public String toString() {
 		return "Classic Mode";
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getDescription() {
 		return description;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void respawn() {
-		return;
 	}
 	
 }
