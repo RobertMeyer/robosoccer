@@ -45,6 +45,7 @@
 package net.sf.robocode.battle.peer;
 
 
+import net.sf.robocode.battle.Battle;
 import net.sf.robocode.peer.BulletStatus;
 import robocode.*;
 import robocode.control.snapshot.BulletState;
@@ -71,6 +72,7 @@ public class BulletPeer {
 	protected final RobotPeer owner;
 
 	private final BattleRules battleRules;
+	private final Battle battle;
 	private final int bulletId;
 
 	protected RobotPeer victim;
@@ -103,6 +105,7 @@ public class BulletPeer {
 		this.owner = owner;
 		this.battleRules = battleRules;
 		this.bulletId = bulletId;
+		this.battle = owner.battle;
 		state = BulletState.FIRED;
 		color = owner.getBulletColor(); // Store current bullet color set on robot
 	}
@@ -187,6 +190,7 @@ public class BulletPeer {
 				if (otherRobot.getEnergy() <= 0) {
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
+						battle.getKillstreakTracker().updateKillStreak(owner, otherRobot);
 						if (!teamFire) {
 							final double bonus = owner.getRobotStatistics().scoreBulletKill(otherRobot.getName());
 
@@ -194,6 +198,7 @@ public class BulletPeer {
 								owner.println(
 										"SYSTEM: Bonus for killing "
 												+ (owner.getNameForEvent(otherRobot) + ": " + (int) (bonus + .5)));
+								
 							}
 						}
 					}

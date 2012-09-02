@@ -1571,8 +1571,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public void kill() {
-		// new code
-		new AirStrike(this, battle);
 		battle.resetInactiveTurnCount(10.0);
 		if (isAlive()) {
 			addEvent(new DeathEvent());
