@@ -11,4 +11,8 @@ public class DifferentWeapons extends ClassicMode {
 	public String toString() {
 		return new String("Different weapons");
 	}
+	
+	public String getDescription() {
+		return "Robots can choose a different weapon from the armoury.";
+	}
 }
