@@ -552,12 +552,22 @@ public class BattleView extends Canvas {
 				x2 = teleportSnapshot.getPortal2X();
 				y2 = teleportSnapshot.getPortal2Y();
 				
-				g.setColor(Color.GREEN);
-			    Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
-			    Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
+				RenderImage teleporterRenderImage = imageManager.getTeleporterRenderImage();
+				AffineTransform at = AffineTransform.getTranslateInstance(x1-20, battleField.getHeight() - y1-20);
+				AffineTransform at2 = AffineTransform.getTranslateInstance(x2-20, battleField.getHeight() - y2-20);
+				    
+				teleporterRenderImage.setTransform(at);
+				teleporterRenderImage.paint(g);
+				teleporterRenderImage.setTransform(at2);
+				teleporterRenderImage.paint(g);
+				
+				//lindon's ellipse stuff
+				//g.setColor(Color.GREEN);
+			    //Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
+			    //Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
 			    
-				g.fill(portal1);
-				g.fill(portal2);
+				//g.fill(portal1);
+				//g.fill(portal2);
 			}
 			
 		}
