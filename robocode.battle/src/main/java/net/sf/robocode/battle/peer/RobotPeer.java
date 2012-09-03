@@ -1033,7 +1033,7 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
-				addEvent(new HitItemEvent());
+				//addEvent(new HitItemEvent());
 			}
 		}
 		for (ItemDrop item : itemsDestroyed){
