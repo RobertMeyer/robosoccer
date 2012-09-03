@@ -254,6 +254,7 @@ public class BattleProperties implements Serializable {
 
 	public void setInitialPositions(String initialPositions) {
 		this.initialPositions = initialPositions; 
+		props.setProperty(BATTLE_INITIAL_POSITIONS, "" + initialPositions);
 	}
 
 	public void store(FileOutputStream out, String desc) throws IOException {
@@ -269,6 +270,6 @@ public class BattleProperties implements Serializable {
 		hideEnemyNames = Boolean.parseBoolean(props.getProperty(BATTLE_HIDE_ENEMY_NAMES, "false"));
 		numRounds = Integer.parseInt(props.getProperty(BATTLE_NUMROUNDS, "10"));
 		selectedRobots = props.getProperty(BATTLE_SELECTEDROBOTS, "");
-		initialPositions = props.getProperty(BATTLE_INITIAL_POSITIONS, "");
+		initialPositions = props.getProperty(BATTLE_INITIAL_POSITIONS,"" );
 	}
 }
