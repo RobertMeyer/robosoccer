@@ -161,6 +161,13 @@ public final class Battle extends BaseBattle {
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private int activeRobots;
+	
+	//int width = battleProperties.getBattlefieldWidth();
+	private int width;
+	//int height = battleProperties.getBattlefieldWidth();
+	private int height;
+	
+	
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -180,6 +187,11 @@ public final class Battle extends BaseBattle {
 
 	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused) {
 		isPaused = paused;
+		//int width = battleProperties.getBattlefieldWidth();
+		width = battleProperties.getBattlefieldWidth();
+		//int height = battleProperties.getBattlefieldWidth();
+		height = battleProperties.getBattlefieldHeight();
+		
 		battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
 				battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
 				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames());
@@ -188,16 +200,13 @@ public final class Battle extends BaseBattle {
 		/* This is where we will initialise the teleporter(s)
 		 * REMOVE BEFORE MERGE
 		 */
-		createTeleporters(battleProperties);
 		createPeers(battlingRobotsList);
+
 	}
 
-	private void createTeleporters(BattleProperties battleProperties){
+	private void createTeleporters(){
 		//pull the battlefields width and height
-		//int width = battleProperties.getBattlefieldWidth();
-		int width = battleRules.getBattlefieldWidth();
-		//int height = battleProperties.getBattlefieldWidth();
-		int height = battleRules.getBattlefieldHeight();
+
 		//randomise some x and y co-ordinates that are away from the walls by 5
 		double x1 = Math.random()*(width-80)+40;
 		double x2 = Math.random()*(width-80)+40;
@@ -380,11 +389,13 @@ public final class Battle extends BaseBattle {
 			robots.clear();
 			robots = null;
 		}
-
+		
+		
+		
 		super.cleanup();
 
 		battleManager = null;
-
+		
 		// Request garbage collecting
 		for (int i = 4; i >= 0; i--) { // Make sure it is run
 			System.gc();
@@ -482,7 +493,7 @@ public final class Battle extends BaseBattle {
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
 			robotPeer.startRound(waitMillis, waitNanos);
 		}
-
+		createTeleporters();
 		Logger.logMessage(""); // puts in a new-line in the log message
 
 		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, teleporters, false);
@@ -500,7 +511,10 @@ public final class Battle extends BaseBattle {
 		}
 
 		bullets.clear();
-
+		
+		teleporters.clear();
+			
+		
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
 	}
 
