@@ -106,7 +106,6 @@ import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
-import net.sf.robocode.items.ItemDrop;
 import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
