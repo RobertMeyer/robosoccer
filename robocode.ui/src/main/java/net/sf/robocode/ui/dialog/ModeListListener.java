@@ -9,7 +9,7 @@ public class ModeListListener implements ListSelectionListener {
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		ModeList<IMode> list = (ModeList<IMode>) e.getSource();
+		ModeList<IMode> list = (ModeList) e.getSource();
 		list.getLabel().setText(((IMode) list.getSelectedValues()[0]).getDescription());
 	}
 
