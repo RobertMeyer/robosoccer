@@ -69,6 +69,7 @@ package net.sf.robocode.battle.peer;
 import static net.sf.robocode.io.Logger.logMessage;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.ItemDrop;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -911,11 +912,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			if (gunHeat > 0 || energy == 0) {
 				return;
 			}
-			//TODO: This is causing tests to fail future commit to fix [Team Fork-bomb]
-			//double firePower = min(energy, min(max(bulletCmd.getPower(), 
-			//		 getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
-			double firePower = min(energy,
-					min(max(bulletCmd.getPower(), Rules.MIN_BULLET_POWER), Rules.MAX_BULLET_POWER));
+			double firePower;
+			
+			/*
+			 * Avoid using the factor of the RobotAttributes, if they are 1.0
+			 * or very close too.  This is to avoid unnecessary double
+			 * multiplication, which was causing some bugs.
+			 */
+			if((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
+					1.0 < 0.00001){
+				firePower = min(energy,
+						min(max(bulletCmd.getPower(), Rules.MIN_BULLET_POWER),
+								Rules.MAX_BULLET_POWER));
+			}
+			else{
+				firePower = min(energy, min(max(bulletCmd.getPower(), 
+						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
+			}
 			
 			updateEnergy(-firePower);
 
@@ -939,7 +952,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public final void performMove(List<RobotPeer> robots, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -972,6 +985,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		// Now check for robot collision
 		checkRobotCollision(robots);
+		
+		// Now check for item collision
+		checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1056,6 +1072,32 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		return otherRobot.getName();
 	}
+	
+	private void checkItemCollision(List<ItemDrop> items){
+		inCollision = false;
+		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
+		
+		for (ItemDrop item : items){
+			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
+				inCollision = true;
+				if (item.getHealth() > 0){
+					if (item.getIsDestroyable()){
+						item.setHealth(item.getHealth() - 20);
+					}
+				}
+				if (item.getHealth() <= 0){
+					itemsDestroyed.add(item);
+				}
+				//addEvent(new HitItemEvent());
+			}
+		}
+		for (ItemDrop item : itemsDestroyed){
+			items.remove(item);
+		}
+		if (inCollision){
+			setState(RobotState.HIT_ITEM);
+		}
+	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
@@ -1087,9 +1129,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					if (!teamFire) {
 						statistics.scoreRammingDamage(otherRobot.getName());
 					}
-	 
-					this.updateEnergy(-(this.getRamDamage() * this.getRobotArmor()));
-					otherRobot.updateEnergy(-(otherRobot.getRamDamage() * otherRobot.getRobotArmor()));
+					
+					//Use a factor of the armor if it has been changed
+					//This Robot
+					if(getRobotArmor() - 1.0 < 0.00001)
+						this.updateEnergy(-(this.getRamDamage()));
+					else this.updateEnergy(-(this.getRamDamage() * 
+							1/this.getRobotArmor()));
+					
+					// Other Robot
+					if(otherRobot.getRobotArmor() - 1.0 < 0.00001)
+						otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
+					else otherRobot.updateEnergy(-(otherRobot.getRamDamage()/
+							1/otherRobot.getRobotArmor()));
 
 					if (otherRobot.energy == 0) {
 						if (otherRobot.isAlive()) {
@@ -1830,9 +1882,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * 			peer in degrees.
 	 */
 	public double getGunTurnRate(){
-		//TODO: Investigate this it is causing some tests to fail [Team-Forkbomb]
-		// return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
-		return Rules.GUN_TURN_RATE;
+		// Avoid multiplying doubles if it is not needed
+		if(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001){
+			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
+		}
+		else return Rules.GUN_TURN_RATE;
 	}
 	
 	/**

@@ -705,7 +705,7 @@ public final class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
 		}
 		
 		// Increment mode specific points - TODO -team-Telos
