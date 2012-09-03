@@ -103,6 +103,9 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 
 	/** Flag specifying if this robot is a Droid */
 	private boolean isDroid;
+	
+	/** Flag specifying if the robot is a FreezeRobot */
+	private boolean isFreezeRobot;
 
 	/** Flag specifying if this robot is a IPaintRobot or is invoking getGraphics() */
 	private boolean isPaintRobot;
@@ -173,6 +176,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 		isPaintRobot = robot.isPaintRobot() || robot.isTryingToPaint();
 		isPaintEnabled = robot.isPaintEnabled();
 		isSGPaintEnabled = robot.isSGPaintEnabled();
+		isFreezeRobot = robot.isFreezeRobot();
 
 		scanArc = robot.getScanArc() != null ? new SerializableArc((Arc2D.Double) robot.getScanArc()) : null;
 
@@ -343,6 +347,13 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	 */
 	public boolean isDroid() {
 		return isDroid;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isFreezeRobot(){
+		return isFreezeRobot;
 	}
 
 	/**

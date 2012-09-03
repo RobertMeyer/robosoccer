@@ -39,6 +39,7 @@ public class MyFirstFreezeBot extends FreezeRobot {
 		if (e.isFrozen()) {
 			return;
 		}
+
 		// Oscillate the radar while keeping on the enemy to look for other enemies
 		scanDirection = -scanDirection;
 		setTurnRadarRight(360*scanDirection);

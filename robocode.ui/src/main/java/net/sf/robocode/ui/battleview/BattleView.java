@@ -423,13 +423,15 @@ public class BattleView extends Canvas {
 				robotRenderImage.setTransform(at);
 				robotRenderImage.paint(g);
 
-				at = AffineTransform.getTranslateInstance(x, y);
-				at.rotate(robotSnapshot.getGunHeading());
-
-				RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor());
-
-				gunRenderImage.setTransform(at);
-				gunRenderImage.paint(g);
+				if (!robotSnapshot.isFreezeRobot()) {
+					at = AffineTransform.getTranslateInstance(x, y);
+					at.rotate(robotSnapshot.getGunHeading());
+	
+					RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor());
+	
+					gunRenderImage.setTransform(at);
+					gunRenderImage.paint(g);
+				}
 
 				if (!robotSnapshot.isDroid()) {
 					at = AffineTransform.getTranslateInstance(x, y);

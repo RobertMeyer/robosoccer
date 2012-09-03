@@ -236,4 +236,6 @@ public interface IRobotSnapshot {
 	 * @return a snapshot of the current score for this robot.
 	 */
 	IScoreSnapshot getScoreSnapshot();
+
+	boolean isFreezeRobot();
 }

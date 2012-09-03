@@ -876,6 +876,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	protected void fireBullets(List<BulletCommand> bulletCommands) {
+		if (isFreezeRobot()) {
+			return;
+		}
+		
 		BulletPeer newBullet = null;
 
 		for (BulletCommand bulletCmd : bulletCommands) {
