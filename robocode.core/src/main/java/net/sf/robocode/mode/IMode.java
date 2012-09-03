@@ -24,5 +24,4 @@ public interface IMode {
 	 * @return String description
 	 */
 	public String getDescription();
-
 }

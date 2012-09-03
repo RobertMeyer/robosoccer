@@ -28,6 +28,10 @@ public class FlagMode extends ClassicMode {
 	private double pointLimit;
 	private double timeLimit;
 	
+	public String getDescription() {
+		return "Robots score points per turn they are holding the flag.";
+	}
+	
 	public void execute() {
 		System.out.println("Capture The Flag");
 	}
@@ -77,5 +81,8 @@ public class FlagMode extends ClassicMode {
 		// Maybe upon pick up flag make slightly slower.
 		return 0;
 	}
-
+	
+	public String toString() {
+		return "Capture The Flag.";
+	}
 }

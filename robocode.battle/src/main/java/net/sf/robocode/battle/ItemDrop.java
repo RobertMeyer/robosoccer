@@ -29,6 +29,7 @@ public abstract	class ItemDrop {
 	private boolean isEquippable;
 	private final BoundingRectangle boundingBox;
 	private BattleRules battleRules;
+	private static int id;
 	
 	
 	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
@@ -104,6 +105,14 @@ public abstract	class ItemDrop {
 	
 	public void setIsEquippable(boolean isEquippable){
 		this.isEquippable = isEquippable;
+	}
+	
+	public void setId(int id) {
+		ItemDrop.id = id;
+	}
+	
+	public static int getId() {
+		return id;
 	}
 	
 	public void initialiseRoundItems(List<RobotPeer> robots, List<ItemDrop> items){
