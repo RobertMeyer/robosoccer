@@ -22,6 +22,7 @@ import robocode.Robot;
  */
 public class Weapon {
 
+	private final String weaponName;
 	private final double coolDown;
 	private final double projectilePower;
 	private final double minDamage;
@@ -32,6 +33,7 @@ public class Weapon {
 	private final double weaponTurnRate;
 
 	public Weapon(WeaponType w) {
+		weaponName = w.getWeaponName();
 		coolDown = w.getCoolDown();
 		projectilePower = w.getProjectilePower();
 		minDamage = w.getMinDamage();
@@ -41,5 +43,4 @@ public class Weapon {
 		criticalHit = w.getCriticalHit();
 		weaponTurnRate = w.getWeaponTurnRate();
 	}
-	
 }

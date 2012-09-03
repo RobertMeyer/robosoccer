@@ -18,6 +18,7 @@ public abstract class WeaponType {
 	 * @param criticalHit		Chance of a projectile causing a critical hit.
 	 * @param weaponTurnRate	Rate at which the weapon turns.
 	 */
+	protected String weaponName = "Default weapon";
 	protected double coolDown = 0.1;
 	protected double projectilePower;
 	protected double minDamage = 0.1;
@@ -27,10 +28,27 @@ public abstract class WeaponType {
 	protected double accuracy = 0.7;
 	protected double criticalHit = 0.1;
 	protected double weaponTurnRate = 20;
+
+	@Override
+	public String toString() {
+		// TODO Finish this.
+		String result = null;
+		
+		return result;
+	}
 	
 	/**************************************************************************
 	 * GETTERS
 	 *************************************************************************/
+
+	/**
+	 * Returns the weapon's name
+	 * 
+	 * @return 		String of weaponName.
+	 */
+	public String getWeaponName() {
+		return weaponName;
+	}
 	
 	/**
 	 * Returns the weapon's cool-down rate.

@@ -6,6 +6,7 @@ import au.edu.uq.itee.csse2003.weapons.WeaponType;
  * A laser, a futuristic weapon..
  */
 public class Laser extends WeaponType {
+	private String weaponName = "Laser";
 	private double coolDown = 0.2;
 	private double minDamage = 0.1;
 	private double maxDamage = 3;
