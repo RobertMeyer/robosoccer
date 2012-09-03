@@ -9,14 +9,15 @@ import java.awt.*;
  * add javadoc here! eventually
  *
  */
+@SuppressWarnings("serial")
 public class NewBattleModeTab extends JPanel {
 	
 	//list of available modes
-	private ModeList modeList;
+	private ModeList<IMode> modeList;
 	//description of each mode
 	private JLabel description;
 	
-	private DefaultListModel modeListModel;
+	private DefaultListModel<IMode> modeListModel;
 	
 	private IMode modes[] = { 
 		
@@ -34,7 +35,7 @@ public class NewBattleModeTab extends JPanel {
 		
 		description = new JLabel("");
 		
-		modeList = new ModeList(description);
+		modeList = new ModeList<IMode>(description);
 		modeList.setModel(modeListModel());
 		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
@@ -64,7 +65,7 @@ public class NewBattleModeTab extends JPanel {
 		add(j);
 	}
 	
-	private JList getModeList() {
+	private JList<IMode> getModeList() {
 		return modeList;
 	}
 	
@@ -72,8 +73,8 @@ public class NewBattleModeTab extends JPanel {
 		return description;
 	}
 	
-	private ListModel modeListModel() {
-		modeListModel = new DefaultListModel();
+	private ListModel<IMode> modeListModel() {
+		modeListModel = new DefaultListModel<IMode>();
 		int index = 0;
 		for(IMode mode : modes) {
 			modeListModel.add(index++, mode);
