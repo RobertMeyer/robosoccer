@@ -82,6 +82,7 @@ public class BattleView extends Canvas {
 	private boolean drawExplosions;
 	private boolean drawGround;
 	private boolean drawExplosionDebris;
+	private boolean drawObstacles;
 
 	private int numBuffers = 2; // defaults to double buffering
 
@@ -198,6 +199,7 @@ public class BattleView extends Canvas {
 		drawGround = props.getOptionsViewGround();
 		drawExplosions = props.getOptionsViewExplosions();
 		drawExplosionDebris = props.getOptionsViewExplosionDebris();
+		
 
 		renderingHints = props.getRenderingHints();
 		numBuffers = props.getOptionsRenderingNoBuffers();
@@ -312,6 +314,9 @@ public class BattleView extends Canvas {
 
 		// Draw ground
 		drawGround(g);
+		
+		// Draw obstacle
+		//drawObstacles(g);
 
 		if (snapShot != null) {
 			// Draw scan arcs
@@ -368,6 +373,13 @@ public class BattleView extends Canvas {
 		}
 	}
 
+	private void drawObstacles(Graphics2D g) {
+		g.setColor(Color.green);
+		g.fillRect(0, 0, 100, 100);
+		
+		
+	}
+	
 	private void drawBorder(Graphics2D g) {
 		final Shape savedClip = g.getClip();
 
