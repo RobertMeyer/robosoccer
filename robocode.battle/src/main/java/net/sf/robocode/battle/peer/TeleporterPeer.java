@@ -127,4 +127,24 @@ public class TeleporterPeer implements ITeleporter {
 		}
 		return a;
 	}
+	
+	public boolean isBlackHole() {
+		return blackHole;
+	}
+	
+	public void updateBlackHoleSize() {
+		if (!blackHole) {
+			return;
+		}
+		width += 40;
+		height += 40;
+	}
+	
+	public double getHeight() {
+		return height;
+	}
+	
+	public double getWidth() {
+		return width;
+	}
 }

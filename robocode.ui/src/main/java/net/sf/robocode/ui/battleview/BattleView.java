@@ -193,18 +193,18 @@ public class BattleView extends Canvas {
 
 	private void loadDisplayOptions() {
 		ISettingsManager props = properties;
-
+	
 		drawRobotName = props.getOptionsViewRobotNames();
 		drawRobotEnergy = props.getOptionsViewRobotEnergy();
 		drawScanArcs = props.getOptionsViewScanArcs();
 		drawGround = props.getOptionsViewGround();
 		drawExplosions = props.getOptionsViewExplosions();
 		drawExplosionDebris = props.getOptionsViewExplosionDebris();
-
+	
 		renderingHints = props.getRenderingHints();
 		numBuffers = props.getOptionsRenderingNoBuffers();
 	}
-
+	
 	private void reinitialize() {
 		initialized = false;
 		bufferStrategy = null;
@@ -542,26 +542,23 @@ public class BattleView extends Canvas {
 		for (ITeleporterSnapshot teleportSnapshot : snapShot.getTeleporters()) {
 			x1 = teleportSnapshot.getPortal1X();
 			y1 = teleportSnapshot.getPortal1Y();
-			x2 = teleportSnapshot.getPortal2X();
-			y2 = teleportSnapshot.getPortal2Y();
-			
-			//lindon's ellipse stuff
-			//g.setColor(Color.GREEN);
-		    //Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
-		    //Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
-		    
-		    RenderImage teleporterRenderImage = imageManager.getTeleporterRenderImage();
-		    AffineTransform at = AffineTransform.getTranslateInstance(x1-20, battleField.getHeight() - y1-20);
-		    AffineTransform at2 = AffineTransform.getTranslateInstance(x2-20, battleField.getHeight() - y2-20);
-		    
-		    teleporterRenderImage.setTransform(at);
-		    teleporterRenderImage.paint(g);
-		    teleporterRenderImage.setTransform(at2);
-			teleporterRenderImage.paint(g);
-			
-			//lindon's ellipse stuff
-			//g.fill(portal1);
-			//g.fill(portal2);
+			//if thise teleport is a blackhole draw it, else draw the second teleport
+			if (teleportSnapshot.isBlackHole()) {
+				g.setColor(Color.BLACK);
+			    Shape portal1 = new Ellipse2D.Double(x1-teleportSnapshot.getWidth()/2, battleField.getHeight() - y1-teleportSnapshot.getHeight()/2, 
+			    		teleportSnapshot.getWidth(), teleportSnapshot.getHeight());
+			    g.fill(portal1);
+			} else {
+				x2 = teleportSnapshot.getPortal2X();
+				y2 = teleportSnapshot.getPortal2Y();
+				
+				g.setColor(Color.GREEN);
+			    Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
+			    Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
+			    
+				g.fill(portal1);
+				g.fill(portal2);
+			}
 			
 		}
 		g.setClip(savedClip);
