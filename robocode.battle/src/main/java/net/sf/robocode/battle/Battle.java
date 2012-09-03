@@ -119,6 +119,7 @@ import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
@@ -162,8 +163,6 @@ public final class Battle extends BaseBattle {
 	
 	/* List of items that are going to be dropped */
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
-	/* Item Map, mapping the item ids to their class names */
-	private Map<Integer, String> itemMap = new TreeMap<Integer, String>();
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -418,12 +417,43 @@ public final class Battle extends BaseBattle {
 		super.finalizeBattle();
 	}
 
+	protected void initialiseItems() {
+		/* Get the item IDs needed for the mode and add them to items */
+		for (String item : this.getBattleMode().getItems()) {
+			try {
+				/* Get the item's class
+				 * Get the classes 'createForMode' method with parameters of type
+				 * IMode and Battle
+				 * Invoke the method as a static method (null means call on no object)
+				 * using this kind of Mode and this Battle
+				 */
+				items.add((ItemDrop) item
+						.getClass()
+						.getMethod("createForMode", IMode.class, Battle.class)
+						.invoke(null, this.getBattleMode(), this));
+			} catch (NoSuchMethodException x) {
+			    x.printStackTrace();
+			    System.err.printf("Item '%s' has not implemented createForMode." +
+			    		"Modify the class so this method is overrided.\n", item);
+			} catch (InvocationTargetException x) {
+			    x.printStackTrace();
+			    x.getCause();
+			} catch (IllegalAccessException x) {
+			    x.printStackTrace();
+			    x.getCause();
+			}
+		}
+
+		for(ItemDrop itemDrop : items){
+			itemDrop.initialiseRoundItems(robots, items);
+		}
+	}
+	
 	@Override
 	protected void preloadRound() {
 		super.preloadRound();
 
 		// At this point the unsafe loader thread will now set itself to wait for a notify
-
 		for (RobotPeer robotPeer : robots) {
 			robotPeer.initializeRound(robots, initialRobotPositions);
 			robotPeer.println("=========================");
@@ -431,22 +461,8 @@ public final class Battle extends BaseBattle {
 			robotPeer.println("=========================");
 		}
 		
-		/* Get the item IDs needed for the mode and add them to items */
-		for (Integer id : this.getBattleMode().getItemIds()) {
-			try {
-				items.add((ItemDrop) itemMap.get(id)
-						.getClass()
-						.getMethod("createForMode", IMode.class, Battle.class)
-						.invoke(null, this.getBattleMode(), this));
-			} catch (Exception e) {
-				/* TODO team-Telos Write a better description */
-				System.out.println("SOMETHING WENT WRONG");
-			}
-		}
-
-		for(ItemDrop itemDrop : items){
-			itemDrop.initialiseRoundItems(robots, items);
-		}
+		/* Start to initialise all the items */
+		this.initialiseItems();
 
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));

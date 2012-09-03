@@ -20,7 +20,7 @@ public class FlagMode extends ClassicMode {
 	// Score variable
 	private double flagScore = 0;
 	
-	List<Integer> itemIds = new ArrayList<Integer>();
+	List<String> items = new ArrayList<String>();
 	
 	/**
 	 * 
@@ -90,15 +90,15 @@ public class FlagMode extends ClassicMode {
 	 * Get the items needed for the items
 	 * @return the items needed
 	 */
-	public List<Integer> getItemIds() {
-		return itemIds;
+	public List<String> getItems() {
+		return items;
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Add Flag as an item to be used for this Mode
 	 */
-	public void setItemIds() {
-		itemIds.add("Flag".hashCode()); //Flag
+	public void setItems() {
+		items.add("Flag");
 	}
 	
 	/**

@@ -38,15 +38,13 @@ public class ClassicMode implements IMode {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<Integer> getItemIds() {
-		return new ArrayList<Integer>();
+	public List<String> getItems() {
+		return new ArrayList<String>();
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setItemIds() {
-		return;
+	
+	@Override
+	public void setItems() {
+		/* No items needed for Classic Mode */
 	}
 
 	@Override
