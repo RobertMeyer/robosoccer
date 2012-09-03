@@ -45,6 +45,8 @@ public class ScannedRobotEvent extends Event {
 	private final double bearing;
 	private final double distance;
 	private final double velocity;
+	
+	private final boolean frozen;
 
 	/**
 	 * This constructor is only provided in order to preserve backwards compatibility with old robots that
@@ -64,6 +66,7 @@ public class ScannedRobotEvent extends Event {
 		this.distance = 0;
 		this.heading = 0;
 		this.velocity = 0;
+		this.frozen = false;
 	}
 
 	/**
@@ -76,7 +79,7 @@ public class ScannedRobotEvent extends Event {
 	 * @param heading  the heading of the scanned robot
 	 * @param velocity the velocity of the scanned robot
 	 */
-	public ScannedRobotEvent(String name, double energy, double bearing, double distance, double heading, double velocity) {
+	public ScannedRobotEvent(String name, double energy, double bearing, double distance, double heading, double velocity, boolean frozen) {
 		super();
 		this.name = name;
 		this.energy = energy;
@@ -84,6 +87,7 @@ public class ScannedRobotEvent extends Event {
 		this.distance = distance;
 		this.heading = heading;
 		this.velocity = velocity;
+		this.frozen = frozen;
 	}
 
 	/**
@@ -258,6 +262,10 @@ public class ScannedRobotEvent extends Event {
 	public double getVelocity() {
 		return velocity;
 	}
+	
+	public boolean isFrozen() {
+		return frozen;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -335,8 +343,9 @@ public class ScannedRobotEvent extends Event {
 			double bearing = buffer.getDouble();
 			double distance = buffer.getDouble();
 			double velocity = buffer.getDouble();
+			
 
-			return new ScannedRobotEvent(name, energy, bearing, distance, heading, velocity);
+			return new ScannedRobotEvent(name, energy, bearing, distance, heading, velocity, false);
 		}
 	}
 }

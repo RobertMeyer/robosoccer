@@ -36,6 +36,9 @@ public class MyFirstFreezeBot extends FreezeRobot {
 	 * @see robocode.Robot#onScannedRobot(robocode.ScannedRobotEvent)
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
+		if (e.isFrozen()) {
+			return;
+		}
 		// Oscillate the radar while keeping on the enemy to look for other enemies
 		scanDirection = -scanDirection;
 		setTurnRadarRight(360*scanDirection);

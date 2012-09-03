@@ -188,6 +188,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final Arc2D scanArc;
 	protected final BoundingRectangle boundingBox;
 	protected final RbSerializer rbSerializer;
+	
+	
+	public int frozen = 0;
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
@@ -378,6 +381,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public boolean isAlive() {
 		return state != RobotState.DEAD;
+	}
+	
+	public boolean isFrozen() {
+		return state == RobotState.FROZEN;
 	}
 
 	public boolean isWinner() {
@@ -911,6 +918,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isDead()) {
 			return;
 		}
+		
+		if (isFrozen()) {
+			frozen--;
+			if (frozen != 0) {
+				return;
+			}
+			setState(RobotState.ACTIVE);
+		}
 
 		setState(RobotState.ACTIVE);
 
@@ -1073,13 +1088,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					}
 					
 					
-					boolean freeze = otherRobot.isFreezeRobot();
-					boolean advanced = otherRobot.isAdvancedRobot();
-					String other = otherRobot.getName();
+					if (otherRobot.isFreezeRobot()) {
+						setState(RobotState.FROZEN);
+						frozen = 100;
+					}
 					
-					boolean meFreeze = this.isFreezeRobot();
-					boolean meAdvanced = this.isAdvancedRobot();
-					String me = this.getName();
+					if (this.isFreezeRobot()) {
+						otherRobot.setState(RobotState.FROZEN);
+						otherRobot.frozen = 100;
+					}
 									
 					addEvent(
 							new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
@@ -1485,7 +1502,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-						otherRobot.getVelocity());
+						otherRobot.getVelocity(), otherRobot.isFrozen());
 
 				addEvent(event);
 			}

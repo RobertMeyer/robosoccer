@@ -30,7 +30,10 @@ public enum RobotState {
 	HIT_ROBOT(2),
 
 	/** The robot is dead. */
-	DEAD(3);
+	DEAD(3),
+	
+	/** The robot is frozen */
+	FROZEN(4);
 
 	private final int value;
 
@@ -73,6 +76,9 @@ public enum RobotState {
 
 		case 3:
 			return DEAD;
+			
+		case 4:
+			return FROZEN;
 
 		default:
 			throw new IllegalArgumentException("unknown value");
@@ -121,5 +127,14 @@ public enum RobotState {
 	 */
 	public boolean isHitWall() {
 		return this == HIT_WALL;
+	}
+	
+	/**
+	 *  Checks if the robot is frozen
+	 *  
+	 *  @return {@code true} if the robot is frozen; {@code false} otherwise.
+	 */
+	public boolean isFrozen() {
+		return this == FROZEN;
 	}
 }
