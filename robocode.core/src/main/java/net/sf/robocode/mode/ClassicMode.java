@@ -48,4 +48,10 @@ public class ClassicMode implements IMode {
 	public void setItemIds() {
 		return;
 	}
+
+	@Override
+	public void scorePoints() {
+		// TODO Auto-generated method stub
+		
+	}
 }

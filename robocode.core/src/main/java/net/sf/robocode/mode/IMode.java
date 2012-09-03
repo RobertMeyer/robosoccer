@@ -40,4 +40,9 @@ public interface IMode {
 	 * spawn in the beginning of the round
 	 */
 	public void setItemIds();
+	
+	/**
+	 * Increments the score specific to the different modes
+	 */
+	public void scorePoints();
 }
