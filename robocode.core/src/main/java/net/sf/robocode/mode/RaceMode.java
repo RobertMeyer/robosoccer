@@ -5,6 +5,7 @@ package net.sf.robocode.mode;
  * 
  * @author Team - GoGoRobotRacer
  * @author s4203648
+ * @author s42008024
  */
 
 public class RaceMode extends ClassicMode{
@@ -34,5 +35,9 @@ public class RaceMode extends ClassicMode{
 	//overwriting toString() method so our "mode" name is now returned
 	public String toString(){
 		return new String("Race Mode");
+	}
+	
+	public String getDescription(){
+		return new String("Race mode allows you to race your robot to be first across the finish line.");
 	}
 }
