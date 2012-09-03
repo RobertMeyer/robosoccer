@@ -1,4 +1,5 @@
-package net.sf.robocode.battle;
+package net.sf.robocode.items;
+
 
 /**
  * A health pack item. Extends item drop
