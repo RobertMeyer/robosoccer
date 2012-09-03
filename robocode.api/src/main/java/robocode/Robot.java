@@ -708,11 +708,6 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot, IBa
 	 * {@inheritDoc}
 	 */
 	public void onHitWall(HitWallEvent event) {}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onHitItem(HitItemEvent event) {}
 	
 	/**
 	 * {@inheritDoc}
