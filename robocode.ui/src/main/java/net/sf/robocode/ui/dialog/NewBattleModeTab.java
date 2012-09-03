@@ -9,7 +9,6 @@ import java.awt.*;
  * add javadoc here! eventually
  *
  */
-@SuppressWarnings("serial")
 public class NewBattleModeTab extends JPanel {
 	
 	//list of available modes
@@ -35,7 +34,7 @@ public class NewBattleModeTab extends JPanel {
 		
 		description = new JLabel("");
 		
-		modeList = new ModeList<IMode>(description);
+		modeList = new ModeList(description);
 		modeList.setModel(modeListModel());
 		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
