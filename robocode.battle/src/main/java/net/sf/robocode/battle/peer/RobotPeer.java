@@ -69,6 +69,7 @@ package net.sf.robocode.battle.peer;
 import static net.sf.robocode.io.Logger.logMessage;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.ItemDrop;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -898,7 +899,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public final void performMove(List<RobotPeer> robots, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -931,6 +932,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		// Now check for robot collision
 		checkRobotCollision(robots);
+		
+		// Now check for item collision
+		checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1014,7 +1018,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return otherRobot.getAnnonymousName();
 		}
 		return otherRobot.getName();
-	}		
+	}
+	
+	private void checkItemCollision(List<ItemDrop> items){
+		inCollision = false;
+		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
+		
+		for (ItemDrop item : items){
+			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
+				inCollision = true;
+				if (item.getHealth() > 0){
+					if (item.getIsDestroyable()){
+						item.setHealth(item.getHealth() - 20);
+					}
+				}
+				if (item.getHealth() <= 0){
+					itemsDestroyed.add(item);
+				}
+				//addEvent(new HitItemEvent());
+			}
+		}
+		for (ItemDrop item : itemsDestroyed){
+			items.remove(item);
+		}
+		if (inCollision){
+			setState(RobotState.HIT_ITEM);
+		}
+	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
