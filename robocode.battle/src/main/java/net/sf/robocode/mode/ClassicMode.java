@@ -20,7 +20,6 @@ public class ClassicMode implements IMode {
 	/**
 	 * {@inheritDoc}
 	 */
-	
 	public String toString() {
 		return "Classic Mode";
 	}
