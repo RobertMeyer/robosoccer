@@ -13,7 +13,7 @@ package net.sf.robocode.battle;
 import java.util.*;
 
 public class Waypoint {
-	ArrayList<SingleWaypoint> wayPoints = new ArrayList();
+	ArrayList<SingleWaypoint> wayPoints = new ArrayList<SingleWaypoint>();
 	
 	/**
 	 * A WayPoint cannot be empty and must contain at least one SingleWaypoint
@@ -39,7 +39,7 @@ public class Waypoint {
 	}
 	
 	//class used to store x & y co-ordinates of each waypoint.
-	private class SingleWaypoint{
+	public class SingleWaypoint{
 		private double xLocation;
 		private double yLocation;
 
