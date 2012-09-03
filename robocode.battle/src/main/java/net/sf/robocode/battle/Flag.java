@@ -17,14 +17,22 @@ public class Flag extends ItemDrop {
 		this.setLifespan(lifespan);
 		this.setIsEquippable(true);
 		this.carrier = carrier;
-		this.setId(1);
-		
 	}
 	
+	/**
+	 * Get the carrier of the Flag
+	 * @return The Robot carrying the flag
+	 */
 	public RobotPeer getCarrier() {
 		return carrier;
 	}
 	
+	/**
+	 * Create a Flag item based on the mode
+	 * @param mode The mode to create the Flag for
+	 * @param battle The battle for where it is to be placed
+	 * @return A new Flag object designed for the mode 'mode'
+	 */
 	public static Flag createForMode(IMode mode, Battle battle) {
 		/* Flag customised for Capture the Flag */
 		if(mode.getClass().isInstance(FlagMode.class))

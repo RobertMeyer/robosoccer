@@ -5,14 +5,17 @@ import java.util.Random;
 
 import robocode.control.RandomFactory;
 import net.sf.robocode.battle.peer.*;
-import net.sf.robocode.battle.*;
+import net.sf.robocode.mode.IMode;
 import robocode.*;
 
 /**
  * Abstract class for item/powerup drops
  * 
+ * Original:
  * @author s4238358
- *
+ * 
+ * Contributors:
+ * @author Brandon Warwick (Team-Telos)
  */
 
 /*
@@ -29,6 +32,8 @@ public abstract	class ItemDrop {
 	private boolean isEquippable;
 	private final BoundingRectangle boundingBox;
 	private BattleRules battleRules;
+	
+	/* Unique ID for the item */
 	private static int id;
 	
 	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
@@ -38,9 +43,7 @@ public abstract	class ItemDrop {
 		this.isEquippable = isEquippable;
 		System.out.println("Item made");
 		this.boundingBox = new BoundingRectangle(xLocation, yLocation, width, height);
-		this.battleRules = battle.getBattleRules();
-		
-		/* Set the ID of the item */
+		this.battleRules = battle.getBattleRules();		
 	}
 
 	public BoundingRectangle getBoundingBox(){
@@ -58,7 +61,6 @@ public abstract	class ItemDrop {
 	public void setXLocation(double xLocation) {
 		this.xLocation = xLocation;
 	}
-
 	
 	public double getYLocation() {
 		return yLocation;
@@ -108,10 +110,18 @@ public abstract	class ItemDrop {
 		this.isEquippable = isEquippable;
 	}
 	
-	public void setId(int id) {
-		ItemDrop.id = id;
+	/**
+	 * Set the unique ID of the item
+	 * @param className The name of the class for the ID
+	 */
+	public static void setId(String className) {
+		ItemDrop.id = className.hashCode();
 	}
 	
+	/**
+	 * Get the unique ID of the item
+	 * @return The item's unique ID
+	 */
 	public static int getId() {
 		return id;
 	}
@@ -157,4 +167,13 @@ public abstract	class ItemDrop {
 		return true;
 	}
 
+	/**
+	 * Create a Flag item based on the mode
+	 * @param mode The mode to create the Flag for
+	 * @param battle The battle for where it is to be placed
+	 * @return A new Flag object designed for the mode 'mode'
+	 */
+	public static ItemDrop createForMode(IMode mode, Battle battle) {
+		return null;
+	}
 }
