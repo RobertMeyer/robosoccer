@@ -171,11 +171,23 @@ public class BulletPeer {
 				victim = otherRobot;
 
 				double damage = Rules.getBulletDamage(power);
-				double score = damage;
+				double score;
+				
+				if(otherRobot.attributes.get().get(RobotAttribute.ARMOR) - 
+						1.0 < 0.00001){
+					score = damage;
+				}
+				else {
+					//Use inverse relationship --> more armor less damage
+					score = damage *(1/otherRobot.getRobotArmor());
+					damage = Rules.getBulletDamage(power) *(1/otherRobot.
+							getRobotArmor());
+				}
 
 				if (score > otherRobot.getEnergy()) {
 					score = otherRobot.getEnergy();
 				}
+				
 				otherRobot.updateEnergy(-damage);
 
 				boolean teamFire = (owner.getTeamPeer() != null && owner.getTeamPeer() == otherRobot.getTeamPeer());
@@ -259,7 +271,9 @@ public class BulletPeer {
 	}
 
 	public double getVelocity() {
-		return Rules.getBulletSpeed(power);
+		if(owner.getBulletSpeed(power) - 1.0 < 0.00001) return Rules.
+				getBulletSpeed(power);
+		else return owner.getBulletSpeed(power);
 	}
 
 	public RobotPeer getVictim() {

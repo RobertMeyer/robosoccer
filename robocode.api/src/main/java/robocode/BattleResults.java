@@ -41,6 +41,8 @@ public class BattleResults implements java.io.Serializable, Comparable<BattleRes
 	protected double bulletDamageBonus;
 	protected double ramDamage;
 	protected double ramDamageBonus;
+	//Team-Telos addition
+	protected double flagScore;
 	protected int firsts;
 	protected int seconds;
 	protected int thirds;
@@ -57,6 +59,7 @@ public class BattleResults implements java.io.Serializable, Comparable<BattleRes
 	 * @param bulletDamageBonus the bullet damage bonus for the robot in the battle.
 	 * @param ramDamage         the ramming damage for the robot in the battle.
 	 * @param ramDamageBonus    the ramming damage bonus for the robot in the battle.
+	 * @param flagScore			the flag score for the robot in the battle.
 	 * @param firsts            the number of rounds this robot placed first.
 	 * @param seconds           the number of rounds this robot placed second.
 	 * @param thirds            the number of rounds this robot placed third.
@@ -71,6 +74,7 @@ public class BattleResults implements java.io.Serializable, Comparable<BattleRes
 			double bulletDamageBonus,
 			double ramDamage,
 			double ramDamageBonus,
+			double flagScore,
 			int firsts,
 			int seconds,
 			int thirds
@@ -84,6 +88,7 @@ public class BattleResults implements java.io.Serializable, Comparable<BattleRes
 		this.bulletDamageBonus = bulletDamageBonus;
 		this.ramDamage = ramDamage;
 		this.ramDamageBonus = ramDamageBonus;
+		this.flagScore = flagScore;
 		this.firsts = firsts;
 		this.seconds = seconds;
 		this.thirds = thirds;
@@ -169,6 +174,16 @@ public class BattleResults implements java.io.Serializable, Comparable<BattleRes
 	 */
 	public int getRamDamageBonus() {
 		return (int) (ramDamageBonus + 0.5);
+	}
+	
+	/**
+	 * Team-Telos:
+	 * Returns the flag score of the robot in the battle
+	 * 
+	 * @return the flag score of the robot in the battle
+	 */
+	public int getFlagScore() {
+		return (int) (flagScore + 0.5);
 	}
 
 	/**
@@ -259,6 +274,8 @@ public class BattleResults implements java.io.Serializable, Comparable<BattleRes
 			serializer.serialize(buffer, obj.bulletDamageBonus);
 			serializer.serialize(buffer, obj.ramDamage);
 			serializer.serialize(buffer, obj.ramDamageBonus);
+			//Team-Telos addition
+			serializer.serialize(buffer, obj.flagScore);
 			serializer.serialize(buffer, obj.firsts);
 			serializer.serialize(buffer, obj.seconds);
 			serializer.serialize(buffer, obj.thirds);
@@ -274,12 +291,16 @@ public class BattleResults implements java.io.Serializable, Comparable<BattleRes
 			double bulletDamageBonus = buffer.getDouble();
 			double ramDamage = buffer.getDouble();
 			double ramDamageBonus = buffer.getDouble();
+			//Team-Telos addition
+			double flagScore = buffer.getDouble();
 			int firsts = buffer.getInt();
 			int seconds = buffer.getInt();
 			int thirds = buffer.getInt();
-
+			
+			//Team-Telos: added flagScore into BattleResults
 			return new BattleResults(teamLeaderName, rank, score, survival, lastSurvivorBonus, bulletDamage,
-					bulletDamageBonus, ramDamage, ramDamageBonus, firsts, seconds, thirds);
+					bulletDamageBonus, ramDamage, ramDamageBonus, flagScore, firsts, seconds, thirds);
 		}
 	}
+
 }

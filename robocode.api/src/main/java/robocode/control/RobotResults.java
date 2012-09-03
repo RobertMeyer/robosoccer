@@ -59,12 +59,13 @@ public class RobotResults extends BattleResults {
 			double bulletDamageBonus,
 			double ramDamage,
 			double ramDamageBonus,
+			double flagScore,
 			int firsts,
 			int seconds,
 			int thirds
 			) {
 		super(teamLeaderName, rank, score, survival, lastSurvivorBonus, bulletDamage, bulletDamageBonus, ramDamage,
-				ramDamageBonus, firsts, seconds, thirds);
+				ramDamageBonus, flagScore, firsts, seconds, thirds);
 		this.robot = robot;
 	}
 
@@ -80,8 +81,8 @@ public class RobotResults extends BattleResults {
 			BattleResults results) {
 		super(results.getTeamLeaderName(), results.getRank(), results.getScore(), results.getSurvival(),
 				results.getLastSurvivorBonus(), results.getBulletDamage(), results.getBulletDamageBonus(),
-				results.getRamDamage(), results.getRamDamageBonus(), results.getFirsts(), results.getSeconds(),
-				results.getThirds());
+				results.getRamDamage(), results.getRamDamageBonus(), results.getFlagScore(), 
+				results.getFirsts(), results.getSeconds(), results.getThirds());
 		this.robot = robot;
 	}
 

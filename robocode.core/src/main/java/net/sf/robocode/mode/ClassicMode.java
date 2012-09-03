@@ -1,19 +1,35 @@
 package net.sf.robocode.mode;
 
+/**
+ * 
+ * Default implementation of the IMode interface. This class models
+ * the default behaviour of a Robocode game.
+ *
+ */
 public class ClassicMode implements IMode {
 	
+	private final String description = "Original robocode mode.";
 	
-	public void execute(){
-		System.out.println("Classic Mode!!!");
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
-		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	
 	public String toString() {
-		return new String("Classic Mode");
+		return "Classic Mode";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getDescription() {
+		return description;
 	}
 	
 }

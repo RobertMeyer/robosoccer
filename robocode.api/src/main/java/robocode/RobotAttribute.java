@@ -10,6 +10,20 @@ package robocode;
  *
  */
 public enum RobotAttribute {
+	/** The acceleration of the robot */
+	ACCELERATION,
+	
+	/** The deceleration of the robot */
+	DECELERATION,
+	
+	/** The scan radius of the robot */
+	SCAN_RADIUS,
+	
+	/** The gun turn rate of the robot */
+	GUN_TURN_ANGLE,
+	
+	/** The chasis turn rate of the robot */
+	ROBOT_TURN_ANGLE,
 
 	/** How fast the robot moves. */
 	SPEED,
