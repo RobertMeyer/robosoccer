@@ -127,6 +127,7 @@ public class RobotStatistics implements ContestantStatistics {
 		bulletKillBonus = 0;
 		rammingDamageScore = 0;
 		rammingKillBonus = 0;
+		//FIXME - team-Telos
 		flagScore = 0;
 	}
 
@@ -137,6 +138,7 @@ public class RobotStatistics implements ContestantStatistics {
 		totalBulletKillBonus += bulletKillBonus;
 		totalRammingDamageScore += rammingDamageScore;
 		totalRammingKillBonus += rammingKillBonus;
+		// FIXME - team-Telos
 		totalFlagScore += flagScore;
 		
 		// Unsure as to whether or not we should add flagScore into totalScore
@@ -175,6 +177,7 @@ public class RobotStatistics implements ContestantStatistics {
 	}
 	
 	public double getTotalFlagScore() {
+		// FIXME - team-Telos
 		return totalFlagScore;
 	}
 
@@ -313,8 +316,10 @@ public class RobotStatistics implements ContestantStatistics {
 	 * Team-Telos - Score the flag points 
 	 */
 	public void scoreFlag() {
-		if(hasFlag)
-		flagScore++;
+		if(hasFlag) {
+			// FIXME
+			flagScore++;
+		}
 	}
 
 	public void scoreFirsts() {
