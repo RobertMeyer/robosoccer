@@ -1172,13 +1172,11 @@ public final class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				teleporter.updateBlackHoleSize();
 				collidedWithBlackHole = true;
 				kill();
-				
-				
 			}else if(xy[0]>0 && xy[1]>0){
 				this.x = xy[0]+(Math.sin(newHeading)*50);
 				this.y = xy[1]+(Math.cos(newHeading)*50);
-				this.bodyHeading = newHeading;
-
+				this.updateBoundingBox();
+				this.bodyHeading = newHeading+PI/2;
 			}
 		}
 		
