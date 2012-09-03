@@ -13,11 +13,11 @@ import java.awt.*;
 public class NewBattleModeTab extends JPanel {
 	
 	//list of available modes
-	private ModeList<IMode> modeList;
+	private ModeList modeList;
 	//description of each mode
 	private JLabel description;
 	
-	private DefaultListModel<IMode> modeListModel;
+	private DefaultListModel modeListModel;
 	
 	private IMode modes[] = { 
 		
@@ -65,7 +65,7 @@ public class NewBattleModeTab extends JPanel {
 		add(j);
 	}
 	
-	private JList<IMode> getModeList() {
+	private JList getModeList() {
 		return modeList;
 	}
 	
@@ -73,8 +73,8 @@ public class NewBattleModeTab extends JPanel {
 		return description;
 	}
 	
-	private ListModel<IMode> modeListModel() {
-		modeListModel = new DefaultListModel<IMode>();
+	private ListModel modeListModel() {
+		modeListModel = new DefaultListModel();
 		int index = 0;
 		for(IMode mode : modes) {
 			modeListModel.add(index++, mode);
