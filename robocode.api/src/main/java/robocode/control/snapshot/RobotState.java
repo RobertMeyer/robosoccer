@@ -32,8 +32,11 @@ public enum RobotState {
 	/** The robot is dead. */
 	DEAD(3),
 	
+	/** The robot has hit an item. */
+	HIT_ITEM(4),
+	
 	/** The robot is frozen */
-	FROZEN(4);
+	FROZEN(5);
 
 	private final int value;
 
@@ -78,6 +81,9 @@ public enum RobotState {
 			return DEAD;
 			
 		case 4:
+			return HIT_ITEM;
+
+		case 5:
 			return FROZEN;
 
 		default:
@@ -136,5 +142,16 @@ public enum RobotState {
 	 */
 	public boolean isFrozen() {
 		return this == FROZEN;
+	}
+	
+	 /** Checks if the robot has hit an item.
+	 * 
+	 * @return {@code true} if the robot has hit an item; {@code false} otherwise.
+	 * 
+	 * @see #isHitRobot() 
+	 * @see #isHitWall()
+	 */
+	public boolean isHitItem() {
+		return this == HIT_ITEM;
 	}
 }

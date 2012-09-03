@@ -210,6 +210,9 @@ public final class Rules {
 
 	/**
 	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
+	 * 
+	 * This method is not used if the robot has attributes values for the
+	 * bulletPower in this case th getBulletSpeed from RobotPeer is used
 	 *
 	 * @param bulletPower the energy power of the bullet.
 	 * @return bullet speed in pixels/turn
@@ -225,7 +228,10 @@ public final class Rules {
 	 *
 	 * @param bulletPower the energy power of the bullet.
 	 * @return gun heat
+	 * @deprecated It is called through robotPeer instead to check for a robots
+	 * 			individual attributes.  Left in place for older versions.
 	 */
+	@Deprecated
 	public static double getGunHeat(double bulletPower) {
 		return 1 + (bulletPower / 5);
 	}
