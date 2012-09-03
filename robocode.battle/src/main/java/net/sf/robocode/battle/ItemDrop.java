@@ -176,6 +176,8 @@ public abstract	class ItemDrop {
 	 * The effect the item has on the robot. Must be overridden to have any effect.
 	 */
 	public void doItemEffect(){
+		
+	}
 	public void setId(int id) {
 		ItemDrop.id = id;
 	}
