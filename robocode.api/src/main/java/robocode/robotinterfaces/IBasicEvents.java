@@ -204,17 +204,6 @@ public interface IBasicEvents {
 	 * @see Event
 	 */
 	void onHitWall(HitWallEvent event);
-	
-	/**
-	 * This method is called when your robot collides with an item.
-	 * You should override it in your robot if you want to be informed of this
-	 * event.
-	 * 
-	 * @param event the hit-item event set by the game
-	 * @see HitItemEvent
-	 * @see Event
-	 */
-	void onHitItem(HitItemEvent event);
 
 	/**
 	 * This method is called when your robot sees another robot, i.e. when the
