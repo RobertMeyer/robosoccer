@@ -28,6 +28,14 @@ public class RaceMode extends ClassicMode{
 		return;
 	}
 	
+	/**
+	 * 
+	 * @return noLaps Number of laps in the race.
+	 */
+	public int getLaps(){
+		return this.noLaps;
+	}
+	
 	public void execute(){
 		System.out.println("Race Mode.");
 	}
