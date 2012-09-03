@@ -1,5 +1,6 @@
-package net.sf.robocode.battle;
+package net.sf.robocode.items;
 
+import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.mode.FlagMode;
 import net.sf.robocode.mode.IMode;
