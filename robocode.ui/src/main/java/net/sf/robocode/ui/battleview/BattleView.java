@@ -316,7 +316,7 @@ public class BattleView extends Canvas {
 		drawGround(g);
 		
 		// Draw obstacle
-		//drawObstacles(g);
+		drawObstacles(g);
 
 		if (snapShot != null) {
 			// Draw scan arcs
@@ -376,7 +376,7 @@ public class BattleView extends Canvas {
 	private void drawObstacles(Graphics2D g) {
 		g.setColor(Color.green);
 		g.fillRect(0, 0, 100, 100);
-		
+		System.out.println("drawobstacles!!!");
 		
 	}
 	
