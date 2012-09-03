@@ -3,30 +3,44 @@ package net.sf.robocode.ui.dialog;
 import javax.swing.*;
 
 import net.sf.robocode.mode.*;
-import net.sf.robocode.ui.dialog.RobotSelectionPanel.SelectedRobotsModel;
-
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
+/**
+ * 
+ * add javadoc here! eventually
+ *
+ */
+@SuppressWarnings("serial")
 public class NewBattleModeTab extends JPanel {
 	
-	private JList modeList;
+	//list of available modes
+	private ModeList<IMode> modeList;
+	//description of each mode
+	private JLabel description;
 	
-	private DefaultListModel modeListModel;
+	private DefaultListModel<IMode> modeListModel;
 	
 	private IMode modes[] = { 
+		
+		// ----- Add your mode here! ------
 		new ClassicMode(), 
-		new SlowMode(),
-		new DifferentWeapons(),
-		new RaceMode()
+		new SlowMode(), 
+		new DifferentWeapons(), 
+		new RaceMode(),
+		new ZombieMode(),
+		new FlagMode()
 	};
 	
 	public NewBattleModeTab() {
 		super();
+		
+		description = new JLabel("");
+		
+		modeList = new ModeList<IMode>(description);
+		modeList.setModel(modeListModel());
+		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		initialize();
+		
 	}
 	
 	public void setup() {
@@ -44,30 +58,27 @@ public class NewBattleModeTab extends JPanel {
 	private void initialize() {
 		JPanel j = new JPanel();
 
-		j.setLayout(new GridLayout(3, 2, 5, 5));
+		j.setLayout(new FlowLayout());
 		j.setBorder(BorderFactory.createEtchedBorder());
 		j.add(getModeList());
-		
+		j.add(getDescriptionLabel());
 		add(j);
 	}
 	
-	private JList getModeList() {
-		if (modeList == null) {
-			modeList = new JList();
-			modeList.setModel(modeListModel());
-			modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		}
+	private JList<IMode> getModeList() {
 		return modeList;
 	}
 	
-	private ListModel modeListModel() {
-		modeListModel = new DefaultListModel();
+	public JLabel getDescriptionLabel() {
+		return description;
+	}
+	
+	private ListModel<IMode> modeListModel() {
+		modeListModel = new DefaultListModel<IMode>();
 		int index = 0;
 		for(IMode mode : modes) {
 			modeListModel.add(index++, mode);
 		}
 		return modeListModel;
 	}
-	
-	
 }

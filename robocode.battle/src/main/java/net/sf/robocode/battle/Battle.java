@@ -185,7 +185,6 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 		
 		battleMode = battleProperties.getBattleMode();
-		battleMode.execute();
 		computeInitialPositions(battleProperties.getInitialPositions());
 		createPeers(battlingRobotsList);
 	}
@@ -689,7 +688,7 @@ public final class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
 		}
 
 		// Scan after moved all

@@ -1,6 +1,6 @@
 package net.sf.robocode.mode;
 
-/*
+/**
  * 
  */
 public class DifferentWeapons extends ClassicMode {

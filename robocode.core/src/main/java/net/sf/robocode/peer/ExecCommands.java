@@ -16,6 +16,7 @@ import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.Rules;
 
+import java.awt.peer.RobotPeer;
 import java.io.Serializable;
 import static java.lang.Math.abs;
 import java.nio.ByteBuffer;
@@ -210,7 +211,8 @@ public final class ExecCommands implements Serializable {
 	}
 
 	public void setMaxTurnRate(double maxTurnRate) {
-		this.maxTurnRate = Math.min(abs(maxTurnRate), Rules.MAX_TURN_RATE_RADIANS);
+		if(maxTurnRate == Double.MAX_VALUE) this.maxTurnRate = Rules.MAX_TURN_RATE_RADIANS;
+		else this.maxTurnRate = maxTurnRate;
 	}
 
 	public double getMaxVelocity() {
@@ -218,7 +220,9 @@ public final class ExecCommands implements Serializable {
 	}
 
 	public void setMaxVelocity(double maxVelocity) {
-		this.maxVelocity = Math.min(abs(maxVelocity), Rules.MAX_VELOCITY);
+		if(maxVelocity == Double.MAX_VALUE)
+			this.maxVelocity = Rules.MAX_VELOCITY;
+		else this.maxVelocity = maxVelocity;
 	}
 
 	public boolean isMoved() {

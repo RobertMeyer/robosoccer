@@ -44,6 +44,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 	/** List of snapshots for the bullets that are currently on the battlefield */
 	private List<IBulletSnapshot> bullets;
+	
+	/** List of snapshots for the items that are currently on the battlefield */
+	//TODO expand this use
+	private List<IItemSnapshot> items;
 
 	/** Current TPS (turns per second) */
 	private int tps;
@@ -71,6 +75,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, boolean readoutText) {
 		robots = new ArrayList<IRobotSnapshot>();
 		bullets = new ArrayList<IBulletSnapshot>();
+		items = new ArrayList<IItemSnapshot>();
 
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
