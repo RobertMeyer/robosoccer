@@ -5,33 +5,34 @@ import java.util.Random;
 
 import robocode.control.RandomFactory;
 import net.sf.robocode.battle.peer.*;
-import net.sf.robocode.battle.*;
+import net.sf.robocode.mode.IMode;
 import robocode.*;
 
 /**
  * Abstract class for item/powerup drops
  * 
+ * Original:
  * @author s4238358
- *
+ * 
+ * Contributors:
+ * @author Brandon Warwick (Team-Telos)
  */
 
-
 public abstract	class ItemDrop {
-
-
+	
 	private double xLocation;
 	private double yLocation;
-	protected final static double width = 40; //Same width and height as robots
-	protected final static double height = 40;
+
+	private final static double width = 40; //Same width and height as robots
+	private final static double height = 40;
+
 	private boolean isDestroyable;
 	private int lifespan;
 	private double health;
 	private boolean isEquippable;
 	private BattleRules battleRules;
 	private final BoundingRectangle boundingBox;
-	private static int id;
-	
-	
+		
 	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;
 		this.lifespan = lifespan;
@@ -39,7 +40,7 @@ public abstract	class ItemDrop {
 		this.isEquippable = isEquippable;
 		System.out.println("Item made");
 		this.boundingBox = new BoundingRectangle(xLocation, yLocation, width, height);
-		this.battleRules = battle.getBattleRules();
+		this.battleRules = battle.getBattleRules();		
 	}
 
 	/**
@@ -178,13 +179,6 @@ public abstract	class ItemDrop {
 	public void doItemEffect(){
 		
 	}
-	public void setId(int id) {
-		ItemDrop.id = id;
-	}
-	
-	public static int getId() {
-		return id;
-	}
 	
 	public void initialiseRoundItems(List<RobotPeer> robots, List<ItemDrop> items){
 		boolean valid = false;
@@ -243,6 +237,14 @@ public abstract	class ItemDrop {
 		}
 		return true;
 	}
-	
 
+	/**
+	 * Create a Flag item based on the mode
+	 * @param mode The mode to create the Flag for
+	 * @param battle The battle for where it is to be placed
+	 * @return A new Flag object designed for the mode 'mode'
+	 */
+	public static ItemDrop createForMode(IMode mode, Battle battle) {
+		return null;
+	}
 }

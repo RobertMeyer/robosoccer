@@ -1,5 +1,9 @@
 package net.sf.robocode.mode;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * Basic Construct for the CTF mode:
  *  Contains methods for initialising settings
@@ -10,28 +14,24 @@ package net.sf.robocode.mode;
  */
 public class FlagMode extends ClassicMode {
 	
-	/* ATTENTION FLAGMODE PEOPLE
-	 * From Team-IZO
-	 * Your mode needs to extend ClassicMode not implement IMode.
-	 * ClassicMode has default behaviour. This class already implements IMode.
-	 * If you don't, you will have to implement everything that ClassicMode does, otherwise, you can just
-	 * implement the methods that you want to change. This is a problem because now we've added a new feature
-	 * where each mode has a method getDescription(), which returns a String that describes the mode,
-	 * and is displayed in the UI. You, and future modes, don't have to implement this right away, because you will
-	 * inherit the default method from ClassicMode.
-	 * 
-	 * tl;dr: Your mode must extend ClassicMode, not implement IMode, or you will break the code when we add stuff.
-	 * I've gone and switched it, I am going to contact your group to make sure it's ok.
-	 */
-	
 	// Class Variables
 	private double pointLimit;
 	private double timeLimit;
+	// Score variable
+	private double flagScore = 0;
 	
+	List<String> items = new ArrayList<String>();
+	
+	/**
+	 * 
+	 */
 	public String getDescription() {
 		return "Robots score points per turn they are holding the flag.";
 	}
 	
+	/**
+	 * 
+	 */
 	public void execute() {
 		System.out.println("Capture The Flag");
 	}
@@ -83,6 +83,29 @@ public class FlagMode extends ClassicMode {
 	}
 	
 	public String toString() {
-		return "Capture The Flag.";
+		return "Capture the Flag";
+	}
+	
+	/**
+	 * Get the items needed for the items
+	 * @return the items needed
+	 */
+	public List<String> getItems() {
+		return items;
+	}
+	
+	/**
+	 * Add Flag as an item to be used for this Mode
+	 */
+	public void setItems() {
+		items.add("Flag");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void scorePoints() {
+		// TODO
+		flagScore++;
 	}
 }
