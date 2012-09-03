@@ -97,6 +97,7 @@ package net.sf.robocode.battle;
 
 
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -105,6 +106,7 @@ import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
+import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
@@ -157,6 +159,7 @@ public final class Battle extends BaseBattle {
 	private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private int activeRobots;
+	private List<ItemDrop> items = new ArrayList<ItemDrop>();
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -180,6 +183,8 @@ public final class Battle extends BaseBattle {
 				battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
 				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames());
 		robotsCount = battlingRobotsList.length;
+		
+		battleMode = battleProperties.getBattleMode();
 		computeInitialPositions(battleProperties.getInitialPositions());
 		createPeers(battlingRobotsList);
 	}
@@ -294,6 +299,7 @@ public final class Battle extends BaseBattle {
 				}
 			}
 			Integer duplicate = robotDuplicates.get(i);
+			// TODO Follow back from here to RobotPeer etc, to 
 			RobotPeer robotPeer = new RobotPeer(this, hostManager, specification, duplicate, team, robotIndex);
 
 			robots.add(robotPeer);
@@ -419,6 +425,9 @@ public final class Battle extends BaseBattle {
 			robotPeer.println("=========================");
 			robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
 			robotPeer.println("=========================");
+		}
+		for(ItemDrop itemDrop : items){
+			itemDrop.initialiseRoundItems(robots, items);
 		}
 
 		if (getRoundNum() == 0) {
@@ -679,7 +688,7 @@ public final class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
 		}
 
 		// Scan after moved all

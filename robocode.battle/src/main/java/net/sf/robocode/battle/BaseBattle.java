@@ -13,6 +13,7 @@ package net.sf.robocode.battle;
 
 
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.io.URLJarCollector;
 import static net.sf.robocode.io.Logger.logError;
@@ -21,6 +22,7 @@ import net.sf.robocode.settings.ISettingsManager;
 import robocode.BattleRules;
 import robocode.control.events.BattlePausedEvent;
 import robocode.control.events.BattleResumedEvent;
+import net.sf.robocode.mode.IMode;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -44,6 +46,9 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
 	// rules
 	protected BattleRules battleRules;
+	
+	// mode
+	protected IMode battleMode;
 
 	// Current round items
 	private int roundNum;
@@ -130,6 +135,10 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
 	public int getTPS() {
 		return tps;
+	}
+	
+	public IMode getBattleMode(){
+		return battleMode;
 	}
 
 	/**

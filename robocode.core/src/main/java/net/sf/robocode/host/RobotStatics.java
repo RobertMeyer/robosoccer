@@ -39,6 +39,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	private final boolean isTeamRobot;
 	private final boolean isTeamLeader;
 	private final boolean isDroid;
+	private final boolean isHouseRobot;
 	private final String name;
 	private final String shortName;
 	private final String veryShortName;
@@ -77,6 +78,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.isAdvancedRobot = specification.isAdvancedRobot();
 		this.isTeamRobot = specification.isTeamRobot();
 		this.isDroid = specification.isDroid();
+		this.isHouseRobot = specification.isHouseRobot();
 		this.isTeamLeader = isLeader;
 		this.battleRules = rules;
 
@@ -100,6 +102,30 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, String name, String shortName,
 			String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
 			String[] teammates, String teamName, int robotIndex, int teamIndex) {
+		this.isJuniorRobot = isJuniorRobot;
+		this.isInteractiveRobot = isInteractiveRobot;
+		this.isPaintRobot = isPaintRobot;
+		this.isAdvancedRobot = isAdvancedRobot;
+		this.isTeamRobot = isTeamRobot;
+		this.isTeamLeader = isTeamLeader;
+		this.isDroid = isDroid;
+		this.name = name;
+		this.shortName = shortName;
+		this.veryShortName = veryShortName;
+		this.fullClassName = fullClassName;
+		this.shortClassName = shortClassName;
+		this.battleRules = battleRules;
+		this.teammates = teammates;
+		this.teamName = teamName;
+		this.robotIndex = robotIndex;
+		this.teamIndex = teamIndex;
+		this.isHouseRobot = false;
+	}
+	
+	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
+			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, String name, String shortName,
+			String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
+			String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot) {
 
 		this.isJuniorRobot = isJuniorRobot;
 		this.isInteractiveRobot = isInteractiveRobot;
@@ -118,6 +144,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.teamName = teamName;
 		this.robotIndex = robotIndex;
 		this.teamIndex = teamIndex;
+		this.isHouseRobot = isHouseRobot;
 	}
 
 	public String getAnnonymousName() {
@@ -150,6 +177,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 
 	public boolean isDroid() {
 		return isDroid;
+	}
+	
+	public boolean isHouseRobot() {
+		return isHouseRobot;
 	}
 
 	public String getName() {

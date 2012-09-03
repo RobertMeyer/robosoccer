@@ -19,6 +19,7 @@ package net.sf.robocode.battle;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.control.RobotSpecification;
+import net.sf.robocode.mode.*;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -53,6 +54,7 @@ public class BattleProperties implements Serializable {
 	private boolean hideEnemyNames;
 	private String selectedRobots;
 	private String initialPositions;
+	private IMode battleMode;
 
 	private final Properties props = new Properties();
 
@@ -254,6 +256,21 @@ public class BattleProperties implements Serializable {
 
 	public void setInitialPositions(String initialPositions) {
 		this.initialPositions = initialPositions; 
+	}
+	
+	/**
+	 * Gets the current battle mode.
+	 * @return mode as a ModeContext object
+	 */
+	public IMode getBattleMode() {
+		return battleMode;
+	}
+	
+	/**
+	 * Sets the battle mode.
+	 */
+	public void setBattleMode(IMode mode) {
+		this.battleMode = mode;
 	}
 
 	public void store(FileOutputStream out, String desc) throws IOException {
