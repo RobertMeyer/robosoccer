@@ -50,6 +50,10 @@ public class ItemController {
 		return false;
 	}
 	
+	public void spawnRandomItem(ItemDrop item){
+		item.initialiseRoundItems(currentRobots, battleItems);
+	}
+	
 	/**
 	 * Removes item from current battlefield items
 	 * @param item - item to remove;
