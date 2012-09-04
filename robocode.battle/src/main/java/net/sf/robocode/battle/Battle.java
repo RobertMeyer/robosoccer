@@ -156,7 +156,10 @@ public final class Battle extends BaseBattle {
 	
 	/*--ItemController--*/
 	private ItemController itemControl;// = new ItemController(); 
-
+	private List<ItemDrop> items = new ArrayList<ItemDrop>();
+	private long turnCount = 0;
+	private int itemCursor;
+	
 	// Objects in the battle
 	private int robotsCount;
 	private List<RobotPeer> robots = new ArrayList<RobotPeer>();
@@ -164,8 +167,7 @@ public final class Battle extends BaseBattle {
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private int activeRobots;
 	
-	/* List of items that are going to be dropped */
-	private List<ItemDrop> items = new ArrayList<ItemDrop>();
+	
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -419,9 +421,9 @@ public final class Battle extends BaseBattle {
 
 		super.finalizeBattle();
 	}
-
+	/*
 	protected void initialiseItems() {
-		/* Get the item IDs needed for the mode and add them to items */
+		/* Get the item IDs needed for the mode and add them to items 
 		for (String item : this.getBattleMode().getItems()) {
 			try {
 				/* Get the item's class
@@ -429,7 +431,7 @@ public final class Battle extends BaseBattle {
 				 * IMode and Battle
 				 * Invoke the method as a static method (null means call on no object)
 				 * using this kind of Mode and this Battle
-				 */
+				 *
 				items.add((ItemDrop) item
 						.getClass()
 						.getMethod("createForMode", IMode.class, Battle.class)
@@ -450,7 +452,7 @@ public final class Battle extends BaseBattle {
 		for(ItemDrop itemDrop : items){
 			itemDrop.initialiseRoundItems(robots, items);
 		}
-	}
+	} */
 	
 	@Override
 	protected void preloadRound() {
@@ -469,7 +471,9 @@ public final class Battle extends BaseBattle {
 		}
 		
 		/* Start to initialise all the items */
-		this.initialiseItems();
+		//this.initialiseItems();
+		itemControl.spawnRandomItem(items.get(0));
+		itemCursor = items.size() - 1;
 
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
@@ -543,7 +547,6 @@ public final class Battle extends BaseBattle {
 	protected void runTurn() {
 		super.runTurn();
 
-		
 		loadCommands();
 		
 		/*--ItemController--*/
@@ -564,6 +567,14 @@ public final class Battle extends BaseBattle {
 		computeActiveRobots();
 
 		publishStatuses();
+		
+		turnCount++;
+		if (turnCount == 400){
+			if (itemCursor > 0){
+				itemControl.spawnRandomItem(items.get(itemCursor));
+				itemCursor--;
+			}
+		}
 
 		// Robot time!
 		wakeupRobots();
