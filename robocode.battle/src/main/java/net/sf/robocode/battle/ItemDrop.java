@@ -26,12 +26,13 @@ public abstract	class ItemDrop {
 	private final static double width = 40; //Same width and height as robots
 	private final static double height = 40;
 
-	private boolean isDestroyable;
-	private int lifespan;
-	private double health;
-	private boolean isEquippable;
-	private BattleRules battleRules;
-	private final BoundingRectangle boundingBox;
+	protected boolean isDestroyable;
+	protected int lifespan;
+	protected double health;
+	protected boolean isEquippable;
+	protected BattleRules battleRules;
+	protected Battle battle;
+	protected final BoundingRectangle boundingBox;
 		
 	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;
@@ -40,7 +41,8 @@ public abstract	class ItemDrop {
 		this.isEquippable = isEquippable;
 		System.out.println("Item made");
 		this.boundingBox = new BoundingRectangle(xLocation, yLocation, width, height);
-		this.battleRules = battle.getBattleRules();		
+		this.battle = battle;
+		this.battleRules = this.battle.getBattleRules();		
 	}
 
 	/**

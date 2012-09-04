@@ -153,6 +153,9 @@ public final class Battle extends BaseBattle {
 	private boolean parallelOn;
 	private long millisWait;
 	private int nanoWait;
+	
+	/*--ItemController--*/
+	private ItemController itemControl;// = new ItemController(); 
 
 	// Objects in the battle
 	private int robotsCount;
@@ -452,6 +455,10 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void preloadRound() {
 		super.preloadRound();
+		
+		/*--ItemController--*/
+		itemControl = new ItemController();
+		itemControl.updateRobots(robots);
 
 		// At this point the unsafe loader thread will now set itself to wait for a notify
 		for (RobotPeer robotPeer : robots) {
@@ -482,6 +489,9 @@ public final class Battle extends BaseBattle {
 
 		inactiveTurnCount = 0;
 
+		/*--ItemController--*/
+		itemControl.updateRobots(robots);
+		
 		// Start robots
 
 		long waitMillis;
@@ -533,7 +543,11 @@ public final class Battle extends BaseBattle {
 	protected void runTurn() {
 		super.runTurn();
 
+		
 		loadCommands();
+		
+		/*--ItemController--*/
+		itemControl.updateRobots(robots);
 
 		updateBullets();
 
