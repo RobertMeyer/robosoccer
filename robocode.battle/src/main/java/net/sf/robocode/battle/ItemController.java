@@ -50,6 +50,11 @@ public class ItemController {
 		return false;
 	}
 	
+	/**
+	 * Calls item initialiser to attempt spawn of item at random spot on battlefield
+	 * @param item - Item to be spawned
+	 */
+	
 	public void spawnRandomItem(ItemDrop item){
 		item.initialiseRoundItems(currentRobots, battleItems);
 	}
