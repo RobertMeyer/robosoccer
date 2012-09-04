@@ -31,6 +31,7 @@ public abstract	class ItemDrop {
 	private double health;
 	private boolean isEquippable;
 	private BattleRules battleRules;
+	protected Battle battle;
 	private final BoundingRectangle boundingBox;
 		
 	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
@@ -40,7 +41,8 @@ public abstract	class ItemDrop {
 		this.isEquippable = isEquippable;
 		System.out.println("Item made");
 		this.boundingBox = new BoundingRectangle(xLocation, yLocation, width, height);
-		this.battleRules = battle.getBattleRules();		
+		this.battle = battle;
+		this.battleRules = this.battle.getBattleRules();		
 	}
 
 	/**
