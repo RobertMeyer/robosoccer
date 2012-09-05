@@ -57,12 +57,12 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
 
     public void addWindowItem(WindowMenuItem item) {
         windowListItems.add(item);
-        getWindowList().setListData(windowListItems);
+        getWindowList().setListData(windowListItems.toArray());
     }
 
     public void removeWindowItem(WindowMenuItem item) {
         windowListItems.remove(item);
-        getWindowList().setListData(windowListItems);
+        getWindowList().setListData(windowListItems.toArray());
     }
 
     public JButton getActivateButton() {

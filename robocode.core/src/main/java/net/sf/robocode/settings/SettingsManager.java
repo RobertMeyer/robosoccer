@@ -900,7 +900,7 @@ public class SettingsManager implements ISettingsManager {
             Collections.sort(keyList);
 
             // noinspection RedundantCast
-            return (Enumeration) keyList.elements();
+            return (Enumeration) Collections.enumeration(keyList);
         }
 
         @Override

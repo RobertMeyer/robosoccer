@@ -225,7 +225,7 @@ public class PreferencesSoundOptionsTab extends WizardPanel {
                 }
             }
 
-            mixerComboBox = new JComboBox(mixers);
+            mixerComboBox = new JComboBox(mixers.toArray());
             mixerComboBox.setRenderer(new MixerInfoCellRenderer());
             mixerComboBox.addActionListener(eventHandler);
         }
