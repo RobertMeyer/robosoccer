@@ -292,7 +292,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
             String shortClassName = serializer.deserializeString(buffer);
             BattleRules battleRules = HiddenAccess.createRules(serializer.deserializeInt(buffer),
                                                                serializer.deserializeInt(buffer), serializer.deserializeInt(buffer), serializer.deserializeDouble(buffer),
-                                                               serializer.deserializeLong(buffer), serializer.deserializeBoolean(buffer));
+                                                               serializer.deserializeLong(buffer), serializer.deserializeBoolean(buffer), null);
 
             List<String> teammates = new ArrayList<String>();
             Object item = serializer.deserializeString(buffer);

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package robocode;
 
+import java.util.Hashtable;
+
 import net.sf.robocode.security.IHiddenRulesHelper;
 
 /**
@@ -36,6 +38,7 @@ public final class BattleRules implements java.io.Serializable {
     private final double gunCoolingRate;
     private final long inactivityTime;
     private final boolean hideEnemyNames;
+    private final Hashtable<String, Object> modeRules;
 
     /**
      * Returns the battlefield width.
@@ -105,14 +108,19 @@ public final class BattleRules implements java.io.Serializable {
     public boolean getHideEnemyNames() {
         return hideEnemyNames;
     }
+    
+    public Hashtable<String, Object> getModeRules() {
+    	return modeRules;
+    }
 
-    private BattleRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames) {
+    private BattleRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames, Hashtable<String, Object> modeRules) {
         this.battlefieldWidth = battlefieldWidth;
         this.battlefieldHeight = battlefieldHeight;
         this.numRounds = numRounds;
         this.gunCoolingRate = gunCoolingRate;
         this.inactivityTime = inactivityTime;
         this.hideEnemyNames = hideEnemyNames;
+        this.modeRules = modeRules;
     }
 
     static IHiddenRulesHelper createHiddenHelper() {
@@ -121,9 +129,9 @@ public final class BattleRules implements java.io.Serializable {
 
     private static class HiddenHelper implements IHiddenRulesHelper {
 
-        public BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames) {
+        public BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames, Hashtable<String, Object> modeRules) {
             return new BattleRules(battlefieldWidth, battlefieldHeight, numRounds, gunCoolingRate, inactivityTime,
-                                   hideEnemyNames);
+                                   hideEnemyNames, modeRules);
         }
     }
 }

@@ -3,18 +3,14 @@ package net.sf.robocode.mode;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.Hashtable;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import robocode.BattleRules;
 
 public class SlowMode extends ClassicMode {
 	
 	private SlowModeRulesPanel rulesPanel;
-	
-	public double modifyVelocity(double velocityIncrement) {
-		return velocityIncrement;
-	}
 	
 	public String toString() {
 		return "Slow Mode";
@@ -33,6 +29,10 @@ public class SlowMode extends ClassicMode {
 	
 	public Hashtable<String, Object> getRulesPanelValues() {
 		return rulesPanel.getValues();
+	}
+	
+	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
+		return velocityIncrement * (double) Double.parseDouble((String) rules.getModeRules().get("speedModifier"));
 	}
 	
 	@SuppressWarnings("serial")

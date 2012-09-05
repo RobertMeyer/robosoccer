@@ -3,9 +3,8 @@ package net.sf.robocode.mode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Hashtable;
-import java.util.List;
-
 import javax.swing.JPanel;
+import robocode.BattleRules;
 
 /**
  *
@@ -45,9 +44,14 @@ public class ClassicMode implements IMode {
 	/**
 	 * {@inheritDoc}
 	 */
+	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
+		return modifyVelocity(velocityIncrement);
+	}
+	
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

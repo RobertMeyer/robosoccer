@@ -33,6 +33,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Helpers for accessing hidden methods on events
@@ -228,9 +229,9 @@ public class HiddenAccess {
                                          numRounds, time);
     }
 
-    public static BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames) {
+    public static BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames, Hashtable<String, Object> modeRules) {
         return rulesHelper.createRules(battlefieldWidth, battlefieldHeight, numRounds, gunCoolingRate, inactivityTime,
-                                       hideEnemyNames);
+                                       hideEnemyNames, modeRules);
     }
 
     public static boolean isSafeThread() {
