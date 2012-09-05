@@ -1088,14 +1088,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
-				//addEvent(new HitItemEvent());
+				item.doItemEffect(this);
 			}
 		}
 		for (ItemDrop item : itemsDestroyed){
 			items.remove(item);
 		}
 		if (inCollision){
-			setState(RobotState.HIT_ITEM);
+			//setState(RobotState.HIT_ITEM);
 		}
 	}
 

@@ -18,6 +18,7 @@ public class HealthPack extends ItemDrop {
 	
 	public void doItemEffect(RobotPeer robot){
 		robot.updateEnergy(30);
+		System.out.println("Item USED");
 	}
 	
 }

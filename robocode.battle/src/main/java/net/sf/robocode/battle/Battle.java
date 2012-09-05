@@ -475,7 +475,7 @@ public final class Battle extends BaseBattle {
 		/* Start to initialise all the items */
 		//this.initialiseItems();
 		if (items.size() > 0){
-			itemControl.spawnRandomItem(items.get(0));
+			itemControl.spawnItem(items.get(0), 40, 40);
 			itemCursor = items.size() - 1;
 		}
 
