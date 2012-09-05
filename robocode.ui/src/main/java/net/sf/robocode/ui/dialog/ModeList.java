@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 
 @SuppressWarnings("serial")
-public class ModeList<IMode> extends JList<IMode> {
+public class ModeList<IMode> extends JList {
 	
 	private JLabel label;
 	

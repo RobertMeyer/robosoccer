@@ -1,5 +1,8 @@
 package net.sf.robocode.mode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * Default implementation of the IMode interface. This class models
@@ -20,7 +23,6 @@ public class ClassicMode implements IMode {
 	/**
 	 * {@inheritDoc}
 	 */
-	
 	public String toString() {
 		return "Classic Mode";
 	}
@@ -32,4 +34,21 @@ public class ClassicMode implements IMode {
 		return description;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<String> getItems() {
+		return new ArrayList<String>();
+	}
+	
+	@Override
+	public void setItems() {
+		/* No items needed for Classic Mode */
+	}
+
+	@Override
+	public void scorePoints() {
+		// TODO Auto-generated method stub
+		
+	}
 }
