@@ -186,7 +186,14 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 		
 		battleMode = battleProperties.getBattleMode();
-		computeInitialPositions(battleProperties.getInitialPositions());
+		
+		// Start positions for the soccer mode. Default behaviour for other modes.
+		if(battleMode instanceof SoccerMode) {
+			robotsCount = ((battlingRobotsList.length % 2 == 0) ? battlingRobotsList.length : (battlingRobotsList.length - 1));
+			computeSoccerPositions(robotsCount);
+		} else {
+			computeInitialPositions(battleProperties.getInitialPositions());
+		}
 		createPeers(battlingRobotsList);
 	}
 
@@ -995,5 +1002,41 @@ public final class Battle extends BaseBattle {
 				}
 			}
 		}
+	}
+	
+	// ######################### Soccer Mode Setup #########################
+	
+	/*
+	 * Updates initialRobotPositions based onthe given robot count.
+	 * Robots are split into two even teams and arranged in evenly spaced
+	 * columns of 3. Robots are given an initial heading such that they
+	 * face towards the centre of the field.
+	 */
+	private void computeSoccerPositions(int count) {
+		initialRobotPositions = new double[(count + 1)][3];
+		
+		double height = battleRules.getBattlefieldHeight();
+		double width = battleRules.getBattlefieldWidth();
+		
+		int teamSize = count / 2;
+		
+		// Horizontal spacing between columns of robots.
+		double xOffset = ((width / 2)) / (1 + Math.max(1, Math.ceil(teamSize / 3.0)));
+
+		for(int i = 0; i < teamSize; i++) {
+			// Team 1 Initial Positions (Left side of field)
+			initialRobotPositions[i][0] = (width / 2) - (((i/3) + 1) * xOffset);
+			initialRobotPositions[i][1] = (0.2 * height) + (((0.9 * height) / 3) * (i % 3));
+			initialRobotPositions[i][2] = (Math.PI / 2.0);
+			
+			// Team 2 Initial Positions
+			initialRobotPositions[(i + teamSize)][0] = (width / 2) + (((i / 3) + 1) * xOffset);
+			initialRobotPositions[(i + teamSize)][1] = (0.2 * height) + (((0.9 * height) / 3) * (i % 3));
+			initialRobotPositions[(i + teamSize)][2] = 3 * (Math.PI / 2.0);
+		}
+		
+		initialRobotPositions[count][0] = (width / 2);
+		initialRobotPositions[count][1] = (height / 2);
+		initialRobotPositions[count][2] = 0;
 	}
 }

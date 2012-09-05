@@ -24,7 +24,8 @@ public class NewBattleModeTab extends JPanel {
 		new ClassicMode(), 
 		new SlowMode(), 
 		new DifferentWeapons(), 
-		new RaceMode()
+		new RaceMode(),
+		new SoccerMode()
 	};
 	
 	public NewBattleModeTab() {
