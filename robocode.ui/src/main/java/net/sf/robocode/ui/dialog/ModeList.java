@@ -3,18 +3,17 @@ package net.sf.robocode.ui.dialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-@SuppressWarnings("serial")
-public class ModeList<IMode> extends JList {
+public class ModeList extends JList {
 	
-	private JLabel label;
+	private NewBattleModeTab modeTab;
 	
-	public ModeList(JLabel label) {
+	public ModeList(NewBattleModeTab modeTab) {
 		super();
-		this.label = label;
+		this.modeTab = modeTab;
 		this.addListSelectionListener(new ModeListListener());
 	}
 	
-	protected JLabel getLabel() {
-		return label;
+	protected NewBattleModeTab getModePanel() {
+		return modeTab;
 	}
 }
