@@ -13,7 +13,6 @@
  *******************************************************************************/
 package robocode;
 
-
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
@@ -23,7 +22,6 @@ import robocode.robotinterfaces.IBasicRobot;
 import java.awt.*;
 import java.nio.ByteBuffer;
 
-
 /**
  * A HitWallEvent is sent to {@link Robot#onHitWall(HitWallEvent) onHitWall()}
  * when you collide a wall.
@@ -32,96 +30,97 @@ import java.nio.ByteBuffer;
  * @author Mathew A. Nelson (original)
  */
 public final class HitWallEvent extends Event {
-	private static final long serialVersionUID = 1L;
-	private final static int DEFAULT_PRIORITY = 30;
 
-	private final double bearing;
+    private static final long serialVersionUID = 1L;
+    private final static int DEFAULT_PRIORITY = 30;
+    private final double bearing;
 
-	/**
-	 * Called by the game to create a new HitWallEvent.
-	 *
-	 * @param bearing the bearing to the wall that your robot hit, in radians
-	 */
-	public HitWallEvent(double bearing) {
-		this.bearing = bearing;
-	}
+    /**
+     * Called by the game to create a new HitWallEvent.
+     *
+     * @param bearing the bearing to the wall that your robot hit, in radians
+     */
+    public HitWallEvent(double bearing) {
+        this.bearing = bearing;
+    }
 
-	/**
-	 * Returns the bearing to the wall you hit, relative to your robot's
-	 * heading, in degrees (-180 <= getBearing() < 180)
-	 *
-	 * @return the bearing to the wall you hit, in degrees
-	 */
-	public double getBearing() {
-		return bearing * 180.0 / Math.PI;
-	}
+    /**
+     * Returns the bearing to the wall you hit, relative to your robot's
+     * heading, in degrees (-180 <= getBearing() < 180)
+     *
+     * @return the bearing to the wall you hit, in degrees
+     */
+    public double getBearing() {
+        return bearing * 180.0 / Math.PI;
+    }
 
-	/**
-	 * @return the bearing to the wall you hit, in degrees
-	 * @deprecated Use {@link #getBearing()} instead.
-	 */
-	@Deprecated
-	public double getBearingDegrees() {
-		return getBearing();
-	}
+    /**
+     * @return the bearing to the wall you hit, in degrees
+     * @deprecated Use {@link #getBearing()} instead.
+     */
+    @Deprecated
+    public double getBearingDegrees() {
+        return getBearing();
+    }
 
-	/**
-	 * Returns the bearing to the wall you hit, relative to your robot's
-	 * heading, in radians (-PI <= getBearingRadians() < PI)
-	 *
-	 * @return the bearing to the wall you hit, in radians
-	 */
-	public double getBearingRadians() {
-		return bearing;
-	}
+    /**
+     * Returns the bearing to the wall you hit, relative to your robot's
+     * heading, in radians (-PI <= getBearingRadians() < PI)
+     *
+     * @return the bearing to the wall you hit, in radians
+     */
+    public double getBearingRadians() {
+        return bearing;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final int getDefaultPriority() {
-		return DEFAULT_PRIORITY;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final int getDefaultPriority() {
+        return DEFAULT_PRIORITY;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		IBasicEvents listener = robot.getBasicEventListener();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+        IBasicEvents listener = robot.getBasicEventListener();
 
-		if (listener != null) {
-			listener.onHitWall(this);
-		}
-	}
+        if (listener != null) {
+            listener.onHitWall(this);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	byte getSerializationType() {
-		return RbSerializer.HitWallEvent_TYPE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    byte getSerializationType() {
+        return RbSerializer.HitWallEvent_TYPE;
+    }
 
-	static ISerializableHelper createHiddenSerializer() {
-		return new SerializableHelper();
-	}
+    static ISerializableHelper createHiddenSerializer() {
+        return new SerializableHelper();
+    }
 
-	private static class SerializableHelper implements ISerializableHelper {
-		public int sizeOf(RbSerializer serializer, Object object) {
-			return RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_DOUBLE;
-		}
+    private static class SerializableHelper implements ISerializableHelper {
 
-		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-			HitWallEvent obj = (HitWallEvent) object;
+        public int sizeOf(RbSerializer serializer, Object object) {
+            return RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_DOUBLE;
+        }
 
-			serializer.serialize(buffer, obj.bearing);
-		}
+        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+            HitWallEvent obj = (HitWallEvent) object;
 
-		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-			double bearing = buffer.getDouble();
+            serializer.serialize(buffer, obj.bearing);
+        }
 
-			return new HitWallEvent(bearing);
-		}
-	}
+        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+            double bearing = buffer.getDouble();
+
+            return new HitWallEvent(bearing);
+        }
+    }
 }

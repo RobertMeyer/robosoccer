@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
@@ -19,68 +18,66 @@ import org.junit.Test;
 
 import javax.swing.*;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public class TestAwtAttack extends RobocodeTestBed {
-	// in case: boolean messagedAttack;
-	boolean messagedBreakthru;
+    // in case: boolean messagedAttack;
 
-	@Test
-	public void run() {
-		super.run();
-	}
+    boolean messagedBreakthru;
 
-	/* in case that we don't block JFrame by classloader
-	 public void onTurnEnded(TurnEndedEvent event) {
-	 super.onTurnEnded(event);
-	 final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
+    @Test
+    public void run() {
+        super.run();
+    }
 
-	 if (out.contains("Hacked!!!")) {
-	 messagedBreakthru = true;
-	 }
-	 if (out.contains("Robots are not allowed to reference javax.swing package")) {
-	 messagedAttack = true;
-	 }
-	 } */
+    /* in case that we don't block JFrame by classloader
+     public void onTurnEnded(TurnEndedEvent event) {
+     super.onTurnEnded(event);
+     final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
 
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.BattleLost,tested.robots.AwtAttack";
-	}
+     if (out.contains("Hacked!!!")) {
+     messagedBreakthru = true;
+     }
+     if (out.contains("Robots are not allowed to reference javax.swing package")) {
+     messagedAttack = true;
+     }
+     } */
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.BattleLost,tested.robots.AwtAttack";
+    }
+    JFrame frame;
 
-	JFrame frame;
+    @Override
+    protected void runSetup() {
+        frame = new JFrame();
+        frame.setVisible(true);
+    }
 
-	@Override
-	protected void runSetup() {
-		frame = new JFrame();
-		frame.setVisible(true);
-	}
+    @Override
+    protected int getExpectedErrors() {
+        return 2;
+    }
 
-	@Override
-	protected int getExpectedErrors() {
-		return 2;
-	}
+    @Override
+    public int getExpectedRobotCount(String list) {
+        return 1;
+    }
 
-	@Override
-	public int getExpectedRobotCount(String list) {
-		return 1;
-	}
+    @Override
+    protected void runTeardown() {
 
-	@Override
-	protected void runTeardown() {
+        Runnable doCheck = new Runnable() {
+            public void run() {
+                Logger.logMessage("works still!!!");
+            }
+        };
 
-		Runnable doCheck = new Runnable() {
-			public void run() {
-				Logger.logMessage("works still!!!");
-			}
-		};
+        javax.swing.SwingUtilities.invokeLater(doCheck);
 
-		javax.swing.SwingUtilities.invokeLater(doCheck);
-
-		frame.setVisible(false);
-		Assert.assertFalse(messagedBreakthru);
-		// in case: Assert.assertTrue(messagedAttack);
-	}
+        frame.setVisible(false);
+        Assert.assertFalse(messagedBreakthru);
+        // in case: Assert.assertTrue(messagedAttack);
+    }
 }

@@ -11,97 +11,96 @@
  *******************************************************************************/
 package net.sf.robocode.ui.util;
 
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 
-
 /**
  * @author Mathew A. Nelson (original)
  */
 @SuppressWarnings("serial")
 public class LimitedDocument extends PlainDocument {
-	int maxRows = Integer.MAX_VALUE;
-	int maxCols = Integer.MAX_VALUE;
 
-	public LimitedDocument() {
-		super();
-	}
+    int maxRows = Integer.MAX_VALUE;
+    int maxCols = Integer.MAX_VALUE;
 
-	public LimitedDocument(int maxRows, int maxCols) {
-		super();
-		this.maxRows = maxRows;
-		this.maxCols = maxCols;
-	}
+    public LimitedDocument() {
+        super();
+    }
 
-	@Override
-	public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-		Element rootElement = getDefaultRootElement();
-		int i = str.indexOf("\n");
-		int newlines = 0;
+    public LimitedDocument(int maxRows, int maxCols) {
+        super();
+        this.maxRows = maxRows;
+        this.maxCols = maxCols;
+    }
 
-		while (i < str.length() && i >= 0) {
-			newlines++;
-			i = str.indexOf("\n", i + 1);
-		}
+    @Override
+    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+        Element rootElement = getDefaultRootElement();
+        int i = str.indexOf("\n");
+        int newlines = 0;
 
-		int currentLines = rootElement.getElementCount();
+        while (i < str.length() && i >= 0) {
+            newlines++;
+            i = str.indexOf("\n", i + 1);
+        }
 
-		if (newlines > 0 && currentLines + newlines > maxRows) {
-			Toolkit.getDefaultToolkit().beep();
-			return;
-		}
+        int currentLines = rootElement.getElementCount();
 
-		int lineIndex = rootElement.getElementIndex(offs);
-		boolean done = false;
+        if (newlines > 0 && currentLines + newlines > maxRows) {
+            Toolkit.getDefaultToolkit().beep();
+            return;
+        }
 
-		int carry = rootElement.getElement(lineIndex).getEndOffset() - offs - 1;
-		int lineStart = 0;
+        int lineIndex = rootElement.getElementIndex(offs);
+        boolean done = false;
 
-		while (!done) {
-			int lineEnd = str.indexOf("\n", lineStart);
+        int carry = rootElement.getElement(lineIndex).getEndOffset() - offs - 1;
+        int lineStart = 0;
 
-			if (lineEnd == -1 || lineEnd == str.length()) {
-				if (lineStart == 0) {
-					carry = 0;
-					lineEnd = str.length();
-				} else {
-					lineEnd = str.length() + carry;
-				}
-				done = true;
-			}
-			int lineLen = lineEnd - lineStart;
-			// Increment for last line...
-			int currentLen;
+        while (!done) {
+            int lineEnd = str.indexOf("\n", lineStart);
 
-			if (!done && lineStart > 0) {
-				currentLen = 0;
-			} else {
-				if (done && lineStart > 0) {
-					lineIndex++;
-				}
-				Element currentLine = rootElement.getElement(lineIndex);
+            if (lineEnd == -1 || lineEnd == str.length()) {
+                if (lineStart == 0) {
+                    carry = 0;
+                    lineEnd = str.length();
+                } else {
+                    lineEnd = str.length() + carry;
+                }
+                done = true;
+            }
+            int lineLen = lineEnd - lineStart;
+            // Increment for last line...
+            int currentLen;
 
-				if (currentLine != null) {
-					currentLen = currentLine.getEndOffset() - currentLine.getStartOffset();
-				} else {
-					currentLen = 1;
-				}
-				if (lineStart == 0) {
-					currentLen -= carry;
-				}
-			}
-			if (lineLen + currentLen > maxCols + 1) {
-				Toolkit.getDefaultToolkit().beep();
-				return;
-			}
+            if (!done && lineStart > 0) {
+                currentLen = 0;
+            } else {
+                if (done && lineStart > 0) {
+                    lineIndex++;
+                }
+                Element currentLine = rootElement.getElement(lineIndex);
 
-			lineStart = lineEnd + 1;
-		}
+                if (currentLine != null) {
+                    currentLen = currentLine.getEndOffset() - currentLine.getStartOffset();
+                } else {
+                    currentLen = 1;
+                }
+                if (lineStart == 0) {
+                    currentLen -= carry;
+                }
+            }
+            if (lineLen + currentLen > maxCols + 1) {
+                Toolkit.getDefaultToolkit().beep();
+                return;
+            }
 
-		super.insertString(offs, str, a);
-	}
+            lineStart = lineEnd + 1;
+        }
+
+        super.insertString(offs, str, a);
+    }
 }

@@ -11,10 +11,8 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.AdvancedRobot;
 import robocode.Bullet;
-
 
 /**
  * @author Pavel Savara (original)
@@ -22,17 +20,16 @@ import robocode.Bullet;
  */
 public class BadFirePower extends AdvancedRobot {
 
-	public void run() {
-		while (true) {
-			Bullet bullet = setFireBullet(getTime() - 12.0);
+    public void run() {
+        while (true) {
+            Bullet bullet = setFireBullet(getTime() - 12.0);
 
-			if (bullet != null) {
-				out.println(getTime() + " Bullet power: " + bullet.getPower());
-			} else {
-				out.println(getTime() + " No bullet");
-			}
-			execute();
-		}
-	}
-
+            if (bullet != null) {
+                out.println(getTime() + " Bullet power: " + bullet.getPower());
+            } else {
+                out.println(getTime() + " No bullet");
+            }
+            execute();
+        }
+    }
 }

@@ -11,12 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
 import robocode.control.events.TurnEndedEvent;
-
 
 /**
  * Test if onScannedRobot() is called when the radar is turned from within a onHitWall() event.
@@ -24,29 +22,30 @@ import robocode.control.events.TurnEndedEvent;
  * @author Flemming N. Larsen (original)
  */
 public class TestInteruptibleEvent extends RobocodeTestBed {
-	boolean messagedScanned;
 
-	@Test
-	public void run() {
-		super.run();
-	}
+    boolean messagedScanned;
 
-	public void onTurnEnded(TurnEndedEvent event) {
-		super.onTurnEnded(event);
-		final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
+    @Test
+    public void run() {
+        super.run();
+    }
 
-		if (out.contains("Scanned!!!")) {
-			messagedScanned = true;
-		}
-	}
+    public void onTurnEnded(TurnEndedEvent event) {
+        super.onTurnEnded(event);
+        final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
 
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.InteruptibleEvent,tested.robots.InteruptibleEvent";
-	}
+        if (out.contains("Scanned!!!")) {
+            messagedScanned = true;
+        }
+    }
 
-	@Override
-	protected void runTeardown() {
-		Assert.assertTrue(messagedScanned);
-	}
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.InteruptibleEvent,tested.robots.InteruptibleEvent";
+    }
+
+    @Override
+    protected void runTeardown() {
+        Assert.assertTrue(messagedScanned);
+    }
 }

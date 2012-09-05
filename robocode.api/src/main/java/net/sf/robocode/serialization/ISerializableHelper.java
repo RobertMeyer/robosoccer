@@ -11,15 +11,16 @@
  *******************************************************************************/
 package net.sf.robocode.serialization;
 
-
 import java.nio.ByteBuffer;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface ISerializableHelper {
-	int sizeOf(RbSerializer serializer, Object object);
-	void serialize(RbSerializer serializer, ByteBuffer buffer, Object object);
-	Object deserialize(RbSerializer serializer, ByteBuffer buffer);
+
+    int sizeOf(RbSerializer serializer, Object object);
+
+    void serialize(RbSerializer serializer, ByteBuffer buffer, Object object);
+
+    Object deserialize(RbSerializer serializer, ByteBuffer buffer);
 }

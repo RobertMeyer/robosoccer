@@ -11,22 +11,21 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.*;
-
 
 /**
  * @author Nat Pavasant (original)
  */
 public class FairPlay extends AdvancedRobot {
-	public void run() {
-		setTurnRadarRightRadians(1d / 0d);
-	}
 
-	public void onScannedRobot(ScannedRobotEvent e) {
-		setTurnRadarLeft(getRadarTurnRemaining());
-		setTurnGunRightRadians(
-				robocode.util.Utils.normalRelativeAngle(e.getBearingRadians() + getHeadingRadians() - getGunHeadingRadians()));
-		setFire(3);
-	}
+    public void run() {
+        setTurnRadarRightRadians(1d / 0d);
+    }
+
+    public void onScannedRobot(ScannedRobotEvent e) {
+        setTurnRadarLeft(getRadarTurnRemaining());
+        setTurnGunRightRadians(
+                robocode.util.Utils.normalRelativeAngle(e.getBearingRadians() + getHeadingRadians() - getGunHeadingRadians()));
+        setFire(3);
+    }
 }

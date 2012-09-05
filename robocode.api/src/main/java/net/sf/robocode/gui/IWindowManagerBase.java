@@ -11,10 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.gui;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface IWindowManagerBase {
-	void setVisibleForRobotEngine(boolean visible);
+
+    void setVisibleForRobotEngine(boolean visible);
 }

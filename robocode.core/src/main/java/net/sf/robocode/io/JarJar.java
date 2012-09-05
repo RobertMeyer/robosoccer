@@ -11,11 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.io;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public class JarJar {
-	public final static char SEPARATOR_CHAR = '^';
-	public final static String SEPARATOR = SEPARATOR_CHAR + "/";
+
+    public final static char SEPARATOR_CHAR = '^';
+    public final static String SEPARATOR = SEPARATOR_CHAR + "/";
 }

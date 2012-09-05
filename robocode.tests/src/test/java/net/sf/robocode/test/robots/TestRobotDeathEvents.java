@@ -11,36 +11,34 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 
 import robocode.control.events.TurnEndedEvent;
-
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class TestRobotDeathEvents extends RobocodeTestBed {
 
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.RobotDeathEvents,sample.Crazy,sample.Target,sample.Target,sample.Target";
-	}
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.RobotDeathEvents,sample.Crazy,sample.Target,sample.Target,sample.Target";
+    }
 
-	@Override
-	public int getNumRounds() {
-		return 5;
-	}
+    @Override
+    public int getNumRounds() {
+        return 5;
+    }
 
-	@Override
-	public void onTurnEnded(TurnEndedEvent event) {
-		super.onTurnEnded(event);
+    @Override
+    public void onTurnEnded(TurnEndedEvent event) {
+        super.onTurnEnded(event);
 
-		final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
+        final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
 
-		if (out.contains("enemyCount != getOthers()")) {
-			Assert.fail("Robot is missing RobotDeathEvent");
-		}	
-	}
+        if (out.contains("enemyCount != getOthers()")) {
+            Assert.fail("Robot is missing RobotDeathEvent");
+        }
+    }
 }

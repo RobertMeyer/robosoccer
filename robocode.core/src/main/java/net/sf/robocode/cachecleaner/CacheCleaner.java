@@ -14,7 +14,6 @@
  *******************************************************************************/
 package net.sf.robocode.cachecleaner;
 
-
 import net.sf.robocode.core.Container;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
@@ -22,7 +21,6 @@ import net.sf.robocode.repository.IRepositoryManager;
 
 import java.io.File;
 import java.io.IOException;
-
 
 /**
  * Cache cleaner used for cleaning the /robot directory of Robocode, especially
@@ -32,49 +30,51 @@ import java.io.IOException;
  * @author Flemming N. Larsen (minor optimizations)
  */
 public final class CacheCleaner {
-	private CacheCleaner() {}
 
-	public static void main(String[] args) {
-		clean();
-	}
+    private CacheCleaner() {
+    }
 
-	public static void clean() {
-		File roborumbleTempFile = new File("roborumble/temp");
+    public static void main(String[] args) {
+        clean();
+    }
 
-		deleteFile(roborumbleTempFile.getPath());
-		deleteFile(FileUtil.getRobotsDataDir().getPath());
-		deleteFile(FileUtil.getRobotDatabaseFile().getPath());
+    public static void clean() {
+        File roborumbleTempFile = new File("roborumble/temp");
 
-		FileUtil.createDir(roborumbleTempFile);
+        deleteFile(roborumbleTempFile.getPath());
+        deleteFile(FileUtil.getRobotsDataDir().getPath());
+        deleteFile(FileUtil.getRobotDatabaseFile().getPath());
 
-		final IRepositoryManager repositoryManager = Container.getComponent(IRepositoryManager.class);
+        FileUtil.createDir(roborumbleTempFile);
 
-		repositoryManager.reload(true);
+        final IRepositoryManager repositoryManager = Container.getComponent(IRepositoryManager.class);
 
-		Logger.logMessage("Cleaning done.");
-	}
+        repositoryManager.reload(true);
 
-	private static void deleteFile(String filename) {
-		Logger.logMessage("Deleting " + filename + "...");
-		try {
-			recursivelyDelete(new File(filename));
-		} catch (IOException ex) {
-			Logger.logError(ex.getMessage());
-		}
-	}
+        Logger.logMessage("Cleaning done.");
+    }
 
-	private static void recursivelyDelete(File file) throws IOException {
-		if (file.exists()) {
-			if (file.isDirectory()) {
-				final File[] files = file.listFiles();
+    private static void deleteFile(String filename) {
+        Logger.logMessage("Deleting " + filename + "...");
+        try {
+            recursivelyDelete(new File(filename));
+        } catch (IOException ex) {
+            Logger.logError(ex.getMessage());
+        }
+    }
 
-				for (File f : files) {
-					recursivelyDelete(f);
-				}
-			}
-			if (!file.delete()) {
-				throw new IOException("Failed deleting file: " + file.getPath());
-			}
-		}
-	}
+    private static void recursivelyDelete(File file) throws IOException {
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                final File[] files = file.listFiles();
+
+                for (File f : files) {
+                    recursivelyDelete(f);
+                }
+            }
+            if (!file.delete()) {
+                throw new IOException("Failed deleting file: " + file.getPath());
+            }
+        }
+    }
 }

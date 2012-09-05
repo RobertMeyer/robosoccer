@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-
 import net.sf.robocode.host.events.EventManager;
 import net.sf.robocode.host.io.RobotFileSystemManager;
 import net.sf.robocode.host.io.RobotOutputStream;
@@ -36,263 +35,263 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * @author Pavel Savara (original)
  */
-public abstract class HostingRobotProxy implements IHostingRobotProxy, IHostedThread {
-	protected EventManager eventManager;
-	protected RobotThreadManager robotThreadManager;
-	protected RobotFileSystemManager robotFileSystemManager;
-	private final IRobotRepositoryItem robotSpecification;
-	protected IRobotClassLoader robotClassLoader;
-	protected final RobotStatics statics;
-	protected RobotOutputStream out;
-	protected final IRobotPeer peer;
-	protected final IHostManager hostManager;
-	private IThreadManager threadManager;
-	protected IBasicRobot robot;
-	private final Set<String> securityViolations = Collections.synchronizedSet(new HashSet<String>());
+public abstract class HostingRobotProxy implements IHostingRobotProxy,
+                                                   IHostedThread {
 
-	HostingRobotProxy(IRobotRepositoryItem robotSpecification, IHostManager hostManager, IRobotPeer peer, RobotStatics statics) {
-		this.peer = peer;
-		this.statics = statics;
-		this.hostManager = hostManager;
-		this.robotSpecification = robotSpecification;
+    protected EventManager eventManager;
+    protected RobotThreadManager robotThreadManager;
+    protected RobotFileSystemManager robotFileSystemManager;
+    private final IRobotRepositoryItem robotSpecification;
+    protected IRobotClassLoader robotClassLoader;
+    protected final RobotStatics statics;
+    protected RobotOutputStream out;
+    protected final IRobotPeer peer;
+    protected final IHostManager hostManager;
+    private IThreadManager threadManager;
+    protected IBasicRobot robot;
+    private final Set<String> securityViolations = Collections.synchronizedSet(new HashSet<String>());
 
-		robotClassLoader = getHost(robotSpecification).createLoader(robotSpecification);
-		robotClassLoader.setRobotProxy(this);
+    HostingRobotProxy(IRobotRepositoryItem robotSpecification, IHostManager hostManager, IRobotPeer peer, RobotStatics statics) {
+        this.peer = peer;
+        this.statics = statics;
+        this.hostManager = hostManager;
+        this.robotSpecification = robotSpecification;
 
-		out = new RobotOutputStream();
-		robotThreadManager = new RobotThreadManager(this);
+        robotClassLoader = getHost(robotSpecification).createLoader(robotSpecification);
+        robotClassLoader.setRobotProxy(this);
 
-		loadClassBattle();
+        out = new RobotOutputStream();
+        robotThreadManager = new RobotThreadManager(this);
 
-		robotFileSystemManager = new RobotFileSystemManager(this, hostManager.getRobotFilesystemQuota(),
-				robotSpecification.getWritableDirectory(), robotSpecification.getReadableDirectory(),
-				robotSpecification.getRootPath());
+        loadClassBattle();
 
-		robotFileSystemManager.initialize();
-	}
+        robotFileSystemManager = new RobotFileSystemManager(this, hostManager.getRobotFilesystemQuota(),
+                                                            robotSpecification.getWritableDirectory(), robotSpecification.getReadableDirectory(),
+                                                            robotSpecification.getRootPath());
 
-	private JavaHost getHost(IRobotRepositoryItem robotSpecification) {
-		return (JavaHost) Container.cache.getComponent("robocode.host." + robotSpecification.getRobotLanguage());
-	}
+        robotFileSystemManager.initialize();
+    }
 
-	public void cleanup() {
-		robot = null;
+    private JavaHost getHost(IRobotRepositoryItem robotSpecification) {
+        return (JavaHost) Container.cache.getComponent("robocode.host." + robotSpecification.getRobotLanguage());
+    }
 
-		// Remove the file system and the manager
-		robotFileSystemManager = null;
-		if (out != null) {
-			out.close();
-			out = null;
-		}
+    public void cleanup() {
+        robot = null;
 
-		if (robotThreadManager != null) {
-			robotThreadManager.cleanup();
-		}
-		robotThreadManager = null;
+        // Remove the file system and the manager
+        robotFileSystemManager = null;
+        if (out != null) {
+            out.close();
+            out = null;
+        }
 
-		// Cleanup and remove class manager
-		if (robotClassLoader != null) {
-			robotClassLoader.cleanup();
-			robotClassLoader = null;
-		}
-	}
+        if (robotThreadManager != null) {
+            robotThreadManager.cleanup();
+        }
+        robotThreadManager = null;
 
-	public RobotOutputStream getOut() {
-		return out;
-	}
+        // Cleanup and remove class manager
+        if (robotClassLoader != null) {
+            robotClassLoader.cleanup();
+            robotClassLoader = null;
+        }
+    }
 
-	public void println(String s) {
-		out.println(s);
-	}
+    public RobotOutputStream getOut() {
+        return out;
+    }
 
-	public void println(Throwable ex) {
-		ex.printStackTrace(out);
-	}
+    public void println(String s) {
+        out.println(s);
+    }
 
-	public RobotStatics getStatics() {
-		return statics;
-	}
+    public void println(Throwable ex) {
+        ex.printStackTrace(out);
+    }
 
-	public RobotFileSystemManager getRobotFileSystemManager() {
-		return robotFileSystemManager;
-	}
-	
-	public ClassLoader getRobotClassloader() {
-		return (ClassLoader) robotClassLoader;
-	}
+    public RobotStatics getStatics() {
+        return statics;
+    }
 
-	// -----------
-	// battle driven methods
-	// -----------
+    public RobotFileSystemManager getRobotFileSystemManager() {
+        return robotFileSystemManager;
+    }
 
-	protected abstract void initializeRound(ExecCommands commands, RobotStatus status);
+    public ClassLoader getRobotClassloader() {
+        return (ClassLoader) robotClassLoader;
+    }
 
-	public void startRound(ExecCommands commands, RobotStatus status) {
-		initializeRound(commands, status);
-		threadManager = ((HostManager) hostManager).getThreadManager();
-		robotThreadManager.start(threadManager);
-	}
+    // -----------
+    // battle driven methods
+    // -----------
+    protected abstract void initializeRound(ExecCommands commands, RobotStatus status);
 
-	public void forceStopThread() {
-		if (!robotThreadManager.forceStop()) {
-			peer.punishBadBehavior(BadBehavior.UNSTOPPABLE);
-			peer.setRunning(false);
-		}
-	}
+    public void startRound(ExecCommands commands, RobotStatus status) {
+        initializeRound(commands, status);
+        threadManager = ((HostManager) hostManager).getThreadManager();
+        robotThreadManager.start(threadManager);
+    }
 
-	public void waitForStopThread() {
-		if (!robotThreadManager.waitForStop()) {
-			peer.punishBadBehavior(BadBehavior.UNSTOPPABLE);
-			peer.setRunning(false);
-		}
-	}
+    public void forceStopThread() {
+        if (!robotThreadManager.forceStop()) {
+            peer.punishBadBehavior(BadBehavior.UNSTOPPABLE);
+            peer.setRunning(false);
+        }
+    }
 
-	private void loadClassBattle() {
-		try {
-			robotClassLoader.loadRobotMainClass(true);
-		} catch (Throwable e) {
-			println("SYSTEM: Could not load " + statics.getName() + " : ");
-			println(e);
-			drainEnergy();
-		}
-	}
+    public void waitForStopThread() {
+        if (!robotThreadManager.waitForStop()) {
+            peer.punishBadBehavior(BadBehavior.UNSTOPPABLE);
+            peer.setRunning(false);
+        }
+    }
 
-	private boolean loadRobotRound() {
-		robot = null;
-		try {
-			threadManager.setLoadingRobot(this);
-			robot = robotClassLoader.createRobotInstance();
-			if (robot == null) {
-				println("SYSTEM: Skipping robot: " + statics.getName());
-				return false;
-			}
-			robot.setOut(out);
-			robot.setPeer((IBasicRobotPeer) this);
-			eventManager.setRobot(robot);
-		} catch (IllegalAccessException e) {
-			println("SYSTEM: Unable to instantiate this robot: " + e);
-			println("SYSTEM: Is your constructor marked public?");
-			println(e);
-			robot = null;
-			logError(e);
-			return false;
-		} catch (Throwable e) {
-			println("SYSTEM: An error occurred during initialization of " + statics.getName());
-			println("SYSTEM: " + e);
-			println(e);
-			robot = null;
-			logError(e);
-			return false;
-		} finally {
-			threadManager.setLoadingRobot(null);
-		}
-		return true;
-	}
+    private void loadClassBattle() {
+        try {
+            robotClassLoader.loadRobotMainClass(true);
+        } catch (Throwable e) {
+            println("SYSTEM: Could not load " + statics.getName() + " : ");
+            println(e);
+            drainEnergy();
+        }
+    }
 
-	protected abstract void executeImpl();
+    private boolean loadRobotRound() {
+        robot = null;
+        try {
+            threadManager.setLoadingRobot(this);
+            robot = robotClassLoader.createRobotInstance();
+            if (robot == null) {
+                println("SYSTEM: Skipping robot: " + statics.getName());
+                return false;
+            }
+            robot.setOut(out);
+            robot.setPeer((IBasicRobotPeer) this);
+            eventManager.setRobot(robot);
+        } catch (IllegalAccessException e) {
+            println("SYSTEM: Unable to instantiate this robot: " + e);
+            println("SYSTEM: Is your constructor marked public?");
+            println(e);
+            robot = null;
+            logError(e);
+            return false;
+        } catch (Throwable e) {
+            println("SYSTEM: An error occurred during initialization of " + statics.getName());
+            println("SYSTEM: " + e);
+            println(e);
+            robot = null;
+            logError(e);
+            return false;
+        } finally {
+            threadManager.setLoadingRobot(null);
+        }
+        return true;
+    }
 
-	public void run() {
-		// Only initialize AWT if we are not running in headless mode.
-		// Bugfix [2833271] IllegalThreadStateException with the AWT-Shutdown thread.
-		// Read more about headless mode here:
-		// http://java.sun.com/developer/technicalArticles/J2SE/Desktop/headless/
-		if (System.getProperty("java.awt.headless", "true").equals("false")) {
-			robotThreadManager.initAWT();
-		}
+    protected abstract void executeImpl();
 
-		if (robotSpecification.isValid() && loadRobotRound()) {
-			try {
-				if (robot != null) {
-					peer.setRunning(true);
+    public void run() {
+        // Only initialize AWT if we are not running in headless mode.
+        // Bugfix [2833271] IllegalThreadStateException with the AWT-Shutdown thread.
+        // Read more about headless mode here:
+        // http://java.sun.com/developer/technicalArticles/J2SE/Desktop/headless/
+        if (System.getProperty("java.awt.headless", "true").equals("false")) {
+            robotThreadManager.initAWT();
+        }
 
-					// Process all events for the first turn.
-					// This is done as the first robot status event must occur before the robot
-					// has started running.
-					eventManager.processEvents();
+        if (robotSpecification.isValid() && loadRobotRound()) {
+            try {
+                if (robot != null) {
+                    peer.setRunning(true);
 
-					Runnable runnable = robot.getRobotRunnable();
+                    // Process all events for the first turn.
+                    // This is done as the first robot status event must occur before the robot
+                    // has started running.
+                    eventManager.processEvents();
 
-					if (runnable != null) {
-						runnable.run();
-					}
-				}
-				while (peer.isRunning()) {
-					executeImpl();
-				}
-			} catch (WinException e) {// Do nothing
-			} catch (AbortedException e) {// Do nothing
-			} catch (DeathException e) {
-				println("SYSTEM: " + statics.getName() + " has died");
-			} catch (DisabledException e) {
-				drainEnergy();
-				String msg = e.getMessage();
+                    Runnable runnable = robot.getRobotRunnable();
 
-				if (msg == null) {
-					msg = "";
-				} else {
-					msg = ": " + msg;
-				}
-				println("SYSTEM: Robot disabled" + msg);
-				logMessage(statics.getName() + "Robot disabled");
-			} catch (Exception e) {
-				drainEnergy();
-				println(e);
-				logMessage(statics.getName() + ": Exception: " + e); // without stack here
-			} catch (Throwable t) {
-				drainEnergy();
-				if (t instanceof ThreadDeath) {
-					logMessage(statics.getName() + " stopped successfully.");
-				} else {
-					println(t);
-					logMessage(statics.getName() + ": Throwable: " + t); // without stack here
-				}
-			} finally {
-				waitForBattleEndImpl();
-			}
-		} else {
-			drainEnergy();
-			peer.punishBadBehavior(BadBehavior.CANNOT_START);
-			waitForBattleEndImpl();
-		}
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                }
+                while (peer.isRunning()) {
+                    executeImpl();
+                }
+            } catch (WinException e) {// Do nothing
+            } catch (AbortedException e) {// Do nothing
+            } catch (DeathException e) {
+                println("SYSTEM: " + statics.getName() + " has died");
+            } catch (DisabledException e) {
+                drainEnergy();
+                String msg = e.getMessage();
 
-		peer.setRunning(false);
+                if (msg == null) {
+                    msg = "";
+                } else {
+                    msg = ": " + msg;
+                }
+                println("SYSTEM: Robot disabled" + msg);
+                logMessage(statics.getName() + "Robot disabled");
+            } catch (Exception e) {
+                drainEnergy();
+                println(e);
+                logMessage(statics.getName() + ": Exception: " + e); // without stack here
+            } catch (Throwable t) {
+                drainEnergy();
+                if (t instanceof ThreadDeath) {
+                    logMessage(statics.getName() + " stopped successfully.");
+                } else {
+                    println(t);
+                    logMessage(statics.getName() + ": Throwable: " + t); // without stack here
+                }
+            } finally {
+                waitForBattleEndImpl();
+            }
+        } else {
+            drainEnergy();
+            peer.punishBadBehavior(BadBehavior.CANNOT_START);
+            waitForBattleEndImpl();
+        }
 
-		// If battle is waiting for us, well, all done!
-		synchronized (this) {
-			notifyAll();
-		}
-	}
+        peer.setRunning(false);
 
-	protected abstract void waitForBattleEndImpl();
+        // If battle is waiting for us, well, all done!
+        synchronized (this) {
+            notifyAll();
+        }
+    }
 
-	public void drainEnergy() {
-		peer.drainEnergy();
-	}
+    protected abstract void waitForBattleEndImpl();
 
-	public void punishSecurityViolation(String message) {
-		// Prevent unit tests of failing if multiple threads are calling this method in the same time.
-		// We only want the a specific type of security violation logged once so we only get one error
-		// per security violation.
-		synchronized (securityViolations) {
-			String key = message;
+    public void drainEnergy() {
+        peer.drainEnergy();
+    }
 
-			if (key.startsWith("Preventing Thread-")) {
-				key = key.replaceAll("\\d+", "X");
-			}
-			if (!securityViolations.contains(key)) {
-				securityViolations.add(key);
-				logError(message);
-				println("SYSTEM: " + message);
+    public void punishSecurityViolation(String message) {
+        // Prevent unit tests of failing if multiple threads are calling this method in the same time.
+        // We only want the a specific type of security violation logged once so we only get one error
+        // per security violation.
+        synchronized (securityViolations) {
+            String key = message;
 
-				if (securityViolations.size() == 1) {
-					peer.drainEnergy();
-					peer.punishBadBehavior(BadBehavior.SECURITY_VIOLATION);
-				}
-			}
-		}
-	}
+            if (key.startsWith("Preventing Thread-")) {
+                key = key.replaceAll("\\d+", "X");
+            }
+            if (!securityViolations.contains(key)) {
+                securityViolations.add(key);
+                logError(message);
+                println("SYSTEM: " + message);
+
+                if (securityViolations.size() == 1) {
+                    peer.drainEnergy();
+                    peer.punishBadBehavior(BadBehavior.SECURITY_VIOLATION);
+                }
+            }
+        }
+    }
 }

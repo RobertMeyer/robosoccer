@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-
 import net.sf.robocode.ui.dialog.BattleButton;
 import net.sf.robocode.ui.dialog.BattleDialog;
 import net.sf.robocode.ui.dialog.RobotButton;
@@ -20,15 +19,16 @@ import robocode.control.snapshot.IRobotSnapshot;
 
 import java.util.List;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface IRobotDialogManager {
-	void trim(List<IRobotSnapshot> robots);
 
-	void reset();
+    void trim(List<IRobotSnapshot> robots);
 
-	RobotDialog getRobotDialog(RobotButton robotButton, String name, boolean create);
-	BattleDialog getBattleDialog(BattleButton battleButton, boolean create);
+    void reset();
+
+    RobotDialog getRobotDialog(RobotButton robotButton, String name, boolean create);
+
+    BattleDialog getBattleDialog(BattleButton battleButton, boolean create);
 }

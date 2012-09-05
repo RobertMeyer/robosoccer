@@ -9,13 +9,12 @@ import net.sf.robocode.battle.peer.RobotPeer;
  */
 public class SpeedItem extends ItemDrop {
 
-	public SpeedItem(boolean isDestroyable, int lifespan, int health, boolean isEquippable){
-		super(isDestroyable, lifespan, health, isEquippable, null);
-		System.out.println("Speed Item");
-	}
+    public SpeedItem(boolean isDestroyable, int lifespan, int health, boolean isEquippable) {
+        super(isDestroyable, lifespan, health, isEquippable, null);
+        System.out.println("Speed Item");
+    }
 
-	
-	public void doItemEffect(){
-		return;
-	}
+    public void doItemEffect() {
+        return;
+    }
 }

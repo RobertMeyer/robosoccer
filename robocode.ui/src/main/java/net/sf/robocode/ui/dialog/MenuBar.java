@@ -194,10 +194,10 @@ public class MenuBar extends JMenuBar {
     private final ICpuManager cpuManager;
 
     public MenuBar(ISettingsManager properties,
-            IWindowManagerExt windowManager,
-            IBattleManager battleManager,
-            IRecordManager recordManager,
-            ICpuManager cpuManager) {
+                   IWindowManagerExt windowManager,
+                   IBattleManager battleManager,
+                   IRecordManager recordManager,
+                   ICpuManager cpuManager) {
         this.properties = properties;
         this.windowManager = windowManager;
         this.battleManager = battleManager;
@@ -930,7 +930,7 @@ public class MenuBar extends JMenuBar {
 
     private void optionsRecalculateCpuConstantPerformed() {
         int ok = JOptionPane.showConfirmDialog(this, "Do you want to recalculate the CPU constant?",
-                "Recalculate CPU constant", JOptionPane.YES_NO_OPTION);
+                                               "Recalculate CPU constant", JOptionPane.YES_NO_OPTION);
 
         if (ok == JOptionPane.YES_OPTION) {
             try {
@@ -943,13 +943,13 @@ public class MenuBar extends JMenuBar {
             long cpuConstant = cpuManager.getCpuConstant();
 
             JOptionPane.showMessageDialog(this, "CPU constant: " + cpuConstant + " nanoseconds per turn",
-                    "New CPU constant", JOptionPane.INFORMATION_MESSAGE);
+                                          "New CPU constant", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     private void optionsCleanRobotCachePerformed() {
         int ok = JOptionPane.showConfirmDialog(this, "Do you want to clean the robot cache?", "Clean Robot Cache",
-                JOptionPane.YES_NO_OPTION);
+                                               JOptionPane.YES_NO_OPTION);
 
         if (ok == JOptionPane.YES_OPTION) {
             try {

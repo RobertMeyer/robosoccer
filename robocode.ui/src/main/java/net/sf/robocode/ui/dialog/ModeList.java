@@ -5,16 +5,16 @@ import javax.swing.JList;
 
 @SuppressWarnings("serial")
 public class ModeList<IMode> extends JList {
-	
-	private JLabel label;
-	
-	public ModeList(JLabel label) {
-		super();
-		this.label = label;
-		this.addListSelectionListener(new ModeListListener());
-	}
-	
-	protected JLabel getLabel() {
-		return label;
-	}
+
+    private JLabel label;
+
+    public ModeList(JLabel label) {
+        super();
+        this.label = label;
+        this.addListSelectionListener(new ModeListListener());
+    }
+
+    protected JLabel getLabel() {
+        return label;
+    }
 }

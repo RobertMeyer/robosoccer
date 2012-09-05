@@ -11,48 +11,46 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public class TestPrivateConstructor extends RobocodeTestBed {
-	boolean messaged;
 
-	@Test
-	public void run() {
-		super.run();
-	}
+    boolean messaged;
 
-	public void onTurnEnded(final TurnEndedEvent event) {
-		super.onTurnEnded(event);                          
-		final IRobotSnapshot robot = event.getTurnSnapshot().getRobots()[1];
+    @Test
+    public void run() {
+        super.run();
+    }
 
-		if (robot.getOutputStreamSnapshot().contains("SYSTEM: Is your constructor marked public?")) {
-			messaged = true;
-		}
-		Assert.assertNear(0, robot.getEnergy());
-	}
+    public void onTurnEnded(final TurnEndedEvent event) {
+        super.onTurnEnded(event);
+        final IRobotSnapshot robot = event.getTurnSnapshot().getRobots()[1];
 
-	@Override
-	public String getRobotNames() {
-		return "sample.Fire,tested.robots.PrivateConstructor";
-	}
+        if (robot.getOutputStreamSnapshot().contains("SYSTEM: Is your constructor marked public?")) {
+            messaged = true;
+        }
+        Assert.assertNear(0, robot.getEnergy());
+    }
 
-	@Override
-	protected void runTeardown() {
-		Assert.assertTrue(messaged);
-	}
+    @Override
+    public String getRobotNames() {
+        return "sample.Fire,tested.robots.PrivateConstructor";
+    }
 
-	@Override
-	protected int getExpectedErrors() {
-		return 1; // Security error must be reported as an error
-	}
+    @Override
+    protected void runTeardown() {
+        Assert.assertTrue(messaged);
+    }
+
+    @Override
+    protected int getExpectedErrors() {
+        return 1; // Security error must be reported as an error
+    }
 }
-

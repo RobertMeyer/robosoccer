@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.serialization.RobocodeObjectInputStream;
@@ -25,107 +24,107 @@ import robocode.robotinterfaces.peer.ITeamRobotPeer;
 import java.io.*;
 import java.util.List;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public class TeamRobotProxy extends AdvancedRobotProxy implements ITeamRobotPeer {
-	static final int MAX_MESSAGE_SIZE = 32768;
-	private final ByteArrayOutputStream byteStreamWriter;
 
-	public TeamRobotProxy(IRobotRepositoryItem specification, IHostManager hostManager, IRobotPeer peer, RobotStatics statics) {
-		super(specification, hostManager, peer, statics);
-		byteStreamWriter = new ByteArrayOutputStream(MAX_MESSAGE_SIZE);
-	}
+    static final int MAX_MESSAGE_SIZE = 32768;
+    private final ByteArrayOutputStream byteStreamWriter;
 
-	// team
-	public String[] getTeammates() {
-		getCall();
-		return statics.getTeammates();
-	}
+    public TeamRobotProxy(IRobotRepositoryItem specification, IHostManager hostManager, IRobotPeer peer, RobotStatics statics) {
+        super(specification, hostManager, peer, statics);
+        byteStreamWriter = new ByteArrayOutputStream(MAX_MESSAGE_SIZE);
+    }
 
-	public boolean isTeammate(String name) {
-		getCall();
-		if (name != null) { // Bugfix [2960870]
-			if (name.equals(statics.getName())) {
-				return true;
-			}
-			final String[] teammates = statics.getTeammates();
-	
-			if (teammates != null) {
-				for (String mate : teammates) {
-					if (mate.equals(name)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
+    // team
+    public String[] getTeammates() {
+        getCall();
+        return statics.getTeammates();
+    }
 
-	public void broadcastMessage(Serializable message) throws IOException {
-		sendMessage(null, message);
-	}
+    public boolean isTeammate(String name) {
+        getCall();
+        if (name != null) { // Bugfix [2960870]
+            if (name.equals(statics.getName())) {
+                return true;
+            }
+            final String[] teammates = statics.getTeammates();
 
-	public void sendMessage(String name, Serializable message) throws IOException {
-		setCall();
+            if (teammates != null) {
+                for (String mate : teammates) {
+                    if (mate.equals(name)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-		try {
-			if (!statics.isTeamRobot()) {
-				throw new IOException("You are not on a team.");
-			}
-			byteStreamWriter.reset();
-			ObjectOutputStream objectStreamWriter = new ObjectOutputStream(byteStreamWriter);
+    public void broadcastMessage(Serializable message) throws IOException {
+        sendMessage(null, message);
+    }
 
-			objectStreamWriter.writeObject(message);
-			objectStreamWriter.flush();
-			byteStreamWriter.flush();
-			final byte[] bytes = byteStreamWriter.toByteArray();
+    public void sendMessage(String name, Serializable message) throws IOException {
+        setCall();
 
-			objectStreamWriter.reset();
-			if (bytes.length > MAX_MESSAGE_SIZE) {
-				throw new IOException("Message too big. " + bytes.length + ">" + MAX_MESSAGE_SIZE);
-			}
-			commands.getTeamMessages().add(new TeamMessage(getName(), name, bytes));
-		} catch (IOException e) {
-			out.printStackTrace(e);
-			throw e;
-		}
+        try {
+            if (!statics.isTeamRobot()) {
+                throw new IOException("You are not on a team.");
+            }
+            byteStreamWriter.reset();
+            ObjectOutputStream objectStreamWriter = new ObjectOutputStream(byteStreamWriter);
 
-	}
+            objectStreamWriter.writeObject(message);
+            objectStreamWriter.flush();
+            byteStreamWriter.flush();
+            final byte[] bytes = byteStreamWriter.toByteArray();
 
-	@Override
-	protected final void loadTeamMessages(List<TeamMessage> teamMessages) {
-		if (teamMessages == null) {
-			return;
-		}
-		for (TeamMessage teamMessage : teamMessages) {
-			try {
-				ByteArrayInputStream byteStreamReader = new ByteArrayInputStream(teamMessage.message);
-				byteStreamReader.reset();
+            objectStreamWriter.reset();
+            if (bytes.length > MAX_MESSAGE_SIZE) {
+                throw new IOException("Message too big. " + bytes.length + ">" + MAX_MESSAGE_SIZE);
+            }
+            commands.getTeamMessages().add(new TeamMessage(getName(), name, bytes));
+        } catch (IOException e) {
+            out.printStackTrace(e);
+            throw e;
+        }
 
-				RobocodeObjectInputStream objectStreamReader = null;
-				try {
-					objectStreamReader = new RobocodeObjectInputStream(byteStreamReader, (ClassLoader) robotClassLoader);
-					Serializable message = (Serializable) objectStreamReader.readObject();
-					MessageEvent event = new MessageEvent(teamMessage.sender, message);
-					eventManager.add(event);
-				} finally {
-					if (objectStreamReader != null) {
-						objectStreamReader.close();
-					}
-				}
-			} catch (IOException e) {
-				out.printStackTrace(e);
-			} catch (ClassNotFoundException e) {
-				out.printStackTrace(e);
-			}
-		}
-	}
+    }
 
-	// events
-	public List<MessageEvent> getMessageEvents() {
-		getCall();
-		return eventManager.getMessageEvents();
-	}
+    @Override
+    protected final void loadTeamMessages(List<TeamMessage> teamMessages) {
+        if (teamMessages == null) {
+            return;
+        }
+        for (TeamMessage teamMessage : teamMessages) {
+            try {
+                ByteArrayInputStream byteStreamReader = new ByteArrayInputStream(teamMessage.message);
+                byteStreamReader.reset();
+
+                RobocodeObjectInputStream objectStreamReader = null;
+                try {
+                    objectStreamReader = new RobocodeObjectInputStream(byteStreamReader, (ClassLoader) robotClassLoader);
+                    Serializable message = (Serializable) objectStreamReader.readObject();
+                    MessageEvent event = new MessageEvent(teamMessage.sender, message);
+                    eventManager.add(event);
+                } finally {
+                    if (objectStreamReader != null) {
+                        objectStreamReader.close();
+                    }
+                }
+            } catch (IOException e) {
+                out.printStackTrace(e);
+            } catch (ClassNotFoundException e) {
+                out.printStackTrace(e);
+            }
+        }
+    }
+
+    // events
+    public List<MessageEvent> getMessageEvents() {
+        getCall();
+        return eventManager.getMessageEvents();
+    }
 }

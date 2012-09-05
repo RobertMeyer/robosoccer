@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.host.jarjar;
 
-
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -25,52 +24,52 @@ import java.io.InputStreamReader;
 import net.sf.robocode.io.URLJarCollector;
 import net.sf.robocode.io.JarJar;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public class JarJarTest {
-	static {
-		JarJarURLConnection.register();
-	}
 
-	@Test
-	public void run() throws IOException {
+    static {
+        JarJarURLConnection.register();
+    }
 
-		String clas = "Hello.class";
-		String inner = "Inner.jar";
-		String outer = "file:src/test/resources/Outer.jar";
+    @Test
+    public void run() throws IOException {
 
-		final String separ = "!/";
-		URL u = new URL("jar:jarjar:" + outer + JarJar.SEPARATOR + inner + separ + clas);
-		final URLConnection urlConnection = URLJarCollector.openConnection(u);
-		final InputStream inputStream = urlConnection.getInputStream();
-		InputStreamReader isr = new InputStreamReader(inputStream);
-		char[] c = new char[4];
+        String clas = "Hello.class";
+        String inner = "Inner.jar";
+        String outer = "file:src/test/resources/Outer.jar";
 
-		int len = isr.read(c);
+        final String separ = "!/";
+        URL u = new URL("jar:jarjar:" + outer + JarJar.SEPARATOR + inner + separ + clas);
+        final URLConnection urlConnection = URLJarCollector.openConnection(u);
+        final InputStream inputStream = urlConnection.getInputStream();
+        InputStreamReader isr = new InputStreamReader(inputStream);
+        char[] c = new char[4];
 
-		Assert.assertEquals(len, 4);
-		Assert.assertEquals('T', c[0]);
-		Assert.assertEquals('e', c[1]);
-		Assert.assertEquals('s', c[2]);
-		Assert.assertEquals('t', c[3]);
-		Assert.assertFalse(isr.ready());
-		isr.close();
-		inputStream.close();
-	}
+        int len = isr.read(c);
 
-	@Test
-	public void runClassLoader() throws IOException, ClassNotFoundException {
-		String clas = "tested.robots.Ahead";
-		String inner = "Inner.jar";
-		String outer = "file:src/test/resources/Outer.jar";
-		final String separ = "!/";
-		final String root = "jar:jarjar:" + outer + JarJar.SEPARATOR + inner + separ;
-		URL u = new URL(root);
+        Assert.assertEquals(len, 4);
+        Assert.assertEquals('T', c[0]);
+        Assert.assertEquals('e', c[1]);
+        Assert.assertEquals('s', c[2]);
+        Assert.assertEquals('t', c[3]);
+        Assert.assertFalse(isr.ready());
+        isr.close();
+        inputStream.close();
+    }
 
-		ClassLoader ucl = new URLClassLoader(new URL[] { u});
+    @Test
+    public void runClassLoader() throws IOException, ClassNotFoundException {
+        String clas = "tested.robots.Ahead";
+        String inner = "Inner.jar";
+        String outer = "file:src/test/resources/Outer.jar";
+        final String separ = "!/";
+        final String root = "jar:jarjar:" + outer + JarJar.SEPARATOR + inner + separ;
+        URL u = new URL(root);
 
-		ucl.loadClass(clas);
-	}
+        ClassLoader ucl = new URLClassLoader(new URL[]{u});
+
+        ucl.loadClass(clas);
+    }
 }

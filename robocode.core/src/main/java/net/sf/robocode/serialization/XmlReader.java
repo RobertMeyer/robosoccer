@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.serialization;
 
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -25,169 +24,169 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Stack;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public class XmlReader {
 
-	SAXParser parser;
+    SAXParser parser;
+    final InputStream input;
+    final Stack<Element> elements = new Stack<Element>();
+    final Stack<IXmlSerializable> items = new Stack<IXmlSerializable>();
+    final Stack<Dictionary<String, Element>> elementNames = new Stack<Dictionary<String, Element>>();
+    final Stack<Dictionary<String, Attribute>> attributeNames = new Stack<Dictionary<String, Attribute>>();
+    IXmlSerializable result;
+    Hashtable<String, Object> context = new Hashtable<String, Object>();
 
-	final InputStream input;
-	final Stack<Element> elements = new Stack<Element>();
-	final Stack<IXmlSerializable> items = new Stack<IXmlSerializable>();
-	final Stack<Dictionary<String, Element>> elementNames = new Stack<Dictionary<String, Element>>();
-	final Stack<Dictionary<String, Attribute>> attributeNames = new Stack<Dictionary<String, Attribute>>();
-	IXmlSerializable result;
-	Hashtable<String, Object> context = new Hashtable<String, Object>();
+    public XmlReader(InputStream input) throws SAXException, ParserConfigurationException {
+        this.input = input;
+        SAXParserFactory factory = SAXParserFactory.newInstance();
 
-	public XmlReader(InputStream input) throws SAXException, ParserConfigurationException {
-		this.input = input;
-		SAXParserFactory factory = SAXParserFactory.newInstance();
+        parser = factory.newSAXParser();
+    }
 
-		parser = factory.newSAXParser();
-	}
+    private Object deserialize(IXmlSerializable prototype) throws IOException, SAXException {
+        elementNames.push(new Hashtable<String, Element>());
+        attributeNames.push(new Hashtable<String, Attribute>());
+        items.push(null);
+        elements.push(new ListElement() {
+            public IXmlSerializable read(XmlReader reader) {
+                return null;
+            }
 
-	private Object deserialize(IXmlSerializable prototype) throws IOException, SAXException {
-		elementNames.push(new Hashtable<String, Element>());
-		attributeNames.push(new Hashtable<String, Attribute>());
-		items.push(null);
-		elements.push(new ListElement() {
-			public IXmlSerializable read(XmlReader reader) {
-				return null;
-			}
+            public void add(IXmlSerializable child) {
+                result = child;
+            }
 
-			public void add(IXmlSerializable child) {
-				result = child;
-			}
+            public void close() {
+            }
+        });
+        prototype.readXml(this);
+        parser.parse(input, new Handler(this));
+        items.pop();
+        elements.pop();
+        elementNames.pop();
+        attributeNames.pop();
 
-			public void close() {}
-		});
-		prototype.readXml(this);
-		parser.parse(input, new Handler(this));
-		items.pop();
-		elements.pop();
-		elementNames.pop();
-		attributeNames.pop();
+        return result;
+    }
 
-		return result;
-	}
+    private class Handler extends DefaultHandler {
 
-	private class Handler extends DefaultHandler {
-		final XmlReader parent;
+        final XmlReader parent;
 
-		public Handler(XmlReader parent) {
-			this.parent = parent;
-		}
+        public Handler(XmlReader parent) {
+            this.parent = parent;
+        }
 
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-			final Dictionary<String, Element> names = XmlReader.this.elementNames.peek();
-			final Element element = names == null ? null : names.get(qName);
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            final Dictionary<String, Element> names = XmlReader.this.elementNames.peek();
+            final Element element = names == null ? null : names.get(qName);
 
-			if (element != null) {
-				elements.push(element);
-				XmlReader.this.elementNames.push(new Hashtable<String, Element>());
-				attributeNames.push(new Hashtable<String, Attribute>());
-				final IXmlSerializable item = element.read(parent);
+            if (element != null) {
+                elements.push(element);
+                XmlReader.this.elementNames.push(new Hashtable<String, Element>());
+                attributeNames.push(new Hashtable<String, Attribute>());
+                final IXmlSerializable item = element.read(parent);
 
-				item.readXml(parent);
-				for (int i = 0; i < attributes.getLength(); i++) {
-					Attribute attribute = attributeNames.peek().get(attributes.getQName(i));
+                item.readXml(parent);
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    Attribute attribute = attributeNames.peek().get(attributes.getQName(i));
 
-					if (attribute != null) {
-						attribute.read(attributes.getValue(i));
-					}
-				}
-				items.push(item);
-			} else {
-				items.push(null);
-				elements.push(null);
-				XmlReader.this.elementNames.push(null);
-				attributeNames.push(null);
-			}
-		}
+                    if (attribute != null) {
+                        attribute.read(attributes.getValue(i));
+                    }
+                }
+                items.push(item);
+            } else {
+                items.push(null);
+                elements.push(null);
+                XmlReader.this.elementNames.push(null);
+                attributeNames.push(null);
+            }
+        }
 
-		public void endElement(String uri, String localName, String qName) throws SAXException {
-			elements.pop();
-			final IXmlSerializable item = items.peek();
-			final Element parentElement = elements.peek();
+        public void endElement(String uri, String localName, String qName) throws SAXException {
+            elements.pop();
+            final IXmlSerializable item = items.peek();
+            final Element parentElement = elements.peek();
 
-			if (parentElement instanceof ListElement) {
-				ListElement le = (ListElement) parentElement;
+            if (parentElement instanceof ListElement) {
+                ListElement le = (ListElement) parentElement;
 
-				le.add(item);
-			}
-			items.pop();
-			elementNames.pop();
-			attributeNames.pop();
-			final Dictionary<String, Element> names = XmlReader.this.elementNames.peek();
-			final Element element = names == null ? null : names.get(qName);
+                le.add(item);
+            }
+            items.pop();
+            elementNames.pop();
+            attributeNames.pop();
+            final Dictionary<String, Element> names = XmlReader.this.elementNames.peek();
+            final Element element = names == null ? null : names.get(qName);
 
-			if (element != null) {
-				if (element instanceof ElementClose) {
-					ElementClose ec = (ElementClose) element;
+            if (element != null) {
+                if (element instanceof ElementClose) {
+                    ElementClose ec = (ElementClose) element;
 
-					ec.close();
-				}
-			}
-		}
+                    ec.close();
+                }
+            }
+        }
+    }
 
-	}
+    public Hashtable<String, Object> getContext() {
+        return context;
+    }
 
-	public Hashtable<String, Object> getContext() {
-		return context;
-	}
+    public Element expect(String name, Element element) {
+        elementNames.peek().put(name, element);
+        return element;
+    }
 
-	public Element expect(String name, Element element) {
-		elementNames.peek().put(name, element);
-		return element;
-	}
+    public Element expect(String name, String altName, Element element) {
+        elementNames.peek().put(name, element);
+        elementNames.peek().put(altName, element);
+        return element;
+    }
 
-	public Element expect(String name, String altName, Element element) {
-		elementNames.peek().put(name, element);
-		elementNames.peek().put(altName, element);
-		return element;
-	}
+    public Attribute expect(String name, Attribute attribute) {
+        attributeNames.peek().put(name, attribute);
+        return attribute;
+    }
 
-	public Attribute expect(String name, Attribute attribute) {
-		attributeNames.peek().put(name, attribute);
-		return attribute;
-	}
+    public Attribute expect(String name, String altName, Attribute attribute) {
+        attributeNames.peek().put(name, attribute);
+        attributeNames.peek().put(altName, attribute);
+        return attribute;
+    }
 
-	public Attribute expect(String name, String altName, Attribute attribute) {
-		attributeNames.peek().put(name, attribute);
-		attributeNames.peek().put(altName, attribute);
-		return attribute;
-	}
+    public interface Element {
 
-	public interface Element {
-		IXmlSerializable read(XmlReader reader);
-	}
+        IXmlSerializable read(XmlReader reader);
+    }
 
+    public interface ElementClose extends Element {
 
-	public interface ElementClose extends Element {
-		void close();
-	}
+        void close();
+    }
 
+    public interface ListElement extends ElementClose {
 
-	public interface ListElement extends ElementClose {
-		void add(IXmlSerializable child);
-	}
+        void add(IXmlSerializable child);
+    }
 
+    public interface Attribute {
 
-	public interface Attribute {
-		void read(String value);
-	}
+        void read(String value);
+    }
 
-	public static Object deserialize(InputStream input, IXmlSerializable prototype) throws IOException {
-		try {
-			XmlReader xr = new XmlReader(input);
+    public static Object deserialize(InputStream input, IXmlSerializable prototype) throws IOException {
+        try {
+            XmlReader xr = new XmlReader(input);
 
-			return xr.deserialize(prototype);
-		} catch (SAXException e) {
-			throw new IOException();
-		} catch (ParserConfigurationException e) {
-			throw new IOException();
-		}
-	}
+            return xr.deserialize(prototype);
+        } catch (SAXException e) {
+            throw new IOException();
+        } catch (ParserConfigurationException e) {
+            throw new IOException();
+        }
+    }
 }

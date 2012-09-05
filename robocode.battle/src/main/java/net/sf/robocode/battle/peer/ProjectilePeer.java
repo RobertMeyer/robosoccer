@@ -7,5 +7,4 @@ import au.edu.uq.itee.csse2003.weapons.*;
  * with the different projectiles.
  */
 public class ProjectilePeer {
-
 }

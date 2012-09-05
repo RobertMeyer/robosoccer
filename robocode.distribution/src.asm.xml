@@ -6,7 +6,7 @@
     </formats>
     <fileSets>
         <fileSet>
-			<directory>..</directory>
+            <directory>..</directory>
             <excludes>
                 <exclude>plugins/battleview3d/**</exclude>
                 <exclude>plugins/js/**</exclude>

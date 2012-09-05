@@ -15,13 +15,11 @@
  *******************************************************************************/
 package net.sf.robocode.host.events;
 
-
 import net.sf.robocode.security.HiddenAccess;
 import robocode.Event;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -30,32 +28,32 @@ import java.util.Collections;
 @SuppressWarnings("serial")
 public class EventQueue extends ArrayList<Event> {
 
-	public void clear(boolean includingSystemEvents) {
-		if (includingSystemEvents) {
-			super.clear();
-			return;
-		}
+    public void clear(boolean includingSystemEvents) {
+        if (includingSystemEvents) {
+            super.clear();
+            return;
+        }
 
-		for (int i = 0; i < size(); i++) {
-			Event e = get(i);
+        for (int i = 0; i < size(); i++) {
+            Event e = get(i);
 
-			if (!HiddenAccess.isCriticalEvent(e)) {
-				remove(i--);
-			}
-		}
-	}
+            if (!HiddenAccess.isCriticalEvent(e)) {
+                remove(i--);
+            }
+        }
+    }
 
-	public void clear(long clearTime) {
-		for (int i = 0; i < size(); i++) {
-			Event e = get(i);
+    public void clear(long clearTime) {
+        for (int i = 0; i < size(); i++) {
+            Event e = get(i);
 
-			if ((e.getTime() <= clearTime) && !HiddenAccess.isCriticalEvent(e)) {
-				remove(i--);
-			}
-		}
-	}
+            if ((e.getTime() <= clearTime) && !HiddenAccess.isCriticalEvent(e)) {
+                remove(i--);
+            }
+        }
+    }
 
-	public void sort() {
-		Collections.sort(this);
-	}
+    public void sort() {
+        Collections.sort(this);
+    }
 }

@@ -11,27 +11,26 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-
 import net.sf.robocode.ui.gfx.RenderImage;
 
 import java.awt.*;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IImageManager {
-	void initialize();
 
-	Image getGroundTileImage(int index);
+    void initialize();
 
-	RenderImage getExplosionRenderImage(int which, int frame);
+    Image getGroundTileImage(int index);
 
-	RenderImage getExplosionDebriseRenderImage();
+    RenderImage getExplosionRenderImage(int which, int frame);
 
-	RenderImage getColoredBodyRenderImage(Integer color);
+    RenderImage getExplosionDebriseRenderImage();
 
-	RenderImage getColoredGunRenderImage(Integer color);
+    RenderImage getColoredBodyRenderImage(Integer color);
 
-	RenderImage getColoredRadarRenderImage(Integer color);
+    RenderImage getColoredGunRenderImage(Integer color);
+
+    RenderImage getColoredRadarRenderImage(Integer color);
 }

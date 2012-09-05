@@ -11,120 +11,120 @@ import robocode.Rules;
 import robocode.control.RobotSpecification;
 
 public final class BallPeer extends RobotPeer {
-	
-	public BallPeer(Battle battle, IHostManager hostManager, 
-			RobotSpecification robotSpecification, int duplicate, TeamPeer team,
-			int robotIndex) {
-		
-		super(battle, hostManager, 
-				robotSpecification, duplicate, team,
-				robotIndex);
-	}
-	
-	/**
-	 * Returns the new velocity based on the current velocity and distance to move.
-	 *
-	 * @param velocity the current velocity
-	 * @param distance the distance to move
-	 * @return the new velocity based on the current velocity and distance to move
-	 * 
-	 * This is Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive's method described here:
-	 *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
-	 */
-	protected double getNewVelocity(double velocity, double distance) {
-		if (distance < 0) {
-			// If the distance is negative, then change it to be positive
-			// and change the sign of the input velocity and the result
-			return -getNewVelocity(-velocity, -distance);
-		}
 
-		final double goalVel;
+    public BallPeer(Battle battle, IHostManager hostManager,
+                    RobotSpecification robotSpecification, int duplicate, TeamPeer team,
+                    int robotIndex) {
 
-		if (distance == Double.POSITIVE_INFINITY) {
-			goalVel = currentCommands.getMaxVelocity();
-		} else {
-			goalVel = Math.min(getMaxVelocity(distance)*4, 
-					currentCommands.getMaxVelocity()*4);
-		}
+        super(battle, hostManager,
+              robotSpecification, duplicate, team,
+              robotIndex);
+    }
 
-		if (velocity >= 0) {
-			return Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
-		}
-		// else
-		return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
-	}
-	
-	protected void updateHeading() {
-		boolean normalizeHeading = true;
+    /**
+     * Returns the new velocity based on the current velocity and distance to move.
+     *
+     * @param velocity the current velocity
+     * @param distance the distance to move
+     * @return the new velocity based on the current velocity and distance to move
+     *
+     * This is Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive's method described here:
+     *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
+     */
+    protected double getNewVelocity(double velocity, double distance) {
+        if (distance < 0) {
+            // If the distance is negative, then change it to be positive
+            // and change the sign of the input velocity and the result
+            return -getNewVelocity(-velocity, -distance);
+        }
 
-		double turnRate = min(currentCommands.getMaxTurnRate()*5,
-				(.4 + .6 * (1 - (abs(velocity) / Rules.MAX_VELOCITY))) * Rules.MAX_TURN_RATE_RADIANS * 5);
+        final double goalVel;
 
-		if (currentCommands.getBodyTurnRemaining() > 0) {
-			if (currentCommands.getBodyTurnRemaining() < turnRate) {
-				bodyHeading += currentCommands.getBodyTurnRemaining();
-				gunHeading += currentCommands.getBodyTurnRemaining();
-				radarHeading += currentCommands.getBodyTurnRemaining();
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(
-							currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(
-							currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				currentCommands.setBodyTurnRemaining(0);
-			} else {
-				bodyHeading += turnRate;
-				gunHeading += turnRate;
-				radarHeading += turnRate;
-				currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() - turnRate);
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() - turnRate);
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() - turnRate);
-				}
-			}
-		} else if (currentCommands.getBodyTurnRemaining() < 0) {
-			if (currentCommands.getBodyTurnRemaining() > -turnRate) {
-				bodyHeading += currentCommands.getBodyTurnRemaining();
-				gunHeading += currentCommands.getBodyTurnRemaining();
-				radarHeading += currentCommands.getBodyTurnRemaining();
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(
-							currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(
-							currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
-				}
-				currentCommands.setBodyTurnRemaining(0);
-			} else {
-				bodyHeading -= turnRate;
-				gunHeading -= turnRate;
-				radarHeading -= turnRate;
-				currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() + turnRate);
-				if (currentCommands.isAdjustGunForBodyTurn()) {
-					currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() + turnRate);
-				}
-				if (currentCommands.isAdjustRadarForBodyTurn()) {
-					currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() + turnRate);
-				}
-			}
-		} else {
-			normalizeHeading = false;
-		}
+        if (distance == Double.POSITIVE_INFINITY) {
+            goalVel = currentCommands.getMaxVelocity();
+        } else {
+            goalVel = Math.min(getMaxVelocity(distance) * 4,
+                               currentCommands.getMaxVelocity() * 4);
+        }
 
-		if (normalizeHeading) {
-			if (currentCommands.getBodyTurnRemaining() == 0) {
-				bodyHeading = normalNearAbsoluteAngle(bodyHeading);
-			} else {
-				bodyHeading = normalAbsoluteAngle(bodyHeading);
-			}
-		}
-		if (Double.isNaN(bodyHeading)) {
-			Logger.realErr.println("HOW IS HEADING NAN HERE");
-		}
-	}
+        if (velocity >= 0) {
+            return Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
+        }
+        // else
+        return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
+    }
+
+    protected void updateHeading() {
+        boolean normalizeHeading = true;
+
+        double turnRate = min(currentCommands.getMaxTurnRate() * 5,
+                              (.4 + .6 * (1 - (abs(velocity) / Rules.MAX_VELOCITY))) * Rules.MAX_TURN_RATE_RADIANS * 5);
+
+        if (currentCommands.getBodyTurnRemaining() > 0) {
+            if (currentCommands.getBodyTurnRemaining() < turnRate) {
+                bodyHeading += currentCommands.getBodyTurnRemaining();
+                gunHeading += currentCommands.getBodyTurnRemaining();
+                radarHeading += currentCommands.getBodyTurnRemaining();
+                if (currentCommands.isAdjustGunForBodyTurn()) {
+                    currentCommands.setGunTurnRemaining(
+                            currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
+                }
+                if (currentCommands.isAdjustRadarForBodyTurn()) {
+                    currentCommands.setRadarTurnRemaining(
+                            currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
+                }
+                currentCommands.setBodyTurnRemaining(0);
+            } else {
+                bodyHeading += turnRate;
+                gunHeading += turnRate;
+                radarHeading += turnRate;
+                currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() - turnRate);
+                if (currentCommands.isAdjustGunForBodyTurn()) {
+                    currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() - turnRate);
+                }
+                if (currentCommands.isAdjustRadarForBodyTurn()) {
+                    currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() - turnRate);
+                }
+            }
+        } else if (currentCommands.getBodyTurnRemaining() < 0) {
+            if (currentCommands.getBodyTurnRemaining() > -turnRate) {
+                bodyHeading += currentCommands.getBodyTurnRemaining();
+                gunHeading += currentCommands.getBodyTurnRemaining();
+                radarHeading += currentCommands.getBodyTurnRemaining();
+                if (currentCommands.isAdjustGunForBodyTurn()) {
+                    currentCommands.setGunTurnRemaining(
+                            currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
+                }
+                if (currentCommands.isAdjustRadarForBodyTurn()) {
+                    currentCommands.setRadarTurnRemaining(
+                            currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
+                }
+                currentCommands.setBodyTurnRemaining(0);
+            } else {
+                bodyHeading -= turnRate;
+                gunHeading -= turnRate;
+                radarHeading -= turnRate;
+                currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() + turnRate);
+                if (currentCommands.isAdjustGunForBodyTurn()) {
+                    currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() + turnRate);
+                }
+                if (currentCommands.isAdjustRadarForBodyTurn()) {
+                    currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() + turnRate);
+                }
+            }
+        } else {
+            normalizeHeading = false;
+        }
+
+        if (normalizeHeading) {
+            if (currentCommands.getBodyTurnRemaining() == 0) {
+                bodyHeading = normalNearAbsoluteAngle(bodyHeading);
+            } else {
+                bodyHeading = normalAbsoluteAngle(bodyHeading);
+            }
+        }
+        if (Double.isNaN(bodyHeading)) {
+            Logger.realErr.println("HOW IS HEADING NAN HERE");
+        }
+    }
 }
