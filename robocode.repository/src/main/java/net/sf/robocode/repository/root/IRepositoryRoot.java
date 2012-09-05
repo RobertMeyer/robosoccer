@@ -11,10 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root;
 
-import net.sf.robocode.repository.items.IItem;
-
 import java.io.File;
 import java.net.URL;
+import net.sf.robocode.repository.items.IItem;
 
 /**
  * @author Pavel Savara (original)

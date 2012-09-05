@@ -11,11 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-import net.sf.robocode.serialization.ISerializableHelper;
-import net.sf.robocode.serialization.RbSerializer;
-
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import net.sf.robocode.serialization.ISerializableHelper;
+import net.sf.robocode.serialization.RbSerializer;
 
 /**
  * @author Pavel Savara (original)
@@ -43,6 +42,7 @@ public class BulletStatus implements Serializable {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             BulletStatus obj = (BulletStatus) object;
 
@@ -50,6 +50,7 @@ public class BulletStatus implements Serializable {
                     + RbSerializer.SIZEOF_BOOL + 2 * RbSerializer.SIZEOF_DOUBLE;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             BulletStatus obj = (BulletStatus) object;
 
@@ -60,6 +61,7 @@ public class BulletStatus implements Serializable {
             serializer.serialize(buffer, obj.y);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             int bulletId = buffer.getInt();
             String victimName = serializer.deserializeString(buffer);

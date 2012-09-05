@@ -12,9 +12,7 @@
 package net.sf.robocode.test.core.util;
 
 import java.util.Arrays;
-
 import net.sf.robocode.util.AlphanumericComparator;
-
 import org.junit.Assert;
 import org.junit.Test;
 

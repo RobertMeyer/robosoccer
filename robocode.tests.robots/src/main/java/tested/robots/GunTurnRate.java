@@ -16,6 +16,7 @@ package tested.robots;
  */
 public class GunTurnRate extends robocode.AdvancedRobot {
 
+    @Override
     public void run() {
         setMaxTurnRate(5);
 

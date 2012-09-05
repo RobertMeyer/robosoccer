@@ -11,13 +11,12 @@
  *******************************************************************************/
 package tested.robots;
 
-import robocode.AdvancedRobot;
-import robocode.ScannedRobotEvent;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import robocode.AdvancedRobot;
+import robocode.ScannedRobotEvent;
 
 /**
  * @author Pavel Savara (original)

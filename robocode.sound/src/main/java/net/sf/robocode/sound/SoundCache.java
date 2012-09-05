@@ -16,13 +16,12 @@
  *******************************************************************************/
 package net.sf.robocode.sound;
 
-import net.sf.robocode.io.Logger;
-
-import javax.sound.sampled.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import javax.sound.sampled.*;
+import net.sf.robocode.io.Logger;
 
 /**
  * SoundCache maintains a table of sound clips. More than one instance of the same

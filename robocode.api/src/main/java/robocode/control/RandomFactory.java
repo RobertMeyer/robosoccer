@@ -13,11 +13,10 @@
  *******************************************************************************/
 package robocode.control;
 
-import static net.sf.robocode.io.Logger.logError;
-import static net.sf.robocode.io.Logger.logWarning;
-
 import java.lang.reflect.Field;
 import java.util.Random;
+import static net.sf.robocode.io.Logger.logError;
+import static net.sf.robocode.io.Logger.logWarning;
 
 /**
  * The RandomFactory is used for controlling the generation of random numbers,

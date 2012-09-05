@@ -11,6 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
+import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
@@ -18,11 +22,6 @@ import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.BattleRules;
 import robocode.control.RobotSpecification;
-
-import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Pavel Savara (original)
@@ -153,18 +152,22 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         return isJuniorRobot;
     }
 
+    @Override
     public boolean isInteractiveRobot() {
         return isInteractiveRobot;
     }
 
+    @Override
     public boolean isPaintRobot() {
         return isPaintRobot;
     }
 
+    @Override
     public boolean isAdvancedRobot() {
         return isAdvancedRobot;
     }
 
+    @Override
     public boolean isTeamRobot() {
         return isTeamRobot;
     }
@@ -227,6 +230,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             RobotStatics obj = (RobotStatics) object;
             int size = RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_BOOL * 7 + serializer.sizeOf(obj.name)
@@ -245,6 +249,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
             return size;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             RobotStatics obj = (RobotStatics) object;
 
@@ -276,6 +281,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
             serializer.serialize(buffer, obj.teamIndex);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
 
             boolean isJuniorRobot = serializer.deserializeBoolean(buffer);

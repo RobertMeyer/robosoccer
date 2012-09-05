@@ -11,10 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 /**
  * @author Pavel Savara (original)
@@ -30,6 +30,7 @@ public class BattleButton extends JButton implements ActionListener {
         initialize();
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         attach();
         if (!battleDialog.isVisible() || battleDialog.getState() != Frame.NORMAL) {

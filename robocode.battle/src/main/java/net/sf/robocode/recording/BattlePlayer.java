@@ -11,6 +11,7 @@
  *******************************************************************************/
 package net.sf.robocode.recording;
 
+import java.util.List;
 import net.sf.robocode.battle.BaseBattle;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
@@ -20,8 +21,6 @@ import robocode.BattleResults;
 import robocode.control.events.*;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import java.util.List;
 
 /**
  * @author Pavel Savara (original)
@@ -131,6 +130,7 @@ public final class BattlePlayer extends BaseBattle {
         recordManager.cleanupStreams();
     }
 
+    @Override
     public void setPaintEnabled(int robotIndex, boolean enable) {
         sendCommand(new EnableRobotPaintCommand(robotIndex, enable));
     }
@@ -144,6 +144,7 @@ public final class BattlePlayer extends BaseBattle {
             this.enablePaint = enablePaint;
         }
 
+        @Override
         public void execute() {
             paint[robotIndex] = enablePaint;
         }

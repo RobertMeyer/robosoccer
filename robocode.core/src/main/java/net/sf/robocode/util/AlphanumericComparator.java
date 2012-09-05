@@ -11,9 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.util;
 
-import java.util.Comparator;
-
 import static java.lang.Character.isDigit;
+import java.util.Comparator;
 
 /**
  * This is a comparator used for comparing two alphanumeric strings.
@@ -48,6 +47,7 @@ public class AlphanumericComparator implements Comparator<String>,
      * @return a negative integer, zero, or a positive integer as the first string is less than, equal to, or greater
      *         than the second.
      */
+    @Override
     public int compare(final String str1, final String str2) {
 
         // Checks against null strings

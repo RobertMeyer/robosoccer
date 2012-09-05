@@ -16,6 +16,7 @@ package tested.robots;
  */
 public class RadarTurnRateAndSetAdjust extends robocode.AdvancedRobot {
 
+    @Override
     public void run() {
         // -- Turn 1 --
         setTurnRadarRight(1000);

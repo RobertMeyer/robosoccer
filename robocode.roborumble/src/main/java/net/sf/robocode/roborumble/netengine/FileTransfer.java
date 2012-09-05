@@ -20,7 +20,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
-
 import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 
 /**
@@ -147,7 +146,7 @@ public class FileTransfer {
 
                 // Extract the session id from the cookie value
                 if (cookieVal != null) {
-                    sessionId = cookieVal.substring(0, cookieVal.indexOf(";"));
+                    sessionId = cookieVal.substring(0, cookieVal.indexOf(';'));
                 }
             } catch (final Exception e) {
                 sessionId = null;

@@ -27,14 +27,17 @@ public class ProxyOfGreyEminence extends AdvancedRobot {
         monk = new GreyEminence(this);
     }
 
+    @Override
     public void onHitByBullet(HitByBulletEvent event) {
         monk.onHitByBullet(event);
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent event) {
         monk.onScannedRobot(event);
     }
 
+    @Override
     public void run() {
         monk.run();
     }

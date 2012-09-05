@@ -13,15 +13,14 @@
  *******************************************************************************/
 package net.sf.robocode.battle.snapshot;
 
-import net.sf.robocode.battle.peer.RobotStatistics;
-import net.sf.robocode.serialization.IXmlSerializable;
-import net.sf.robocode.serialization.XmlReader;
-import net.sf.robocode.serialization.SerializableOptions;
-import net.sf.robocode.serialization.XmlWriter;
-import robocode.control.snapshot.IScoreSnapshot;
-
 import java.io.IOException;
 import java.io.Serializable;
+import net.sf.robocode.battle.peer.RobotStatistics;
+import net.sf.robocode.serialization.IXmlSerializable;
+import net.sf.robocode.serialization.SerializableOptions;
+import net.sf.robocode.serialization.XmlReader;
+import net.sf.robocode.serialization.XmlWriter;
+import robocode.control.snapshot.IScoreSnapshot;
 
 /**
  * A snapshot of a score at a specific time instant in a battle.
@@ -140,6 +139,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -147,6 +147,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getTotalScore() {
         return totalScore;
     }
@@ -154,6 +155,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getTotalSurvivalScore() {
         return totalSurvivalScore;
     }
@@ -161,6 +163,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getTotalLastSurvivorBonus() {
         return totalLastSurvivorBonus;
     }
@@ -168,6 +171,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getTotalBulletDamageScore() {
         return totalBulletDamageScore;
     }
@@ -175,6 +179,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getTotalBulletKillBonus() {
         return totalBulletKillBonus;
     }
@@ -182,6 +187,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getTotalRammingDamageScore() {
         return totalRammingDamageScore;
     }
@@ -189,6 +195,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getTotalRammingKillBonus() {
         return totalRammingKillBonus;
     }
@@ -196,6 +203,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTotalFirsts() {
         return totalFirsts;
     }
@@ -203,6 +211,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTotalSeconds() {
         return totalSeconds;
     }
@@ -210,6 +219,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTotalThirds() {
         return totalThirds;
     }
@@ -217,6 +227,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getCurrentScore() {
         return currentScore;
     }
@@ -224,6 +235,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getCurrentSurvivalScore() {
         return currentSurvivalScore;
     }
@@ -231,6 +243,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getCurrentSurvivalBonus() {
         return currentSurvivalBonus;
     }
@@ -238,6 +251,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getCurrentBulletDamageScore() {
         return currentBulletDamageScore;
     }
@@ -245,6 +259,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getCurrentBulletKillBonus() {
         return currentBulletKillBonus;
     }
@@ -252,6 +267,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getCurrentRammingDamageScore() {
         return currentRammingDamageScore;
     }
@@ -259,6 +275,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getCurrentRammingKillBonus() {
         return currentRammingKillBonus;
     }
@@ -266,6 +283,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(Object obj) {
         if (obj instanceof IScoreSnapshot) {
             IScoreSnapshot scoreSnapshot = (IScoreSnapshot) obj;
@@ -286,6 +304,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
         writer.startElement(options.shortAttributes ? "sc" : "score");
         {
@@ -337,92 +356,111 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public XmlReader.Element readXml(XmlReader reader) {
         return reader.expect("score", "sc", new XmlReader.Element() {
+            @Override
             public IXmlSerializable read(XmlReader reader) {
                 final ScoreSnapshot snapshot = new ScoreSnapshot();
 
                 reader.expect("name", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.name = value;
                     }
                 });
                 reader.expect("totalScore", "t", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("totalSurvivalScore", "tss", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalSurvivalScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("totalLastSurvivorBonus", "tls", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalLastSurvivorBonus = Double.parseDouble(value);
                     }
                 });
                 reader.expect("totalBulletDamageScore", "tbd", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalBulletDamageScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("totalBulletKillBonus", "tbk", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalBulletKillBonus = Double.parseDouble(value);
                     }
                 });
                 reader.expect("totalRammingDamageScore", "trd", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalRammingDamageScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("totalRammingKillBonus", "trk", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalRammingKillBonus = Double.parseDouble(value);
                     }
                 });
                 reader.expect("totalFirsts", "t1", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalFirsts = Integer.parseInt(value);
                     }
                 });
                 reader.expect("totalSeconds", "t2", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalSeconds = Integer.parseInt(value);
                     }
                 });
                 reader.expect("totalThirds", "t3", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.totalThirds = Integer.parseInt(value);
                     }
                 });
                 reader.expect("currentScore", "c", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.currentScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("currentSurvivalScore", "ss", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.currentSurvivalScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("currentBulletDamageScore", "bd", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.currentBulletDamageScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("currentBulletKillBonus", "bk", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.currentBulletKillBonus = Double.parseDouble(value);
                     }
                 });
                 reader.expect("currentRammingDamageScore", "rd", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.currentRammingDamageScore = Double.parseDouble(value);
                     }
                 });
                 reader.expect("currentRammingKillBonus", "rk", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.currentRammingKillBonus = Double.parseDouble(value);
                     }

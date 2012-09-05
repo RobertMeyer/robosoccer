@@ -11,9 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-import org.junit.Test;
-import net.sf.robocode.test.helpers.RobocodeTestBed;
 import net.sf.robocode.test.helpers.Assert;
+import net.sf.robocode.test.helpers.RobocodeTestBed;
+import org.junit.Test;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
 
@@ -23,6 +23,7 @@ import robocode.control.snapshot.IRobotSnapshot;
 public class TestCustomEvents extends RobocodeTestBed {
 
     @Test
+    @Override
     public void run() {
         super.run();
     }

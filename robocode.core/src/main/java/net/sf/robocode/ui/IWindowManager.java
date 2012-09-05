@@ -11,11 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
+import javax.swing.*;
 import net.sf.robocode.gui.IWindowManagerBase;
 import robocode.control.events.IBattleListener;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.*;
 
 /**
  * @author Pavel Savara (original)

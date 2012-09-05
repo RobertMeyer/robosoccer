@@ -11,17 +11,16 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items;
 
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.root.IRepositoryRoot;
-import net.sf.robocode.security.HiddenAccess;
-import net.sf.robocode.util.AlphanumericComparator;
-import robocode.control.RobotSpecification;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.root.IRepositoryRoot;
+import net.sf.robocode.security.HiddenAccess;
+import net.sf.robocode.util.AlphanumericComparator;
+import robocode.control.RobotSpecification;
 
 /**
  * @author Pavel Savara (original)
@@ -36,18 +35,25 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         super(itemURL, root);
     }
 
+    @Override
     public abstract URL getPropertiesURL();
 
+    @Override
     public abstract String getFullClassName();
 
+    @Override
     public abstract String getVersion();
 
+    @Override
     public abstract URL getWebpage();
 
+    @Override
     public abstract String getAuthorName();
 
+    @Override
     public abstract String getRobocodeVersion();
 
+    @Override
     public abstract String getDescription();
 
     public abstract URL getHtmlURL();
@@ -57,17 +63,20 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         }
     }
 
+    @Override
     public boolean isDevelopmentVersion() {
         return root.isDevelopmentRoot()
                 && !(getFullClassName().startsWith("sample") || getFullClassName().startsWith("tested."));
     }
 
+    @Override
     public String getRootPath() {
         return root.getURL().toString();
     }
 
+    @Override
     public String getRootPackage() {
-        int lIndex = getFullClassName().indexOf(".");
+        int lIndex = getFullClassName().indexOf('.');
         String rootPackage = null;
 
         if (lIndex > 0) {
@@ -76,6 +85,7 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         return rootPackage;
     }
 
+    @Override
     public String getFullPackage() {
         if (getFullClassName() == null) {
             return null;
@@ -86,12 +96,14 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
     }
 
     // same as package but with slash
+    @Override
     public String getRelativePath() {
         final int index = getFullClassName().lastIndexOf('.');
 
         return (index < 0) ? "" : getFullClassName().substring(0, index).replaceAll("\\.", "/");
     }
 
+    @Override
     public String getShortClassName() {
         if (getFullClassName() == null) {
             return null;
@@ -104,6 +116,7 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         return getFullClassName().substring(index + 1);
     }
 
+    @Override
     public String getFullClassNameWithVersion() {
         String fullClassName = getFullClassName();
 
@@ -113,6 +126,7 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         return fullClassName;
     }
 
+    @Override
     public String getUniqueFullClassName() {
         String uniqueFullClassName = getFullClassName();
 
@@ -122,6 +136,7 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         return uniqueFullClassName;
     }
 
+    @Override
     public String getUniqueFullClassNameWithVersion() {
         String uniqueFullClassName = (getVersion() == null) ? getFullClassName() : getFullClassNameWithVersion();
 
@@ -131,6 +146,7 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         return uniqueFullClassName;
     }
 
+    @Override
     public String getUniqueShortClassNameWithVersion() {
         String uniqueShortClassName = (getVersion() == null) ? getShortClassName() : getShortClassNameWithVersion();
 
@@ -140,6 +156,7 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         return uniqueShortClassName;
     }
 
+    @Override
     public String getUniqueVeryShortClassNameWithVersion() {
         String veryShortClassName = (getVersion() == null)
                 ? getVeryShortClassName()
@@ -178,12 +195,14 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
         return veryShortClassName;
     }
 
+    @Override
     public RobotSpecification createRobotSpecification() {
         return HiddenAccess.createSpecification(this, getUniqueFullClassName(), getAuthorName(),
                                                 (getWebpage() != null) ? getWebpage().toString() : null, getVersion(), getRobocodeVersion(),
                                                 root.getURL().toString(), getFullClassName(), getDescription());
     }
 
+    @Override
     public int compareTo(Object other) {
         if (other == this) {
             return 0;
@@ -230,7 +249,7 @@ public abstract class NamedItem extends BaseItem implements IRepositoryItem {
             return 0;
         }
 
-        if (v1.indexOf(".") < 0 || v2.indexOf(".") < 0) {
+        if (v1.indexOf('.') < 0 || v2.indexOf('.') < 0) {
             return alphaNumComparator.compare(v1, v2);
         }
 

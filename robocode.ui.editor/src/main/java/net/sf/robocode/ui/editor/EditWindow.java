@@ -16,10 +16,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.IRepositoryManager;
+import java.awt.Font;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.StringTokenizer;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -27,14 +31,9 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.Document;
-
-import java.awt.Font;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.StringTokenizer;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.IRepositoryManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -121,14 +120,17 @@ public class EditWindow extends JInternalFrame {
             Document document = editorPanel.getEditorPane().getDocument();
 
             document.addDocumentListener(new DocumentListener() {
+                @Override
                 public void removeUpdate(DocumentEvent e) {
                     setModified(true);
                 }
 
+                @Override
                 public void insertUpdate(DocumentEvent e) {
                     setModified(true);
                 }
 
+                @Override
                 public void changedUpdate(DocumentEvent e) {
                     setModified(true);
                 }
@@ -146,7 +148,7 @@ public class EditWindow extends JInternalFrame {
         boolean updated = modified != this.modified;
 
         if (updated) {
-            StringBuffer titleBuf = new StringBuffer("Editing");
+            StringBuilder titleBuf = new StringBuilder("Editing");
 
             if (fileName != null) {
                 titleBuf.append(" - ").append(fileName);
@@ -179,6 +181,7 @@ public class EditWindow extends JInternalFrame {
             // great job, where each each new print from the compiler is written out as soon as it is ready
             // in the output stream.
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     editor.getCompiler().compile(getRobotDir(), fileName);
                     repositoryManager.refresh(fileName);
@@ -284,7 +287,7 @@ public class EditWindow extends JInternalFrame {
         int pIndex = text.indexOf("package ");
 
         if (pIndex >= 0) {
-            int pEIndex = text.indexOf(";", pIndex);
+            int pEIndex = text.indexOf(';', pIndex);
 
             if (pEIndex > 0) {
                 String packageTree = text.substring(pIndex + 8, pEIndex) + File.separatorChar;
@@ -306,17 +309,17 @@ public class EditWindow extends JInternalFrame {
         int pIndex = text.indexOf("public class ");
 
         if (pIndex >= 0) {
-            int pEIndex = text.indexOf(" ", pIndex + 13);
+            int pEIndex = text.indexOf(' ', pIndex + 13);
 
             if (pEIndex > 0) {
-                int pEIndex2 = text.indexOf("\n", pIndex + 13);
+                int pEIndex2 = text.indexOf('\n', pIndex + 13);
 
                 if (pEIndex2 > 0 && pEIndex2 < pEIndex) {
                     pEIndex = pEIndex2;
                 }
                 javaFileName = text.substring(pIndex + 13, pEIndex).trim() + ".java";
             } else {
-                pEIndex = text.indexOf("\n", pIndex + 13);
+                pEIndex = text.indexOf('\n', pIndex + 13);
                 if (pEIndex > 0) {
                     javaFileName = text.substring(pIndex + 13, pEIndex).trim() + ".java";
                 }
@@ -414,7 +417,7 @@ public class EditWindow extends JInternalFrame {
         int pIndex = text.indexOf("package ");
 
         if (pIndex >= 0) {
-            int pEIndex = text.indexOf(";", pIndex);
+            int pEIndex = text.indexOf(';', pIndex);
 
             if (pEIndex > 0) {
                 return text.substring(pIndex + 8, pEIndex);

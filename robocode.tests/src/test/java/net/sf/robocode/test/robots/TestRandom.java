@@ -25,10 +25,12 @@ import robocode.control.snapshot.IRobotSnapshot;
 public class TestRandom extends RobocodeTestBed {
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public String getRobotNames() {
         return "sample.Fire,tested.robots.Random";
     }

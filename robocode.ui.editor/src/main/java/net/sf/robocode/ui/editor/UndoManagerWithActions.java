@@ -16,8 +16,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 /**
@@ -73,6 +73,7 @@ public class UndoManagerWithActions extends UndoManager {
             super("Undo");
         }
 
+        @Override
         public void actionPerformed(ActionEvent ae) {
             try {
                 undo();
@@ -88,6 +89,7 @@ public class UndoManagerWithActions extends UndoManager {
             super("Redo");
         }
 
+        @Override
         public void actionPerformed(ActionEvent ae) {
             try {
                 redo();

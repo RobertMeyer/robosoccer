@@ -25,6 +25,7 @@ public class MyFirstRobot extends Robot {
     /**
      * MyFirstRobot's run method - Seesaw
      */
+    @Override
     public void run() {
 
         while (true) {
@@ -38,6 +39,7 @@ public class MyFirstRobot extends Robot {
     /**
      * Fire when we see a robot
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
     }
@@ -46,6 +48,7 @@ public class MyFirstRobot extends Robot {
      * We were hit!  Turn perpendicular to the bullet,
      * so our seesaw might avoid a future shot.
      */
+    @Override
     public void onHitByBullet(HitByBulletEvent e) {
         turnLeft(90 - e.getBearing());
     }

@@ -67,6 +67,7 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setOut(java.io.PrintStream out) {
         this.out = out;
     }
@@ -74,6 +75,7 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setPeer(IBasicRobotPeer peer) {
         this.peer = peer;
     }

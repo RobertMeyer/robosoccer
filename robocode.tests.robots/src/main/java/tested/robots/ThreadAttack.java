@@ -11,10 +11,9 @@
  *******************************************************************************/
 package tested.robots;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Pavel Savara (original)
@@ -68,6 +67,7 @@ public class ThreadAttack extends AdvancedRobot {
 
     private class Attacker implements Runnable {
 
+        @Override
         public synchronized void run() {
             final int id = counter.incrementAndGet();
 

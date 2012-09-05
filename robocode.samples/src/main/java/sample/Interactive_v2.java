@@ -13,11 +13,6 @@
  *******************************************************************************/
 package sample;
 
-import robocode.AdvancedRobot;
-import robocode.util.Utils;
-import static robocode.util.Utils.normalAbsoluteAngle;
-import static robocode.util.Utils.normalRelativeAngle;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import static java.awt.event.KeyEvent.*;
@@ -25,6 +20,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.HashSet;
 import java.util.Set;
+import robocode.AdvancedRobot;
+import robocode.util.Utils;
+import static robocode.util.Utils.normalAbsoluteAngle;
+import static robocode.util.Utils.normalRelativeAngle;
 
 /**
  * Interactive_v2 - a modified version of the sample robot Interactive by Flemming N. Larsen
@@ -79,6 +78,7 @@ public class Interactive_v2 extends AdvancedRobot {
     private final Set<Direction> directions = new HashSet<Direction>();
 
     // Called when the robot must run
+    @Override
     public void run() {
 
         // Sets the colors of the robot
@@ -112,6 +112,7 @@ public class Interactive_v2 extends AdvancedRobot {
     }
 
     // Called when a key has been pressed
+    @Override
     public void onKeyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case VK_UP:
@@ -137,6 +138,7 @@ public class Interactive_v2 extends AdvancedRobot {
     }
 
     // Called when a key has been released (after being pressed)
+    @Override
     public void onKeyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case VK_UP:
@@ -162,10 +164,12 @@ public class Interactive_v2 extends AdvancedRobot {
     }
 
     // Called when the mouse wheel is rotated
+    @Override
     public void onMouseWheelMoved(MouseWheelEvent e) {// Do nothing
     }
 
     // Called when the mouse has been moved
+    @Override
     public void onMouseMoved(MouseEvent e) {
         // Set the aim coordinate = the mouse pointer coordinate
         aimX = e.getX();
@@ -173,6 +177,7 @@ public class Interactive_v2 extends AdvancedRobot {
     }
 
     // Called when a mouse button has been pressed
+    @Override
     public void onMousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {
             // Button 3: fire power = 3 energy points, bullet color = red
@@ -191,6 +196,7 @@ public class Interactive_v2 extends AdvancedRobot {
     }
 
     // Called when a mouse button has been released (after being pressed)
+    @Override
     public void onMouseReleased(MouseEvent e) {
         // Fire power = 0, which means "don't fire"
         firePower = 0;
@@ -199,6 +205,7 @@ public class Interactive_v2 extends AdvancedRobot {
     // Called in order to paint graphics for this robot.
     // "Paint" button on the robot console window for this robot must be
     // enabled in order to see the paintings.
+    @Override
     public void onPaint(Graphics2D g) {
         // Draw a red cross hair with the center at the current aim
         // coordinate (x,y)

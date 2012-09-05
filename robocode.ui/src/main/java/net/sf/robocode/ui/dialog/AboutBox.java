@@ -13,20 +13,19 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.ui.BrowserManager;
-import net.sf.robocode.version.IVersionManager;
-
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import net.sf.robocode.ui.BrowserManager;
+import net.sf.robocode.version.IVersionManager;
 
 /**
  * The About box.
@@ -94,6 +93,7 @@ public final class AboutBox extends JDialog {
     }
     // General event handler
     private final transient ActionListener eventHandler = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == AboutBox.this.getOkButton()) {
                 AboutBox.this.dispose();
@@ -102,6 +102,7 @@ public final class AboutBox extends JDialog {
     };
     // Hyperlink event handler
     private final transient HyperlinkListener hyperlinkHandler = new HyperlinkListener() {
+        @Override
         public void hyperlinkUpdate(HyperlinkEvent event) {
             if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 try {

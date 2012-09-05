@@ -44,6 +44,7 @@ public class TeamPeer extends ArrayList<RobotPeer> implements ContestantPeer {
         this.teamStatistics = new TeamStatistics(this);
     }
 
+    @Override
     public int compareTo(ContestantPeer cp) {
         double myScore = teamStatistics.getTotalScore();
         double hisScore = cp.getStatistics().getTotalScore();
@@ -61,22 +62,27 @@ public class TeamPeer extends ArrayList<RobotPeer> implements ContestantPeer {
         return 0;
     }
 
+    @Override
     public ContestantStatistics getStatistics() {
         return teamStatistics;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public int getRobotIndex() {
         return -1;
     }
 
+    @Override
     public int getTeamIndex() {
         return teamIndex;
     }
 
+    @Override
     public int getContestantIndex() {
         return teamIndex; // This contestant is always a team for this TeamPeer
     }

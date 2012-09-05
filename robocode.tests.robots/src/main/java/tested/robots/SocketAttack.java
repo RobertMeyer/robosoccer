@@ -11,15 +11,16 @@
  *******************************************************************************/
 package tested.robots;
 
-import robocode.AdvancedRobot;
 import java.io.*;
 import java.net.*;
+import robocode.AdvancedRobot;
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class SocketAttack extends AdvancedRobot {
 
+    @Override
     public void run() {
         ServerSocket server = null;
         Socket client = null;

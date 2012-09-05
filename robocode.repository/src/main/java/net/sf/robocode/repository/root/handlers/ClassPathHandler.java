@@ -14,14 +14,13 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root.handlers;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.Map;
 import net.sf.robocode.repository.Database;
 import net.sf.robocode.repository.parsers.ClasspathFileParser;
 import net.sf.robocode.repository.root.ClassPathRoot;
 import net.sf.robocode.repository.root.IRepositoryRoot;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.util.Map;
 
 /**
  * Handler for registering class path roots.
@@ -31,6 +30,7 @@ import java.util.Map;
  */
 public class ClassPathHandler extends RootHandler {
 
+    @Override
     public void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
         if (isDevel) {
             File classpathFile = new File(dir, ".classpath");

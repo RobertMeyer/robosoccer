@@ -11,13 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.IImageManager;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.IImageManager;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -270,6 +269,7 @@ public class PreferencesRenderingOptionsTab extends WizardPanel {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
 

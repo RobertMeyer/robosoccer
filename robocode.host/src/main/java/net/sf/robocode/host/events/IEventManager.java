@@ -11,9 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.host.events;
 
-import robocode.*;
-
 import java.util.List;
+import robocode.*;
 
 /**
  * @author Pavel Savara (original)

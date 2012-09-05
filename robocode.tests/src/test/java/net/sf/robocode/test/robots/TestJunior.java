@@ -23,14 +23,17 @@ import robocode.control.snapshot.IRobotSnapshot;
 public class TestJunior extends RobocodeTestBed {
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public String getRobotNames() {
         return "tested.robots.JuniorEvents,sample.SittingDuck";
     }
 
+    @Override
     public void onTurnEnded(TurnEndedEvent event) {
         super.onTurnEnded(event);
         final IRobotSnapshot robot = event.getTurnSnapshot().getRobots()[0];

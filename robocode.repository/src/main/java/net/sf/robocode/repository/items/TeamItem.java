@@ -11,14 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.root.IRepositoryRoot;
-import net.sf.robocode.core.Container;
-import net.sf.robocode.version.IVersionManager;
-
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,6 +20,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.root.IRepositoryRoot;
+import net.sf.robocode.version.IVersionManager;
 
 /**
  * @author Pavel Savara (original)
@@ -50,7 +49,7 @@ public class TeamItem extends NamedItem implements IRepositoryItem {
         String tUrl = itemURL.toString();
 
         tUrl = tUrl.substring(0, tUrl.lastIndexOf(".team"));
-        final int versionSeparator = tUrl.lastIndexOf(" ");
+        final int versionSeparator = tUrl.lastIndexOf(' ');
         final int rootLen = root.getURL().toString().length();
 
         if (versionSeparator != -1) {
@@ -77,6 +76,7 @@ public class TeamItem extends NamedItem implements IRepositoryItem {
         }
     }
 
+    @Override
     public List<String> getFriendlyURLs() {
         final Set<String> urls = new HashSet<String>();
 
@@ -97,6 +97,7 @@ public class TeamItem extends NamedItem implements IRepositoryItem {
         return new ArrayList<String>(urls);
     }
 
+    @Override
     public void update(long lastModified, boolean force) {
         if (lastModified > this.lastModified || force) {
             this.lastModified = lastModified;
@@ -124,6 +125,7 @@ public class TeamItem extends NamedItem implements IRepositoryItem {
         return false;
     }
 
+    @Override
     public URL getHtmlURL() {
         // lazy
         if (htmlURL == null) {
@@ -132,14 +134,17 @@ public class TeamItem extends NamedItem implements IRepositoryItem {
         return htmlURL;
     }
 
+    @Override
     public URL getPropertiesURL() {
         return itemURL;
     }
 
+    @Override
     public boolean isTeam() {
         return true;
     }
 
+    @Override
     public String getFullClassName() {
         return fullTeamName;
     }
@@ -148,18 +153,22 @@ public class TeamItem extends NamedItem implements IRepositoryItem {
         return properties.getProperty(TEAM_MEMBERS, null);
     }
 
+    @Override
     public String getVersion() {
         return properties.getProperty(TEAM_VERSION, null);
     }
 
+    @Override
     public String getDescription() {
         return properties.getProperty(TEAM_DESCRIPTION, null);
     }
 
+    @Override
     public String getAuthorName() {
         return properties.getProperty(TEAM_AUTHOR_NAME, null);
     }
 
+    @Override
     public URL getWebpage() {
         try {
             return new URL(properties.getProperty(TEAM_AUTHOR_WEBSITE, null));
@@ -168,22 +177,27 @@ public class TeamItem extends NamedItem implements IRepositoryItem {
         }
     }
 
+    @Override
     public boolean getIncludeSource() {
         return false;
     }
 
+    @Override
     public boolean isSourceIncluded() {
         return false;
     }
 
+    @Override
     public String getRobocodeVersion() {
         return properties.getProperty(ROBOCODE_VERSION, null);
     }
 
+    @Override
     public String toString() {
         return itemURL.toString();
     }
 
+    @Override
     public void storeProperties(OutputStream os, boolean includeSources, String version, String desc, String author, URL web) throws IOException {
         if (version != null) {
             properties.setProperty(TEAM_VERSION, version);

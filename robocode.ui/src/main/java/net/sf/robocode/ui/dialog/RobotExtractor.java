@@ -23,12 +23,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.ui.IWindowManager;
-import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +30,11 @@ import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import javax.swing.*;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.ui.IWindowManager;
+import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -61,6 +60,7 @@ public class RobotExtractor extends JDialog implements WizardListener {
 
     class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Refresh")) {
                 getRobotSelectionPanel().refreshRobotList(false);
@@ -79,10 +79,12 @@ public class RobotExtractor extends JDialog implements WizardListener {
         getRobotSelectionPanel().refreshRobotList(false);
     }
 
+    @Override
     public void cancelButtonActionPerformed() {
         dispose();
     }
 
+    @Override
     public void finishButtonActionPerformed() {
         int rc = extractRobot();
         ConsoleDialog d;

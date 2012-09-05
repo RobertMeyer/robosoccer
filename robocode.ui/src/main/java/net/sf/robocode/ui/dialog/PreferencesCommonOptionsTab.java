@@ -11,12 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.settings.ISettingsManager;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import net.sf.robocode.settings.ISettingsManager;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -114,6 +113,7 @@ public class PreferencesCommonOptionsTab extends WizardPanel {
 
             enableAutoRecordingCheckBox.addActionListener(
                     new ActionListener() {
+                @Override
                         public void actionPerformed(ActionEvent e) {
                             boolean isSelected = enableAutoRecordingCheckBox.isSelected();
 

@@ -16,6 +16,7 @@ package tested.robots;
  */
 public class MaxTurnRate extends robocode.AdvancedRobot {
 
+    @Override
     public void run() {
 
         setTurnLeft(Double.POSITIVE_INFINITY);

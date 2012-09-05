@@ -20,21 +20,20 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Hashtable;
+import java.util.Map;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.ui.IWindowManager;
 import robocode.control.events.*;
 import robocode.control.snapshot.IDebugProperty;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -160,6 +159,7 @@ public class RobotDialog extends JFrame {
         return getSGCheckBox().isSelected();
     }
     private final transient ActionListener eventHandler = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
 
@@ -203,6 +203,7 @@ public class RobotDialog extends JFrame {
             tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
             tabbedPane.addChangeListener(new ChangeListener() {
+                @Override
                 public void stateChanged(ChangeEvent e) {
                     printSnapshot = (tabbedPane.getSelectedIndex() == 1);
                     printSnapshot();

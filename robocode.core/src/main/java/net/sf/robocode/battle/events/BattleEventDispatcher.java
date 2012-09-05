@@ -11,13 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.battle.events;
 
-import static net.sf.robocode.io.Logger.logError;
-
-import net.sf.robocode.io.Logger;
-import robocode.control.events.*;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import net.sf.robocode.io.Logger;
+import static net.sf.robocode.io.Logger.logError;
+import robocode.control.events.*;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -45,6 +44,7 @@ public class BattleEventDispatcher implements IBattleListener {
         listeners.remove(listener);
     }
 
+    @Override
     public void onBattleStarted(BattleStartedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -55,6 +55,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onBattleCompleted(BattleCompletedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -65,6 +66,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onBattleFinished(BattleFinishedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -75,6 +77,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onBattlePaused(BattlePausedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -85,6 +88,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onBattleResumed(BattleResumedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -95,6 +99,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onRoundStarted(RoundStartedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -105,6 +110,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onRoundEnded(RoundEndedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -115,6 +121,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onTurnStarted(TurnStartedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -125,6 +132,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onTurnEnded(TurnEndedEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -135,6 +143,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onBattleMessage(BattleMessageEvent event) {
         for (IBattleListener listener : listeners) {
             try {
@@ -145,6 +154,7 @@ public class BattleEventDispatcher implements IBattleListener {
         }
     }
 
+    @Override
     public void onBattleError(BattleErrorEvent event) {
         for (IBattleListener listener : listeners) {
             try {

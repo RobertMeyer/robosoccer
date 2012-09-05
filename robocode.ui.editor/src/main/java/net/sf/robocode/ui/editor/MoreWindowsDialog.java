@@ -14,13 +14,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
+import javax.swing.*;
 
 /**
  * @author Matthew Reeder (original)
@@ -106,6 +106,7 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
         return windowList;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == closeButton) {
             WindowMenuItem item = (WindowMenuItem) windowList.getSelectedValue();
@@ -125,6 +126,7 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
         }
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == getWindowList() && e.getClickCount() == 2) {
             WindowMenuItem item = windowListItems.get(windowList.locationToIndex(e.getPoint()));
@@ -135,15 +137,19 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
         }
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 }

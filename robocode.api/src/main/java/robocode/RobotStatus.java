@@ -11,12 +11,11 @@
  *******************************************************************************/
 package robocode;
 
+import java.io.Serializable;
+import java.nio.ByteBuffer;
 import net.sf.robocode.security.IHiddenStatusHelper;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
-
-import java.io.Serializable;
-import java.nio.ByteBuffer;
 
 /**
  * Contains the status of a robot for a specific time/turn returned by
@@ -352,11 +351,13 @@ public final class RobotStatus implements Serializable {
     private static class SerializableHelper implements ISerializableHelper,
                                                        IHiddenStatusHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             return RbSerializer.SIZEOF_TYPEINFO + 12 * RbSerializer.SIZEOF_DOUBLE + 3 * RbSerializer.SIZEOF_INT
                     + RbSerializer.SIZEOF_LONG;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             RobotStatus obj = (RobotStatus) object;
 
@@ -378,6 +379,7 @@ public final class RobotStatus implements Serializable {
             serializer.serialize(buffer, obj.time);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             double energy = buffer.getDouble();
             double x = buffer.getDouble();
@@ -400,6 +402,7 @@ public final class RobotStatus implements Serializable {
                                    radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time);
         }
 
+        @Override
         public RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading, double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining, double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time) {
             return new RobotStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity, bodyTurnRemaining,
                                    radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time);

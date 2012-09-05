@@ -1,8 +1,6 @@
 package tested.robots;
 
 import robocode.AdvancedRobot;
-import robocode.Equipment;
-import robocode.EquipmentSlot;
 
 /**
  * Tests the equipment API provided by Team Forkbomb.
@@ -18,6 +16,7 @@ public class EquipmentTest1 extends AdvancedRobot {
         equip("Stealth Tracks");
     }
 
+    @Override
     public void run() {
         while (true) {
             ahead(100);

@@ -14,14 +14,14 @@
  *******************************************************************************/
 package net.sf.robocode.io;
 
-import java.net.URLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.jar.JarFile;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.jar.JarFile;
 
 /**
  * This ugly class is helping with closing of robot .jar files when used with URL, URLConnection and useCaches=true

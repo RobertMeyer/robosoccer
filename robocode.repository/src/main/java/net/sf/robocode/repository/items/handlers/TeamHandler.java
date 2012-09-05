@@ -11,12 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items.handlers;
 
+import java.net.URL;
 import net.sf.robocode.repository.Database;
 import net.sf.robocode.repository.items.IItem;
 import net.sf.robocode.repository.items.TeamItem;
 import net.sf.robocode.repository.root.IRepositoryRoot;
-
-import java.net.URL;
 
 /**
  * Handler for accepting and registering .team files.
@@ -25,6 +24,7 @@ import java.net.URL;
  */
 public class TeamHandler extends ItemHandler {
 
+    @Override
     public IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db) {
         if (itemURL.toString().toLowerCase().endsWith(".team")) {
             return register(itemURL, root, db);

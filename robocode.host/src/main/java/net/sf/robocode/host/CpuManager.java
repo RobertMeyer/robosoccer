@@ -47,6 +47,7 @@ public class CpuManager implements ICpuManager {
         this.properties = properties;
     }
 
+    @Override
     public long getCpuConstant() {
         if (cpuConstant == -1) {
             cpuConstant = properties.getCpuConstant();
@@ -57,6 +58,7 @@ public class CpuManager implements ICpuManager {
         return cpuConstant;
     }
 
+    @Override
     public void calculateCpuConstant() {
         setStatus("Estimating CPU speed, please wait...");
 

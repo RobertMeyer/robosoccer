@@ -23,15 +23,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.packager;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.ui.dialog.WizardPanel;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.Caret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,6 +31,14 @@ import java.awt.event.ComponentListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Caret;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.ui.dialog.WizardPanel;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -58,33 +57,41 @@ public class FilenamePanel extends WizardPanel {
     private class EventHandler implements ActionListener, DocumentListener,
                                           ComponentListener {
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void changedUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == getBrowseButton()) {
                 showFileSelectDialog();
             }
         }
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
         }
 
+        @Override
         public void componentHidden(ComponentEvent e) {
         }
 
+        @Override
         public void componentShown(ComponentEvent e) {
             String fileName = FileUtil.getRobotsDir().getAbsolutePath() + File.separator;
             File outgoingFile = new File(fileName);
@@ -162,6 +169,7 @@ public class FilenamePanel extends WizardPanel {
                 if (!robocodeErrorShown) {
                     robocodeErrorShown = true;
                     new Thread(new Runnable() {
+                        @Override
                         public void run() {
                             JOptionPane.showMessageDialog(FilenamePanel.this, "Filename cannot begin with robocode");
                         }
@@ -279,6 +287,7 @@ public class FilenamePanel extends WizardPanel {
             this.frame = frame;
         }
 
+        @Override
         public void run() {
             if (frame != null) {
                 frame.setVisible(true);

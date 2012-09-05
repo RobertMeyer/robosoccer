@@ -27,6 +27,7 @@ public class TestLost extends RobocodeTestBed {
     private int end = 0;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }

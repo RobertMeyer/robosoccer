@@ -25,10 +25,12 @@ public class TestPrivateConstructor extends RobocodeTestBed {
     boolean messaged;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public void onTurnEnded(final TurnEndedEvent event) {
         super.onTurnEnded(event);
         final IRobotSnapshot robot = event.getTurnSnapshot().getRobots()[1];

@@ -19,6 +19,7 @@ import static robocode.util.Utils.normalRelativeAngle;
  */
 public class WatchBullets extends AdvancedRobot {
 
+    @Override
     public void run() {
         while (true) {
             ahead(100);
@@ -29,6 +30,7 @@ public class WatchBullets extends AdvancedRobot {
     }
     Bullet bullet;
 
+    @Override
     public void onStatus(StatusEvent event) {
         dump();
     }

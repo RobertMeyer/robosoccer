@@ -13,11 +13,10 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
-
-import java.awt.*;
 
 /**
  * RamFire - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -32,6 +31,7 @@ public class RamFire extends Robot {
     /**
      * run: Spin around looking for a target
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(Color.lightGray);
@@ -46,6 +46,7 @@ public class RamFire extends Robot {
     /**
      * onScannedRobot:  We have a target.  Go get it.
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
 
         if (e.getBearing() >= 0) {
@@ -62,6 +63,7 @@ public class RamFire extends Robot {
     /**
      * onHitRobot:  Turn to face robot, fire hard, and ram him again!
      */
+    @Override
     public void onHitRobot(HitRobotEvent e) {
         if (e.getBearing() >= 0) {
             turnDirection = 1;

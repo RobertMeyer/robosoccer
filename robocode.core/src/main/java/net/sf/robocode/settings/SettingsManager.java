@@ -34,10 +34,6 @@
  *******************************************************************************/
 package net.sf.robocode.settings;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import static net.sf.robocode.io.Logger.logError;
-
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +43,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import static net.sf.robocode.io.Logger.logError;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -153,6 +152,7 @@ public class SettingsManager implements ISettingsManager {
         }
     }
 
+    @Override
     public void saveProperties() {
         FileOutputStream out = null;
 
@@ -173,91 +173,111 @@ public class SettingsManager implements ISettingsManager {
         }
     }
 
+    @Override
     public boolean getOptionsViewRobotNames() {
         return optionsViewRobotNames;
     }
 
+    @Override
     public void setOptionsViewRobotNames(boolean optionsViewRobotNames) {
         this.optionsViewRobotNames = optionsViewRobotNames;
         props.setProperty(OPTIONS_VIEW_ROBOTNAMES, "" + optionsViewRobotNames);
     }
 
+    @Override
     public boolean getOptionsViewScanArcs() {
         return optionsViewScanArcs;
     }
 
+    @Override
     public void setOptionsViewScanArcs(boolean optionsViewScanArcs) {
         this.optionsViewScanArcs = optionsViewScanArcs;
         props.setProperty(OPTIONS_VIEW_SCANARCS, "" + optionsViewScanArcs);
     }
 
+    @Override
     public boolean getOptionsViewRobotEnergy() {
         return optionsViewRobotEnergy;
     }
 
+    @Override
     public void setOptionsViewRobotEnergy(boolean optionsViewRobotEnergy) {
         this.optionsViewRobotEnergy = optionsViewRobotEnergy;
         props.setProperty(OPTIONS_VIEW_ROBOTENERGY, "" + optionsViewRobotEnergy);
     }
 
+    @Override
     public boolean getOptionsViewGround() {
         return optionsViewGround;
     }
 
+    @Override
     public void setOptionsViewGround(boolean optionsViewGround) {
         this.optionsViewGround = optionsViewGround;
         props.setProperty(OPTIONS_VIEW_GROUND, "" + optionsViewGround);
     }
 
+    @Override
     public boolean getOptionsViewTPS() {
         return optionsViewTPS;
     }
 
+    @Override
     public void setOptionsViewTPS(boolean optionsViewTPS) {
         this.optionsViewTPS = optionsViewTPS;
         props.setProperty(OPTIONS_VIEW_TPS, "" + optionsViewTPS);
     }
 
+    @Override
     public boolean getOptionsViewFPS() {
         return optionsViewFPS;
     }
 
+    @Override
     public void setOptionsViewFPS(boolean optionsViewFPS) {
         this.optionsViewFPS = optionsViewFPS;
         props.setProperty(OPTIONS_VIEW_FPS, "" + optionsViewFPS);
     }
 
+    @Override
     public boolean getOptionsViewExplosions() {
         return optionsViewExplosions;
     }
 
+    @Override
     public void setOptionsViewExplosions(boolean optionsViewExplosions) {
         this.optionsViewExplosions = optionsViewExplosions;
         props.setProperty(OPTIONS_VIEW_EXPLOSIONS, "" + optionsViewExplosions);
     }
 
+    @Override
     public boolean getOptionsViewExplosionDebris() {
         return optionsViewExplosionDebris;
     }
 
+    @Override
     public void setOptionsViewExplosionDebris(boolean optionsViewExplosionDebris) {
         this.optionsViewExplosionDebris = optionsViewExplosionDebris;
         props.setProperty(OPTIONS_VIEW_EXPLOSION_DEBRIS, "" + optionsViewExplosionDebris);
     }
 
+    @Override
     public boolean getOptionsViewPreventSpeedupWhenMinimized() {
         return optionsViewPreventSpeedupWhenMinimized;
     }
 
+    @Override
     public void setOptionsViewPreventSpeedupWhenMinimized(boolean preventSpeedupWhenMinimized) {
         this.optionsViewPreventSpeedupWhenMinimized = preventSpeedupWhenMinimized;
         props.setProperty(OPTIONS_VIEW_PREVENT_SPEEDUP_WHEN_MINIMIZED, "" + preventSpeedupWhenMinimized);
     }
 
+    @Override
     public int getOptionsRenderingAntialiasing() {
         return optionsRenderingAntialiasing;
     }
 
+    @Override
     public void setOptionsRenderingAntialiasing(int optionsRenderingAntialiasing) {
         this.optionsRenderingAntialiasing = optionsRenderingAntialiasing;
         props.setProperty(OPTIONS_RENDERING_ANTIALIASING, "" + optionsRenderingAntialiasing);
@@ -280,10 +300,12 @@ public class SettingsManager implements ISettingsManager {
         renderingHints.put(RenderingHints.KEY_ANTIALIASING, value);
     }
 
+    @Override
     public int getOptionsRenderingTextAntialiasing() {
         return optionsRenderingTextAntialiasing;
     }
 
+    @Override
     public void setOptionsRenderingTextAntialiasing(int optionsRenderingTextAntialiasing) {
         this.optionsRenderingTextAntialiasing = optionsRenderingTextAntialiasing;
         props.setProperty(OPTIONS_RENDERING_TEXT_ANTIALIASING, "" + optionsRenderingTextAntialiasing);
@@ -306,10 +328,12 @@ public class SettingsManager implements ISettingsManager {
         renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, value);
     }
 
+    @Override
     public int getOptionsRenderingMethod() {
         return optionsRenderingMethod;
     }
 
+    @Override
     public void setOptionsRenderingMethod(int optionsRenderingMethod) {
         this.optionsRenderingMethod = optionsRenderingMethod;
         props.setProperty(OPTIONS_RENDERING_METHOD, "" + optionsRenderingMethod);
@@ -332,228 +356,279 @@ public class SettingsManager implements ISettingsManager {
         renderingHints.put(RenderingHints.KEY_RENDERING, value);
     }
 
+    @Override
     public RenderingHints getRenderingHints() {
         return renderingHints;
     }
 
+    @Override
     public int getOptionsRenderingNoBuffers() {
         return optionsRenderingNoBuffers;
     }
 
+    @Override
     public void setOptionsRenderingNoBuffers(int optionsRenderingNoBuffers) {
         this.optionsRenderingNoBuffers = optionsRenderingNoBuffers;
         props.setProperty(OPTIONS_RENDERING_NO_BUFFERS, "" + optionsRenderingNoBuffers);
     }
 
+    @Override
     public boolean getOptionsRenderingBufferImages() {
         return optionsRenderingBufferImages;
     }
 
+    @Override
     public void setOptionsRenderingBufferImages(boolean optionsRenderingBufferImages) {
         this.optionsRenderingBufferImages = optionsRenderingBufferImages;
         props.setProperty(OPTIONS_RENDERING_BUFFER_IMAGES, "" + optionsRenderingBufferImages);
     }
 
+    @Override
     public boolean getOptionsRenderingForceBulletColor() {
         return optionsRenderingForceBulletColor;
     }
 
+    @Override
     public void setOptionsRenderingForceBulletColor(boolean optionsRenderingForceBulletColor) {
         this.optionsRenderingForceBulletColor = optionsRenderingForceBulletColor;
         props.setProperty(OPTIONS_RENDERING_FORCE_BULLET_COLOR, "" + optionsRenderingForceBulletColor);
     }
 
+    @Override
     public int getOptionsBattleDesiredTPS() {
         return optionsBattleDesiredTPS;
     }
 
+    @Override
     public void setOptionsBattleDesiredTPS(int optionsBattleDesiredTPS) {
         this.optionsBattleDesiredTPS = optionsBattleDesiredTPS;
         props.setProperty(OPTIONS_BATTLE_DESIREDTPS, "" + optionsBattleDesiredTPS);
     }
 
+    @Override
     public boolean getOptionsSoundEnableSound() {
         return optionsSoundEnableSound;
     }
 
+    @Override
     public void setOptionsSoundEnableSound(boolean optionsSoundEnableSound) {
         this.optionsSoundEnableSound = optionsSoundEnableSound;
         props.setProperty(OPTIONS_SOUND_ENABLESOUND, "" + optionsSoundEnableSound);
     }
 
+    @Override
     public boolean getOptionsSoundEnableGunshot() {
         return optionsSoundEnableGunshot;
     }
 
+    @Override
     public void setOptionsSoundEnableGunshot(boolean optionsSoundEnableGunshot) {
         this.optionsSoundEnableGunshot = optionsSoundEnableGunshot;
         props.setProperty(OPTIONS_SOUND_ENABLEGUNSHOT, "" + optionsSoundEnableGunshot);
     }
 
+    @Override
     public boolean getOptionsSoundEnableBulletHit() {
         return optionsSoundEnableBulletHit;
     }
 
+    @Override
     public void setOptionsSoundEnableBulletHit(boolean optionsSoundEnableBulletHit) {
         this.optionsSoundEnableBulletHit = optionsSoundEnableBulletHit;
         props.setProperty(OPTIONS_SOUND_ENABLEBULLETHIT, "" + optionsSoundEnableBulletHit);
     }
 
+    @Override
     public boolean getOptionsSoundEnableRobotDeath() {
         return optionsSoundEnableRobotDeath;
     }
 
+    @Override
     public void setOptionsSoundEnableRobotDeath(boolean optionsSoundEnableRobotDeath) {
         this.optionsSoundEnableRobotDeath = optionsSoundEnableRobotDeath;
         props.setProperty(OPTIONS_SOUND_ENABLEROBOTDEATH, "" + optionsSoundEnableRobotDeath);
     }
 
+    @Override
     public boolean getOptionsSoundEnableWallCollision() {
         return optionsSoundEnableWallCollision;
     }
 
+    @Override
     public void setOptionsSoundEnableWallCollision(boolean optionsSoundEnableWallCollision) {
         this.optionsSoundEnableWallCollision = optionsSoundEnableWallCollision;
         props.setProperty(OPTIONS_SOUND_ENABLEWALLCOLLISION, "" + optionsSoundEnableWallCollision);
     }
 
+    @Override
     public boolean getOptionsSoundEnableRobotCollision() {
         return optionsSoundEnableRobotCollision;
     }
 
+    @Override
     public void setOptionsSoundEnableRobotCollision(boolean optionsSoundEnableRobotCollision) {
         this.optionsSoundEnableRobotCollision = optionsSoundEnableRobotCollision;
         props.setProperty(OPTIONS_SOUND_ENABLEROBOTCOLLISION, "" + optionsSoundEnableRobotCollision);
     }
 
+    @Override
     public boolean getOptionsSoundEnableMixerVolume() {
         return optionsSoundEnableMixerVolume;
     }
 
+    @Override
     public void setOptionsSoundMixer(String optionsSoundMixer) {
         this.optionsSoundMixer = optionsSoundMixer;
         props.setProperty(OPTIONS_SOUND_MIXER, optionsSoundMixer);
     }
 
+    @Override
     public String getOptionsSoundMixer() {
         return optionsSoundMixer;
     }
 
+    @Override
     public void setOptionsSoundEnableMixerVolume(boolean optionsSoundEnableMixerVolume) {
         this.optionsSoundEnableMixerVolume = optionsSoundEnableMixerVolume;
         props.setProperty(OPTIONS_SOUND_ENABLEMIXERVOLUME, "" + optionsSoundEnableMixerVolume);
     }
 
+    @Override
     public boolean getOptionsSoundEnableMixerPan() {
         return optionsSoundEnableMixerPan;
     }
 
+    @Override
     public void setOptionsSoundEnableMixerPan(boolean optionsSoundEnableMixerPan) {
         this.optionsSoundEnableMixerPan = optionsSoundEnableMixerPan;
         props.setProperty(OPTIONS_SOUND_ENABLEMIXERPAN, "" + optionsSoundEnableMixerPan);
     }
 
+    @Override
     public boolean getOptionsTeamShowTeamRobots() {
         return optionsTeamShowTeamRobots;
     }
 
+    @Override
     public void setOptionsTeamShowTeamRobots(boolean optionsTeamShowTeamRobots) {
         this.optionsTeamShowTeamRobots = optionsTeamShowTeamRobots;
         props.setProperty(OPTIONS_TEAM_SHOWTEAMROBOTS, "" + optionsTeamShowTeamRobots);
     }
 
+    @Override
     public String getFileThemeMusic() {
         return fileThemeMusic;
     }
 
+    @Override
     public String getFileBackgroundMusic() {
         return fileBackgroundMusic;
     }
 
+    @Override
     public String getFileEndOfBattleMusic() {
         return fileEndOfBattleMusic;
     }
 
+    @Override
     public String getFileGunshotSfx() {
         return fileGunshotSfx;
     }
 
+    @Override
     public String getBulletHitsRobotSfx() {
         return fileBulletHitsRobotSfx;
     }
 
+    @Override
     public String getBulletHitsBulletSfx() {
         return fileBulletHitsBulletSfx;
     }
 
+    @Override
     public String getRobotDeathSfx() {
         return fileRobotDeathSfx;
     }
 
+    @Override
     public String getRobotCollisionSfx() {
         return fileRobotCollisionSfx;
     }
 
+    @Override
     public String getWallCollisionSfx() {
         return fileWallCollisionSfx;
     }
 
+    @Override
     public Date getVersionChecked() {
         return (versionChecked != null) ? (Date) versionChecked.clone() : null;
     }
 
+    @Override
     public void setVersionChecked(Date versionChecked) {
         this.versionChecked = (versionChecked != null) ? (Date) versionChecked.clone() : null;
         props.setProperty(VERSIONCHECKED, dateFormat.format(new Date()));
     }
 
+    @Override
     public long getRobotFilesystemQuota() {
         return robotFilesystemQuota;
     }
 
+    @Override
     public void setRobotFilesystemQuota(long robotFilesystemQuota) {
         this.robotFilesystemQuota = robotFilesystemQuota;
         props.setProperty(ROBOT_FILESYSTEM_QUOTA, "" + robotFilesystemQuota);
     }
 
+    @Override
     public long getConsoleQuota() {
         return consoleQuota;
     }
 
+    @Override
     public void setConsoleQuota(long consoleQuota) {
         this.consoleQuota = consoleQuota;
         props.setProperty(CONSOLE_QUOTA, "" + consoleQuota);
     }
 
+    @Override
     public long getCpuConstant() {
         return cpuConstant;
     }
 
+    @Override
     public void setCpuConstant(long cpuConstant) {
         this.cpuConstant = cpuConstant;
         props.setProperty(CPU_CONSTANT, "" + cpuConstant);
     }
 
+    @Override
     public Collection<String> getOptionsDevelopmentPaths() {
         return new HashSet<String>(optionsDevelopmentPaths);
     }
 
+    @Override
     public void setOptionsDevelopmentPaths(Collection<String> paths) {
         this.optionsDevelopmentPaths = new HashSet<String>(paths);
 
         props.setProperty(OPTIONS_DEVELOPMENT_PATH, toCommaSeparatedString(paths));
     }
 
+    @Override
     public Collection<String> getOptionsExcludedDevelopmentPaths() {
         return new HashSet<String>(optionsExcludedDevelopmentPaths);
     }
 
+    @Override
     public void setOptionsExcludedDevelopmentPaths(Collection<String> paths) {
         this.optionsExcludedDevelopmentPaths = new HashSet<String>(paths);
 
         props.setProperty(OPTIONS_DEVELOPMENT_PATH_EXCLUDED, toCommaSeparatedString(paths));
     }
 
+    @Override
     public Collection<String> getOptionsEnabledDevelopmentPaths() {
         Collection<String> paths = getOptionsDevelopmentPaths();
 
@@ -561,82 +636,100 @@ public class SettingsManager implements ISettingsManager {
         return paths;
     }
 
+    @Override
     public boolean getOptionsCommonShowResults() {
         return optionsCommonShowResults;
     }
 
+    @Override
     public void setOptionsCommonAppendWhenSavingResults(boolean enable) {
         this.optionsCommonAppendWhenSavingResults = enable;
         props.setProperty(OPTIONS_COMMON_APPEND_WHEN_SAVING_RESULTS, "" + enable);
     }
 
+    @Override
     public boolean getOptionsCommonAppendWhenSavingResults() {
         return optionsCommonAppendWhenSavingResults;
     }
 
+    @Override
     public void setOptionsCommonShowResults(boolean enable) {
         this.optionsCommonShowResults = enable;
         props.setProperty(OPTIONS_COMMON_SHOW_RESULTS, "" + enable);
     }
 
+    @Override
     public boolean getOptionsCommonDontHideRankings() {
         return optionsCommonDontHideRankings;
     }
 
+    @Override
     public void setOptionsCommonDontHideRankings(boolean enable) {
         this.optionsCommonDontHideRankings = enable;
         props.setProperty(OPTIONS_COMMON_DONT_HIDE_RANKINGS, "" + enable);
     }
 
+    @Override
     public boolean getOptionsCommonEnableReplayRecording() {
         return optionsCommonEnableReplayRecording;
     }
 
+    @Override
     public void setOptionsCommonEnableReplayRecording(boolean enable) {
         this.optionsCommonEnableReplayRecording = enable;
         props.setProperty(OPTIONS_COMMON_ENABLE_REPLAY_RECORDING, "" + enable);
     }
 
+    @Override
     public boolean getOptionsCommonEnableAutoRecording() {
         return optionsCommonEnableAutoRecording;
     }
 
+    @Override
     public boolean getOptionsCommonAutoRecordingXML() {
         return optionsCommonAutoRecordingXML;
     }
 
+    @Override
     public void setOptionsCommonEnableAutoRecording(boolean enable) {
         this.optionsCommonEnableAutoRecording = enable;
         props.setProperty(OPTIONS_COMMON_ENABLE_AUTO_RECORDING, "" + enable);
     }
 
+    @Override
     public void setOptionsCommonEnableAutoRecordingXML(boolean enable) {
         this.optionsCommonAutoRecordingXML = enable;
         props.setProperty(OPTIONS_COMMON_AUTO_RECORDING_XML, "" + enable);
     }
 
+    @Override
     public void setOptionsCommonNotifyAboutNewBetaVersions(boolean enable) {
         this.optionsCommonNotifyAboutNewBetaVersions = enable;
         props.setProperty(OPTIONS_COMMON_NOTIFY_ABOUT_NEW_BETA_VERSIONS, "" + enable);
     }
 
+    @Override
     public boolean getOptionsCommonNotifyAboutNewBetaVersions() {
         return optionsCommonNotifyAboutNewBetaVersions;
     }
 
+    @Override
     public int getNumberOfRounds() {
         return numberOfRounds;
     }
 
+    @Override
     public void setNumberOfRounds(int numberOfRounds) {
         this.numberOfRounds = Math.max(1, numberOfRounds);
         props.setProperty(NUMBER_OF_ROUNDS, "" + this.numberOfRounds);
     }
 
+    @Override
     public void store(FileOutputStream out, String desc) throws IOException {
         props.store(out, desc);
     }
 
+    @Override
     public void load(FileInputStream in) throws IOException {
         props.load(in);
 
@@ -722,19 +815,23 @@ public class SettingsManager implements ISettingsManager {
         numberOfRounds = Integer.parseInt(props.getProperty(NUMBER_OF_ROUNDS, "10"));
     }
 
+    @Override
     public String getLastRunVersion() {
         return lastRunVersion;
     }
 
+    @Override
     public void setLastRunVersion(String lastRunVersion) {
         this.lastRunVersion = lastRunVersion;
         props.setProperty(LAST_RUN_VERSION, "" + lastRunVersion);
     }
 
+    @Override
     public void addPropertyListener(ISettingsListener listener) {
         listeners.add(listener);
     }
 
+    @Override
     public void removePropertyListener(ISettingsListener propertyListener) {
         listeners.remove(propertyListener);
     }
@@ -753,7 +850,7 @@ public class SettingsManager implements ISettingsManager {
      * Returns a comma-separated string from a collection of strings.
      */
     private static String toCommaSeparatedString(Collection<String> strings) {
-        if (strings == null || strings.size() == 0) {
+        if (strings == null || strings.isEmpty()) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
@@ -776,10 +873,7 @@ public class SettingsManager implements ISettingsManager {
         Set<String> set = new HashSet<String>();
         String splitExpr = File.pathSeparatorChar == ':' ? "[,:]+" : "[,;]+";
         String[] strings = line.split(splitExpr);
-
-        for (String s : strings) {
-            set.add(s);
-        }
+        set.addAll(Arrays.asList(strings));
         return set;
     }
 

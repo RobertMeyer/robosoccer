@@ -11,12 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.serialization;
 
-import net.sf.robocode.core.ContainerBase;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.manager.IVersionManagerBase;
-import net.sf.robocode.security.HiddenAccess;
-import robocode.Event;
-
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,6 +19,11 @@ import java.nio.CharBuffer;
 import java.nio.charset.*;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import net.sf.robocode.core.ContainerBase;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.manager.IVersionManagerBase;
+import net.sf.robocode.security.HiddenAccess;
+import robocode.Event;
 
 /**
  * @author Pavel Savara (original)

@@ -13,9 +13,8 @@
  *******************************************************************************/
 package net.sf.robocode.ui.battleview;
 
-import net.sf.robocode.battle.BoundingRectangle;
-
 import java.io.Serializable;
+import net.sf.robocode.battle.BoundingRectangle;
 
 /**
  * @author Mathew A. Nelson (original)

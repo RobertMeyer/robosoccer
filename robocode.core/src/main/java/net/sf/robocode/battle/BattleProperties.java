@@ -15,16 +15,15 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-import robocode.AdvancedRobot;
-import robocode.Robot;
-import robocode.control.RobotSpecification;
-import net.sf.robocode.mode.*;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Properties;
+import net.sf.robocode.mode.*;
+import robocode.AdvancedRobot;
+import robocode.Robot;
+import robocode.control.RobotSpecification;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -217,7 +216,7 @@ public class BattleProperties implements Serializable {
      * @param robots The robots to set
      */
     public void setSelectedRobots(RobotSpecification[] robots) {
-        StringBuffer robotString = new StringBuffer();
+        StringBuilder robotString = new StringBuilder();
         RobotSpecification robot;
 
         for (int i = 0; i < robots.length; i++) {

@@ -17,7 +17,6 @@ package net.sf.robocode.test.robots;
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
-
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
@@ -32,6 +31,7 @@ public class TestAcceleration extends RobocodeTestBed {
     private double[] startY = new double[3];
 
     @Test
+    @Override
     public void run() {
         super.run();
     }

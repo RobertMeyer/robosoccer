@@ -26,14 +26,6 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
-import net.sf.robocode.core.Container;
-import net.sf.robocode.host.IHostedThread;
-import net.sf.robocode.host.IRobotClassLoader;
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-import robocode.robotinterfaces.IBasicRobot;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,9 +39,17 @@ import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.host.IHostedThread;
+import net.sf.robocode.host.IRobotClassLoader;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
+import robocode.robotinterfaces.IBasicRobot;
 
 /**
  * This class loader is used by robots. It isolates classes which belong to robot and load them locally.
@@ -88,14 +88,17 @@ public class RobotClassLoader extends URLClassLoader implements
         }
     }
 
+    @Override
     public void setRobotProxy(Object robotProxy) {
         this.robotProxy = (IHostedThread) robotProxy;
     }
 
+    @Override
     public synchronized void addURL(URL url) {
         super.addURL(url);
     }
 
+    @Override
     public synchronized Class<?> loadClass(final String name, boolean resolve)
             throws ClassNotFoundException {
         if (name.startsWith("java.lang")) {
@@ -164,6 +167,7 @@ public class RobotClassLoader extends URLClassLoader implements
     // we need to call defineClass to be able to set codeSource to untrustedLocation
     private ByteBuffer findLocalResource(final String name) {
         return AccessController.doPrivileged(new PrivilegedAction<ByteBuffer>() {
+            @Override
             public ByteBuffer run() {
                 // try to find it in robot's class path
                 // this is URL, don't change to File.pathSeparator
@@ -219,6 +223,7 @@ public class RobotClassLoader extends URLClassLoader implements
         }
     }
 
+    @Override
     protected PermissionCollection getPermissions(CodeSource codesource) {
         if (IS_SECURITY_ON) {
             return EMPTY_PERMISSIONS;
@@ -226,10 +231,12 @@ public class RobotClassLoader extends URLClassLoader implements
         return super.getPermissions(codesource);
     }
 
+    @Override
     public String[] getReferencedClasses() {
         return referencedClasses.toArray(new String[referencedClasses.size()]);
     }
 
+    @Override
     public synchronized Class<?> loadRobotMainClass(boolean resolve) throws ClassNotFoundException {
         try {
             if (robotClass == null) {
@@ -266,11 +273,13 @@ public class RobotClassLoader extends URLClassLoader implements
         return robotClass;
     }
 
+    @Override
     public IBasicRobot createRobotInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         loadRobotMainClass(true);
         return (IBasicRobot) robotClass.newInstance();
     }
 
+    @Override
     public void cleanup() {
         // Bug fix [2930266] - Robot static data isn't being GCed after battle
         for (String className : getReferencedClasses()) {
@@ -401,9 +410,7 @@ public class RobotClassLoader extends URLClassLoader implements
         }
 
         try {
-            for (Field field : type.getDeclaredFields()) {
-                fields.add(field);
-            }
+            fields.addAll(Arrays.asList(type.getDeclaredFields()));
         } catch (Throwable ignore) {// NoClassDefFoundError does occur with some robots, e.g. sgp.Drunken [1.12]
             // We ignore all exceptions and errors here so we can proceed to retrieve
             // field from super classes.

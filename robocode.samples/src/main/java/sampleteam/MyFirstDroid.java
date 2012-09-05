@@ -28,6 +28,7 @@ public class MyFirstDroid extends TeamRobot implements Droid {
     /**
      * run:  Droid's default behavior
      */
+    @Override
     public void run() {
         out.println("MyFirstDroid ready.");
     }
@@ -35,6 +36,7 @@ public class MyFirstDroid extends TeamRobot implements Droid {
     /**
      * onMessageReceived:  What to do when our leader sends a message
      */
+    @Override
     public void onMessageReceived(MessageEvent e) {
         // Fire at a point
         if (e.getMessage() instanceof Point) {

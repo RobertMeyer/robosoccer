@@ -95,8 +95,12 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -117,12 +121,6 @@ import robocode.control.events.*;
 import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The {@code Battle} class is used for controlling a battle.
@@ -889,7 +887,7 @@ public final class Battle extends BaseBattle {
             }
         }
 
-        if (positions.size() == 0) {
+        if (positions.isEmpty()) {
             return;
         }
 
@@ -971,6 +969,7 @@ public final class Battle extends BaseBattle {
         sendCommand(new KillRobotCommand(robotIndex));
     }
 
+    @Override
     public void setPaintEnabled(int robotIndex, boolean enable) {
         sendCommand(new EnableRobotPaintCommand(robotIndex, enable));
     }
@@ -989,6 +988,7 @@ public final class Battle extends BaseBattle {
             super(robotIndex);
         }
 
+        @Override
         public void execute() {
             robots.get(robotIndex).kill();
         }
@@ -1003,6 +1003,7 @@ public final class Battle extends BaseBattle {
             this.enablePaint = enablePaint;
         }
 
+        @Override
         public void execute() {
             robots.get(robotIndex).setPaintEnabled(enablePaint);
         }
@@ -1017,6 +1018,7 @@ public final class Battle extends BaseBattle {
             this.enableSGPaint = enableSGPaint;
         }
 
+        @Override
         public void execute() {
             robots.get(robotIndex).setSGPaintEnabled(enableSGPaint);
         }
@@ -1030,6 +1032,7 @@ public final class Battle extends BaseBattle {
             this.event = event;
         }
 
+        @Override
         public void execute() {
             for (RobotPeer robotPeer : robots) {
                 if (robotPeer.isInteractiveRobot()) {

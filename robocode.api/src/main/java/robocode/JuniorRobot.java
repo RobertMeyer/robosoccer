@@ -15,13 +15,13 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import static java.lang.Math.toRadians;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IJuniorRobot;
 import robocode.robotinterfaces.peer.IJuniorRobotPeer;
 import robocode.util.Utils;
-
-import java.awt.*;
-import static java.lang.Math.toRadians;
 
 /**
  * This is the simplest robot type, which is simpler than the {@link Robot} and
@@ -419,6 +419,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
      * <p/>
      * {@inheritDoc}
      */
+    @Override
     public final IBasicEvents getBasicEventListener() {
         return getEventHandler();
     }
@@ -428,6 +429,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
      * <p/>
      * {@inheritDoc}
      */
+    @Override
     public final Runnable getRobotRunnable() {
         return getEventHandler();
     }
@@ -494,6 +496,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
      * </pre>
      * This method is automatically re-called when it has returned.
      */
+    @Override
     public void run() {
     }
 
@@ -772,18 +775,23 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
         private double juniorFirePower;
         private long currentTurn;
 
+        @Override
         public void onBulletHit(BulletHitEvent event) {
         }
 
+        @Override
         public void onBulletHitBullet(BulletHitBulletEvent event) {
         }
 
+        @Override
         public void onBulletMissed(BulletMissedEvent event) {
         }
 
+        @Override
         public void onDeath(DeathEvent event) {
         }
 
+        @Override
         public void onHitByBullet(HitByBulletEvent event) {
             double angle = peer.getBodyHeading() + event.getBearingRadians();
 
@@ -792,6 +800,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
             JuniorRobot.this.onHitByBullet();
         }
 
+        @Override
         public void onHitRobot(HitRobotEvent event) {
             double angle = peer.getBodyHeading() + event.getBearingRadians();
 
@@ -800,6 +809,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
             JuniorRobot.this.onHitRobot();
         }
 
+        @Override
         public void onHitWall(HitWallEvent event) {
             double angle = peer.getBodyHeading() + event.getBearingRadians();
 
@@ -808,10 +818,12 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
             JuniorRobot.this.onHitWall();
         }
 
+        @Override
         public void onRobotDeath(RobotDeathEvent event) {
             others = peer.getOthers();
         }
 
+        @Override
         public void onScannedRobot(ScannedRobotEvent event) {
             scannedDistance = (int) (event.getDistance() + 0.5);
             scannedEnergy = Math.max(1, (int) (event.getEnergy() + 0.5));
@@ -825,6 +837,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
             JuniorRobot.this.onScannedRobot();
         }
 
+        @Override
         public void onStatus(StatusEvent e) {
             final RobotStatus s = e.getStatus();
 
@@ -862,9 +875,11 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
             hitWallBearing = -1;
         }
 
+        @Override
         public void onWin(WinEvent event) {
         }
 
+        @Override
         public void run() {
             fieldWidth = (int) (peer.getBattleFieldWidth() + 0.5);
             fieldHeight = (int) (peer.getBattleFieldHeight() + 0.5);

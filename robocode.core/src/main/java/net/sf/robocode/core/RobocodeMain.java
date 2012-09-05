@@ -28,6 +28,12 @@
  *******************************************************************************/
 package net.sf.robocode.core;
 
+import java.awt.Toolkit;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.host.ICpuManager;
@@ -44,13 +50,6 @@ import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.util.StringUtil;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.events.*;
-
-import java.awt.Toolkit;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 
 /**
  * Robocode - A programming game involving battling AI tanks.<br>
@@ -119,6 +118,7 @@ public final class RobocodeMain extends RobocodeMainBase {
         this(properties, hostManager, null, battleManager, recordManager, versionManager);
     }
 
+    @Override
     public void run() {
         try {
             hostManager.initSecurity();
@@ -184,6 +184,7 @@ public final class RobocodeMain extends RobocodeMainBase {
         }
     }
 
+    @Override
     public void loadSetup(String[] args) {
 
         final String nosecMessage = "Robocode is running without a security manager.\n"
@@ -397,6 +398,7 @@ public final class RobocodeMain extends RobocodeMainBase {
         }
     }
 
+    @Override
     public void cleanup() {
         final IWindowManager windowManager = Container.getComponent(IWindowManager.class);
 
@@ -407,6 +409,7 @@ public final class RobocodeMain extends RobocodeMainBase {
         Container.getComponent(IHostManager.class).cleanup();
     }
 
+    @Override
     public void initForRobocodeEngine(IBattleListener listener) {
         final IWindowManager windowManager = Container.getComponent(IWindowManager.class);
 

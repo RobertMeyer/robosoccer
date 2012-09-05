@@ -18,6 +18,7 @@ public interface IMode {
      * Returns a string representation of the current Mode
      * @return string representation of a Mode
      */
+    @Override
     public String toString();
 
     /**

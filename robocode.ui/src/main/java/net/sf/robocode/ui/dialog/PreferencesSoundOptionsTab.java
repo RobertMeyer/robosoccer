@@ -11,14 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.settings.ISettingsManager;
-
-import javax.sound.sampled.*;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
+import javax.sound.sampled.*;
+import javax.swing.*;
+import net.sf.robocode.settings.ISettingsManager;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -319,6 +318,7 @@ public class PreferencesSoundOptionsTab extends WizardPanel {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
 

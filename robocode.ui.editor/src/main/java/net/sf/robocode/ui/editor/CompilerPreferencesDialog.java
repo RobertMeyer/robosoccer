@@ -19,15 +19,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.swing.*;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -48,6 +47,7 @@ public class CompilerPreferencesDialog extends JDialog {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(getOkButton())) {
                 if (compilerProperties == null) {

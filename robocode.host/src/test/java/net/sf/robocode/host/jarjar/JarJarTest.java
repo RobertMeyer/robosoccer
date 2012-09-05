@@ -11,18 +11,16 @@
  *******************************************************************************/
 package net.sf.robocode.host.jarjar;
 
-import org.junit.Test;
-import org.junit.Assert;
-
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLClassLoader;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import net.sf.robocode.io.URLJarCollector;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
 import net.sf.robocode.io.JarJar;
+import net.sf.robocode.io.URLJarCollector;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Pavel Savara (original)

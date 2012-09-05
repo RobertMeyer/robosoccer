@@ -11,17 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-import net.sf.robocode.io.JarJar;
-import net.sf.robocode.repository.Database;
-import net.sf.robocode.repository.packager.JarExtractor;
-import net.sf.robocode.repository.items.IItem;
-import net.sf.robocode.repository.items.RobotItem;
-import net.sf.robocode.repository.items.handlers.ItemHandler;
-import net.sf.robocode.ui.IWindowManager;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +21,16 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.JarJar;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
+import net.sf.robocode.repository.Database;
+import net.sf.robocode.repository.items.IItem;
+import net.sf.robocode.repository.items.RobotItem;
+import net.sf.robocode.repository.items.handlers.ItemHandler;
+import net.sf.robocode.repository.packager.JarExtractor;
+import net.sf.robocode.ui.IWindowManager;
 
 /**
  * Represents one .jar file
@@ -55,6 +54,7 @@ public class JarRoot extends BaseRoot implements IRepositoryRoot {
         }
     }
 
+    @Override
     public void update(boolean force) {
         final IWindowManager windowManager = net.sf.robocode.core.Container.getComponent(IWindowManager.class);
 
@@ -145,26 +145,32 @@ public class JarRoot extends BaseRoot implements IRepositoryRoot {
         }
     }
 
+    @Override
     public void update(IItem item, boolean force) {
         item.update(rootPath.lastModified(), force);
     }
 
+    @Override
     public boolean isChanged(IItem item) {
         return rootPath.lastModified() > lastModified;
     }
 
+    @Override
     public URL getURL() {
         return jarUrl;
     }
 
+    @Override
     public boolean isDevelopmentRoot() {
         return false;
     }
 
+    @Override
     public boolean isJAR() {
         return true;
     }
 
+    @Override
     public void extractJAR() {
         JarExtractor.extractJar(rootURL);
     }

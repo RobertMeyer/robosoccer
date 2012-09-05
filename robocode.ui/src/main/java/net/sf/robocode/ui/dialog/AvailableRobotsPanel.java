@@ -24,12 +24,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.ui.util.ShortcutUtil;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -39,6 +33,11 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.ui.util.ShortcutUtil;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -166,6 +165,7 @@ public class AvailableRobotsPanel extends JPanel {
 
             // Bug fix [2975871] - Minor visual bug - Currently selected robot gets covered
             availableRobotsScrollPane.addComponentListener(new ComponentAdapter() {
+                @Override
                 public void componentResized(ComponentEvent e) {
                     getAvailableRobotsList().ensureIndexIsVisible(getAvailableRobotsList().getSelectedIndex());
                 }
@@ -177,6 +177,7 @@ public class AvailableRobotsPanel extends JPanel {
     public void setRobotList(List<IRepositoryItem> robotListList) {
         robotList = robotListList;
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 availablePackages.clear();
                 availableRobots.clear();
@@ -315,6 +316,7 @@ public class AvailableRobotsPanel extends JPanel {
 
     private class EventHandler implements ListSelectionListener {
 
+        @Override
         public void valueChanged(ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 return;
@@ -333,10 +335,12 @@ public class AvailableRobotsPanel extends JPanel {
             fireContentsChanged(this, 0, getSize());
         }
 
+        @Override
         public int getSize() {
             return availablePackages.size();
         }
 
+        @Override
         public String getElementAt(int which) {
             return availablePackages.get(which);
         }
@@ -348,10 +352,12 @@ public class AvailableRobotsPanel extends JPanel {
             fireContentsChanged(this, 0, getSize());
         }
 
+        @Override
         public int getSize() {
             return availableRobots.size();
         }
 
+        @Override
         public ItemWrapper getElementAt(int which) {
             return availableRobots.get(which);
         }
@@ -373,6 +379,7 @@ public class AvailableRobotsPanel extends JPanel {
         }
 
         // Used writing the robot name in JList. Is used for keyboard typing in JList to find robot. Bugfix for [2658090]
+        @Override
         public String toString() {
             return item.getUniqueShortClassNameWithVersion();
         }
@@ -395,6 +402,7 @@ public class AvailableRobotsPanel extends JPanel {
             this.useShortName = useShortNames;
         }
 
+        @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
             setComponentOrientation(list.getComponentOrientation());

@@ -36,9 +36,9 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-import robocode.BattleResults;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import robocode.BattleResults;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -101,6 +101,7 @@ public class RobotStatistics implements ContestantStatistics {
         totalThirds = results.getThirds();
     }
 
+    @Override
     public void setRank(int rank) {
         this.rank = rank;
     }
@@ -142,30 +143,37 @@ public class RobotStatistics implements ContestantStatistics {
         isInRound = false;
     }
 
+    @Override
     public double getTotalScore() {
         return totalScore;
     }
 
+    @Override
     public double getTotalSurvivalScore() {
         return totalSurvivalScore;
     }
 
+    @Override
     public double getTotalLastSurvivorBonus() {
         return totalLastSurvivorBonus;
     }
 
+    @Override
     public double getTotalBulletDamageScore() {
         return totalBulletDamageScore;
     }
 
+    @Override
     public double getTotalBulletKillBonus() {
         return totalBulletKillBonus;
     }
 
+    @Override
     public double getTotalRammingDamageScore() {
         return totalRammingDamageScore;
     }
 
+    @Override
     public double getTotalRammingKillBonus() {
         return totalRammingKillBonus;
     }
@@ -175,43 +183,53 @@ public class RobotStatistics implements ContestantStatistics {
         return totalFlagScore;
     }
 
+    @Override
     public int getTotalFirsts() {
         return totalFirsts;
     }
 
+    @Override
     public int getTotalSeconds() {
         return totalSeconds;
     }
 
+    @Override
     public int getTotalThirds() {
         return totalThirds;
     }
 
+    @Override
     public double getCurrentScore() {
         return bulletDamageScore + rammingDamageScore + survivalScore + rammingKillBonus + bulletKillBonus
                 + lastSurvivorBonus;
     }
 
+    @Override
     public double getCurrentSurvivalScore() {
         return survivalScore;
     }
 
+    @Override
     public double getCurrentSurvivalBonus() {
         return lastSurvivorBonus;
     }
 
+    @Override
     public double getCurrentBulletDamageScore() {
         return bulletDamageScore;
     }
 
+    @Override
     public double getCurrentBulletKillBonus() {
         return bulletKillBonus;
     }
 
+    @Override
     public double getCurrentRammingDamageScore() {
         return rammingDamageScore;
     }
 
+    @Override
     public double getCurrentRammingKillBonus() {
         return rammingKillBonus;
     }
@@ -327,6 +345,7 @@ public class RobotStatistics implements ContestantStatistics {
         isActive = false;
     }
 
+    @Override
     public BattleResults getFinalResults() {
         return new BattleResults(robotPeer.getTeamName(), rank, totalScore, totalSurvivalScore, totalLastSurvivorBonus,
                                  totalBulletDamageScore, totalBulletKillBonus, totalRammingDamageScore, totalRammingKillBonus,

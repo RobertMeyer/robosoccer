@@ -11,9 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.robotpaint;
 
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.serialization.RbSerializer;
-
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -29,8 +26,9 @@ import java.nio.ByteOrder;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.Map;
-
 import javax.swing.UIManager;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.serialization.RbSerializer;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -1307,6 +1305,7 @@ public class Graphics2DSerialized extends Graphics2D implements IGraphicsProxy {
     // --------------------------------------------------------------------------
     // Processing of queued method calls to a Graphics2D object
     // --------------------------------------------------------------------------
+    @Override
     public void setPaintingEnabled(boolean enabled) {
         if (enabled && !isPaintingEnabled) {
             calls = ByteBuffer.allocate(INITIAL_BUFFER_SIZE);
@@ -1315,6 +1314,7 @@ public class Graphics2DSerialized extends Graphics2D implements IGraphicsProxy {
         isPaintingEnabled = enabled;
     }
 
+    @Override
     public void processTo(Graphics2D g) {
         if (!isInitialized) {
             calls = ByteBuffer.allocate(INITIAL_BUFFER_SIZE);
@@ -1349,6 +1349,7 @@ public class Graphics2DSerialized extends Graphics2D implements IGraphicsProxy {
         }
     }
 
+    @Override
     public void processTo(Graphics2D g, Object graphicsCalls) {
         calls.clear();
 
@@ -1378,6 +1379,7 @@ public class Graphics2DSerialized extends Graphics2D implements IGraphicsProxy {
         }
     }
 
+    @Override
     public byte[] readoutQueuedCalls() {
         if (calls == null || calls.position() == 0) {
             return null;
@@ -1944,18 +1946,22 @@ public class Graphics2DSerialized extends Graphics2D implements IGraphicsProxy {
             }
         }
 
+        @Override
         public int getWindingRule() {
             return windingRule;
         }
 
+        @Override
         public boolean isDone() {
             return pos == count;
         }
 
+        @Override
         public void next() {
             pos++;
         }
 
+        @Override
         public int currentSegment(float[] coords) {
             for (int i = 0; i < coords.length; i++) {
                 coords[i] = (float) this.coords[pos][i];
@@ -1963,6 +1969,7 @@ public class Graphics2DSerialized extends Graphics2D implements IGraphicsProxy {
             return type[pos];
         }
 
+        @Override
         public int currentSegment(double[] coords) {
             System.arraycopy(this.coords[pos], 0, coords, 0, coords.length);
             return type[pos];

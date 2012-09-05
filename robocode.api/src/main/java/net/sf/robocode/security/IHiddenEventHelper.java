@@ -11,11 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
+import java.awt.*;
 import net.sf.robocode.peer.IRobotStatics;
 import robocode.Event;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
 
 /**
  * @author Pavel Savara (original)

@@ -11,15 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.ui.IWindowManager;
-import net.sf.robocode.ui.IWindowManagerExt;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
+import net.sf.robocode.ui.IWindowManager;
+import net.sf.robocode.ui.IWindowManagerExt;
 
 /**
  * @author Pavel Savara (original)
@@ -101,20 +100,24 @@ public abstract class BaseScoreDialog extends JDialog {
 
     private class EventHandler implements ComponentListener {
 
+        @Override
         public void componentShown(ComponentEvent e) {
             onDialogShown();
         }
 
+        @Override
         public void componentHidden(ComponentEvent e) {
             onDialogHidden();
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
             if (e.getSource() == BaseScoreDialog.this.getScrollPane()) {
                 scrollPaneComponentResized();
             }
         }
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
     }

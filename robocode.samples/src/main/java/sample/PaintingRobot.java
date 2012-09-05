@@ -14,11 +14,10 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.HitByBulletEvent;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
-
-import java.awt.*;
 
 /**
  * PaintingRobot - a sample robot that demonstrates the onPaint() and
@@ -37,6 +36,7 @@ public class PaintingRobot extends Robot {
     /**
      * PaintingRobot's run method - Seesaw
      */
+    @Override
     public void run() {
         while (true) {
             ahead(100);
@@ -49,6 +49,7 @@ public class PaintingRobot extends Robot {
     /**
      * Fire when we see a robot
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         // demonstrate feature of debugging properties on RobotDialog
         setDebugProperty("lastScannedRobot", e.getName() + " at " + e.getBearing() + " degrees at time " + getTime());
@@ -61,6 +62,7 @@ public class PaintingRobot extends Robot {
      * so our seesaw might avoid a future shot.
      * In addition, draw orange circles where we were hit.
      */
+    @Override
     public void onHitByBullet(HitByBulletEvent e) {
         // demonstrate feature of debugging properties on RobotDialog
         setDebugProperty("lastHitBy", e.getName() + " with power of bullet " + e.getPower() + " at time " + getTime());
@@ -83,6 +85,7 @@ public class PaintingRobot extends Robot {
     /**
      * Paint a red circle around our PaintingRobot
      */
+    @Override
     public void onPaint(Graphics2D g) {
         g.setColor(Color.red);
         g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);

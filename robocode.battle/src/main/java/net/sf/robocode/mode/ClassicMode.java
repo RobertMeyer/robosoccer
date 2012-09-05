@@ -16,6 +16,7 @@ public class ClassicMode implements IMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double modifyVelocity(double velocityIncrement) {
         return velocityIncrement;
     }
@@ -23,6 +24,7 @@ public class ClassicMode implements IMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "Classic Mode";
     }
@@ -30,6 +32,7 @@ public class ClassicMode implements IMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -37,6 +40,7 @@ public class ClassicMode implements IMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getItems() {
         return new ArrayList<String>();
     }

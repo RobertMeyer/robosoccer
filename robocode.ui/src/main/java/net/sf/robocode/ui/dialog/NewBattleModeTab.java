@@ -1,9 +1,8 @@
 package net.sf.robocode.ui.dialog;
 
-import javax.swing.*;
-
-import net.sf.robocode.mode.*;
 import java.awt.*;
+import javax.swing.*;
+import net.sf.robocode.mode.*;
 
 /**
  *

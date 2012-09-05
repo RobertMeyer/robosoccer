@@ -29,10 +29,12 @@ public class TestPosition extends RobocodeTestBed {
     int lastTurn;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public String getRobotNames() {
         return "sample.Crazy,sample.Target";
     }

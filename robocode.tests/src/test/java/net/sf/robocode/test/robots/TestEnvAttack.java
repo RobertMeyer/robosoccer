@@ -24,6 +24,7 @@ public class TestEnvAttack extends RobocodeTestBed {
     boolean messagedAttack;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }

@@ -13,18 +13,17 @@
  *******************************************************************************/
 package net.sf.robocode.battle.snapshot;
 
+import java.io.IOException;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ExplosionPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.serialization.IXmlSerializable;
-import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
+import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.IBulletSnapshot;
-
-import java.io.IOException;
 
 /**
  * A snapshot of a bullet at a specific time instant in a battle.
@@ -120,6 +119,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getBulletId() {
         return bulletId;
     }
@@ -127,6 +127,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public BulletState getState() {
         return state;
     }
@@ -134,6 +135,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getPower() {
         return power;
     }
@@ -141,6 +143,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getX() {
         return x;
     }
@@ -148,6 +151,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getY() {
         return y;
     }
@@ -155,6 +159,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getPaintX() {
         return paintX;
     }
@@ -162,6 +167,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getPaintY() {
         return paintY;
     }
@@ -169,6 +175,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getColor() {
         return color;
     }
@@ -176,6 +183,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getFrame() {
         return frame;
     }
@@ -183,6 +191,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isExplosion() {
         return isExplosion;
     }
@@ -190,6 +199,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getExplosionImageIndex() {
         return explosionImageIndex;
     }
@@ -197,6 +207,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getHeading() {
         return heading;
     }
@@ -204,6 +215,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getVictimIndex() {
         return victimIndex;
     }
@@ -211,6 +223,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getOwnerIndex() {
         return ownerIndex;
     }
@@ -218,6 +231,7 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
         writer.startElement(options.shortAttributes ? "b" : "bullet");
         {
@@ -260,12 +274,15 @@ public final class BulletSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public XmlReader.Element readXml(XmlReader reader) {
         return reader.expect("bullet", "b", new XmlReader.Element() {
+            @Override
             public IXmlSerializable read(XmlReader reader) {
                 final BulletSnapshot snapshot = new BulletSnapshot();
 
                 reader.expect("id", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         String[] parts = value.split("-");
 
@@ -275,36 +292,42 @@ public final class BulletSnapshot implements java.io.Serializable,
                 });
 
                 reader.expect("state", "s", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.state = BulletState.valueOf(value);
                     }
                 });
 
                 reader.expect("power", "p", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.power = Double.parseDouble(value);
                     }
                 });
 
                 reader.expect("heading", "h", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.heading = Double.parseDouble(value);
                     }
                 });
 
                 reader.expect("victim", "v", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.victimIndex = Integer.parseInt(value);
                     }
                 });
 
                 reader.expect("owner", "o", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.ownerIndex = Integer.parseInt(value);
                     }
                 });
 
                 reader.expect("x", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.x = Double.parseDouble(value);
                         snapshot.paintX = snapshot.x;
@@ -312,6 +335,7 @@ public final class BulletSnapshot implements java.io.Serializable,
                 });
 
                 reader.expect("y", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.y = Double.parseDouble(value);
                         snapshot.paintY = snapshot.y;
@@ -319,12 +343,14 @@ public final class BulletSnapshot implements java.io.Serializable,
                 });
 
                 reader.expect("color", "c", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.color = Long.valueOf(value.toUpperCase(), 16).intValue();
                     }
                 });
 
                 reader.expect("isExplosion", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.isExplosion = Boolean.parseBoolean(value);
                         if (snapshot.isExplosion && snapshot.state == null) {
@@ -334,12 +360,14 @@ public final class BulletSnapshot implements java.io.Serializable,
                 });
 
                 reader.expect("explosion", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.explosionImageIndex = Integer.parseInt(value);
                     }
                 });
 
                 reader.expect("frame", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.frame = Integer.parseInt(value);
                     }

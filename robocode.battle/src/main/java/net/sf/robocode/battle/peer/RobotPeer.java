@@ -65,30 +65,6 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-import static net.sf.robocode.io.Logger.logMessage;
-import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.BoundingRectangle;
-import net.sf.robocode.battle.ItemDrop;
-import net.sf.robocode.host.IHostManager;
-import net.sf.robocode.host.RobotStatics;
-import net.sf.robocode.host.events.EventManager;
-import net.sf.robocode.host.events.EventQueue;
-import net.sf.robocode.host.proxies.IHostingRobotProxy;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.peer.*;
-import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.security.HiddenAccess;
-import net.sf.robocode.serialization.RbSerializer;
-import robocode.*;
-import robocode.control.RandomFactory;
-import robocode.control.RobotSpecification;
-import robocode.control.snapshot.BulletState;
-import robocode.control.snapshot.RobotState;
-import robocode.exception.AbortedException;
-import robocode.exception.DeathException;
-import robocode.exception.WinException;
-import static robocode.util.Utils.*;
-
 import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
@@ -102,6 +78,29 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.ItemDrop;
+import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.host.RobotStatics;
+import net.sf.robocode.host.events.EventManager;
+import net.sf.robocode.host.events.EventQueue;
+import net.sf.robocode.host.proxies.IHostingRobotProxy;
+import net.sf.robocode.io.Logger;
+import static net.sf.robocode.io.Logger.logMessage;
+import net.sf.robocode.peer.*;
+import net.sf.robocode.repository.IRobotRepositoryItem;
+import net.sf.robocode.security.HiddenAccess;
+import net.sf.robocode.serialization.RbSerializer;
+import robocode.*;
+import robocode.control.RandomFactory;
+import robocode.control.RobotSpecification;
+import robocode.control.snapshot.BulletState;
+import robocode.control.snapshot.RobotState;
+import robocode.exception.AbortedException;
+import robocode.exception.DeathException;
+import robocode.exception.WinException;
+import static robocode.util.Utils.*;
 
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
@@ -248,6 +247,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
     }
 
+    @Override
     public void println(String s) {
         synchronized (proxyText) {
             battleText.append(s);
@@ -286,10 +286,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public RobotStatistics getRobotStatistics() {
         return statistics;
     }
 
+    @Override
     public ContestantStatistics getStatistics() {
         return statistics;
     }
@@ -329,6 +331,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return statics.isTeamRobot();
     }
 
+    @Override
     public String getName() {
         return statics.getName();
     }
@@ -345,14 +348,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return statics.getVeryShortName();
     }
 
+    @Override
     public int getRobotIndex() {
         return statics.getRobotIndex();
     }
 
+    @Override
     public int getTeamIndex() {
         return statics.getTeamIndex();
     }
 
+    @Override
     public int getContestantIndex() {
         return getTeamIndex() >= 0 ? getTeamIndex() : getRobotIndex();
     }
@@ -360,6 +366,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     // -------------------
     // status
     // -------------------
+    @Override
     public void setPaintEnabled(boolean enabled) {
         isPaintEnabled = enabled;
     }
@@ -368,6 +375,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return isPaintEnabled;
     }
 
+    @Override
     public void setSGPaintEnabled(boolean enabled) {
         sgPaintEnabled = enabled;
     }
@@ -384,18 +392,22 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         this.state = state;
     }
 
+    @Override
     public boolean isDead() {
         return state == RobotState.DEAD;
     }
 
+    @Override
     public boolean isAlive() {
         return state != RobotState.DEAD;
     }
 
+    @Override
     public boolean isWinner() {
         return isWinner;
     }
 
+    @Override
     public boolean isRunning() {
         return isRunning.get();
     }
@@ -408,6 +420,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return halt.get();
     }
 
+    @Override
     public void setHalt(boolean value) {
         halt.set(value);
     }
@@ -478,6 +491,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     // ------------
     // team
     // ------------
+    @Override
     public TeamPeer getTeamPeer() {
         return teamPeer;
     }
@@ -486,6 +500,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return statics.getTeamName();
     }
 
+    @Override
     public boolean isTeamLeader() {
         return statics.isTeamLeader();
     }
@@ -505,14 +520,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     // -----------
     ByteBuffer bidirectionalBuffer;
 
+    @Override
     public void setupBuffer(ByteBuffer bidirectionalBuffer) {
         this.bidirectionalBuffer = bidirectionalBuffer;
     }
 
+    @Override
     public void setupThread() {
         Thread.currentThread().setName(getName());
     }
 
+    @Override
     public void executeImplSerial() throws IOException {
         ExecCommands commands = (ExecCommands) rbSerializer.deserialize(bidirectionalBuffer);
 
@@ -522,6 +540,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         rbSerializer.serializeToBuffer(bidirectionalBuffer, RbSerializer.ExecResults_TYPE, results);
     }
 
+    @Override
     public void waitForBattleEndImplSerial() throws IOException {
         ExecCommands commands = (ExecCommands) rbSerializer.deserialize(bidirectionalBuffer);
 
@@ -531,6 +550,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         rbSerializer.serializeToBuffer(bidirectionalBuffer, RbSerializer.ExecResults_TYPE, results);
     }
 
+    @Override
     public final ExecResults executeImpl(ExecCommands newCommands) {
         validateCommands(newCommands);
 
@@ -577,6 +597,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                                isHalt(), shouldWait, isPaintEnabled());
     }
 
+    @Override
     public final ExecResults waitForBattleEndImpl(ExecCommands newCommands) {
         if (!isHalt()) {
             // from robot to battle
@@ -650,6 +671,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     // -----------
     // called on battle thread
     // -----------
+    @Override
     public void waitWakeup() {
         synchronized (isSleeping) {
             if (isSleeping()) {
@@ -674,6 +696,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void waitSleeping(long millisWait, int nanosWait) {
         synchronized (isSleeping) {
             // It's quite possible for simple robots to
@@ -698,6 +721,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void checkSkippedTurn() {
         if (isHalt() || isSleeping() || !isRunning() || battle.isDebugging() || isPaintEnabled()) {
             skippedTurns = 0;
@@ -721,6 +745,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions) {
         boolean valid = false;
         if (initialRobotPositions != null) {
@@ -817,6 +842,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return true;
     }
 
+    @Override
     public void startRound(long waitMillis, int waitNanos) {
         Logger.logMessage(".", false);
 
@@ -854,6 +880,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void performLoadCommands() {
         currentCommands = commands.get();
 
@@ -922,6 +949,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
 
         // Reset robot state to active if it is not dead
@@ -976,6 +1004,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void performScan(List<RobotPeer> robots) {
         if (isDead()) {
             return;
@@ -1232,6 +1261,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     }
 
     // TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?
+    @Override
     public void addEvent(Event event) {
         if (isRunning()) {
             final EventQueue queue = events.get();
@@ -1569,15 +1599,18 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void setRunning(boolean value) {
         isRunning.set(value);
     }
 
+    @Override
     public void drainEnergy() {
         setEnergy(0, true);
         isEnergyDrained = true;
     }
 
+    @Override
     public void punishBadBehavior(BadBehavior badBehavior) {
         kill(); // Bug fix [2828479] - Missed onRobotDeath events
 
@@ -1639,10 +1672,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void setWinner(boolean newWinner) {
         isWinner = newWinner;
     }
 
+    @Override
     public void kill() {
         battle.resetInactiveTurnCount(10.0);
         if (isAlive()) {
@@ -1675,6 +1710,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         setState(RobotState.DEAD);
     }
 
+    @Override
     public void waitForStop() {
         robotProxy.waitForStopThread();
     }
@@ -1682,6 +1718,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     /**
      * Clean things up removing all references to the robot.
      */
+    @Override
     public void cleanup() {
         battle = null;
 
@@ -1718,6 +1755,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return commands.get().getDebugProperties();
     }
 
+    @Override
     public void publishStatus(long currentTurn) {
 
         final ExecCommands currentCommands = commands.get();
@@ -1743,6 +1781,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
      * @param partName the name of the part to equip
      * @see Equipment
      */
+    @Override
     public void equip(String partName) {
         EquipmentPart part = Equipment.getPart(partName);
 
@@ -2027,6 +2066,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return Math.toRadians(getRadarTurnRate());
     }
 
+    @Override
     public int compareTo(ContestantPeer cp) {
         double myScore = statistics.getTotalScore();
         double hisScore = cp.getStatistics().getTotalScore();

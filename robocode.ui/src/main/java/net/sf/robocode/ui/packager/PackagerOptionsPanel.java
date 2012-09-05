@@ -19,18 +19,17 @@
  *******************************************************************************/
 package net.sf.robocode.ui.packager;
 
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.ui.dialog.WizardPanel;
-import net.sf.robocode.ui.util.LimitedDocument;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.ui.dialog.WizardPanel;
+import net.sf.robocode.ui.util.LimitedDocument;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -58,24 +57,30 @@ public class PackagerOptionsPanel extends WizardPanel {
     private class EventHandler implements ComponentListener, KeyListener,
                                           DocumentListener {
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void changedUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
 
+        @Override
         public void componentHidden(ComponentEvent e) {
         }
 
+        @Override
         public void componentShown(ComponentEvent e) {
             List<IRepositoryItem> selectedRobots = robotPackager.getRobotSelectionPanel().getSelectedRobots();
 
@@ -124,8 +129,8 @@ public class PackagerOptionsPanel extends WizardPanel {
 
                 String text = "";
 
-                if (fullPackage != null && fullPackage.indexOf(".") != -1) {
-                    String htmlfn = fullPackage.substring(0, fullPackage.lastIndexOf(".")) + ".html";
+                if (fullPackage != null && fullPackage.indexOf('.') != -1) {
+                    String htmlfn = fullPackage.substring(0, fullPackage.lastIndexOf('.')) + ".html";
 
                     text = "(You may also leave this blank, and simply create the file: " + htmlfn + ")";
                 }
@@ -157,15 +162,19 @@ public class PackagerOptionsPanel extends WizardPanel {
             }
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
         }
 
+        @Override
         public void keyPressed(KeyEvent e) {
         }
 
+        @Override
         public void keyReleased(KeyEvent e) {
         }
 
+        @Override
         public void keyTyped(KeyEvent e) {
         }
     }
@@ -392,6 +401,7 @@ public class PackagerOptionsPanel extends WizardPanel {
             this.frame = frame;
         }
 
+        @Override
         public void run() {
             if (frame != null) {
                 frame.pack();

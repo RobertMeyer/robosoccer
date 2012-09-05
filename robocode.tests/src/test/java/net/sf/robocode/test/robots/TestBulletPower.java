@@ -23,10 +23,12 @@ import robocode.control.snapshot.IRobotSnapshot;
 public class TestBulletPower extends RobocodeTestBed {
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public String getRobotNames() {
         return "sample.Target,tested.robots.BadFirePower";
     }

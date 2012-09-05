@@ -12,7 +12,6 @@
 package net.sf.robocode.test.robots;
 
 import java.io.File;
-
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Assert;
 import robocode.control.events.TurnEndedEvent;

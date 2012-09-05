@@ -11,6 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.recording;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.io.FileUtil;
@@ -24,15 +32,6 @@ import net.sf.robocode.settings.ISettingsManager;
 import robocode.BattleResults;
 import robocode.BattleRules;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import java.io.*;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 /**
  * @author Pavel Savara (original)
@@ -56,6 +55,7 @@ public class RecordManager implements IRecordManager {
         recorder = new BattleRecorder(this, properties);
     }
 
+    @Override
     protected void finalize() throws Throwable {
         try {
             cleanup();
@@ -91,10 +91,12 @@ public class RecordManager implements IRecordManager {
         fileReadStream = null;
     }
 
+    @Override
     public void attachRecorder(BattleEventDispatcher battleEventDispatcher) {
         recorder.attachRecorder(battleEventDispatcher);
     }
 
+    @Override
     public void detachRecorder() {
         recorder.detachRecorder();
     }
@@ -152,6 +154,7 @@ public class RecordManager implements IRecordManager {
         }
     }
 
+    @Override
     public void loadRecord(String recordFilename, BattleRecordFormat format) {
         FileInputStream fis = null;
         BufferedInputStream bis = null;
@@ -245,32 +248,39 @@ public class RecordManager implements IRecordManager {
         public final RecordRoot me;
         public BattleRecordInfo recordInfo;
 
+        @Override
         public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
         }
 
+        @Override
         public XmlReader.Element readXml(XmlReader reader) {
             return reader.expect("record", new XmlReader.Element() {
+                @Override
                 public IXmlSerializable read(final XmlReader reader) {
 
                     final XmlReader.Element element = (new BattleRecordInfo()).readXml(reader);
 
                     reader.expect("recordInfo", new XmlReader.ElementClose() {
+                        @Override
                         public IXmlSerializable read(XmlReader reader) {
                             recordInfo = (BattleRecordInfo) element.read(reader);
                             return recordInfo;
                         }
 
+                        @Override
                         public void close() {
                             reader.getContext().put("robots", recordInfo.robotCount);
                         }
                     });
 
                     reader.expect("turns", new XmlReader.ListElement() {
+                        @Override
                         public IXmlSerializable read(XmlReader reader) {
                             // prototype
                             return new TurnSnapshot();
                         }
 
+                        @Override
                         public void add(IXmlSerializable child) {
                             try {
                                 me.oos.writeObject(child);
@@ -279,6 +289,7 @@ public class RecordManager implements IRecordManager {
                             }
                         }
 
+                        @Override
                         public void close() {
                         }
                     });
@@ -289,6 +300,7 @@ public class RecordManager implements IRecordManager {
         }
     }
 
+    @Override
     public void saveRecord(String recordFilename, BattleRecordFormat format, SerializableOptions options) {
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
@@ -402,6 +414,7 @@ public class RecordManager implements IRecordManager {
         }
     }
 
+    @Override
     public boolean hasRecord() {
         return recordInfo != null;
     }

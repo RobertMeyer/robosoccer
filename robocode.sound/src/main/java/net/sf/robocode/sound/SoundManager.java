@@ -27,6 +27,10 @@
  *******************************************************************************/
 package net.sf.robocode.sound;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.Mixer;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.settings.ISettingsListener;
 import net.sf.robocode.settings.ISettingsManager;
@@ -37,11 +41,6 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.RobotState;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.Mixer;
 
 /**
  * The sound manager is responsible of keeping a table of sound effects and
@@ -71,6 +70,7 @@ public class SoundManager implements ISoundManager {
         }
 
         properties.addPropertyListener(new ISettingsListener() {
+            @Override
             public void settingChanged(String property) {
                 if (property.equals(ISettingsManager.OPTIONS_SOUND_ENABLESOUND)) {
                     updateListener();
@@ -93,6 +93,7 @@ public class SoundManager implements ISoundManager {
         return isSoundEnabled && properties.getOptionsSoundEnableSound();
     }
 
+    @Override
     public void setEnableSound(boolean enable) {
         isSoundEnabled = enable;
         updateListener();
@@ -293,6 +294,7 @@ public class SoundManager implements ISoundManager {
     /**
      * Plays the theme music once.
      */
+    @Override
     public void playThemeMusic() {
         if (isSoundEnabled()) {
             playMusic("theme", 0);

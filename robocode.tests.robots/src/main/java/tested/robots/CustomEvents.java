@@ -25,18 +25,21 @@ public class CustomEvents extends AdvancedRobot {
     public void run() {
 
         addCustomEvent(new Condition("onTick99", 99) {
+            @Override
             public boolean test() {
                 return true;
             }
         });
 
         addCustomEvent(new Condition("onTick30", 30) {
+            @Override
             public boolean test() {
                 return true;
             }
         });
 
         addCustomEvent(new Condition("onLowEnergy98", 98) {
+            @Override
             public boolean test() {
                 return getEnergy() < 20;
             }
@@ -49,10 +52,12 @@ public class CustomEvents extends AdvancedRobot {
         }
     }
 
+    @Override
     public void onCustomEvent(CustomEvent e) {
         out.println(getTime() + " " + e.getCondition().getName());
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         out.println(getTime() + " onScannedRobot10");
     }

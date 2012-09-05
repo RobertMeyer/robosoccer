@@ -11,18 +11,17 @@
  *******************************************************************************/
 package net.sf.robocode.serialization;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Stack;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author Pavel Savara (original)
@@ -50,14 +49,17 @@ public class XmlReader {
         attributeNames.push(new Hashtable<String, Attribute>());
         items.push(null);
         elements.push(new ListElement() {
+            @Override
             public IXmlSerializable read(XmlReader reader) {
                 return null;
             }
 
+            @Override
             public void add(IXmlSerializable child) {
                 result = child;
             }
 
+            @Override
             public void close() {
             }
         });
@@ -79,6 +81,7 @@ public class XmlReader {
             this.parent = parent;
         }
 
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             final Dictionary<String, Element> names = XmlReader.this.elementNames.peek();
             final Element element = names == null ? null : names.get(qName);
@@ -106,6 +109,7 @@ public class XmlReader {
             }
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
             elements.pop();
             final IXmlSerializable item = items.peek();

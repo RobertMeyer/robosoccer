@@ -2,13 +2,13 @@ package net.sf.robocode.battle.peer;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
-import static robocode.util.Utils.normalAbsoluteAngle;
-import static robocode.util.Utils.normalNearAbsoluteAngle;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import robocode.Rules;
 import robocode.control.RobotSpecification;
+import static robocode.util.Utils.normalAbsoluteAngle;
+import static robocode.util.Utils.normalNearAbsoluteAngle;
 
 public final class BallPeer extends RobotPeer {
 
@@ -31,6 +31,7 @@ public final class BallPeer extends RobotPeer {
      * This is Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive's method described here:
      *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
      */
+    @Override
     protected double getNewVelocity(double velocity, double distance) {
         if (distance < 0) {
             // If the distance is negative, then change it to be positive
@@ -54,6 +55,7 @@ public final class BallPeer extends RobotPeer {
         return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
     }
 
+    @Override
     protected void updateHeading() {
         boolean normalizeHeading = true;
 

@@ -22,14 +22,13 @@
  *******************************************************************************/
 package net.sf.robocode.roborumble.battlesengine;
 
-import net.sf.robocode.io.Logger;
-import static net.sf.robocode.roborumble.util.ExcludesUtil.*;
-import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
-
 import java.io.*;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Vector;
+import net.sf.robocode.io.Logger;
+import static net.sf.robocode.roborumble.util.ExcludesUtil.*;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 
 /**
  * PrepareBattles is used for preparing battles.
@@ -93,8 +92,8 @@ public class PrepareBattles {
             String participant;
 
             while ((participant = br.readLine()) != null) {
-                if (participant.indexOf(",") != -1) {
-                    String name = participant.substring(0, participant.indexOf(","));
+                if (participant.indexOf(',') != -1) {
+                    String name = participant.substring(0, participant.indexOf(','));
 
                     if (isExcluded(name)) {
                         continue; // ignore excluded participant
@@ -174,8 +173,8 @@ public class PrepareBattles {
             String participant;
 
             while ((participant = br.readLine()) != null) {
-                if (participant.indexOf(",") != -1) {
-                    String name = participant.substring(0, participant.indexOf(","));
+                if (participant.indexOf(',') != -1) {
+                    String name = participant.substring(0, participant.indexOf(','));
 
                     if (isExcluded(name)) {
                         continue; // ignore excluded participant
@@ -366,8 +365,8 @@ public class PrepareBattles {
             String participant;
 
             while ((participant = br.readLine()) != null) {
-                if (participant.indexOf(",") != -1) {
-                    String name = participant.substring(0, participant.indexOf(","));
+                if (participant.indexOf(',') != -1) {
+                    String name = participant.substring(0, participant.indexOf(','));
 
                     if (isExcluded(name)) {
                         continue; // ignore excluded participant

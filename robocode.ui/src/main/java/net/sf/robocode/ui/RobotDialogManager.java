@@ -21,14 +21,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-import net.sf.robocode.core.Container;
-import net.sf.robocode.ui.dialog.*;
-import robocode.control.snapshot.IRobotSnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.ui.dialog.*;
+import robocode.control.snapshot.IRobotSnapshot;
 
 /**
  * @author Mathew A. Nelson (orinal)
@@ -45,6 +44,7 @@ public class RobotDialogManager implements IRobotDialogManager {
         super();
     }
 
+    @Override
     public void trim(List<IRobotSnapshot> robots) {
 
         // new ArrayList in order to prevent ConcurrentModificationException
@@ -67,6 +67,7 @@ public class RobotDialogManager implements IRobotDialogManager {
         }
     }
 
+    @Override
     public void reset() {
         for (String name : robotDialogMap.keySet()) {
             RobotDialog dialog = robotDialogMap.get(name);
@@ -79,6 +80,7 @@ public class RobotDialogManager implements IRobotDialogManager {
         }
     }
 
+    @Override
     public RobotDialog getRobotDialog(RobotButton robotButton, String name, boolean create) {
         RobotDialog robotDialog = robotDialogMap.get(name);
 
@@ -95,6 +97,7 @@ public class RobotDialogManager implements IRobotDialogManager {
         return robotDialog;
     }
 
+    @Override
     public BattleDialog getBattleDialog(BattleButton battleButton, boolean create) {
 
         if (create && battleDialog == null) {

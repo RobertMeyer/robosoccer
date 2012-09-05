@@ -15,11 +15,10 @@
  *******************************************************************************/
 package net.sf.robocode.host.events;
 
-import net.sf.robocode.security.HiddenAccess;
-import robocode.Event;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import net.sf.robocode.security.HiddenAccess;
+import robocode.Event;
 
 /**
  * @author Mathew A. Nelson (original)

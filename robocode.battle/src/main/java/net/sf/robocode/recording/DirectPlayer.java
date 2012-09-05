@@ -11,10 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.recording;
 
+import java.io.*;
+import java.util.zip.ZipInputStream;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
+import static net.sf.robocode.io.Logger.logError;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
@@ -22,11 +25,6 @@ import net.sf.robocode.serialization.XmlWriter;
 import robocode.BattleResults;
 import robocode.control.events.*;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import java.io.*;
-import java.util.zip.ZipInputStream;
-
-import static net.sf.robocode.io.Logger.logError;
 
 /**
  * Utility class for replaying records without intermediate temp file and complexity
@@ -121,21 +119,26 @@ public class DirectPlayer {
         private int totalTurns = 0;
         protected final BattleEventDispatcher eventDispatcher;
 
+        @Override
         public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
         }
 
+        @Override
         public XmlReader.Element readXml(XmlReader reader) {
             return reader.expect("record", new XmlReader.Element() {
+                @Override
                 public IXmlSerializable read(final XmlReader reader) {
 
                     final XmlReader.Element element = (new BattleRecordInfo()).readXml(reader);
 
                     reader.expect("recordInfo", new XmlReader.ElementClose() {
+                        @Override
                         public IXmlSerializable read(XmlReader reader) {
                             recordInfo = (BattleRecordInfo) element.read(reader);
                             return recordInfo;
                         }
 
+                        @Override
                         public void close() {
                             reader.getContext().put("robots", recordInfo.robotCount);
                             eventDispatcher.onBattleStarted(new BattleStartedEvent(recordInfo.battleRules, recordInfo.robotCount, true));
@@ -143,11 +146,13 @@ public class DirectPlayer {
                     });
 
                     reader.expect("turns", new XmlReader.ListElement() {
+                        @Override
                         public IXmlSerializable read(XmlReader reader) {
                             // prototype
                             return new TurnSnapshot();
                         }
 
+                        @Override
                         public void add(IXmlSerializable child) {
                             ITurnSnapshot turn = (ITurnSnapshot) child;
 
@@ -163,6 +168,7 @@ public class DirectPlayer {
                             }
                         }
 
+                        @Override
                         public void close() {
                             eventDispatcher.onBattleFinished(new BattleFinishedEvent(false));
                             eventDispatcher.onBattleCompleted(new BattleCompletedEvent(recordInfo.battleRules, recordInfo.results.toArray(new BattleResults[recordInfo.results.size()])));

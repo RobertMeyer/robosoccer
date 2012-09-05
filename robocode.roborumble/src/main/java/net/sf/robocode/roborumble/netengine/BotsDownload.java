@@ -23,12 +23,6 @@
  *******************************************************************************/
 package net.sf.robocode.roborumble.netengine;
 
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.roborumble.battlesengine.CompetitionsSelector;
-import static net.sf.robocode.roborumble.netengine.FileTransfer.DownloadStatus;
-import static net.sf.robocode.roborumble.util.ExcludesUtil.*;
-import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -40,6 +34,11 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.roborumble.battlesengine.CompetitionsSelector;
+import net.sf.robocode.roborumble.netengine.FileTransfer.DownloadStatus;
+import static net.sf.robocode.roborumble.util.ExcludesUtil.*;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 
 /**
  * Class used for downloading participating robots from the Internet.
@@ -89,10 +88,10 @@ public class BotsDownload {
         // Ratings files
         ratingsurl = parameters.getProperty("RATINGS.URL", "");
         generalbots = propertiesfile;
-        while (generalbots.indexOf("/") != -1) {
-            generalbots = generalbots.substring(generalbots.indexOf("/") + 1);
+        while (generalbots.indexOf('/') != -1) {
+            generalbots = generalbots.substring(generalbots.indexOf('/') + 1);
         }
-        generalbots = generalbots.substring(0, generalbots.indexOf("."));
+        generalbots = generalbots.substring(0, generalbots.indexOf('.'));
         minibots = parameters.getProperty("MINIBOTS", "");
         microbots = parameters.getProperty("MICROBOTS", "");
         nanobots = parameters.getProperty("NANOBOTS", "");
@@ -208,7 +207,7 @@ public class BotsDownload {
 
             // Prevent our local participants file to be overwritten, if the downloaded list is empty.
             // Bugfix [2779557] - Client tries to remove all participants.
-            if (bots.size() == 0) {
+            if (bots.isEmpty()) {
                 System.out.println("The participants list is empty");
                 return false; // Error
             }
@@ -259,9 +258,9 @@ public class BotsDownload {
             br = new BufferedReader(fr);
 
             for (String record; (record = br.readLine()) != null;) {
-                if (record.indexOf(",") >= 0) {
-                    String id = record.substring(record.indexOf(",") + 1).trim();
-                    String name = record.substring(0, record.indexOf(",")).trim();
+                if (record.indexOf(',') >= 0) {
+                    String id = record.substring(record.indexOf(',') + 1).trim();
+                    String name = record.substring(0, record.indexOf(',')).trim();
                     String jar = name.replace(' ', '_') + ".jar";
 
                     jars.add(jar);
@@ -310,7 +309,7 @@ public class BotsDownload {
                 br = new BufferedReader(fr);
 
                 for (String record; (record = br.readLine()) != null;) {
-                    String name = record.substring(0, record.indexOf(","));
+                    String name = record.substring(0, record.indexOf(','));
 
                     name = name.replace(' ', '_');
                     size.checkCompetitorsForSize(name, name, 1500);
@@ -383,12 +382,12 @@ public class BotsDownload {
     }
 
     private boolean checkJarFile(String file, String botname) {
-        if (botname.indexOf(" ") == -1) {
+        if (botname.indexOf(' ') == -1) {
             System.out.println("Are you sure " + botname + " is a bot/team? Can't download it.");
             return false;
         }
 
-        String bot = botname.substring(0, botname.indexOf(" "));
+        String bot = botname.substring(0, botname.indexOf(' '));
 
         bot = bot.replace('.', '/');
         if (isteams.equals("YES")) {
@@ -417,7 +416,7 @@ public class BotsDownload {
             }
             String version = parameters.getProperty("team.version", "");
 
-            return (botname.equals(botname.substring(0, botname.indexOf(" ")) + " " + version));
+            return (botname.equals(botname.substring(0, botname.indexOf(' ')) + " " + version));
         } catch (Exception e) {
             System.out.println(e);
             return false;
@@ -484,8 +483,8 @@ public class BotsDownload {
             br = new BufferedReader(fr);
 
             for (String record; (record = br.readLine()) != null;) {
-                if (record.indexOf(",") != -1) {
-                    String name = record.substring(0, record.indexOf(",")).replace(' ', '_');
+                if (record.indexOf(',') != -1) {
+                    String name = record.substring(0, record.indexOf(',')).replace(' ', '_');
 
                     namesall.put(name, name);
                 }

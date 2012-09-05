@@ -20,10 +20,9 @@
  *******************************************************************************/
 package robocode.util;
 
-import robocode.control.RandomFactory;
-
 import static java.lang.Math.PI;
 import java.util.Random;
+import robocode.control.RandomFactory;
 
 /**
  * Utility class that provide methods for normalizing angles.

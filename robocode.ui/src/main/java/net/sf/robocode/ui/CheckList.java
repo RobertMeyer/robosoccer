@@ -17,12 +17,10 @@ import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-
 import net.sf.robocode.util.AlphanumericComparator;
 
 /**
@@ -50,6 +48,7 @@ public class CheckList extends JList {
 
         // Add a mouse listener to handle changing selection
         addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent event) {
                 JList list = (JList) event.getSource();
 
@@ -87,6 +86,7 @@ public class CheckList extends JList {
         model.addElement(new CheckListItem(label));
     }
 
+    @Override
     public void remove(int index) {
         model.remove(index);
     }
@@ -184,16 +184,19 @@ class CheckListItem implements Cloneable, Comparable<CheckListItem> {
     }
 
     // Must be here
+    @Override
     public String toString() {
         return label;
     }
 
     // Must be here (for sorting)
+    @Override
     public Object clone() {
         return new CheckListItem(this);
     }
 
     // Must be here (for sorting)
+    @Override
     public int compareTo(CheckListItem item) {
         return new AlphanumericComparator().compare(label, item.label);
     }
@@ -205,6 +208,7 @@ class CheckListItem implements Cloneable, Comparable<CheckListItem> {
 @SuppressWarnings("serial")
 class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 
+    @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
         setEnabled(list.isEnabled());
         setSelected(((CheckListItem) value).isSelected());

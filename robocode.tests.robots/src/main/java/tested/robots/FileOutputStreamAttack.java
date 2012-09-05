@@ -11,16 +11,17 @@
  *******************************************************************************/
 package tested.robots;
 
-import robocode.AdvancedRobot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import robocode.AdvancedRobot;
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class FileOutputStreamAttack extends AdvancedRobot {
 
+    @Override
     public void run() {
         File file = null;
         FileOutputStream fis = null;

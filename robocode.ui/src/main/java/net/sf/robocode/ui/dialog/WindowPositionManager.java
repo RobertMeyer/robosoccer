@@ -17,9 +17,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -29,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -67,9 +66,11 @@ public class WindowPositionManager implements ComponentListener {
         return windowPositions;
     }
 
+    @Override
     public void componentHidden(ComponentEvent e) {
     }
 
+    @Override
     public void componentMoved(ComponentEvent e) {
         // Hack, because we cannot detect maximized frame in Java 1.3
         if (e.getComponent().getBounds().getWidth() >= Toolkit.getDefaultToolkit().getScreenSize().width
@@ -79,6 +80,7 @@ public class WindowPositionManager implements ComponentListener {
         setWindowRect((Window) e.getComponent(), e.getComponent().getBounds());
     }
 
+    @Override
     public void componentResized(ComponentEvent e) {
         // Hack, because we cannot detect maximized frame in Java 1.3
         if (e.getComponent().getBounds().getWidth() >= Toolkit.getDefaultToolkit().getScreenSize().width
@@ -88,6 +90,7 @@ public class WindowPositionManager implements ComponentListener {
         setWindowRect((Window) e.getComponent(), e.getComponent().getBounds());
     }
 
+    @Override
     public void componentShown(ComponentEvent e) {
     }
 

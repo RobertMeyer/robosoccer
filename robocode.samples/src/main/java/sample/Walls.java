@@ -13,11 +13,10 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
-
-import java.awt.*;
 
 /**
  * Walls - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -32,6 +31,7 @@ public class Walls extends Robot {
     /**
      * run: Move around the walls
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(Color.black);
@@ -70,6 +70,7 @@ public class Walls extends Robot {
     /**
      * onHitRobot:  Move away a bit.
      */
+    @Override
     public void onHitRobot(HitRobotEvent e) {
         // If he's in front of us, set back up a bit.
         if (e.getBearing() > -90 && e.getBearing() < 90) {
@@ -83,6 +84,7 @@ public class Walls extends Robot {
     /**
      * onScannedRobot:  Fire!
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(2);
         // Note that scan is called automatically when the robot is moving.

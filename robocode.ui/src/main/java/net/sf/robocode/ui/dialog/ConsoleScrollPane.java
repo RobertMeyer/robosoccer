@@ -15,14 +15,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import javax.swing.*;
-import javax.swing.text.DefaultCaret;
-
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 
 /**
  * @author Mathew A. Nelson (original)

@@ -11,9 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-import net.sf.robocode.ui.gfx.RenderImage;
-
 import java.awt.*;
+import net.sf.robocode.ui.gfx.RenderImage;
 
 /**
  * @author Pavel Savara (original)

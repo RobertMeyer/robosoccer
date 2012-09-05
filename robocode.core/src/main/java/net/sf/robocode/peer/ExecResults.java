@@ -11,15 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-import net.sf.robocode.serialization.ISerializableHelper;
-import net.sf.robocode.serialization.RbSerializer;
-import robocode.Event;
-import robocode.RobotStatus;
-
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import net.sf.robocode.serialization.ISerializableHelper;
+import net.sf.robocode.serialization.RbSerializer;
+import robocode.Event;
+import robocode.RobotStatus;
 
 public final class ExecResults implements Serializable {
 
@@ -85,6 +84,7 @@ public final class ExecResults implements Serializable {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             ExecResults obj = (ExecResults) object;
             int size = RbSerializer.SIZEOF_TYPEINFO + 3 * RbSerializer.SIZEOF_BOOL;
@@ -113,6 +113,7 @@ public final class ExecResults implements Serializable {
             return size;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             ExecResults obj = (ExecResults) object;
 
@@ -137,6 +138,7 @@ public final class ExecResults implements Serializable {
             buffer.put(RbSerializer.TERMINATOR_TYPE);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             ExecResults res = new ExecResults();
 

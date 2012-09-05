@@ -1,8 +1,7 @@
 package robocode;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * A piece of equipment. This class defines all the stats that a piece of

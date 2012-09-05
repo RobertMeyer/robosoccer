@@ -13,13 +13,12 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 import robocode.WinEvent;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
-
-import java.awt.*;
 
 /**
  * Tracker - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -36,6 +35,7 @@ public class Tracker extends Robot {
     /**
      * run:  Tracker's main run function
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(new Color(128, 128, 50));
@@ -73,6 +73,7 @@ public class Tracker extends Robot {
     /**
      * onScannedRobot:  Here's the good stuff
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
 
         // If we have a target, and this isn't it, return immediately
@@ -118,6 +119,7 @@ public class Tracker extends Robot {
     /**
      * onHitRobot:  Set him as our new target
      */
+    @Override
     public void onHitRobot(HitRobotEvent e) {
         // Only print if he's not already our target.
         if (trackName != null && !trackName.equals(e.getName())) {
@@ -137,6 +139,7 @@ public class Tracker extends Robot {
     /**
      * onWin:  Do a victory dance
      */
+    @Override
     public void onWin(WinEvent e) {
         for (int i = 0; i < 50; i++) {
             turnRight(30);

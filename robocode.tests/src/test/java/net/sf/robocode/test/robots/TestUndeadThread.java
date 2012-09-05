@@ -13,8 +13,8 @@ package net.sf.robocode.test.robots;
 
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import robocode.control.events.BattleErrorEvent;
 
 /**
@@ -27,10 +27,12 @@ public class TestUndeadThread extends RobocodeTestBed {
     boolean messagedForcing;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public void onBattleError(BattleErrorEvent event) {
         super.onBattleError(event);
         final String error = event.getError();

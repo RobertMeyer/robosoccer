@@ -15,16 +15,15 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.ui.gfx.RobocodeLogo;
-import net.sf.robocode.version.IVersionManager;
-
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import net.sf.robocode.ui.gfx.RobocodeLogo;
+import net.sf.robocode.version.IVersionManager;
 
 /**
  * The splash screen.

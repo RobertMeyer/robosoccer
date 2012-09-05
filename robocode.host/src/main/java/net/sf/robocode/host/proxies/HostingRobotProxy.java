@@ -11,18 +11,21 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.host.*;
 import net.sf.robocode.host.events.EventManager;
 import net.sf.robocode.host.io.RobotFileSystemManager;
 import net.sf.robocode.host.io.RobotOutputStream;
 import net.sf.robocode.host.security.RobotThreadManager;
-import net.sf.robocode.host.*;
 import static net.sf.robocode.io.Logger.logError;
 import static net.sf.robocode.io.Logger.logMessage;
 import net.sf.robocode.peer.BadBehavior;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.core.Container;
 import robocode.RobotStatus;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
@@ -30,10 +33,6 @@ import robocode.exception.DisabledException;
 import robocode.exception.WinException;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Pavel Savara (original)
@@ -79,6 +78,7 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
         return (JavaHost) Container.cache.getComponent("robocode.host." + robotSpecification.getRobotLanguage());
     }
 
+    @Override
     public void cleanup() {
         robot = null;
 
@@ -101,10 +101,12 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
         }
     }
 
+    @Override
     public RobotOutputStream getOut() {
         return out;
     }
 
+    @Override
     public void println(String s) {
         out.println(s);
     }
@@ -113,14 +115,17 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
         ex.printStackTrace(out);
     }
 
+    @Override
     public RobotStatics getStatics() {
         return statics;
     }
 
+    @Override
     public RobotFileSystemManager getRobotFileSystemManager() {
         return robotFileSystemManager;
     }
 
+    @Override
     public ClassLoader getRobotClassloader() {
         return (ClassLoader) robotClassLoader;
     }
@@ -130,12 +135,14 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
     // -----------
     protected abstract void initializeRound(ExecCommands commands, RobotStatus status);
 
+    @Override
     public void startRound(ExecCommands commands, RobotStatus status) {
         initializeRound(commands, status);
         threadManager = ((HostManager) hostManager).getThreadManager();
         robotThreadManager.start(threadManager);
     }
 
+    @Override
     public void forceStopThread() {
         if (!robotThreadManager.forceStop()) {
             peer.punishBadBehavior(BadBehavior.UNSTOPPABLE);
@@ -143,6 +150,7 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
         }
     }
 
+    @Override
     public void waitForStopThread() {
         if (!robotThreadManager.waitForStop()) {
             peer.punishBadBehavior(BadBehavior.UNSTOPPABLE);
@@ -194,6 +202,7 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
 
     protected abstract void executeImpl();
 
+    @Override
     public void run() {
         // Only initialize AWT if we are not running in headless mode.
         // Bugfix [2833271] IllegalThreadStateException with the AWT-Shutdown thread.
@@ -268,10 +277,12 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
 
     protected abstract void waitForBattleEndImpl();
 
+    @Override
     public void drainEnergy() {
         peer.drainEnergy();
     }
 
+    @Override
     public void punishSecurityViolation(String message) {
         // Prevent unit tests of failing if multiple threads are calling this method in the same time.
         // We only want the a specific type of security violation logged once so we only get one error

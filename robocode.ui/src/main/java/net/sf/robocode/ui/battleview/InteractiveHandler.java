@@ -14,16 +14,15 @@
  *******************************************************************************/
 package net.sf.robocode.ui.battleview;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import static java.lang.Math.min;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.security.SafeComponent;
 import robocode.*;
-
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.*;
-import static java.lang.Math.min;
 
 /**
  * This handler is used for observing keyboard and mouse events from the battle view,
@@ -47,6 +46,7 @@ public final class InteractiveHandler implements KeyEventDispatcher,
         this.battleView = battleView;
     }
 
+    @Override
     public boolean dispatchKeyEvent(java.awt.event.KeyEvent e) {
         switch (e.getID()) {
             case KeyEvent.KEY_TYPED:
@@ -67,34 +67,42 @@ public final class InteractiveHandler implements KeyEventDispatcher,
         return false;
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         handleInteractiveEvent(new MouseClickedEvent(mirroredMouseEvent(e)));
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         handleInteractiveEvent(new MouseEnteredEvent(mirroredMouseEvent(e)));
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
         handleInteractiveEvent(new MouseExitedEvent(mirroredMouseEvent(e)));
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         handleInteractiveEvent(new MousePressedEvent(mirroredMouseEvent(e)));
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         handleInteractiveEvent(new MouseReleasedEvent(mirroredMouseEvent(e)));
     }
 
+    @Override
     public void mouseMoved(MouseEvent e) {
         handleInteractiveEvent(new MouseMovedEvent(mirroredMouseEvent(e)));
     }
 
+    @Override
     public void mouseDragged(MouseEvent e) {
         handleInteractiveEvent(new MouseDraggedEvent(mirroredMouseEvent(e)));
     }
 
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         handleInteractiveEvent(new MouseWheelMovedEvent(mirroredMouseWheelEvent(e)));
     }

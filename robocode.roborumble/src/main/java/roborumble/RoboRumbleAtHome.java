@@ -17,14 +17,13 @@
  *******************************************************************************/
 package roborumble;
 
+import java.util.Properties;
 import net.sf.robocode.roborumble.battlesengine.BattlesRunner;
 import net.sf.robocode.roborumble.battlesengine.PrepareBattles;
 import net.sf.robocode.roborumble.netengine.BotsDownload;
 import net.sf.robocode.roborumble.netengine.ResultsUpload;
 import net.sf.robocode.roborumble.netengine.UpdateRatingFiles;
 import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
-
-import java.util.Properties;
 
 /**
  * Implements the client side of RoboRumble@Home.

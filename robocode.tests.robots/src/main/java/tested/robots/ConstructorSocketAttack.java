@@ -11,9 +11,9 @@
  *******************************************************************************/
 package tested.robots;
 
-import robocode.AdvancedRobot;
 import java.io.*;
 import java.net.*;
+import robocode.AdvancedRobot;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -59,6 +59,7 @@ public class ConstructorSocketAttack extends AdvancedRobot {
         }
     }
 
+    @Override
     public void run() {
         // Write out the buffered output
         out.append(baos.toString());

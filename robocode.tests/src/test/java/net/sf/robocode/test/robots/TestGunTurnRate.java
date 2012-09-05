@@ -13,7 +13,6 @@ package net.sf.robocode.test.robots;
 
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
-
 import robocode.control.events.TurnEndedEvent;
 
 /**

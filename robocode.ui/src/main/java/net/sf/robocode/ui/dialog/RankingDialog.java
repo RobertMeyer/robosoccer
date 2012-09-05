@@ -19,20 +19,20 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.battle.BattleRankingTableModel;
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.IWindowManager;
-import robocode.control.events.BattleAdaptor;
-import robocode.control.events.BattleFinishedEvent;
-import robocode.control.events.TurnEndedEvent;
-import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import net.sf.robocode.battle.BattleRankingTableModel;
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.IWindowManager;
+import net.sf.robocode.ui.dialog.MenuBar;
+import robocode.control.events.BattleAdaptor;
+import robocode.control.events.BattleFinishedEvent;
+import robocode.control.events.TurnEndedEvent;
+import robocode.control.snapshot.ITurnSnapshot;
 
 /**
  * Frame to display the battle results or ranking during battles.
@@ -95,11 +95,13 @@ public class RankingDialog extends BaseScoreDialog {
         }
     }
 
+    @Override
     protected void onDialogShown() {
         windowManager.addBattleListener(battleObserver);
         timerTask.start();
     }
 
+    @Override
     protected void onDialogHidden() {
         menu.getOptionsShowRankingCheckBoxMenuItem().setState(false);
         timerTask.stop();
@@ -122,6 +124,7 @@ public class RankingDialog extends BaseScoreDialog {
 
     private class TimerTask implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             update();
         }

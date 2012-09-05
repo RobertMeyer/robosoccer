@@ -11,11 +11,11 @@
  *******************************************************************************/
 package tested.robots;
 
-import robocode.AdvancedRobot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import robocode.AdvancedRobot;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -24,6 +24,7 @@ public class HttpAttack extends AdvancedRobot {
 
     static final String HTTP_ADDR = "http://robocode.sourceforge.net/";
 
+    @Override
     public void run() {
         try {
             URL url = new URL(HTTP_ADDR);

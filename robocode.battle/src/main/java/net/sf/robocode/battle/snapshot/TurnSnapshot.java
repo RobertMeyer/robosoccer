@@ -13,17 +13,16 @@
  *******************************************************************************/
 package net.sf.robocode.battle.snapshot;
 
+import java.io.IOException;
+import java.util.*;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.serialization.IXmlSerializable;
-import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
+import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
 import robocode.control.snapshot.*;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * A snapshot of a battle turn at a specific time instant in a battle.
@@ -92,6 +91,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public IRobotSnapshot[] getRobots() {
         return robots.toArray(new IRobotSnapshot[robots.size()]);
     }
@@ -99,6 +99,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public IBulletSnapshot[] getBullets() {
         return bullets.toArray(new IBulletSnapshot[bullets.size()]);
     }
@@ -106,6 +107,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTPS() {
         return tps;
     }
@@ -113,6 +115,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getRound() {
         return round;
     }
@@ -120,6 +123,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTurn() {
         return turn;
     }
@@ -127,6 +131,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public IScoreSnapshot[] getSortedTeamScores() {
         List<IScoreSnapshot> copy = new ArrayList<IScoreSnapshot>(Arrays.asList(getIndexedTeamScores()));
 
@@ -138,6 +143,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public IScoreSnapshot[] getIndexedTeamScores() {
         // team scores are computed on demand from team scores to not duplicate data in the snapshot
 
@@ -177,6 +183,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
         writer.startElement(options.shortAttributes ? "t" : "turn");
         {
@@ -237,33 +244,40 @@ public final class TurnSnapshot implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public XmlReader.Element readXml(final XmlReader reader) {
         return reader.expect("turn", "t", new XmlReader.Element() {
+            @Override
             public IXmlSerializable read(final XmlReader reader) {
                 final TurnSnapshot snapshot = new TurnSnapshot();
 
                 reader.expect("turn", "tu", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.turn = Integer.parseInt(value);
                     }
                 });
                 reader.expect("round", "ro", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.round = Integer.parseInt(value);
                     }
                 });
 
                 reader.expect("robots", "rs", new XmlReader.ListElement() {
+                    @Override
                     public IXmlSerializable read(XmlReader reader) {
                         snapshot.robots = new ArrayList<IRobotSnapshot>();
                         // prototype
                         return new RobotSnapshot();
                     }
 
+                    @Override
                     public void add(IXmlSerializable child) {
                         snapshot.robots.add((RobotSnapshot) child);
                     }
 
+                    @Override
                     public void close() {
                         // allows loading of minimalistic XML, which skips dead robots, but GUI expects them
                         Hashtable<String, Object> context = reader.getContext();
@@ -284,16 +298,19 @@ public final class TurnSnapshot implements java.io.Serializable,
                 });
 
                 reader.expect("bullets", "bs", new XmlReader.ListElement() {
+                    @Override
                     public IXmlSerializable read(XmlReader reader) {
                         snapshot.bullets = new ArrayList<IBulletSnapshot>();
                         // prototype
                         return new BulletSnapshot();
                     }
 
+                    @Override
                     public void add(IXmlSerializable child) {
                         snapshot.bullets.add((BulletSnapshot) child);
                     }
 
+                    @Override
                     public void close() {
                     }
                 });

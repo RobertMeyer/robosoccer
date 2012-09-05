@@ -25,6 +25,7 @@ public class VelociRobot extends RateControlRobot {
 
     int turnCounter;
 
+    @Override
     public void run() {
 
         turnCounter = 0;
@@ -46,15 +47,18 @@ public class VelociRobot extends RateControlRobot {
         }
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
     }
 
+    @Override
     public void onHitByBullet(HitByBulletEvent e) {
         // Turn to confuse the other robot
         setTurnRate(5);
     }
 
+    @Override
     public void onHitWall(HitWallEvent e) {
         // Move away from the wall
         setVelocityRate(-1 * getVelocityRate());

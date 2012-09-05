@@ -32,6 +32,7 @@ public class TestWin extends RobocodeTestBed {
     private StringBuffer outputBuf = new StringBuffer();
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
@@ -55,6 +56,7 @@ public class TestWin extends RobocodeTestBed {
         outputBuf.append(streamSnapshot);
     }
 
+    @Override
     public void onBattleCompleted(BattleCompletedEvent event) {
         results = event.getSortedResults();
     }

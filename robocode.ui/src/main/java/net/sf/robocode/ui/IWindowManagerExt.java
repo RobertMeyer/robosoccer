@@ -11,11 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
+import javax.swing.*;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.BattleResultsTableModel;
 import robocode.control.events.BattleCompletedEvent;
-
-import javax.swing.*;
 
 /**
  * @author Pavel Savara (original)

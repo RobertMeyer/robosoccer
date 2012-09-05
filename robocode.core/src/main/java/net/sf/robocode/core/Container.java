@@ -11,21 +11,21 @@
  *******************************************************************************/
 package net.sf.robocode.core;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.List;
+import net.sf.robocode.core.Container;
 import net.sf.robocode.io.Logger;
 import org.picocontainer.Characteristics;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.behaviors.Caching;
 import org.picocontainer.behaviors.OptInCaching;
 import org.picocontainer.classname.DefaultClassLoadingPicoContainer;
-
-import java.awt.*;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
-import java.net.URL;
-import java.net.MalformedURLException;
 
 /**
  * Root of loaders.
@@ -133,6 +133,7 @@ public final class Container extends ContainerBase {
 
     private static void loadJars(File pathf) {
         final File[] files = pathf.listFiles(new FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 return name.toLowerCase().startsWith("robocode") && name.toLowerCase().endsWith(".jar");
             }
@@ -184,7 +185,7 @@ public final class Container extends ContainerBase {
             if (i > 0) {
                 return "net.sf." + name.substring(0, i);
             }
-            i = name.indexOf("-");
+            i = name.indexOf('-');
             if (i > 0) {
                 return "net.sf." + name.substring(0, i);
             }
@@ -235,6 +236,7 @@ public final class Container extends ContainerBase {
         return urls;
     }
 
+    @Override
     protected <T> T getBaseComponent(final Class<T> tClass) {
         return cache.getComponent(tClass);
     }

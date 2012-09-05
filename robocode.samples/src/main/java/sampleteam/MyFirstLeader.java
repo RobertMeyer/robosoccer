@@ -13,12 +13,12 @@
  *******************************************************************************/
 package sampleteam;
 
+import java.awt.*;
+import java.io.IOException;
 import robocode.HitByBulletEvent;
 import robocode.ScannedRobotEvent;
 import robocode.TeamRobot;
-
-import java.awt.*;
-import java.io.IOException;
+import sampleteam.Point;
 
 /**
  * MyFirstLeader - a sample team robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -30,6 +30,7 @@ public class MyFirstLeader extends TeamRobot {
     /**
      * run:  Leader's default behavior
      */
+    @Override
     public void run() {
         // Prepare RobotColors object
         RobotColors c = new RobotColors();
@@ -62,6 +63,7 @@ public class MyFirstLeader extends TeamRobot {
     /**
      * onScannedRobot:  What to do when you see another robot
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         // Don't fire on teammates
         if (isTeammate(e.getName())) {
@@ -85,6 +87,7 @@ public class MyFirstLeader extends TeamRobot {
     /**
      * onHitByBullet:  Turn perpendicular to bullet path
      */
+    @Override
     public void onHitByBullet(HitByBulletEvent e) {
         turnLeft(90 - e.getBearing());
     }

@@ -15,10 +15,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.ui.BrowserManager;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,6 +23,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.StringTokenizer;
+import javax.swing.*;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.ui.BrowserManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -48,6 +47,7 @@ public class RobotDescriptionPanel extends JPanel {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == getWebpageButton()) {
                 if (currentRobotSpecification != null) {

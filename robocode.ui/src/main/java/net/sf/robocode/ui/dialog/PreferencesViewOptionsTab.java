@@ -23,15 +23,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.settings.ISettingsListener;
-import net.sf.robocode.settings.ISettingsManager;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import net.sf.robocode.settings.ISettingsListener;
+import net.sf.robocode.settings.ISettingsManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -70,6 +69,7 @@ public class PreferencesViewOptionsTab extends WizardPanel {
 
     private class EventHandler implements ActionListener, DocumentListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
 
@@ -90,14 +90,17 @@ public class PreferencesViewOptionsTab extends WizardPanel {
             }
         }
 
+        @Override
         public void changedUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
             fireStateChanged();
         }
@@ -198,6 +201,7 @@ public class PreferencesViewOptionsTab extends WizardPanel {
                             return inputTps >= MIN_TPS && inputTps <= MAX_TPS;
                         }
 
+                @Override
                         public boolean shouldYieldFocus(JComponent input) {
                             if (verify(input)) {
                                 return true;
@@ -412,6 +416,7 @@ public class PreferencesViewOptionsTab extends WizardPanel {
         loadPreferences(props);
 
         props.addPropertyListener(new ISettingsListener() {
+            @Override
             public void settingChanged(String property) {
                 if (property.equals(ISettingsManager.OPTIONS_BATTLE_DESIREDTPS)) {
                     PreferencesViewOptionsTab.this.desiredTpsTextField.setText("" + props.getOptionsBattleDesiredTPS());

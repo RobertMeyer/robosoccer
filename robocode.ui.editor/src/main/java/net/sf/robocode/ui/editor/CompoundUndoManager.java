@@ -11,8 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.DocumentEvent.EventType;
+import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.undo.CannotUndoException;

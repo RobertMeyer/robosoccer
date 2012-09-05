@@ -11,18 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.repository.packager;
 
-import net.sf.robocode.core.Container;
-import net.sf.robocode.host.IHostManager;
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.items.RobotItem;
-import net.sf.robocode.repository.items.TeamItem;
-import net.sf.robocode.version.IVersionManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,8 +24,13 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.net.URL;
-import java.net.URLDecoder;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.items.RobotItem;
+import net.sf.robocode.repository.items.TeamItem;
+import net.sf.robocode.version.IVersionManager;
 
 /**
  * @author Pavel Savara (original)

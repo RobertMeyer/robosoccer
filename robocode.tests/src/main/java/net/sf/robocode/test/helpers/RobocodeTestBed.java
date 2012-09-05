@@ -11,8 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.test.helpers;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
 import net.sf.robocode.io.Logger;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,10 +22,6 @@ import robocode.control.*;
 import robocode.control.events.*;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.util.Utils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
 
 /**
  * @author Pavel Savara (original)
@@ -60,6 +58,7 @@ public abstract class RobocodeTestBed extends BattleAdaptor {
         System.setProperty("ROBOTPATH", robotsPath + "/target/classes");
 
         engine = new RobocodeEngine(new BattleAdaptor() {
+            @Override
             public void onBattleMessage(BattleMessageEvent event) {
                 if (isDumpingMessages) {
                     Logger.realOut.println(event.getMessage());
@@ -67,6 +66,7 @@ public abstract class RobocodeTestBed extends BattleAdaptor {
                 messages++;
             }
 
+            @Override
             public void onBattleError(BattleErrorEvent event) {
                 if (isDumpingErrors) {
                     Logger.realErr.println(event.getError());
@@ -92,6 +92,7 @@ public abstract class RobocodeTestBed extends BattleAdaptor {
         messages = 0;
     }
 
+    @Override
     public void onTurnEnded(TurnEndedEvent event) {
         if (isDumpingTurns) {
             Logger.realOut.println("turn " + event.getTurnSnapshot().getTurn());
@@ -113,6 +114,7 @@ public abstract class RobocodeTestBed extends BattleAdaptor {
         }
     }
 
+    @Override
     public void onBattleStarted(BattleStartedEvent event) {
         if (isDeterministic() && isCheckOnBattleStart()) {
             final Random random = Utils.getRandom();

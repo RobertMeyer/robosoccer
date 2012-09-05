@@ -13,8 +13,8 @@ package net.sf.robocode.test.robots;
 
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import robocode.control.events.TurnEndedEvent;
 
 /**
@@ -27,10 +27,12 @@ public class TestSkippedTurns extends RobocodeTestBed {
     boolean messagedEvent;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public void onTurnEnded(TurnEndedEvent event) {
         super.onTurnEnded(event);
         final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();

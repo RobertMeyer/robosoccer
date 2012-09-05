@@ -13,12 +13,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.*;
 
 /**
  * @author Matthew Reeder (original)
@@ -289,6 +289,7 @@ public class FindReplaceDialog extends JDialog implements ActionListener {
         return regexButton;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
@@ -313,7 +314,7 @@ public class FindReplaceDialog extends JDialog implements ActionListener {
         int flags = Pattern.DOTALL;
 
         if (!getRegexButton().isSelected()) {
-            StringBuffer newpattern = new StringBuffer();
+            StringBuilder newpattern = new StringBuilder();
 
             // 'quote' the pattern
             for (int i = 0; i < pattern.length(); i++) {

@@ -13,8 +13,8 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import robocode.Rules;
@@ -30,6 +30,7 @@ public class JuniorRobotProxy extends BasicRobotProxy implements
         super(specification, hostManager, peer, statics);
     }
 
+    @Override
     public void turnAndMove(double distance, double radians) {
         if (distance == 0) {
             turnBody(radians);

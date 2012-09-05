@@ -13,9 +13,8 @@
  *******************************************************************************/
 package sample;
 
-import robocode.*;
-
 import java.awt.*;
+import robocode.*;
 
 /**
  * Crazy - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -29,6 +28,7 @@ public class Crazy extends AdvancedRobot {
     /**
      * run: Crazy's main run function
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(new Color(0, 200, 0));
@@ -68,6 +68,7 @@ public class Crazy extends AdvancedRobot {
     /**
      * onHitWall:  Handle collision with wall.
      */
+    @Override
     public void onHitWall(HitWallEvent e) {
         // Bounce off!
         reverseDirection();
@@ -89,6 +90,7 @@ public class Crazy extends AdvancedRobot {
     /**
      * onScannedRobot:  Fire!
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
     }
@@ -96,6 +98,7 @@ public class Crazy extends AdvancedRobot {
     /**
      * onHitRobot:  Back up!
      */
+    @Override
     public void onHitRobot(HitRobotEvent e) {
         // If we're moving the other robot, reverse!
         if (e.isMyFault()) {

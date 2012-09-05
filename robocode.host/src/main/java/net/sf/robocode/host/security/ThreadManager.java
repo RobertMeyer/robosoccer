@@ -19,20 +19,19 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.host.IHostedThread;
 import net.sf.robocode.host.IThreadManager;
 import net.sf.robocode.host.io.RobotFileOutputStream;
 import net.sf.robocode.host.io.RobotFileSystemManager;
 import robocode.exception.RobotException;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -53,18 +52,22 @@ public class ThreadManager implements IThreadManager {
     public ThreadManager() {
     }
 
+    @Override
     public void addSafeThread(Thread safeThread) {
         safeThreads.add(safeThread);
     }
 
+    @Override
     public void removeSafeThread(Thread safeThread) {
         safeThreads.remove(safeThread);
     }
 
+    @Override
     public void addSafeThreadGroup(ThreadGroup safeThreadGroup) {
         safeThreadGroups.add(safeThreadGroup);
     }
 
+    @Override
     public void addThreadGroup(ThreadGroup g, IHostedThread robotProxy) {
         if (!groups.contains(g)) {
             groups.add(g);
@@ -72,10 +75,12 @@ public class ThreadManager implements IThreadManager {
         }
     }
 
+    @Override
     public synchronized IHostedThread getLoadingRobot() {
         return loadingRobot;
     }
 
+    @Override
     public synchronized IHostedThread getLoadingRobotProxy(Thread t) {
         if (t != null && robotLoaderThread != null
                 && (t.equals(robotLoaderThread)
@@ -85,6 +90,7 @@ public class ThreadManager implements IThreadManager {
         return null;
     }
 
+    @Override
     public synchronized IHostedThread getLoadedOrLoadingRobotProxy(Thread t) {
         IHostedThread robotProxy = getRobotProxy(t);
 
@@ -94,6 +100,7 @@ public class ThreadManager implements IThreadManager {
         return robotProxy;
     }
 
+    @Override
     public IHostedThread getRobotProxy(Thread t) {
         ThreadGroup g = t.getThreadGroup();
 
@@ -108,11 +115,13 @@ public class ThreadManager implements IThreadManager {
         return robots.get(index);
     }
 
+    @Override
     public void reset() {
         groups.clear();
         robots.clear();
     }
 
+    @Override
     public synchronized void setLoadingRobot(IHostedThread newLoadingRobotProxy) {
         if (newLoadingRobotProxy == null) {
             this.robotLoaderThread = null;
@@ -123,10 +132,12 @@ public class ThreadManager implements IThreadManager {
         }
     }
 
+    @Override
     public boolean isSafeThread() {
         return isSafeThread(Thread.currentThread());
     }
 
+    @Override
     public FileOutputStream createRobotFileStream(String fileName, boolean append) throws IOException {
         final Thread c = Thread.currentThread();
 
@@ -145,6 +156,7 @@ public class ThreadManager implements IThreadManager {
         if (!dir.exists()) {
             robotProxy.println("SYSTEM: Creating a data directory for you.");
             AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
                 public Object run() {
                     outputStreamThreads.add(c);
                     if (!dir.exists() && !dir.mkdirs()) {
@@ -175,6 +187,7 @@ public class ThreadManager implements IThreadManager {
         return new RobotFileOutputStream(fileName, append, fileSystemManager);
     }
 
+    @Override
     public boolean checkRobotFileStream() {
         final Thread c = Thread.currentThread();
 
@@ -187,6 +200,7 @@ public class ThreadManager implements IThreadManager {
         return false;
     }
 
+    @Override
     public boolean isSafeThread(Thread c) {
         try {
             if (safeThreads.contains(c)) {
@@ -208,6 +222,7 @@ public class ThreadManager implements IThreadManager {
         }
     }
 
+    @Override
     public PrintStream getRobotOutputStream() {
         Thread c = Thread.currentThread();
 

@@ -13,14 +13,15 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Event;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
 
 /**
  * This event is sent to {@link Robot#onRobotDeath(RobotDeathEvent) onRobotDeath()}
@@ -96,18 +97,21 @@ public final class RobotDeathEvent extends Event {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             RobotDeathEvent obj = (RobotDeathEvent) object;
 
             return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.robotName);
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             RobotDeathEvent obj = (RobotDeathEvent) object;
 
             serializer.serialize(buffer, obj.robotName);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String name = serializer.deserializeString(buffer);
 

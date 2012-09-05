@@ -32,6 +32,7 @@ public class TestDuplicatesAndScore extends RobocodeTestBed {
     private int lastTurn;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }

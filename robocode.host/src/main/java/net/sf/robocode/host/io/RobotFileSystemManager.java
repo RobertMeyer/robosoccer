@@ -16,9 +16,6 @@
  *******************************************************************************/
 package net.sf.robocode.host.io;
 
-import net.sf.robocode.host.IHostedThread;
-import net.sf.robocode.io.FileUtil;
-
 import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -28,6 +25,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import net.sf.robocode.host.IHostedThread;
+import net.sf.robocode.io.FileUtil;
 
 /**
  * @author Mathew A. Nelson (original)

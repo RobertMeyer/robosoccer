@@ -14,7 +14,6 @@ package net.sf.robocode.ui.editor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -49,6 +48,7 @@ public class EditorPanel extends JPanel {
         editorPane = new EditorPane(scroll.getViewport());
 
         editorPane.addCaretListener(new CaretListener() {
+            @Override
             public void caretUpdate(CaretEvent e) {
                 updateStatus(getRow(e.getDot(), editorPane), getColumn(e.getDot(), editorPane));
             }

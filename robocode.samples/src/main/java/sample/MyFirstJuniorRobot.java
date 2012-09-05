@@ -25,6 +25,7 @@ public class MyFirstJuniorRobot extends JuniorRobot {
     /**
      * MyFirstJuniorRobot's run method - Seesaw as default
      */
+    @Override
     public void run() {
         // Set robot colors
         setColors(green, black, blue);
@@ -41,6 +42,7 @@ public class MyFirstJuniorRobot extends JuniorRobot {
     /**
      * When we see a robot, turn the gun towards it and fire
      */
+    @Override
     public void onScannedRobot() {
         // Turn gun to point at the scanned robot
         turnGunTo(scannedAngle);
@@ -53,6 +55,7 @@ public class MyFirstJuniorRobot extends JuniorRobot {
      * We were hit!  Turn and move perpendicular to the bullet,
      * so our seesaw might avoid a future shot.
      */
+    @Override
     public void onHitByBullet() {
         // Move ahead 100 and in the same time turn left papendicular to the bullet
         turnAheadLeft(100, 90 - hitByBulletBearing);

@@ -11,11 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
+import net.sf.robocode.host.proxies.IHostingRobotProxy;
+import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.repository.RobotType;
-import net.sf.robocode.host.proxies.IHostingRobotProxy;
-import net.sf.robocode.peer.IRobotPeer;
 import robocode.control.RobotSpecification;
 
 /**

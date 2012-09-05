@@ -1,7 +1,6 @@
 package sample;
 
 import java.awt.geom.Point2D;
-import java.io.IOException;
 
 import robocode.HitByBulletEvent;
 import robocode.HitWallEvent;

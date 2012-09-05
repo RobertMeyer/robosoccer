@@ -19,7 +19,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.Reader;
-
 import javax.swing.InputMap;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
@@ -239,6 +238,7 @@ public class EditorPane extends JTextPane {
                 final int newSelectionEnd = selectionStart + selectedText.length() + count * mod;
 
                 SwingUtilities.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         setSelectionStart(newSelectionStart);
                         setSelectionEnd(newSelectionEnd);
@@ -250,6 +250,7 @@ public class EditorPane extends JTextPane {
 
     private class FontHandler implements PropertyChangeListener {
 
+        @Override
         public void propertyChange(PropertyChangeEvent e) {
             setTabSize(tabSize);
         }

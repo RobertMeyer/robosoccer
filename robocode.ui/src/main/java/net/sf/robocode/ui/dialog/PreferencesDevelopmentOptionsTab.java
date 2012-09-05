@@ -15,16 +15,15 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.CheckList;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.CheckList;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -43,6 +42,7 @@ public class PreferencesDevelopmentOptionsTab extends WizardPanel {
 
     private class EventHandler implements ActionListener, ListSelectionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == getAddButton()) {
                 handleAddAction();
@@ -51,6 +51,7 @@ public class PreferencesDevelopmentOptionsTab extends WizardPanel {
             }
         }
 
+        @Override
         public void valueChanged(ListSelectionEvent e) {
             updateRemoveButton();
         }

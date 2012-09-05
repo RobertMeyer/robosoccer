@@ -14,8 +14,13 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-import net.sf.robocode.host.RobotStatics;
+import java.awt.*;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
 import net.sf.robocode.peer.*;
 import net.sf.robocode.repository.IRobotRepositoryItem;
@@ -31,12 +36,6 @@ import robocode.exception.RobotException;
 import robocode.exception.WinException;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 import robocode.util.Utils;
-
-import java.awt.*;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import java.util.Hashtable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Pavel Savara (original)
@@ -74,6 +73,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         setGetCallCount(0);
     }
 
+    @Override
     protected void initializeRound(ExecCommands commands, RobotStatus status) {
         updateStatus(commands, status);
 
@@ -108,16 +108,19 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     }
 
     // asynchronous actions
+    @Override
     public Bullet setFire(double power) {
         setCall();
         return setFireImpl(power);
     }
 
     // blocking actions
+    @Override
     public void execute() {
         executeImpl();
     }
 
+    @Override
     public void move(double distance) {
         setMoveImpl(distance);
         do {
@@ -125,6 +128,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         } while (getDistanceRemaining() != 0);
     }
 
+    @Override
     public void turnBody(double radians) {
         setTurnBodyImpl(radians);
         do {
@@ -132,6 +136,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         } while (getBodyTurnRemaining() != 0);
     }
 
+    @Override
     public void turnGun(double radians) {
         setTurnGunImpl(radians);
         do {
@@ -139,6 +144,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         } while (getGunTurnRemaining() != 0);
     }
 
+    @Override
     public Bullet fire(double power) {
         Bullet bullet = setFire(power);
 
@@ -147,32 +153,38 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     }
 
     // fast setters
+    @Override
     public void setBodyColor(Color color) {
         setCall();
         commands.setBodyColor(color != null ? color.getRGB() : ExecCommands.defaultBodyColor);
     }
 
+    @Override
     public void setGunColor(Color color) {
         setCall();
         commands.setGunColor(color != null ? color.getRGB() : ExecCommands.defaultGunColor);
     }
 
+    @Override
     public void setRadarColor(Color color) {
         setCall();
         commands.setRadarColor(color != null ? color.getRGB() : ExecCommands.defaultRadarColor);
     }
 
+    @Override
     public void setBulletColor(Color color) {
         setCall();
         commands.setBulletColor(color != null ? color.getRGB() : ExecCommands.defaultBulletColor);
     }
 
+    @Override
     public void setScanColor(Color color) {
         setCall();
         commands.setScanColor(color != null ? color.getRGB() : ExecCommands.defaultScanColor);
     }
 
     // counters
+    @Override
     public void setCall() {
         if (!isDisabled) {
             final int res = setCallCount.incrementAndGet();
@@ -185,6 +197,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         }
     }
 
+    @Override
     public void getCall() {
         if (!isDisabled) {
             final int res = getCallCount.incrementAndGet();
@@ -197,117 +210,140 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         }
     }
 
+    @Override
     public double getDistanceRemaining() {
         getCall();
         return commands.getDistanceRemaining();
     }
 
+    @Override
     public double getRadarTurnRemaining() {
         getCall();
         return commands.getRadarTurnRemaining();
     }
 
+    @Override
     public double getBodyTurnRemaining() {
         getCall();
         return commands.getBodyTurnRemaining();
     }
 
+    @Override
     public double getGunTurnRemaining() {
         getCall();
         return commands.getGunTurnRemaining();
     }
 
+    @Override
     public double getVelocity() {
         getCall();
         return status.getVelocity();
     }
 
+    @Override
     public double getGunCoolingRate() {
         getCall();
         return statics.getBattleRules().getGunCoolingRate();
     }
 
+    @Override
     public String getName() {
         getCall();
         return statics.getName();
     }
 
+    @Override
     public long getTime() {
         getCall();
         return getTimeImpl();
     }
 
+    @Override
     public double getBodyHeading() {
         getCall();
         return status.getHeadingRadians();
     }
 
+    @Override
     public double getGunHeading() {
         getCall();
         return status.getGunHeadingRadians();
     }
 
+    @Override
     public double getRadarHeading() {
         getCall();
         return status.getRadarHeadingRadians();
     }
 
+    @Override
     public double getEnergy() {
         getCall();
         return getEnergyImpl();
     }
 
+    @Override
     public double getGunHeat() {
         getCall();
         return getGunHeatImpl();
     }
 
+    @Override
     public double getX() {
         getCall();
         return status.getX();
     }
 
+    @Override
     public double getY() {
         getCall();
         return status.getY();
     }
 
+    @Override
     public int getOthers() {
         getCall();
         return status.getOthers();
     }
 
+    @Override
     public double getBattleFieldHeight() {
         getCall();
         return statics.getBattleRules().getBattlefieldHeight();
     }
 
+    @Override
     public double getBattleFieldWidth() {
         getCall();
         return statics.getBattleRules().getBattlefieldWidth();
     }
 
+    @Override
     public int getNumRounds() {
         getCall();
         return statics.getBattleRules().getNumRounds();
     }
 
+    @Override
     public int getRoundNum() {
         getCall();
         return status.getRoundNum();
     }
 
+    @Override
     public Graphics2D getGraphics() {
         getCall();
         commands.setTryingToPaint(true);
         return getGraphicsImpl();
     }
 
+    @Override
     public void setDebugProperty(String key, String value) {
         setCall();
         commands.setDebugProperty(key, value);
     }
 
+    @Override
     public void rescan() {
         boolean reset = false;
         boolean resetValue = false;

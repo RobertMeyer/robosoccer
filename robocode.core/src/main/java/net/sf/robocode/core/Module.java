@@ -11,6 +11,7 @@
  *******************************************************************************/
 package net.sf.robocode.core;
 
+import java.util.List;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.peer.*;
 import net.sf.robocode.serialization.RbSerializer;
@@ -18,8 +19,6 @@ import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.settings.SettingsManager;
 import net.sf.robocode.version.IVersionManager;
 import net.sf.robocode.version.VersionManager;
-
-import java.util.List;
 
 /**
  * @author Pavel Savara (original)

@@ -11,11 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-import robocode.Event;
-
 import java.util.List;
-
 import net.sf.robocode.battle.ItemDrop;
+import robocode.Event;
 
 /**
  * @author Pavel Savara (original)
