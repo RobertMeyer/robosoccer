@@ -57,6 +57,7 @@ public class ItemController {
 	
 	public void spawnRandomItem(ItemDrop item){
 		item.initialiseRoundItems(currentRobots, battleItems);
+		battleItems.add(item);
 	}
 	
 	/**

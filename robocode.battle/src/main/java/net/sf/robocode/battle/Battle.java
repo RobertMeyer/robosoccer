@@ -404,6 +404,8 @@ public final class Battle extends BaseBattle {
 		if (nanoWait == 0) {
 			nanoWait = 1;
 		}
+		
+		items.add(new HealthPack(true, 400, 0, false, this));
 	}
 
 	@Override
@@ -472,8 +474,10 @@ public final class Battle extends BaseBattle {
 		
 		/* Start to initialise all the items */
 		//this.initialiseItems();
-		itemControl.spawnRandomItem(items.get(0));
-		itemCursor = items.size() - 1;
+		if (items.size() > 0){
+			itemControl.spawnRandomItem(items.get(0));
+			itemCursor = items.size() - 1;
+		}
 
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
