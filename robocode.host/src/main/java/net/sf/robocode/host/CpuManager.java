@@ -21,16 +21,14 @@
  *     - The "heavy math" algorithm for calculation the CPU constant
  *     Pavel Savara
  *     - Cheating the optimizer with the setCpuConstant() so the optimizer does
- *       not throw the rational computation away  
+ *       not throw the rational computation away
  *******************************************************************************/
 package net.sf.robocode.host;
-
 
 import net.sf.robocode.core.Container;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -39,66 +37,65 @@ import net.sf.robocode.ui.IWindowManager;
  * @author Pavel Savara (contributor)
  */
 public class CpuManager implements ICpuManager {
-	private final static int APPROXIMATE_CYCLES_ALLOWED = 6250;
-	private final static int TEST_PERIOD_MILLIS = 5000;
 
-	private long cpuConstant = -1;
-	private final ISettingsManager properties;
+    private final static int APPROXIMATE_CYCLES_ALLOWED = 6250;
+    private final static int TEST_PERIOD_MILLIS = 5000;
+    private long cpuConstant = -1;
+    private final ISettingsManager properties;
 
-	public CpuManager(ISettingsManager properties) {
-		this.properties = properties;
-	}
+    public CpuManager(ISettingsManager properties) {
+        this.properties = properties;
+    }
 
-	public long getCpuConstant() {
-		if (cpuConstant == -1) {
-			cpuConstant = properties.getCpuConstant();
-			if (cpuConstant == -1) {
-				calculateCpuConstant();
-			}
-		}
-		return cpuConstant;
-	}
+    public long getCpuConstant() {
+        if (cpuConstant == -1) {
+            cpuConstant = properties.getCpuConstant();
+            if (cpuConstant == -1) {
+                calculateCpuConstant();
+            }
+        }
+        return cpuConstant;
+    }
 
-	public void calculateCpuConstant() {
-		setStatus("Estimating CPU speed, please wait...");
+    public void calculateCpuConstant() {
+        setStatus("Estimating CPU speed, please wait...");
 
-		setCpuConstant();
-		Logger.logMessage(
-				"Each robot will be allowed a maximum of " + cpuConstant + " nanoseconds per turn on this system.");
+        setCpuConstant();
+        Logger.logMessage(
+                "Each robot will be allowed a maximum of " + cpuConstant + " nanoseconds per turn on this system.");
 
-		properties.setCpuConstant(cpuConstant);
-		properties.saveProperties();
+        properties.setCpuConstant(cpuConstant);
+        properties.saveProperties();
 
-		setStatus("");
-	}
+        setStatus("");
+    }
 
-	private void setCpuConstant() {
-		long count = 0;
-		double d = 0;
+    private void setCpuConstant() {
+        long count = 0;
+        double d = 0;
 
-		long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
-		while (System.currentTimeMillis() - start < TEST_PERIOD_MILLIS) {
-			d += Math.hypot(Math.sqrt(Math.abs(Math.log(Math.atan(Math.random())))),
-					Math.cbrt(Math.abs(Math.random() * 10)))
-					/ Math.exp(Math.random());
-			count++;
-		}
+        while (System.currentTimeMillis() - start < TEST_PERIOD_MILLIS) {
+            d += Math.hypot(Math.sqrt(Math.abs(Math.log(Math.atan(Math.random())))),
+                            Math.cbrt(Math.abs(Math.random() * 10)))
+                    / Math.exp(Math.random());
+            count++;
+        }
 
-		// to cheat optimizer, almost never happen
-		if (d == 0.0) {
-			Logger.logMessage("bingo!");
-		}
+        // to cheat optimizer, almost never happen
+        if (d == 0.0) {
+            Logger.logMessage("bingo!");
+        }
 
-		cpuConstant = Math.max(1, (long) (1000000.0 * APPROXIMATE_CYCLES_ALLOWED * TEST_PERIOD_MILLIS / count));
-	}
+        cpuConstant = Math.max(1, (long) (1000000.0 * APPROXIMATE_CYCLES_ALLOWED * TEST_PERIOD_MILLIS / count));
+    }
 
-	private void setStatus(String message) {
-		IWindowManager windowManager = Container.getComponent(IWindowManager.class);
+    private void setStatus(String message) {
+        IWindowManager windowManager = Container.getComponent(IWindowManager.class);
 
-		if (windowManager != null) {
-			windowManager.setStatus(message);
-		}
-	}
-
+        if (windowManager != null) {
+            windowManager.setStatus(message);
+        }
+    }
 }

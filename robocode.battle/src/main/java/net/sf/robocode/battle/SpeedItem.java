@@ -1,0 +1,20 @@
+package net.sf.robocode.battle;
+
+import net.sf.robocode.battle.peer.RobotPeer;
+
+/**
+ * A speed item. Extends item drop
+ * @author s4238358
+ *
+ */
+public class SpeedItem extends ItemDrop {
+
+    public SpeedItem(boolean isDestroyable, int lifespan, int health, boolean isEquippable) {
+        super(isDestroyable, lifespan, health, isEquippable, null);
+        System.out.println("Speed Item");
+    }
+
+    public void doItemEffect() {
+        return;
+    }
+}

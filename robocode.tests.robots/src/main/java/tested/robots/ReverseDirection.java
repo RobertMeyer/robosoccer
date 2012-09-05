@@ -11,24 +11,24 @@
  *******************************************************************************/
 package tested.robots;
 
-
 /**
  * @author Flemming N. Larsen (original)
  */
 public class ReverseDirection extends robocode.AdvancedRobot {
-	public void run() {
-		setAhead(Double.POSITIVE_INFINITY);
-		setMaxVelocity(1.0);
-		execute();
-		// robot has a positive velocity of 1.0
 
-		out.println(getVelocity());		
+    public void run() {
+        setAhead(Double.POSITIVE_INFINITY);
+        setMaxVelocity(1.0);
+        execute();
+        // robot has a positive velocity of 1.0
 
-		setMaxVelocity(0.5);
-		setAhead(Double.NEGATIVE_INFINITY);
-		execute();
-		// robot should have a negative velocity of -0.5
+        out.println(getVelocity());
 
-		out.println(getVelocity());
-	}
+        setMaxVelocity(0.5);
+        setAhead(Double.NEGATIVE_INFINITY);
+        execute();
+        // robot should have a negative velocity of -0.5
+
+        out.println(getVelocity());
+    }
 }

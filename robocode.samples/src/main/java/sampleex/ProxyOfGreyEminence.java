@@ -11,65 +11,64 @@
  *******************************************************************************/
 package sampleex;
 
-
 import robocode.AdvancedRobot;
 import robocode.HitByBulletEvent;
 import robocode.ScannedRobotEvent;
-
 
 /**
  * This is just dummy proxy, it's hiding the Eminence and
  * giving it more freedom to inherit from Monk rather than from Robot.
  */
 public class ProxyOfGreyEminence extends AdvancedRobot {
-	private final GreyEminence monk;
 
-	public ProxyOfGreyEminence() {
-		monk = new GreyEminence(this);
-	}
+    private final GreyEminence monk;
 
-	public void onHitByBullet(HitByBulletEvent event) {
-		monk.onHitByBullet(event);
-	}
+    public ProxyOfGreyEminence() {
+        monk = new GreyEminence(this);
+    }
 
-	public void onScannedRobot(ScannedRobotEvent event) {
-		monk.onScannedRobot(event);
-	}
+    public void onHitByBullet(HitByBulletEvent event) {
+        monk.onHitByBullet(event);
+    }
 
-	public void run() {
-		monk.run();
-	}
+    public void onScannedRobot(ScannedRobotEvent event) {
+        monk.onScannedRobot(event);
+    }
+
+    public void run() {
+        monk.run();
+    }
 }
-
 
 /**
  * The power behind the throne.
  */
 class GreyEminence extends RegullarMonk {
-	private final ProxyOfGreyEminence proxy;
 
-	public GreyEminence(ProxyOfGreyEminence proxy) {
-		this.proxy = proxy;
-	}
+    private final ProxyOfGreyEminence proxy;
 
-	/**
-	 * This is not showing any aditional qualities over normal MyFirst robot.
-	 * But it could, because architecture is no more tied by inheritance from Robot base class.
-	 */
-	public void run() {
-		while (true) {
-			proxy.ahead(100); // Move ahead 100
-			proxy.turnGunRight(360); // Spin gun around
-			proxy.back(100); // Move back 100
-			proxy.turnGunRight(360); // Spin gun around
-		}
-	}
+    public GreyEminence(ProxyOfGreyEminence proxy) {
+        this.proxy = proxy;
+    }
 
-	public void onScannedRobot(ScannedRobotEvent e) {
-		proxy.fire(1);
-	}
+    /**
+     * This is not showing any aditional qualities over normal MyFirst robot.
+     * But it could, because architecture is no more tied by inheritance from Robot base class.
+     */
+    public void run() {
+        while (true) {
+            proxy.ahead(100); // Move ahead 100
+            proxy.turnGunRight(360); // Spin gun around
+            proxy.back(100); // Move back 100
+            proxy.turnGunRight(360); // Spin gun around
+        }
+    }
 
-	public void onHitByBullet(HitByBulletEvent e) {
-		proxy.turnLeft(90 - e.getBearing());
-	}
+    public void onScannedRobot(ScannedRobotEvent e) {
+        proxy.fire(1);
+    }
+
+    public void onHitByBullet(HitByBulletEvent e) {
+        proxy.turnLeft(90 - e.getBearing());
+    }
 }

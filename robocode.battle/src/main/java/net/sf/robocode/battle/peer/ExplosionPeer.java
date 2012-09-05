@@ -26,12 +26,10 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-
 import robocode.BattleRules;
 import robocode.control.snapshot.BulletState;
 
 import java.util.List;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -41,31 +39,31 @@ import java.util.List;
  */
 public class ExplosionPeer extends BulletPeer {
 
-	private static final int EXPLOSION_LENGTH = 71;
+    private static final int EXPLOSION_LENGTH = 71;
 
-	public ExplosionPeer(RobotPeer owner, BattleRules battleRules) {
-		super(owner, battleRules, -1);
-		frame = 0;
-		x = owner.getX();
-		y = owner.getY();
-		victim = owner;
-		power = 1;
-		state = BulletState.EXPLODED;
-		explosionImageIndex = 1;
-	}
+    public ExplosionPeer(RobotPeer owner, BattleRules battleRules) {
+        super(owner, battleRules, -1);
+        frame = 0;
+        x = owner.getX();
+        y = owner.getY();
+        victim = owner;
+        power = 1;
+        state = BulletState.EXPLODED;
+        explosionImageIndex = 1;
+    }
 
-	@Override
-	public final void update(List<RobotPeer> robots, List<BulletPeer> bullets) {
-		frame++;
+    @Override
+    public final void update(List<RobotPeer> robots, List<BulletPeer> bullets) {
+        frame++;
 
-		x = owner.getX();
-		y = owner.getY();
+        x = owner.getX();
+        y = owner.getY();
 
-		updateBulletState();
-	}
+        updateBulletState();
+    }
 
-	@Override
-	protected int getExplosionLength() {
-		return EXPLOSION_LENGTH;
-	}
+    @Override
+    protected int getExplosionLength() {
+        return EXPLOSION_LENGTH;
+    }
 }

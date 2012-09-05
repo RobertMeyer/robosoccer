@@ -24,14 +24,12 @@
  *******************************************************************************/
 package robocode;
 
-
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IHouseRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
 
 import java.io.File;
 import java.util.Vector;
-
 
 /**
  * A more advanced type of robot than Robot that allows non-blocking calls,
@@ -52,6 +50,6 @@ import java.util.Vector;
  * @see TeamRobot
  * @see Droid
  */
-public class HouseRobot extends AdvancedRobot implements IHouseRobot, IAdvancedEvents {
-
+public class HouseRobot extends AdvancedRobot implements IHouseRobot,
+                                                         IAdvancedEvents {
 }

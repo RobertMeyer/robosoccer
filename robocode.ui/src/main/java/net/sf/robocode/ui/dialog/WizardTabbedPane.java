@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -19,92 +18,94 @@ import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 
-
 /**
  * @author Mathew A. Nelson (original)
  */
 @SuppressWarnings("serial")
 public class WizardTabbedPane extends JTabbedPane implements Wizard {
-	private WizardController wizardController;
-	private int currentIndex = 0;
-	private final WizardListener listener;
-	private final EventHandler eventHandler = new EventHandler();
 
-	public class EventHandler implements ContainerListener, ChangeListener {
-		public void componentRemoved(ContainerEvent e) {}
+    private WizardController wizardController;
+    private int currentIndex = 0;
+    private final WizardListener listener;
+    private final EventHandler eventHandler = new EventHandler();
 
-		public void componentAdded(ContainerEvent e) {
-			if (e.getChild() instanceof WizardPanel) {
-				setWizardControllerOnPanel((WizardPanel) e.getChild());
-				getWizardController().stateChanged(new ChangeEvent(e.getChild()));
-			}
-		}
+    public class EventHandler implements ContainerListener, ChangeListener {
 
-		public void stateChanged(javax.swing.event.ChangeEvent e) {
-			currentIndex = getSelectedIndex();
-			getWizardController().stateChanged(e);
-		}
-	}
+        public void componentRemoved(ContainerEvent e) {
+        }
 
-	public WizardTabbedPane(WizardListener listener) {
-		this.listener = listener;
-		initialize();
-	}
+        public void componentAdded(ContainerEvent e) {
+            if (e.getChild() instanceof WizardPanel) {
+                setWizardControllerOnPanel((WizardPanel) e.getChild());
+                getWizardController().stateChanged(new ChangeEvent(e.getChild()));
+            }
+        }
 
-	public void back() {
-		setSelectedIndex(currentIndex - 1);
-	}
+        public void stateChanged(javax.swing.event.ChangeEvent e) {
+            currentIndex = getSelectedIndex();
+            getWizardController().stateChanged(e);
+        }
+    }
 
-	public Component getCurrentPanel() {
-		return getSelectedComponent();
-	}
+    public WizardTabbedPane(WizardListener listener) {
+        this.listener = listener;
+        initialize();
+    }
 
-	public WizardController getWizardController() {
-		if (wizardController == null) {
-			wizardController = new WizardController(this);
-		}
-		return wizardController;
-	}
+    public void back() {
+        setSelectedIndex(currentIndex - 1);
+    }
 
-	public WizardListener getWizardListener() {
-		return listener;
-	}
+    public Component getCurrentPanel() {
+        return getSelectedComponent();
+    }
 
-	public void initialize() {
-		addChangeListener(eventHandler);
-		addContainerListener(eventHandler);
-	}
+    public WizardController getWizardController() {
+        if (wizardController == null) {
+            wizardController = new WizardController(this);
+        }
+        return wizardController;
+    }
 
-	public boolean isBackAvailable() {
-		return (currentIndex > 0);
-	}
+    public WizardListener getWizardListener() {
+        return listener;
+    }
 
-	public boolean isCurrentPanelReady() {
-		Component c = getCurrentPanel();
+    public void initialize() {
+        addChangeListener(eventHandler);
+        addContainerListener(eventHandler);
+    }
 
-		return (!(c instanceof WizardPanel)) || ((WizardPanel) c).isReady();
-	}
+    public boolean isBackAvailable() {
+        return (currentIndex > 0);
+    }
 
-	public boolean isNextAvailable() {
-		return ((currentIndex < getComponentCount() - 1) && isCurrentPanelReady());
-	}
+    public boolean isCurrentPanelReady() {
+        Component c = getCurrentPanel();
 
-	public boolean isReady() {
-		for (Component c : getComponents()) {
-			if (c instanceof WizardPanel) {
-				if (!((WizardPanel) c).isReady()) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+        return (!(c instanceof WizardPanel)) || ((WizardPanel) c).isReady();
+    }
 
-	public void next() {
-		setSelectedIndex(currentIndex + 1);
-	}
+    public boolean isNextAvailable() {
+        return ((currentIndex < getComponentCount() - 1) && isCurrentPanelReady());
+    }
 
-	public void setWizardControllerOnPanel(WizardPanel panel) {
-		panel.setWizardController(getWizardController());
-	}
+    public boolean isReady() {
+        for (Component c : getComponents()) {
+            if (c instanceof WizardPanel) {
+                if (!((WizardPanel) c).isReady()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void next() {
+        setSelectedIndex(currentIndex + 1);
+    }
+
+    public void setWizardControllerOnPanel(WizardPanel panel) {
+        panel.setWizardController(getWizardController());
+    }
 }

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package robocode;
 
-
 import net.sf.robocode.peer.IRobotStatics;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.ITeamEvents;
@@ -21,7 +20,6 @@ import robocode.robotinterfaces.ITeamRobot;
 
 import java.awt.*;
 import java.io.Serializable;
-
 
 /**
  * A MessageEvent is sent to {@link TeamRobot#onMessageReceived(MessageEvent)
@@ -31,68 +29,68 @@ import java.io.Serializable;
  * @author Mathew A. Nelson (original)
  */
 public final class MessageEvent extends Event {
-	private static final long serialVersionUID = 1L;
-	private final static int DEFAULT_PRIORITY = 75;
 
-	private final String sender;
-	private final Serializable message;
+    private static final long serialVersionUID = 1L;
+    private final static int DEFAULT_PRIORITY = 75;
+    private final String sender;
+    private final Serializable message;
 
-	/**
-	 * Called by the game to create a new MessageEvent.
-	 *
-	 * @param sender  the name of the sending robot
-	 * @param message the message for your robot
-	 */
-	public MessageEvent(String sender, Serializable message) {
-		this.sender = sender;
-		this.message = message;
-	}
+    /**
+     * Called by the game to create a new MessageEvent.
+     *
+     * @param sender  the name of the sending robot
+     * @param message the message for your robot
+     */
+    public MessageEvent(String sender, Serializable message) {
+        this.sender = sender;
+        this.message = message;
+    }
 
-	/**
-	 * Returns the name of the sending robot.
-	 *
-	 * @return the name of the sending robot
-	 */
-	public String getSender() {
-		return sender;
-	}
+    /**
+     * Returns the name of the sending robot.
+     *
+     * @return the name of the sending robot
+     */
+    public String getSender() {
+        return sender;
+    }
 
-	/**
-	 * Returns the message itself.
-	 *
-	 * @return the message
-	 */
-	public Serializable getMessage() {
-		return message;
-	}
+    /**
+     * Returns the message itself.
+     *
+     * @return the message
+     */
+    public Serializable getMessage() {
+        return message;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final int getDefaultPriority() {
-		return DEFAULT_PRIORITY;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final int getDefaultPriority() {
+        return DEFAULT_PRIORITY;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		if (statics.isTeamRobot()) {
-			ITeamEvents listener = ((ITeamRobot) robot).getTeamEventListener();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+        if (statics.isTeamRobot()) {
+            ITeamEvents listener = ((ITeamRobot) robot).getTeamEventListener();
 
-			if (listener != null) {
-				listener.onMessageReceived(this);
-			}
-		}
-	}
+            if (listener != null) {
+                listener.onMessageReceived(this);
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	byte getSerializationType() {
-		throw new Error("Serialization of event type not supported");
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    byte getSerializationType() {
+        throw new Error("Serialization of event type not supported");
+    }
 }

@@ -11,34 +11,33 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.DeathEvent;
 import robocode.RobotDeathEvent;
 import robocode.AdvancedRobot;
-
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class RobotDeathEvents extends AdvancedRobot {
-	private boolean dead;
-	private long enemyCount;
 
-	public void run() {
-		enemyCount = getOthers();
-		while (!dead) {
-			if (enemyCount != getOthers()) {
-				throw new RuntimeException("enemyCount != getOthers()");
-			}
-			execute();
-		}
-	}
+    private boolean dead;
+    private long enemyCount;
 
-	public void onRobotDeath(RobotDeathEvent e) {
-		enemyCount--;
-	}
+    public void run() {
+        enemyCount = getOthers();
+        while (!dead) {
+            if (enemyCount != getOthers()) {
+                throw new RuntimeException("enemyCount != getOthers()");
+            }
+            execute();
+        }
+    }
 
-	public void onDeath(DeathEvent e) {
-		dead = true;
-	}
+    public void onRobotDeath(RobotDeathEvent e) {
+        enemyCount--;
+    }
+
+    public void onDeath(DeathEvent e) {
+        dead = true;
+    }
 }

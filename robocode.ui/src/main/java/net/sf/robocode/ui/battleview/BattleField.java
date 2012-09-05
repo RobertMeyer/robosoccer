@@ -13,43 +13,41 @@
  *******************************************************************************/
 package net.sf.robocode.ui.battleview;
 
-
 import net.sf.robocode.battle.BoundingRectangle;
 
 import java.io.Serializable;
-
 
 /**
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
  */
 public class BattleField implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	private final BoundingRectangle boundingBox;
+    private static final long serialVersionUID = 1L;
+    private final BoundingRectangle boundingBox;
 
-	public BattleField(int width, int height) {
-		super();
-		this.boundingBox = new BoundingRectangle(0, 0, width, height);
-	}
+    public BattleField(int width, int height) {
+        super();
+        this.boundingBox = new BoundingRectangle(0, 0, width, height);
+    }
 
-	public BoundingRectangle getBoundingBox() {
-		return boundingBox;
-	}
+    public BoundingRectangle getBoundingBox() {
+        return boundingBox;
+    }
 
-	public int getWidth() {
-		return (int) boundingBox.width;
-	}
+    public int getWidth() {
+        return (int) boundingBox.width;
+    }
 
-	public void setWidth(int newWidth) {
-		boundingBox.width = newWidth;
-	}
+    public void setWidth(int newWidth) {
+        boundingBox.width = newWidth;
+    }
 
-	public int getHeight() {
-		return (int) boundingBox.height;
-	}
+    public int getHeight() {
+        return (int) boundingBox.height;
+    }
 
-	public void setHeight(int newHeight) {
-		boundingBox.height = newHeight;
-	}
+    public void setHeight(int newHeight) {
+        boundingBox.height = newHeight;
+    }
 }

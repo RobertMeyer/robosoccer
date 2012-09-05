@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-
 import net.sf.robocode.serialization.*;
 import robocode.control.snapshot.IDebugProperty;
 
@@ -19,92 +18,95 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-
 /**
  * @author Pavel Savara (original)
  */
-public class DebugProperty implements Serializable, IXmlSerializable, IDebugProperty {
-	private static final long serialVersionUID = 1L;
+public class DebugProperty implements Serializable, IXmlSerializable,
+                                      IDebugProperty {
 
-	public DebugProperty() {}
+    private static final long serialVersionUID = 1L;
 
-	public DebugProperty(String key, String value) {
-		this.setKey(key);
-		this.setValue(value);
-	}
+    public DebugProperty() {
+    }
 
-	private String key;
-	private String value;
+    public DebugProperty(String key, String value) {
+        this.setKey(key);
+        this.setValue(value);
+    }
+    private String key;
+    private String value;
 
-	public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
-		writer.startElement("debug"); {
-			writer.writeAttribute("key", getKey());
-			writer.writeAttribute("value", getValue());
-		}
-		writer.endElement();
-	}
+    public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
+        writer.startElement("debug");
+        {
+            writer.writeAttribute("key", getKey());
+            writer.writeAttribute("value", getValue());
+        }
+        writer.endElement();
+    }
 
-	public XmlReader.Element readXml(XmlReader reader) {
-		return reader.expect("debug", new XmlReader.Element() {
-			public IXmlSerializable read(XmlReader reader) {
-				final DebugProperty snapshot = new DebugProperty();
+    public XmlReader.Element readXml(XmlReader reader) {
+        return reader.expect("debug", new XmlReader.Element() {
+            public IXmlSerializable read(XmlReader reader) {
+                final DebugProperty snapshot = new DebugProperty();
 
-				reader.expect("key", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.setKey(value);
-					}
-				});
+                reader.expect("key", new XmlReader.Attribute() {
+                    public void read(String value) {
+                        snapshot.setKey(value);
+                    }
+                });
 
-				reader.expect("value", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.setValue(value);
-					}
-				});
+                reader.expect("value", new XmlReader.Attribute() {
+                    public void read(String value) {
+                        snapshot.setValue(value);
+                    }
+                });
 
-				return snapshot;
-			}
-		});
-	}
+                return snapshot;
+            }
+        });
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	static ISerializableHelper createHiddenSerializer() {
-		return new SerializableHelper();
-	}
+    static ISerializableHelper createHiddenSerializer() {
+        return new SerializableHelper();
+    }
 
-	private static class SerializableHelper implements ISerializableHelper {
-		public int sizeOf(RbSerializer serializer, Object object) {
-			DebugProperty obj = (DebugProperty) object;
+    private static class SerializableHelper implements ISerializableHelper {
 
-			return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.key) + serializer.sizeOf(obj.value);
-		}
+        public int sizeOf(RbSerializer serializer, Object object) {
+            DebugProperty obj = (DebugProperty) object;
 
-		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-			DebugProperty obj = (DebugProperty) object;
+            return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.key) + serializer.sizeOf(obj.value);
+        }
 
-			serializer.serialize(buffer, obj.key);
-			serializer.serialize(buffer, obj.value);
-		}
+        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+            DebugProperty obj = (DebugProperty) object;
 
-		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-			String key = serializer.deserializeString(buffer);
-			String value = serializer.deserializeString(buffer);
+            serializer.serialize(buffer, obj.key);
+            serializer.serialize(buffer, obj.value);
+        }
 
-			return new DebugProperty(key, value);
-		}
-	}
+        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+            String key = serializer.deserializeString(buffer);
+            String value = serializer.deserializeString(buffer);
+
+            return new DebugProperty(key, value);
+        }
+    }
 }

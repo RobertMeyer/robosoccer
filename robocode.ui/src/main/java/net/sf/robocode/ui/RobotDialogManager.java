@@ -21,7 +21,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-
 import net.sf.robocode.core.Container;
 import net.sf.robocode.ui.dialog.*;
 import robocode.control.snapshot.IRobotSnapshot;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 /**
  * @author Mathew A. Nelson (orinal)
  * @author Flemming N. Larsen (contributor)
@@ -39,73 +37,71 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RobotDialogManager implements IRobotDialogManager {
 
-	public static final int MAX_PRE_ATTACHED = 25;
+    public static final int MAX_PRE_ATTACHED = 25;
+    private final Map<String, RobotDialog> robotDialogMap = new ConcurrentHashMap<String, RobotDialog>();
+    private BattleDialog battleDialog = null;
 
-	private final Map<String, RobotDialog> robotDialogMap = new ConcurrentHashMap<String, RobotDialog>();
-	private BattleDialog battleDialog = null;
+    public RobotDialogManager() {
+        super();
+    }
 
-	public RobotDialogManager() {
-		super();
-	}
+    public void trim(List<IRobotSnapshot> robots) {
 
-	public void trim(List<IRobotSnapshot> robots) {
+        // new ArrayList in order to prevent ConcurrentModificationException
+        for (String name : new ArrayList<String>(robotDialogMap.keySet())) {
+            boolean found = false;
 
-		// new ArrayList in order to prevent ConcurrentModificationException
-		for (String name : new ArrayList<String>(robotDialogMap.keySet())) {
-			boolean found = false;
+            for (IRobotSnapshot robot : robots) {
+                if (robot.getName().equals(name)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                RobotDialog dialog = robotDialogMap.get(name);
 
-			for (IRobotSnapshot robot : robots) {
-				if (robot.getName().equals(name)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				RobotDialog dialog = robotDialogMap.get(name);
+                robotDialogMap.remove(name);
+                dialog.dispose();
+                dialog.detach();
+            }
+        }
+    }
 
-				robotDialogMap.remove(name);
-				dialog.dispose();
-				dialog.detach();
-			}
-		}
-	}
+    public void reset() {
+        for (String name : robotDialogMap.keySet()) {
+            RobotDialog dialog = robotDialogMap.get(name);
 
-	public void reset() {
-		for (String name : robotDialogMap.keySet()) {
-			RobotDialog dialog = robotDialogMap.get(name);
+            if (!dialog.isVisible()) {
+                robotDialogMap.remove(name);
+                dialog.detach();
+                dialog.dispose();
+            }
+        }
+    }
 
-			if (!dialog.isVisible()) {
-				robotDialogMap.remove(name);
-				dialog.detach();
-				dialog.dispose();
-			}
-		}
-	}
+    public RobotDialog getRobotDialog(RobotButton robotButton, String name, boolean create) {
+        RobotDialog robotDialog = robotDialogMap.get(name);
 
-	public RobotDialog getRobotDialog(RobotButton robotButton, String name, boolean create) {
-		RobotDialog robotDialog = robotDialogMap.get(name);
+        if (create && robotDialog == null) {
+            if (robotDialogMap.size() > MAX_PRE_ATTACHED) {
+                reset();
+            }
+            robotDialog = Container.createComponent(RobotDialog.class);
+            robotDialog.setup(robotButton);
+            robotDialog.pack();
+            WindowUtil.place(robotDialog);
+            robotDialogMap.put(name, robotDialog);
+        }
+        return robotDialog;
+    }
 
-		if (create && robotDialog == null) {
-			if (robotDialogMap.size() > MAX_PRE_ATTACHED) {
-				reset();
-			}
-			robotDialog = Container.createComponent(RobotDialog.class);
-			robotDialog.setup(robotButton);
-			robotDialog.pack();
-			WindowUtil.place(robotDialog);
-			robotDialogMap.put(name, robotDialog);
-		}
-		return robotDialog;
-	}
+    public BattleDialog getBattleDialog(BattleButton battleButton, boolean create) {
 
-	public BattleDialog getBattleDialog(BattleButton battleButton, boolean create) {
-
-		if (create && battleDialog == null) {
-			battleDialog = Container.getComponent(BattleDialog.class);
-			battleDialog.pack();
-			WindowUtil.place(battleDialog);
-		}
-		return battleDialog;
-	}
-
+        if (create && battleDialog == null) {
+            battleDialog = Container.getComponent(BattleDialog.class);
+            battleDialog.pack();
+            WindowUtil.place(battleDialog);
+        }
+        return battleDialog;
+    }
 }

@@ -11,23 +11,29 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root;
 
-
 import net.sf.robocode.repository.items.IItem;
 
 import java.io.File;
 import java.net.URL;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface IRepositoryRoot {
-	URL getURL();
-	File getPath();
-	void update(boolean force);
-	void update(IItem item, boolean force);
-	boolean isChanged(IItem item);
-	boolean isJAR();
-	boolean isDevelopmentRoot();
-	void extractJAR();
+
+    URL getURL();
+
+    File getPath();
+
+    void update(boolean force);
+
+    void update(IItem item, boolean force);
+
+    boolean isChanged(IItem item);
+
+    boolean isJAR();
+
+    boolean isDevelopmentRoot();
+
+    void extractJAR();
 }

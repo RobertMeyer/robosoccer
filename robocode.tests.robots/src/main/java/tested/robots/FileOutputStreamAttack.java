@@ -11,36 +11,35 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.AdvancedRobot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class FileOutputStreamAttack extends AdvancedRobot {
 
-	public void run() {
-		File file = null;
-		FileOutputStream fis = null;
-		try {		
-			file = getDataFile("test");
-			fis = new FileOutputStream(file);
-			fis.write(1);
-		} catch (IOException e) {
-			e.printStackTrace(out);
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException ignore) {}
-			}
-			if (file != null) {
-				file.delete();
-			}
-		}
-	}
+    public void run() {
+        File file = null;
+        FileOutputStream fis = null;
+        try {
+            file = getDataFile("test");
+            fis = new FileOutputStream(file);
+            fis.write(1);
+        } catch (IOException e) {
+            e.printStackTrace(out);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException ignore) {
+                }
+            }
+            if (file != null) {
+                file.delete();
+            }
+        }
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 /**
- * 
+ *
  * Default implementation of the IMode interface. This class models
  * the default behaviour of a Robocode game.
  *

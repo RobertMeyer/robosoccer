@@ -11,16 +11,15 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.Robot;
 import robocode.exception.RobotException;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class DieFast extends Robot {
-	public void run() {
-		throw new RobotException();
-	}
+
+    public void run() {
+        throw new RobotException();
+    }
 }

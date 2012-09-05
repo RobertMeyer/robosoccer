@@ -13,7 +13,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -21,149 +20,150 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-
 /**
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
  */
 @SuppressWarnings("serial")
 public class ConsoleDialog extends JDialog {
-	private JPanel consoleDialogContentPane;
-	private JPanel buttonsPanel;
-	private ConsoleScrollPane scrollPane;
-	private JButton okButton;
-	private JMenu editMenu;
-	private JMenuItem editCopyMenuItem;
-	private JMenuBar consoleDialogMenuBar;
-	private final EventHandler eventHandler = new EventHandler();
 
-	private class EventHandler implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == ConsoleDialog.this.getOkButton() || e.getSource() == getConsoleDialogContentPane()) {
-				okButtonActionPerformed();
-			}
-			if (e.getSource() == getEditCopyMenuItem()) {
-				editCopyActionPerformed();
-			}
-		}
-	}
+    private JPanel consoleDialogContentPane;
+    private JPanel buttonsPanel;
+    private ConsoleScrollPane scrollPane;
+    private JButton okButton;
+    private JMenu editMenu;
+    private JMenuItem editCopyMenuItem;
+    private JMenuBar consoleDialogMenuBar;
+    private final EventHandler eventHandler = new EventHandler();
 
-	public ConsoleDialog() {
-		super();
-		initialize();
-	}
+    private class EventHandler implements ActionListener {
 
-	public ConsoleDialog(Frame owner, String title, boolean modal) {
-		super(owner, title, modal);
-		initialize();
-	}
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == ConsoleDialog.this.getOkButton() || e.getSource() == getConsoleDialogContentPane()) {
+                okButtonActionPerformed();
+            }
+            if (e.getSource() == getEditCopyMenuItem()) {
+                editCopyActionPerformed();
+            }
+        }
+    }
 
-	public void append(String text) {
-		getScrollPane().append(text);
-	}
+    public ConsoleDialog() {
+        super();
+        initialize();
+    }
 
-	public void editCopyActionPerformed() {
-		StringSelection ss;
-		String s = getScrollPane().getSelectedText();
+    public ConsoleDialog(Frame owner, String title, boolean modal) {
+        super(owner, title, modal);
+        initialize();
+    }
 
-		if (s == null) {
-			s = getScrollPane().getText();
-		}
-		ss = new StringSelection(s);
-		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
-	}
+    public void append(String text) {
+        getScrollPane().append(text);
+    }
 
-	private JPanel getButtonsPanel() {
-		if (buttonsPanel == null) {
-			buttonsPanel = new JPanel();
-			buttonsPanel.setPreferredSize(new Dimension(100, 30));
-			buttonsPanel.setLayout(new GridBagLayout());
-			buttonsPanel.setMinimumSize(new Dimension(20, 20));
-			buttonsPanel.setMaximumSize(new Dimension(1000, 30));
+    public void editCopyActionPerformed() {
+        StringSelection ss;
+        String s = getScrollPane().getSelectedText();
 
-			GridBagConstraints constraintsOKButton = new GridBagConstraints();
+        if (s == null) {
+            s = getScrollPane().getText();
+        }
+        ss = new StringSelection(s);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
+    }
 
-			constraintsOKButton.gridx = 1;
-			constraintsOKButton.gridy = 1;
-			constraintsOKButton.ipadx = 34;
-			constraintsOKButton.insets = new Insets(2, 173, 3, 168);
-			getButtonsPanel().add(getOkButton(), constraintsOKButton);
-		}
-		return buttonsPanel;
-	}
+    private JPanel getButtonsPanel() {
+        if (buttonsPanel == null) {
+            buttonsPanel = new JPanel();
+            buttonsPanel.setPreferredSize(new Dimension(100, 30));
+            buttonsPanel.setLayout(new GridBagLayout());
+            buttonsPanel.setMinimumSize(new Dimension(20, 20));
+            buttonsPanel.setMaximumSize(new Dimension(1000, 30));
 
-	private JPanel getConsoleDialogContentPane() {
-		if (consoleDialogContentPane == null) {
-			consoleDialogContentPane = new JPanel();
-			consoleDialogContentPane.setLayout(new BorderLayout());
-			consoleDialogContentPane.add(getButtonsPanel(), "South");
-			consoleDialogContentPane.add(getScrollPane(), "Center");
-			consoleDialogContentPane.registerKeyboardAction(eventHandler, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
-					JComponent.WHEN_FOCUSED);
-		}
-		return consoleDialogContentPane;
-	}
+            GridBagConstraints constraintsOKButton = new GridBagConstraints();
 
-	public JMenuBar getConsoleDialogMenuBar() {
-		if (consoleDialogMenuBar == null) {
-			consoleDialogMenuBar = new JMenuBar();
-			consoleDialogMenuBar.add(getEditMenu());
-		}
-		return consoleDialogMenuBar;
-	}
+            constraintsOKButton.gridx = 1;
+            constraintsOKButton.gridy = 1;
+            constraintsOKButton.ipadx = 34;
+            constraintsOKButton.insets = new Insets(2, 173, 3, 168);
+            getButtonsPanel().add(getOkButton(), constraintsOKButton);
+        }
+        return buttonsPanel;
+    }
 
-	public JMenuItem getEditCopyMenuItem() {
-		if (editCopyMenuItem == null) {
-			editCopyMenuItem = new JMenuItem("Copy");
-			editCopyMenuItem.addActionListener(eventHandler);
-		}
-		return editCopyMenuItem;
-	}
+    private JPanel getConsoleDialogContentPane() {
+        if (consoleDialogContentPane == null) {
+            consoleDialogContentPane = new JPanel();
+            consoleDialogContentPane.setLayout(new BorderLayout());
+            consoleDialogContentPane.add(getButtonsPanel(), "South");
+            consoleDialogContentPane.add(getScrollPane(), "Center");
+            consoleDialogContentPane.registerKeyboardAction(eventHandler, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
+                                                            JComponent.WHEN_FOCUSED);
+        }
+        return consoleDialogContentPane;
+    }
 
-	public JMenu getEditMenu() {
-		if (editMenu == null) {
-			editMenu = new JMenu("Edit");
-			editMenu.add(getEditCopyMenuItem());
-		}
-		return editMenu;
-	}
+    public JMenuBar getConsoleDialogMenuBar() {
+        if (consoleDialogMenuBar == null) {
+            consoleDialogMenuBar = new JMenuBar();
+            consoleDialogMenuBar.add(getEditMenu());
+        }
+        return consoleDialogMenuBar;
+    }
 
-	public JButton getOkButton() {
-		if (okButton == null) {
-			okButton = new JButton();
-			okButton.setText("OK");
-			okButton.addActionListener(eventHandler);
-		}
-		return okButton;
-	}
+    public JMenuItem getEditCopyMenuItem() {
+        if (editCopyMenuItem == null) {
+            editCopyMenuItem = new JMenuItem("Copy");
+            editCopyMenuItem.addActionListener(eventHandler);
+        }
+        return editCopyMenuItem;
+    }
 
-	private ConsoleScrollPane getScrollPane() {
-		if (scrollPane == null) {
-			scrollPane = new ConsoleScrollPane();
-		}
-		return scrollPane;
-	}
+    public JMenu getEditMenu() {
+        if (editMenu == null) {
+            editMenu = new JMenu("Edit");
+            editMenu.add(getEditCopyMenuItem());
+        }
+        return editMenu;
+    }
 
-	private void initialize() {
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		setSize(500, 400);
-		setContentPane(getConsoleDialogContentPane());
-		setJMenuBar(getConsoleDialogMenuBar());
-	}
+    public JButton getOkButton() {
+        if (okButton == null) {
+            okButton = new JButton();
+            okButton.setText("OK");
+            okButton.addActionListener(eventHandler);
+        }
+        return okButton;
+    }
 
-	public void okButtonActionPerformed() {
-		dispose();
-	}
+    private ConsoleScrollPane getScrollPane() {
+        if (scrollPane == null) {
+            scrollPane = new ConsoleScrollPane();
+        }
+        return scrollPane;
+    }
 
-	public void processStream(java.io.InputStream in) {
-		scrollPane.processStream(in);
-	}
+    private void initialize() {
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setSize(500, 400);
+        setContentPane(getConsoleDialogContentPane());
+        setJMenuBar(getConsoleDialogMenuBar());
+    }
 
-	public void scrollToBottom() {
-		getScrollPane().scrollToBottom();
-	}
+    public void okButtonActionPerformed() {
+        dispose();
+    }
 
-	public void setText(String text) {
-		getScrollPane().setText(text);
-	}
+    public void processStream(java.io.InputStream in) {
+        scrollPane.processStream(in);
+    }
+
+    public void scrollToBottom() {
+        getScrollPane().scrollToBottom();
+    }
+
+    public void setText(String text) {
+        getScrollPane().setText(text);
+    }
 }

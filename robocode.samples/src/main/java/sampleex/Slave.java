@@ -11,32 +11,31 @@
  *******************************************************************************/
 package sampleex;
 
-
 import robocode.AdvancedRobot;
 import robocode.HitByBulletEvent;
 import robocode.ScannedRobotEvent;
-
 
 /**
  * This is robot derived from AdvancedRobot.
  * Only reason to use this inheritance and this class is that external robots are unable to call RobotPeer directly
  */
 class Slave extends AdvancedRobot {
-	final MasterBase parent;
 
-	public Slave(MasterBase parent) {
-		this.parent = parent;
-	}
+    final MasterBase parent;
 
-	public void run() {
-		parent.run();
-	}
+    public Slave(MasterBase parent) {
+        this.parent = parent;
+    }
 
-	public void onScannedRobot(ScannedRobotEvent e) {
-		parent.onScannedRobot(e);
-	}
+    public void run() {
+        parent.run();
+    }
 
-	public void onHitByBullet(HitByBulletEvent e) {
-		parent.onHitByBullet(e);
-	}
+    public void onScannedRobot(ScannedRobotEvent e) {
+        parent.onScannedRobot(e);
+    }
+
+    public void onHitByBullet(HitByBulletEvent e) {
+        parent.onHitByBullet(e);
+    }
 }

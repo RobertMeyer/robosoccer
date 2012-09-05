@@ -13,10 +13,8 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
 import javax.swing.*;
 import java.awt.*;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -24,103 +22,104 @@ import java.awt.*;
  */
 @SuppressWarnings("serial")
 public class NewBattleRulesTab extends JPanel {
-	private JLabel gunCoolingRateLabel;
-	private JTextField gunCoolingRateField;
-	private JLabel inactivityTimeLabel;
-	private JTextField inactivityTimeField;
-	private JLabel hideEnemyNamesLabel;
-	private JCheckBox hideEnemyNamesCheckBox;
 
-	public NewBattleRulesTab() {
-		super();
-		initialize();
-	}
+    private JLabel gunCoolingRateLabel;
+    private JTextField gunCoolingRateField;
+    private JLabel inactivityTimeLabel;
+    private JTextField inactivityTimeField;
+    private JLabel hideEnemyNamesLabel;
+    private JCheckBox hideEnemyNamesCheckBox;
 
-	public double getGunCoolingRate() {
-		return Double.parseDouble(getGunCoolingRateField().getText());
-	}
+    public NewBattleRulesTab() {
+        super();
+        initialize();
+    }
 
-	private JTextField getGunCoolingRateField() {
-		if (gunCoolingRateField == null) {
-			gunCoolingRateField = new JTextField();
-		}
-		return gunCoolingRateField;
-	}
+    public double getGunCoolingRate() {
+        return Double.parseDouble(getGunCoolingRateField().getText());
+    }
 
-	private JLabel getGunCoolingRateLabel() {
-		if (gunCoolingRateLabel == null) {
-			gunCoolingRateLabel = new JLabel();
-			gunCoolingRateLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-			gunCoolingRateLabel.setText("Gun Cooling Rate:");
-			gunCoolingRateLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-			gunCoolingRateLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		}
-		return gunCoolingRateLabel;
-	}
+    private JTextField getGunCoolingRateField() {
+        if (gunCoolingRateField == null) {
+            gunCoolingRateField = new JTextField();
+        }
+        return gunCoolingRateField;
+    }
 
-	public long getInactivityTime() {
-		return Long.parseLong(getInactivityTimeField().getText());
-	}
+    private JLabel getGunCoolingRateLabel() {
+        if (gunCoolingRateLabel == null) {
+            gunCoolingRateLabel = new JLabel();
+            gunCoolingRateLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+            gunCoolingRateLabel.setText("Gun Cooling Rate:");
+            gunCoolingRateLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+            gunCoolingRateLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+        return gunCoolingRateLabel;
+    }
 
-	private JTextField getInactivityTimeField() {
-		if (inactivityTimeField == null) {
-			inactivityTimeField = new JTextField();
-		}
-		return inactivityTimeField;
-	}
+    public long getInactivityTime() {
+        return Long.parseLong(getInactivityTimeField().getText());
+    }
 
-	private JLabel getInactivityTimeLabel() {
-		if (inactivityTimeLabel == null) {
-			inactivityTimeLabel = new JLabel();
-			inactivityTimeLabel.setText("Inactivity Time:");
-			inactivityTimeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		}
-		return inactivityTimeLabel;
-	}
+    private JTextField getInactivityTimeField() {
+        if (inactivityTimeField == null) {
+            inactivityTimeField = new JTextField();
+        }
+        return inactivityTimeField;
+    }
 
-	public boolean getHideEnemyNames() {
-		return getHideEnemyNamesCheckBox().isSelected();
-	}
+    private JLabel getInactivityTimeLabel() {
+        if (inactivityTimeLabel == null) {
+            inactivityTimeLabel = new JLabel();
+            inactivityTimeLabel.setText("Inactivity Time:");
+            inactivityTimeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+        return inactivityTimeLabel;
+    }
 
-	private JCheckBox getHideEnemyNamesCheckBox() {
-		if (hideEnemyNamesCheckBox == null) {
-			hideEnemyNamesCheckBox = new JCheckBox();
-		}
-		return hideEnemyNamesCheckBox;
-	}
+    public boolean getHideEnemyNames() {
+        return getHideEnemyNamesCheckBox().isSelected();
+    }
 
-	private JLabel getHideEnemyNamesLabel() {
-		if (hideEnemyNamesLabel == null) {
-			hideEnemyNamesLabel = new JLabel();
-			hideEnemyNamesLabel.setText("Hide Enemy Names:");
-			hideEnemyNamesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		}
-		return hideEnemyNamesLabel;
-	}
+    private JCheckBox getHideEnemyNamesCheckBox() {
+        if (hideEnemyNamesCheckBox == null) {
+            hideEnemyNamesCheckBox = new JCheckBox();
+        }
+        return hideEnemyNamesCheckBox;
+    }
 
-	private void initialize() {
-		JPanel j = new JPanel();
+    private JLabel getHideEnemyNamesLabel() {
+        if (hideEnemyNamesLabel == null) {
+            hideEnemyNamesLabel = new JLabel();
+            hideEnemyNamesLabel.setText("Hide Enemy Names:");
+            hideEnemyNamesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+        return hideEnemyNamesLabel;
+    }
 
-		j.setLayout(new GridLayout(3, 2, 5, 5));
-		j.setBorder(BorderFactory.createEtchedBorder());
-		j.add(getGunCoolingRateLabel(), getGunCoolingRateLabel().getName());
-		j.add(getGunCoolingRateField(), getGunCoolingRateField().getName());
-		j.add(getInactivityTimeLabel(), getInactivityTimeLabel().getName());
-		j.add(getInactivityTimeField(), getInactivityTimeField().getName());
-		j.add(getHideEnemyNamesLabel(), getHideEnemyNamesLabel().getName());
-		j.add(getHideEnemyNamesCheckBox(), getHideEnemyNamesCheckBox().getName());
-		add(j);
-	}
+    private void initialize() {
+        JPanel j = new JPanel();
 
-	public void setGunCoolingRate(double gunCoolingRate) {
-		getGunCoolingRateField().setText("" + gunCoolingRate);
-	}
+        j.setLayout(new GridLayout(3, 2, 5, 5));
+        j.setBorder(BorderFactory.createEtchedBorder());
+        j.add(getGunCoolingRateLabel(), getGunCoolingRateLabel().getName());
+        j.add(getGunCoolingRateField(), getGunCoolingRateField().getName());
+        j.add(getInactivityTimeLabel(), getInactivityTimeLabel().getName());
+        j.add(getInactivityTimeField(), getInactivityTimeField().getName());
+        j.add(getHideEnemyNamesLabel(), getHideEnemyNamesLabel().getName());
+        j.add(getHideEnemyNamesCheckBox(), getHideEnemyNamesCheckBox().getName());
+        add(j);
+    }
 
-	public void setInactivityTime(long inactivityTime) {
-		getInactivityTimeField().setText("" + inactivityTime);
-	}
+    public void setGunCoolingRate(double gunCoolingRate) {
+        getGunCoolingRateField().setText("" + gunCoolingRate);
+    }
 
-	public void setHideEnemyNames(boolean hideEnemyNames) {
-		getHideEnemyNamesCheckBox().setSelected(hideEnemyNames);
-	}
+    public void setInactivityTime(long inactivityTime) {
+        getInactivityTimeField().setText("" + inactivityTime);
+    }
+
+    public void setHideEnemyNames(boolean hideEnemyNames) {
+        getHideEnemyNamesCheckBox().setSelected(hideEnemyNames);
+    }
 }

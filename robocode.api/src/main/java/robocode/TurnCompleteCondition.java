@@ -16,7 +16,6 @@
  *******************************************************************************/
 package robocode;
 
-
 /**
  * A prebuilt condition you can use that indicates your robot has finished
  * turning.
@@ -27,52 +26,53 @@ package robocode;
  * @see Condition
  */
 public class TurnCompleteCondition extends Condition {
-	private AdvancedRobot robot;
 
-	/**
-	 * Creates a new TurnCompleteCondition with default priority.
-	 * The default priority is 80.
-	 *
-	 * @param robot your robot, which must be a {@link AdvancedRobot}
-	 */
-	public TurnCompleteCondition(AdvancedRobot robot) {
-		super();
-		this.robot = robot;
-	}
+    private AdvancedRobot robot;
 
-	/**
-	 * Creates a new TurnCompleteCondition with the specified priority.
-	 * A condition priority is a value from 0 - 99. The higher value, the
-	 * higher priority. The default priority is 80.
-	 *
-	 * @param robot	your robot, which must be a {@link AdvancedRobot}
-	 * @param priority the priority of this condition
-	 * @see Condition#setPriority(int)
-	 */
-	public TurnCompleteCondition(AdvancedRobot robot, int priority) {
-		super();
-		this.robot = robot;
-		this.priority = priority;
-	}
+    /**
+     * Creates a new TurnCompleteCondition with default priority.
+     * The default priority is 80.
+     *
+     * @param robot your robot, which must be a {@link AdvancedRobot}
+     */
+    public TurnCompleteCondition(AdvancedRobot robot) {
+        super();
+        this.robot = robot;
+    }
 
-	/**
-	 * Tests if the robot has finished turning.
-	 *
-	 * @return {@code true} if the robot has stopped turning; {@code false}
-	 *         otherwise
-	 */
-	@Override
-	public boolean test() {
-		return (robot.getTurnRemaining() == 0);
-	}
+    /**
+     * Creates a new TurnCompleteCondition with the specified priority.
+     * A condition priority is a value from 0 - 99. The higher value, the
+     * higher priority. The default priority is 80.
+     *
+     * @param robot	your robot, which must be a {@link AdvancedRobot}
+     * @param priority the priority of this condition
+     * @see Condition#setPriority(int)
+     */
+    public TurnCompleteCondition(AdvancedRobot robot, int priority) {
+        super();
+        this.robot = robot;
+        this.priority = priority;
+    }
 
-	/**
-	 * Called by the system in order to clean up references to internal objects.
-	 *
-	 * @since 1.4.3
-	 */
-	@Override
-	public void cleanup() {
-		robot = null;
-	}
+    /**
+     * Tests if the robot has finished turning.
+     *
+     * @return {@code true} if the robot has stopped turning; {@code false}
+     *         otherwise
+     */
+    @Override
+    public boolean test() {
+        return (robot.getTurnRemaining() == 0);
+    }
+
+    /**
+     * Called by the system in order to clean up references to internal objects.
+     *
+     * @since 1.4.3
+     */
+    @Override
+    public void cleanup() {
+        robot = null;
+    }
 }

@@ -11,32 +11,31 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class TestIncludeNamespaceAttack extends RobocodeTestBed {
-	@Test
-	public void run() {
-		super.run();
-	}
 
-	@Override
-	protected int getExpectedErrors() {
-		return 2;
-	}
+    @Test
+    public void run() {
+        super.run();
+    }
 
-	@Override
-	public int getExpectedRobotCount(String list) {
-		return 1;
-	}
+    @Override
+    protected int getExpectedErrors() {
+        return 2;
+    }
 
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.DieFast,tested.robots.IncludeNamespaceAttack";
-	}
+    @Override
+    public int getExpectedRobotCount(String list) {
+        return 1;
+    }
+
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.DieFast,tested.robots.IncludeNamespaceAttack";
+    }
 }

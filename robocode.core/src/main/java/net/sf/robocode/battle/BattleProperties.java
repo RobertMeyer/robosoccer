@@ -15,7 +15,6 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.control.RobotSpecification;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Properties;
-
 
 /**
  * @author Mathew A. Nelson (original)

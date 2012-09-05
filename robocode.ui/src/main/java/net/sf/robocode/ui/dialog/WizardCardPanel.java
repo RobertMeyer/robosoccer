@@ -13,13 +13,11 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -27,96 +25,99 @@ import java.awt.event.ContainerListener;
  */
 @SuppressWarnings("serial")
 public class WizardCardPanel extends JPanel implements Wizard {
-	private WizardController wizardController;
-	private CardLayout cardLayout = null;
-	private int currentIndex = 0;
-	private final WizardListener listener;
-	private final EventHandler eventHandler = new EventHandler();
 
-	public class EventHandler implements ContainerListener {
-		public void componentRemoved(ContainerEvent e) {}
+    private WizardController wizardController;
+    private CardLayout cardLayout = null;
+    private int currentIndex = 0;
+    private final WizardListener listener;
+    private final EventHandler eventHandler = new EventHandler();
 
-		public void componentAdded(ContainerEvent e) {
-			if (e.getChild() instanceof WizardPanel) {
-				setWizardControllerOnPanel((WizardPanel) e.getChild());
-				getWizardController().stateChanged(new ChangeEvent(e.getChild()));
-			}
-		}
-	}
+    public class EventHandler implements ContainerListener {
 
-	/**
-	 * WizardCardLayout constructor
-	 *
-	 * @param listener WizardListener
-	 */
-	public WizardCardPanel(WizardListener listener) {
-		this.listener = listener;
-		initialize();
-	}
+        public void componentRemoved(ContainerEvent e) {
+        }
 
-	public void back() {
-		currentIndex--;
-		getWizardController().stateChanged(null);
-		getCardLayout().previous(this);
-	}
+        public void componentAdded(ContainerEvent e) {
+            if (e.getChild() instanceof WizardPanel) {
+                setWizardControllerOnPanel((WizardPanel) e.getChild());
+                getWizardController().stateChanged(new ChangeEvent(e.getChild()));
+            }
+        }
+    }
 
-	public CardLayout getCardLayout() {
-		if (cardLayout == null) {
-			cardLayout = new CardLayout();
-		}
-		return cardLayout;
-	}
+    /**
+     * WizardCardLayout constructor
+     *
+     * @param listener WizardListener
+     */
+    public WizardCardPanel(WizardListener listener) {
+        this.listener = listener;
+        initialize();
+    }
 
-	public Component getCurrentPanel() {
-		return getComponent(currentIndex);
-	}
+    public void back() {
+        currentIndex--;
+        getWizardController().stateChanged(null);
+        getCardLayout().previous(this);
+    }
 
-	public WizardController getWizardController() {
-		if (wizardController == null) {
-			wizardController = new WizardController(this);
-		}
-		return wizardController;
-	}
+    public CardLayout getCardLayout() {
+        if (cardLayout == null) {
+            cardLayout = new CardLayout();
+        }
+        return cardLayout;
+    }
 
-	public WizardListener getWizardListener() {
-		return listener;
-	}
+    public Component getCurrentPanel() {
+        return getComponent(currentIndex);
+    }
 
-	public void initialize() {
-		this.setLayout(getCardLayout());
-		this.addContainerListener(eventHandler);
-	}
+    public WizardController getWizardController() {
+        if (wizardController == null) {
+            wizardController = new WizardController(this);
+        }
+        return wizardController;
+    }
 
-	public boolean isBackAvailable() {
-		return (currentIndex > 0);
-	}
+    public WizardListener getWizardListener() {
+        return listener;
+    }
 
-	public boolean isCurrentPanelReady() {
-		Component c = getCurrentPanel();
+    public void initialize() {
+        this.setLayout(getCardLayout());
+        this.addContainerListener(eventHandler);
+    }
 
-		return (!(c instanceof WizardPanel)) || ((WizardPanel) c).isReady();
-	}
+    public boolean isBackAvailable() {
+        return (currentIndex > 0);
+    }
 
-	public boolean isNextAvailable() {
-		return ((currentIndex < getComponentCount() - 1) && isCurrentPanelReady());
-	}
+    public boolean isCurrentPanelReady() {
+        Component c = getCurrentPanel();
 
-	public boolean isReady() {
-		for (Component c : getComponents()) {
-			if (!((WizardPanel) c).isReady()) {
-				return false;
-			}
-		}
-		return true;
-	}
+        return (!(c instanceof WizardPanel)) || ((WizardPanel) c).isReady();
+    }
 
-	public void next() {
-		currentIndex++;
-		getWizardController().stateChanged(null);
-		getCardLayout().next(this);
-	}
+    public boolean isNextAvailable() {
+        return ((currentIndex < getComponentCount() - 1) && isCurrentPanelReady());
+    }
 
-	public void setWizardControllerOnPanel(WizardPanel panel) {
-		panel.setWizardController(getWizardController());
-	}
+    public boolean isReady() {
+        for (Component c : getComponents()) {
+            if (!((WizardPanel) c).isReady()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void next() {
+        currentIndex++;
+        getWizardController().stateChanged(null);
+        getCardLayout().next(this);
+    }
+
+    public void setWizardControllerOnPanel(WizardPanel panel) {
+        panel.setWizardController(getWizardController());
+    }
 }

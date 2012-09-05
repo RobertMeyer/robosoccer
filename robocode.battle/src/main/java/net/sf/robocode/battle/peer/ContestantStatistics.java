@@ -16,9 +16,7 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-
 import robocode.BattleResults;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -26,41 +24,42 @@ import robocode.BattleResults;
  * @author Flemming N. Larsen (contributor)
  */
 public interface ContestantStatistics {
-	double getTotalScore();
 
-	double getTotalSurvivalScore();
+    double getTotalScore();
 
-	double getTotalLastSurvivorBonus();
+    double getTotalSurvivalScore();
 
-	double getTotalBulletDamageScore();
+    double getTotalLastSurvivorBonus();
 
-	double getTotalBulletKillBonus();
+    double getTotalBulletDamageScore();
 
-	double getTotalRammingDamageScore();
+    double getTotalBulletKillBonus();
 
-	double getTotalRammingKillBonus();
+    double getTotalRammingDamageScore();
 
-	int getTotalFirsts();
+    double getTotalRammingKillBonus();
 
-	int getTotalSeconds();
+    int getTotalFirsts();
 
-	int getTotalThirds();
+    int getTotalSeconds();
 
-	double getCurrentScore();
+    int getTotalThirds();
 
-	double getCurrentSurvivalScore();
+    double getCurrentScore();
 
-	double getCurrentSurvivalBonus();
+    double getCurrentSurvivalScore();
 
-	double getCurrentBulletDamageScore();
+    double getCurrentSurvivalBonus();
 
-	double getCurrentBulletKillBonus();
+    double getCurrentBulletDamageScore();
 
-	double getCurrentRammingDamageScore();
+    double getCurrentBulletKillBonus();
 
-	double getCurrentRammingKillBonus();
+    double getCurrentRammingDamageScore();
 
-	BattleResults getFinalResults();
+    double getCurrentRammingKillBonus();
 
-	void setRank(int rank);
+    BattleResults getFinalResults();
+
+    void setRank(int rank);
 }

@@ -101,11 +101,11 @@ public class RobocodeFrame extends JFrame {
     final List<IFullScreenListener> fullScreenListeners = new ArrayList<IFullScreenListener>();
 
     public RobocodeFrame(ISettingsManager properties,
-            IWindowManager windowManager, IRobotDialogManager dialogManager,
-            IVersionManager versionManager, IBattleManager battleManager,
-            IRecordManager recordManager,
-            InteractiveHandler interactiveHandler, MenuBar menuBar,
-            BattleView battleView) {
+                         IWindowManager windowManager, IRobotDialogManager dialogManager,
+                         IVersionManager versionManager, IBattleManager battleManager,
+                         IRecordManager recordManager,
+                         InteractiveHandler interactiveHandler, MenuBar menuBar,
+                         BattleView battleView) {
         this.windowManager = (IWindowManagerExt) windowManager;
         this.properties = properties;
         this.interactiveHandler = interactiveHandler;
@@ -174,7 +174,7 @@ public class RobocodeFrame extends JFrame {
                 newVersionAvailable = true;
                 if (Version.isFinal(newVersion)
                         || (Version.isBeta(newVersion) && properties
-                        .getOptionsCommonNotifyAboutNewBetaVersions())) {
+                            .getOptionsCommonNotifyAboutNewBetaVersions())) {
                     showNewVersion(newVersion);
                 }
             }
@@ -197,7 +197,7 @@ public class RobocodeFrame extends JFrame {
     private void showLatestVersion(String version) {
         JOptionPane.showMessageDialog(this, "You have version " + version
                 + ".  This is the latest version of Robocode.",
-                "No update available", JOptionPane.INFORMATION_MESSAGE);
+                                      "No update available", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void showNewVersion(String newVersion) {
@@ -213,8 +213,8 @@ public class RobocodeFrame extends JFrame {
                 BrowserManager.openURL(INSTALL_URL);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(),
-                        "Unable to open browser!",
-                        JOptionPane.INFORMATION_MESSAGE);
+                                              "Unable to open browser!",
+                                              JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (Version.isFinal(newVersion)) {
             JOptionPane
@@ -311,7 +311,7 @@ public class RobocodeFrame extends JFrame {
         if (robotButtonsPanel == null) {
             robotButtonsPanel = new JPanel();
             robotButtonsPanel.setLayout(new BoxLayout(robotButtonsPanel,
-                    BoxLayout.Y_AXIS));
+                                                      BoxLayout.Y_AXIS));
             robotButtonsPanel.addContainerListener(eventHandler);
         }
         return robotButtonsPanel;
@@ -470,7 +470,7 @@ public class RobocodeFrame extends JFrame {
             int tps = Math.max(props.getOptionsBattleDesiredTPS(), 1);
 
             tpsSlider = new JSlider(0, MAX_TPS_SLIDER_VALUE,
-                    tpsToSliderValue(tps));
+                                    tpsToSliderValue(tps));
             tpsSlider.setPaintLabels(true);
             tpsSlider.setPaintTicks(true);
             tpsSlider.setMinorTickSpacing(1);
@@ -710,7 +710,8 @@ public class RobocodeFrame extends JFrame {
     }
 
     private class EventHandler implements ComponentListener, ActionListener,
-            ContainerListener, WindowListener, ChangeListener {
+                                          ContainerListener, WindowListener,
+                                          ChangeListener {
 
         public void actionPerformed(ActionEvent e) {
             final Object source = e.getSource();
@@ -892,7 +893,7 @@ public class RobocodeFrame extends JFrame {
                             .createComponent(RobotButton.class);
 
                     button.setup(robot.getName(), maxEnergy, index,
-                            robot.getContestantIndex(), attach);
+                                 robot.getContestantIndex(), attach);
                     button.setText(robot.getShortName());
                     addRobotButton(button);
                 }
@@ -911,7 +912,7 @@ public class RobocodeFrame extends JFrame {
 
             final boolean canReplayRecord = recordManager.hasRecord();
             final boolean enableSaveRecord = (properties
-                    .getOptionsCommonEnableReplayRecording() & canReplayRecord);
+                                              .getOptionsCommonEnableReplayRecording() & canReplayRecord);
 
             getStopButton().setEnabled(false);
             getReplayButton().setEnabled(canReplayRecord);
