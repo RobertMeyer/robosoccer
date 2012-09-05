@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Vector;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -34,11 +34,11 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
     private JButton cancelButton;
     private JButton closeButton;
     private JList windowList;
-    private final Vector<WindowMenuItem> windowListItems;
+    private final ArrayList<WindowMenuItem> windowListItems;
 
     public MoreWindowsDialog(RobocodeEditor window) {
         super(window, "More Windows...", false);
-        windowListItems = new Vector<WindowMenuItem>();
+        windowListItems = new ArrayList<WindowMenuItem>();
         JPanel listPanel = new JPanel(new GridLayout(1, 1));
 
         listPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Open Windows"));

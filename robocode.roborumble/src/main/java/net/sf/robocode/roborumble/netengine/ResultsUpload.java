@@ -24,7 +24,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.ArrayList;
 import net.sf.robocode.roborumble.battlesengine.CompetitionsSelector;
 import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 
@@ -88,7 +88,7 @@ public class ResultsUpload {
 
         // Read the results file
 
-        Vector<String> results = new Vector<String>();
+        ArrayList<String> results = new ArrayList<String>();
         String match = "";
         String bot1 = "";
         String bot2;
@@ -243,7 +243,7 @@ public class ResultsUpload {
         System.out.println("Unable to upload results " + match + " " + bot1 + " " + bot2);
     }
 
-    private boolean senddata(String game, String data, PrintStream outtxt, boolean saveonerror, Vector<String> results, int i, PrintStream battlesnum, PrintStream prioritybattles) {
+    private boolean senddata(String game, String data, PrintStream outtxt, boolean saveonerror, ArrayList<String> results, int i, PrintStream battlesnum, PrintStream prioritybattles) {
         boolean errorsfound = false;
         PrintWriter wr = null;
         BufferedReader rd = null;

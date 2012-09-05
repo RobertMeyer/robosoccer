@@ -891,7 +891,7 @@ public class SettingsManager implements ISettingsManager {
         public Enumeration<Object> keys() {
             Enumeration<Object> keysEnum = super.keys();
 
-            Vector<String> keyList = new Vector<String>();
+            ArrayList<String> keyList = new ArrayList<String>();
 
             while (keysEnum.hasMoreElements()) {
                 keyList.add((String) keysEnum.nextElement());

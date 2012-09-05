@@ -25,7 +25,7 @@
 package robocode;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
@@ -591,9 +591,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #getBulletHitBulletEvents()
      * @see #getRobotDeathEvents()
      */
-    public Vector<Event> getAllEvents() {
+    public ArrayList<Event> getAllEvents() {
         if (peer != null) {
-            return new Vector<Event>(((IAdvancedRobotPeer) peer).getAllEvents());
+            return new ArrayList<Event>(((IAdvancedRobotPeer) peer).getAllEvents());
         }
         uninitializedException();
         return null; // never called
@@ -617,9 +617,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see BulletHitBulletEvent
      * @see #getAllEvents()
      */
-    public Vector<BulletHitBulletEvent> getBulletHitBulletEvents() {
+    public ArrayList<BulletHitBulletEvent> getBulletHitBulletEvents() {
         if (peer != null) {
-            return new Vector<BulletHitBulletEvent>(((IAdvancedRobotPeer) peer).getBulletHitBulletEvents());
+            return new ArrayList<BulletHitBulletEvent>(((IAdvancedRobotPeer) peer).getBulletHitBulletEvents());
         }
         uninitializedException();
         return null; // never called
@@ -642,9 +642,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see BulletHitEvent
      * @see #getAllEvents()
      */
-    public Vector<BulletHitEvent> getBulletHitEvents() {
+    public ArrayList<BulletHitEvent> getBulletHitEvents() {
         if (peer != null) {
-            return new Vector<BulletHitEvent>(((IAdvancedRobotPeer) peer).getBulletHitEvents());
+            return new ArrayList<BulletHitEvent>(((IAdvancedRobotPeer) peer).getBulletHitEvents());
         }
         uninitializedException();
         return null; // never called
@@ -668,9 +668,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see BulletMissedEvent
      * @see #getAllEvents()
      */
-    public Vector<BulletMissedEvent> getBulletMissedEvents() {
+    public ArrayList<BulletMissedEvent> getBulletMissedEvents() {
         if (peer != null) {
-            return new Vector<BulletMissedEvent>(((IAdvancedRobotPeer) peer).getBulletMissedEvents());
+            return new ArrayList<BulletMissedEvent>(((IAdvancedRobotPeer) peer).getBulletMissedEvents());
         }
         uninitializedException();
         return null; // never called
@@ -802,9 +802,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see HitByBulletEvent
      * @see #getAllEvents()
      */
-    public Vector<HitByBulletEvent> getHitByBulletEvents() {
+    public ArrayList<HitByBulletEvent> getHitByBulletEvents() {
         if (peer != null) {
-            return new Vector<HitByBulletEvent>(((IAdvancedRobotPeer) peer).getHitByBulletEvents());
+            return new ArrayList<HitByBulletEvent>(((IAdvancedRobotPeer) peer).getHitByBulletEvents());
         }
         uninitializedException();
         return null; // never called
@@ -827,9 +827,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see HitRobotEvent
      * @see #getAllEvents()
      */
-    public Vector<HitRobotEvent> getHitRobotEvents() {
+    public ArrayList<HitRobotEvent> getHitRobotEvents() {
         if (peer != null) {
-            return new Vector<HitRobotEvent>(((IAdvancedRobotPeer) peer).getHitRobotEvents());
+            return new ArrayList<HitRobotEvent>(((IAdvancedRobotPeer) peer).getHitRobotEvents());
         }
         uninitializedException();
         return null; // never called
@@ -852,9 +852,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see HitWallEvent
      * @see #getAllEvents()
      */
-    public Vector<HitWallEvent> getHitWallEvents() {
+    public ArrayList<HitWallEvent> getHitWallEvents() {
         if (peer != null) {
-            return new Vector<HitWallEvent>(((IAdvancedRobotPeer) peer).getHitWallEvents());
+            return new ArrayList<HitWallEvent>(((IAdvancedRobotPeer) peer).getHitWallEvents());
         }
         uninitializedException();
         return null; // never called
@@ -877,9 +877,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see RobotDeathEvent
      * @see #getAllEvents()
      */
-    public Vector<RobotDeathEvent> getRobotDeathEvents() {
+    public ArrayList<RobotDeathEvent> getRobotDeathEvents() {
         if (peer != null) {
-            return new Vector<RobotDeathEvent>(((IAdvancedRobotPeer) peer).getRobotDeathEvents());
+            return new ArrayList<RobotDeathEvent>(((IAdvancedRobotPeer) peer).getRobotDeathEvents());
         }
         uninitializedException();
         return null; // never called
@@ -903,9 +903,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see ScannedRobotEvent
      * @see #getAllEvents()
      */
-    public Vector<ScannedRobotEvent> getScannedRobotEvents() {
+    public ArrayList<ScannedRobotEvent> getScannedRobotEvents() {
         if (peer != null) {
-            return new Vector<ScannedRobotEvent>(((IAdvancedRobotPeer) peer).getScannedRobotEvents());
+            return new ArrayList<ScannedRobotEvent>(((IAdvancedRobotPeer) peer).getScannedRobotEvents());
         }
         uninitializedException();
         return null; // never called
@@ -928,9 +928,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #getAllEvents()
      * @since 1.6.1
      */
-    public Vector<StatusEvent> getStatusEvents() {
+    public ArrayList<StatusEvent> getStatusEvents() {
         if (peer != null) {
-            return new Vector<StatusEvent>(((IAdvancedRobotPeer) peer).getStatusEvents());
+            return new ArrayList<StatusEvent>(((IAdvancedRobotPeer) peer).getStatusEvents());
         }
         uninitializedException();
         return null; // never called

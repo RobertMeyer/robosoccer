@@ -31,7 +31,7 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import net.sf.robocode.io.Logger;
@@ -158,7 +158,7 @@ public class BotsDownload {
     public boolean downloadParticipantsList() {
         String begin = "<" + tag + ">";
         String end = "</" + tag + ">";
-        Vector<String> bots = new Vector<String>();
+        ArrayList<String> bots = new ArrayList<String>();
         BufferedReader in = null;
         HttpURLConnection conn = null;
 
@@ -244,9 +244,9 @@ public class BotsDownload {
     }
 
     public void downloadMissingBots() {
-        Vector<String> jars = new Vector<String>();
-        Vector<String> ids = new Vector<String>();
-        Vector<String> names = new Vector<String>();
+        ArrayList<String> jars = new ArrayList<String>();
+        ArrayList<String> ids = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<String>();
 
         // Read participants
 

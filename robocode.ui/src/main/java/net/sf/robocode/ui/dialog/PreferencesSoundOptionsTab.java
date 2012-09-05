@@ -14,7 +14,7 @@ package net.sf.robocode.ui.dialog;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.ArrayList;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import net.sf.robocode.settings.ISettingsManager;
@@ -217,7 +217,7 @@ public class PreferencesSoundOptionsTab extends WizardPanel {
 
             Line.Info clipLineInfo = new Line.Info(Clip.class);
 
-            Vector<Mixer.Info> mixers = new Vector<Mixer.Info>();
+            ArrayList<Mixer.Info> mixers = new ArrayList<Mixer.Info>();
 
             for (Mixer.Info mi : mixerInfo) {
                 if (AudioSystem.getMixer(mi).getSourceLineInfo(clipLineInfo).length > 0) {

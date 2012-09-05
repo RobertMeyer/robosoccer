@@ -10,11 +10,11 @@
  *     - Initial API and implementation
  *     Flemming N. Larsen
  *     - Code cleanup
- *     - Replaced FileSpecificationVector with plain Vector
+ *     - Replaced FileSpecificationArrayList with plain ArrayList
  *     - Replaced deprecated show() method with setVisible(true)
  *     - Showing the frame is now performed in the Swing Event Thread
  *     Robert D. Maupin
- *     - Replaced old collection types like Vector and Hashtable with
+ *     - Replaced old collection types like ArrayList and Hashtable with
  *       synchronized List and HashMap
  *******************************************************************************/
 package net.sf.robocode.ui.packager;

@@ -24,7 +24,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.ArrayList;
 import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 import static net.sf.robocode.roborumble.util.PropertiesUtil.storeProperties;
 
@@ -71,7 +71,7 @@ public class UpdateRatingFiles {
     public boolean updateRatings() {
 
         // read all the records to be updated
-        Vector<String> battles = new Vector<String>();
+        ArrayList<String> battles = new ArrayList<String>();
         BufferedReader br = null;
 
         try {
