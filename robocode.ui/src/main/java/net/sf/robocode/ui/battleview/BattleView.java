@@ -32,6 +32,7 @@ import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
+import robocode.control.snapshot.IItemSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 
@@ -319,6 +320,9 @@ public class BattleView extends Canvas {
 
 			// Draw robots
 			drawRobots(g, snapShot);
+			
+			// Draw items
+			drawItems(g, snapShot);
 
 			// Draw robot (debug) paintings
 			drawRobotPaint(g, snapShot);
@@ -394,12 +398,17 @@ public class BattleView extends Canvas {
 		double x, y;
 		AffineTransform at;
 		int battleFieldHeight = battleField.getHeight();
+		
+		for (IItemSnapshot itemSnapshot : snapShot.getItems()) {
+			
+		}
 	}
 	
 	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
 		double x, y;
 		AffineTransform at;
 		int battleFieldHeight = battleField.getHeight();
+		
 
 		if (drawGround && drawExplosionDebris) {
 			RenderImage explodeDebrise = imageManager.getExplosionDebriseRenderImage();

@@ -15,6 +15,7 @@ package net.sf.robocode.battle.snapshot;
 
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.serialization.IXmlSerializable;
@@ -72,7 +73,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	 * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
 	 *                    {@code false} otherwise.
 	 */
-	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, boolean readoutText) {
+	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<ItemDrop> battleItems, boolean readoutText) {
 		robots = new ArrayList<IRobotSnapshot>();
 		bullets = new ArrayList<IBulletSnapshot>();
 		items = new ArrayList<IItemSnapshot>();
@@ -83,6 +84,11 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 		for (BulletPeer bulletPeer : battleBullets) {
 			bullets.add(new BulletSnapshot(bulletPeer));
+		}
+		
+		/*--ItemController--*/
+		for (ItemDrop item : battleItems) {
+			items.add(new ItemSnapshot(item));
 		}
 
 		tps = battle.getTPS();
@@ -102,11 +108,24 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		return robots.toArray(new IRobotSnapshot[robots.size()]);
 	}
 
+	@Override
+	public IItemSnapshot[] getItems() {
+		// TODO Auto-generated method stub
+		return items.toArray(new IItemSnapshot[items.size()]);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public IBulletSnapshot[] getBullets() {
 		return bullets.toArray(new IBulletSnapshot[bullets.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IItemSnapshot[] getItem() {
+		return items.toArray(new IItemSnapshot[items.size()]);
 	}
 
 	/**
@@ -304,4 +323,6 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 			}
 		});
 	}
+
+
 }

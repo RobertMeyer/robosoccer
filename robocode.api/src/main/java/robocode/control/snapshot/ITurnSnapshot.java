@@ -30,6 +30,9 @@ public interface ITurnSnapshot {
 	 * @return a list of snapshots for the robots participating in the battle. 
 	 */
 	IRobotSnapshot[] getRobots();
+	
+	
+	IItemSnapshot[] getItems();
 
 	/**
 	 * Returns a list of snapshots for the bullets that are currently on the battlefield.
@@ -78,4 +81,6 @@ public interface ITurnSnapshot {
 	 * @see #getSortedTeamScores()
 	 */
 	IScoreSnapshot[] getIndexedTeamScores();
+
+
 }

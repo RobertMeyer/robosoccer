@@ -521,7 +521,7 @@ public final class Battle extends BaseBattle {
 
 		Logger.logMessage(""); // puts in a new-line in the log message
 
-		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, false);
+		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, itemControl.getItems(), false);
 
 		eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
 	}
@@ -651,7 +651,7 @@ public final class Battle extends BaseBattle {
 	}
 	@Override
 	protected void finalizeTurn() {
-		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, true)));
+		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets,itemControl.getItems(), true)));
 
 		super.finalizeTurn();
 	}
