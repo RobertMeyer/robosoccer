@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>robocode</artifactId>
     <name>Robocode</name>
@@ -12,7 +12,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <relativePath>super-pom</relativePath>
     </parent>
     <modules>
-	<module>super-pom</module>
+        <module>super-pom</module>
         <module>robocode.api</module>
         <module>robocode.core</module>
         <module>robocode.battle</module>
@@ -29,4 +29,5 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <module>robocode.content</module>
         <module>robocode.distribution</module>
     </modules>
+
 </project>

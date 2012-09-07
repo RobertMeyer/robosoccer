@@ -11,7 +11,6 @@
  *******************************************************************************/
 package robocode.control.events;
 
-
 /**
  * An abstract adapter class for receiving battle events by implementing the {@link IBattleListener}.
  * The methods in this class are empty. This class exists as convenience for creating listener objects.
@@ -35,70 +34,93 @@ package robocode.control.events;
  *   }
  * </pre>
  *
- * @see IBattleListener 
+ * @see IBattleListener
  *
  * @author Flemming N. Larsen (original)
  * @since 1.6.2
  */
 public abstract class BattleAdaptor implements IBattleListener {
 
-	/**
-	 * Creates a BattleAdaptor.
-	 */
-	public BattleAdaptor() {}
+    /**
+     * Creates a BattleAdaptor.
+     */
+    public BattleAdaptor() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onBattleStarted(final BattleStartedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattleStarted(final BattleStartedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onBattleFinished(final BattleFinishedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattleFinished(final BattleFinishedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onBattleCompleted(final BattleCompletedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattleCompleted(final BattleCompletedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onBattlePaused(final BattlePausedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattlePaused(final BattlePausedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onBattleResumed(final BattleResumedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattleResumed(final BattleResumedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onRoundStarted(final RoundStartedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onRoundStarted(final RoundStartedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onRoundEnded(final RoundEndedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onRoundEnded(final RoundEndedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onTurnStarted(final TurnStartedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onTurnStarted(final TurnStartedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onTurnEnded(final TurnEndedEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onTurnEnded(final TurnEndedEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onBattleMessage(final BattleMessageEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattleMessage(final BattleMessageEvent event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onBattleError(final BattleErrorEvent event) {}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onBattleError(final BattleErrorEvent event) {
+    }
 }

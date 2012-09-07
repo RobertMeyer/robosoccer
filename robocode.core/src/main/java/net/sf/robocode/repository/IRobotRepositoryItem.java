@@ -11,35 +11,34 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
-
 import java.net.URL;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRobotRepositoryItem extends IRepositoryItem {
-	URL getClassPathURL();
 
-	String getWritableDirectory();
+    URL getClassPathURL();
 
-	String getReadableDirectory();
+    String getWritableDirectory();
 
-	String getRobotLanguage();
+    String getReadableDirectory();
 
-	boolean isDroid();
-	
-	boolean isHouseRobot();
+    String getRobotLanguage();
 
-	boolean isTeamRobot();
+    boolean isDroid();
 
-	boolean isAdvancedRobot();
+    boolean isHouseRobot();
 
-	boolean isStandardRobot();
+    boolean isTeamRobot();
 
-	boolean isInteractiveRobot();
+    boolean isAdvancedRobot();
 
-	boolean isPaintRobot();
+    boolean isStandardRobot();
 
-	boolean isJuniorRobot();
+    boolean isInteractiveRobot();
+
+    boolean isPaintRobot();
+
+    boolean isJuniorRobot();
 }

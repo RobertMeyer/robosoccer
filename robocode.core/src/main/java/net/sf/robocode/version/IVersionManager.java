@@ -11,14 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.version;
 
-
 import net.sf.robocode.manager.IVersionManagerBase;
-
 
 /**
  * @author Pavel Savara (original)
  * @author Flemming N. Larsen (contributor)
  */
 public interface IVersionManager extends IVersionManagerBase {
-	String checkForNewVersion();
+
+    String checkForNewVersion();
 }

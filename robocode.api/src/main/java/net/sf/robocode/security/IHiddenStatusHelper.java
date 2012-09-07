@@ -11,15 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
-
 import robocode.RobotStatus;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IHiddenStatusHelper {
-	RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading,
-			double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining,
-			double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time);
+
+    RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading,
+                             double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining,
+                             double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time);
 }

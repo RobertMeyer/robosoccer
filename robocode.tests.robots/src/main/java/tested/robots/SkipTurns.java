@@ -11,74 +11,71 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.AdvancedRobot;
 import robocode.SkippedTurnEvent;
 import robocode.StatusEvent;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class SkipTurns extends AdvancedRobot {
-	private volatile int skipped = 0;
 
-	static final int LIMIT = 5;
+    private volatile int skipped = 0;
+    static final int LIMIT = 5;
 
-	@Override
-	public void run() {
-		// noinspection InfiniteLoopStatement
-		for (;;) {
-			if (skipped > LIMIT) {
-				throw new Error("satisfied, end battle please");
-			}
-			turnLeft(10);
-			if (skipped > LIMIT) {
-				// satisfied, end battle please
-				throw new Error();
-			}
-			ahead(1);
-			if (skipped > LIMIT) {
-				// satisfied, end battle please
-				throw new Error();
-			}
-			turnLeft(10);
-			if (skipped > LIMIT) {
-				// satisfied, end battle please
-				throw new Error();
-			}
-			back(1);
-		}
-	}
+    @Override
+    public void run() {
+        // noinspection InfiniteLoopStatement
+        for (;;) {
+            if (skipped > LIMIT) {
+                throw new Error("satisfied, end battle please");
+            }
+            turnLeft(10);
+            if (skipped > LIMIT) {
+                // satisfied, end battle please
+                throw new Error();
+            }
+            ahead(1);
+            if (skipped > LIMIT) {
+                // satisfied, end battle please
+                throw new Error();
+            }
+            turnLeft(10);
+            if (skipped > LIMIT) {
+                // satisfied, end battle please
+                throw new Error();
+            }
+            back(1);
+        }
+    }
 
-	@Override
-	public void onStatus(StatusEvent e) {
-		out.println("live");
-		slowResponse();
-	}
+    @Override
+    public void onStatus(StatusEvent e) {
+        out.println("live");
+        slowResponse();
+    }
 
-	@Override
-	public void onSkippedTurn(SkippedTurnEvent event) {
-		out.println("Skipped!!!");
+    @Override
+    public void onSkippedTurn(SkippedTurnEvent event) {
+        out.println("Skipped!!!");
 
-		skipped++;
-	}
+        skipped++;
+    }
+    private final Object w = new Object();
 
-	private final Object w = new Object();
+    private void slowResponse() {
 
-	private void slowResponse() {
-
-		synchronized (w) {
-			try {
-				if (skipped > 3) {
-					w.wait(3000);
-				} else {
-					w.wait(130);
-				}
-			} catch (InterruptedException e) {
-				// eat interrupt
-				e.printStackTrace(out);
-			}
-		}
-	}
+        synchronized (w) {
+            try {
+                if (skipped > 3) {
+                    w.wait(3000);
+                } else {
+                    w.wait(130);
+                }
+            } catch (InterruptedException e) {
+                // eat interrupt
+                e.printStackTrace(out);
+            }
+        }
+    }
 }

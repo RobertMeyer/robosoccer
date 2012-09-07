@@ -11,43 +11,44 @@
  *******************************************************************************/
 package tested.robots;
 
-
-import robocode.AdvancedRobot;
 import java.io.*;
 import java.net.*;
-
+import robocode.AdvancedRobot;
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class SocketAttack extends AdvancedRobot {
 
-	public void run() {
-		ServerSocket server = null;
-		Socket client = null;
+    @Override
+    public void run() {
+        ServerSocket server = null;
+        Socket client = null;
 
-		try {
-			server = new ServerSocket(9999);
-			client = server.accept();
+        try {
+            server = new ServerSocket(9999);
+            client = server.accept();
 
-			InputStream is = new DataInputStream(client.getInputStream());
-			OutputStream os = new PrintStream(client.getOutputStream());
+            InputStream is = new DataInputStream(client.getInputStream());
+            OutputStream os = new PrintStream(client.getOutputStream());
 
-			os.write(1);
-			is.read();
-		} catch (IOException e) {
-			e.printStackTrace(out);
-		} finally {
-			if (server != null) {
-				try {
-					server.close();
-				} catch (IOException e) {}
-			}
-			if (client != null) {
-				try {
-					client.close();
-				} catch (IOException e) {}
-			}
-		}
-	}
+            os.write(1);
+            is.read();
+        } catch (IOException e) {
+            e.printStackTrace(out);
+        } finally {
+            if (server != null) {
+                try {
+                    server.close();
+                } catch (IOException e) {
+                }
+            }
+            if (client != null) {
+                try {
+                    client.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
 }

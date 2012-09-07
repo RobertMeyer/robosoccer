@@ -11,60 +11,60 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-
-import net.sf.robocode.serialization.ISerializableHelper;
-import net.sf.robocode.serialization.RbSerializer;
-
 import java.io.Serializable;
 import java.nio.ByteBuffer;
-
+import net.sf.robocode.serialization.ISerializableHelper;
+import net.sf.robocode.serialization.RbSerializer;
 
 /**
  * @author Pavel Savara (original)
  */
 public class TeamMessage implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	public TeamMessage(String sender, String recipient, byte[] message) {
-		this.sender = sender;
-		this.recipient = recipient;
-		this.message = message;
+    private static final long serialVersionUID = 1L;
 
-	}
+    public TeamMessage(String sender, String recipient, byte[] message) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.message = message;
 
-	public final String sender;
-	public final String recipient;
-	public final byte[] message;
+    }
+    public final String sender;
+    public final String recipient;
+    public final byte[] message;
 
-	static ISerializableHelper createHiddenSerializer() {
-		return new SerializableHelper();
-	}
+    static ISerializableHelper createHiddenSerializer() {
+        return new SerializableHelper();
+    }
 
-	private static class SerializableHelper implements ISerializableHelper {
-		public int sizeOf(RbSerializer serializer, Object object) {
-			TeamMessage obj = (TeamMessage) object;
-			final int s = serializer.sizeOf(obj.sender);
-			final int r = serializer.sizeOf(obj.recipient);
-			final int m = serializer.sizeOf(obj.message);
+    private static class SerializableHelper implements ISerializableHelper {
 
-			return RbSerializer.SIZEOF_TYPEINFO + s + r + m;
-		}
+        @Override
+        public int sizeOf(RbSerializer serializer, Object object) {
+            TeamMessage obj = (TeamMessage) object;
+            final int s = serializer.sizeOf(obj.sender);
+            final int r = serializer.sizeOf(obj.recipient);
+            final int m = serializer.sizeOf(obj.message);
 
-		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-			TeamMessage obj = (TeamMessage) object;
+            return RbSerializer.SIZEOF_TYPEINFO + s + r + m;
+        }
 
-			serializer.serialize(buffer, obj.sender);
-			serializer.serialize(buffer, obj.recipient);
-			serializer.serialize(buffer, obj.message);
-		}
+        @Override
+        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+            TeamMessage obj = (TeamMessage) object;
 
-		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-			String sender = serializer.deserializeString(buffer);
-			String recipient = serializer.deserializeString(buffer);
-			byte[] message = serializer.deserializeBytes(buffer);
+            serializer.serialize(buffer, obj.sender);
+            serializer.serialize(buffer, obj.recipient);
+            serializer.serialize(buffer, obj.message);
+        }
 
-			return new TeamMessage(sender, recipient, message);
-		}
-	}
+        @Override
+        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+            String sender = serializer.deserializeString(buffer);
+            String recipient = serializer.deserializeString(buffer);
+            byte[] message = serializer.deserializeBytes(buffer);
 
+            return new TeamMessage(sender, recipient, message);
+        }
+    }
 }

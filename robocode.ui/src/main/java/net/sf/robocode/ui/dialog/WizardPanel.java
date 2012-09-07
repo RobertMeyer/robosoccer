@@ -13,28 +13,26 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
 import javax.swing.event.ChangeEvent;
-
 
 /**
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
  */
 public abstract class WizardPanel extends javax.swing.JPanel {
-	private static final long serialVersionUID = 1L;
 
-	private WizardController wizardController;
+    private static final long serialVersionUID = 1L;
+    private WizardController wizardController;
 
-	public void fireStateChanged() {
-		if (wizardController != null) {
-			wizardController.stateChanged(new ChangeEvent(this));
-		}
-	}
+    public void fireStateChanged() {
+        if (wizardController != null) {
+            wizardController.stateChanged(new ChangeEvent(this));
+        }
+    }
 
-	public abstract boolean isReady();
+    public abstract boolean isReady();
 
-	public void setWizardController(WizardController wizardController) {
-		this.wizardController = wizardController;
-	}
+    public void setWizardController(WizardController wizardController) {
+        this.wizardController = wizardController;
+    }
 }
