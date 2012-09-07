@@ -194,6 +194,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final BoundingRectangle boundingBox;
 	protected final RbSerializer rbSerializer;
 	
+	// item inventory
+	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
+	
 
 	/**
 	 * An association of values to every RobotAttribute, such that game
@@ -1072,6 +1075,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		return otherRobot.getName();
 	}
+	
+	// check for, add, remove items
+	private boolean checkForItem(ItemDrop item){
+		return this.itemsList.contains(item);
+	}
+	
+	private void addItem(ItemDrop item){
+		this.itemsList.add(item);
+	}
+	
+	private void removeItem(ItemDrop item){
+		this.itemsList.remove(item);
+	}
+
 	
 	private void checkItemCollision(List<ItemDrop> items){
 		inCollision = false;
