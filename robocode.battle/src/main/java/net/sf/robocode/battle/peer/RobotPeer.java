@@ -67,7 +67,6 @@ package net.sf.robocode.battle.peer;
 
 
 import static net.sf.robocode.io.Logger.logMessage;
-import net.sf.robocode.battle.AirStrike;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.host.IHostManager;
