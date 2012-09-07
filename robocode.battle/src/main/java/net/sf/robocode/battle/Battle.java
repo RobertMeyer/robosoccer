@@ -162,12 +162,16 @@ public final class Battle extends BaseBattle {
     private final boolean isDebugging;
     // Initial robot start positions (if any)
     private double[][] initialRobotPositions;
+   
+    // kill streak tracker
+    private KillstreakTracker killstreakTracker;
 
     public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
         super(properties, battleManager, eventDispatcher);
         isDebugging = System.getProperty("debug", "false").equals("true");
         this.hostManager = hostManager;
         this.cpuConstant = cpuManager.getCpuConstant();
+        this.killstreakTracker = new KillstreakTracker(this);
     }
 
     public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused) {
@@ -342,6 +346,14 @@ public final class Battle extends BaseBattle {
         return activeRobots;
     }
 
+    /**
+     * Gets the killstreak Tracker
+     * @return Returns the KillstreakTracker for this battle
+     */
+    
+    public KillstreakTracker getKillstreakTracker() {
+    	return killstreakTracker;
+    }
     @Override
     public void cleanup() {
 

@@ -48,6 +48,8 @@ import java.awt.geom.Line2D;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.util.List;
+
+import net.sf.robocode.battle.KillstreakTracker;
 import net.sf.robocode.peer.BulletStatus;
 import robocode.*;
 import robocode.control.snapshot.BulletState;
@@ -80,6 +82,9 @@ public class BulletPeer {
     protected int frame; // Do not set to -1
     private final int color;
     protected int explosionImageIndex; // Do not set to -1
+    
+    // the killstreak tracker belonging to the battle
+    KillstreakTracker ks;
 
     public BulletPeer(RobotPeer owner, BattleRules battleRules, int bulletId) {
         super();
@@ -88,6 +93,7 @@ public class BulletPeer {
         this.bulletId = bulletId;
         state = BulletState.FIRED;
         color = owner.getBulletColor(); // Store current bullet color set on robot
+        ks = owner.battle.getKillstreakTracker();
     }
 
     private void checkBulletCollision(List<BulletPeer> bullets) {
@@ -181,6 +187,7 @@ public class BulletPeer {
                 if (otherRobot.getEnergy() <= 0) {
                     if (otherRobot.isAlive()) {
                         otherRobot.kill();
+                        ks.updateKillStreak(owner, otherRobot);
                         if (!teamFire) {
                             final double bonus = owner.getRobotStatistics().scoreBulletKill(otherRobot.getName());
 
