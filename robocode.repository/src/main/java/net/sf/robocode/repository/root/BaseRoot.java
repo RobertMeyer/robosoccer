@@ -11,65 +11,67 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root;
 
-
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.Database;
-
 import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.Database;
 
 /**
  * @author Pavel Savara (original)
  */
 public abstract class BaseRoot implements Serializable, IRepositoryRoot {
-	private static final long serialVersionUID = 1L;
 
-	protected transient Database db;
-	protected final File rootPath;
-	protected final URL rootURL;
+    private static final long serialVersionUID = 1L;
+    protected transient Database db;
+    protected final File rootPath;
+    protected final URL rootURL;
 
-	public BaseRoot(Database db, File rootPath) {
-		this.db = db;
-		this.rootPath = rootPath;
+    public BaseRoot(Database db, File rootPath) {
+        this.db = db;
+        this.rootPath = rootPath;
 
-		URL url;
+        URL url;
 
-		try {
-			url = rootPath.toURI().toURL();
-		} catch (MalformedURLException e) {
-			url = null;
-			Logger.logError(e);
-		}
-		this.rootURL = url;
-	}
+        try {
+            url = rootPath.toURI().toURL();
+        } catch (MalformedURLException e) {
+            url = null;
+            Logger.logError(e);
+        }
+        this.rootURL = url;
+    }
 
-	public URL getURL() {
-		return rootURL;
-	}
+    @Override
+    public URL getURL() {
+        return rootURL;
+    }
 
-	public File getPath() {
-		return rootPath;
-	}
+    @Override
+    public File getPath() {
+        return rootPath;
+    }
 
-	public void setDatabase(Database db) {
-		this.db = db;
-	}
+    public void setDatabase(Database db) {
+        this.db = db;
+    }
 
-	public String toString() {
-		return rootURL != null ? rootURL.toString() : null;
-	}
+    @Override
+    public String toString() {
+        return rootURL != null ? rootURL.toString() : null;
+    }
 
-	public void extractJAR() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void extractJAR() {
+        throw new UnsupportedOperationException();
+    }
 
-	public boolean equals(Object obj) {
-		if (obj instanceof IRepositoryRoot) {
-			return ((IRepositoryRoot) obj).getURL().equals(rootURL);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IRepositoryRoot) {
+            return ((IRepositoryRoot) obj).getURL().equals(rootURL);
+        }
+        return false;
+    }
 }

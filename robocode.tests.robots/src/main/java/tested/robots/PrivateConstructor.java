@@ -11,14 +11,13 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.Robot;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class PrivateConstructor extends Robot {
-	private PrivateConstructor() {// private 
-	}
+
+    private PrivateConstructor() {// private
+    }
 }

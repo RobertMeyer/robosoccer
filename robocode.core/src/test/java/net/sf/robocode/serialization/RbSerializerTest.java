@@ -11,7 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.serialization;
 
-
+import java.awt.*;
+import java.awt.geom.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.swing.*;
 import net.sf.robocode.peer.BulletCommand;
 import net.sf.robocode.peer.DebugProperty;
 import net.sf.robocode.peer.ExecCommands;
@@ -23,234 +28,227 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import robocode.util.Utils;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-
 /**
  * @author Pavel Savara (original)
  */
 public class RbSerializerTest {
 
-	Exception exception = null;
-	
-	@BeforeClass
-	public static void init() {
-		// we need to switch off engine classloader for this test
-		System.setProperty("NOSECURITY", "true");
-		System.setProperty("WORKINGDIRECTORY", "target//test-classes");
-		System.setProperty("TESTING", "true");
-		HiddenAccess.initContainer();
-	}
+    Exception exception = null;
 
-	@Test
-	public void empty() throws IOException {
-		HiddenAccess.initContainer();
-		ExecCommands ec = new ExecCommands();
+    @BeforeClass
+    public static void init() {
+        // we need to switch off engine classloader for this test
+        System.setProperty("NOSECURITY", "true");
+        System.setProperty("WORKINGDIRECTORY", "target//test-classes");
+        System.setProperty("TESTING", "true");
+        HiddenAccess.initContainer();
+    }
 
-		ec.setBodyTurnRemaining(150.123);
-		ec.setTryingToPaint(true);
+    @Test
+    public void empty() throws IOException {
+        HiddenAccess.initContainer();
+        ExecCommands ec = new ExecCommands();
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-		RbSerializer rbs = new RbSerializer();
+        ec.setBodyTurnRemaining(150.123);
+        ec.setTryingToPaint(true);
 
-		rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
-		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-		ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+        RbSerializer rbs = new RbSerializer();
 
-		assertNear(ec2.getBodyTurnRemaining(), ec.getBodyTurnRemaining());
-		Assert.assertEquals(ec2.isTryingToPaint(), true);
-	}
+        rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
 
-	@Test
-	public void withBullets() throws IOException {
-		ExecCommands ec = new ExecCommands();
+        assertNear(ec2.getBodyTurnRemaining(), ec.getBodyTurnRemaining());
+        Assert.assertEquals(ec2.isTryingToPaint(), true);
+    }
 
-		ec.setBodyTurnRemaining(150.123);
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getBullets().add(new BulletCommand(1.0, false, 0.9454, 12));
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9554, -128));
+    @Test
+    public void withBullets() throws IOException {
+        ExecCommands ec = new ExecCommands();
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-		RbSerializer rbs = new RbSerializer();
+        ec.setBodyTurnRemaining(150.123);
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getBullets().add(new BulletCommand(1.0, false, 0.9454, 12));
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9554, -128));
 
-		rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
-		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-		ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+        RbSerializer rbs = new RbSerializer();
 
-		assertNear(ec2.getBodyTurnRemaining(), ec.getBodyTurnRemaining());
-		assertNear(ec2.getBullets().get(0).getPower(), 1.0);
-		Assert.assertEquals(ec2.getBullets().get(1).isFireAssistValid(), false);
-		Assert.assertEquals(ec2.getBullets().get(2).isFireAssistValid(), true);
-		Assert.assertEquals(ec2.getBullets().get(2).getBulletId(), -128);
-	}
+        rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
 
-	@Test
-	public void withMessages() throws IOException {
-		ExecCommands ec = new ExecCommands();
+        assertNear(ec2.getBodyTurnRemaining(), ec.getBodyTurnRemaining());
+        assertNear(ec2.getBullets().get(0).getPower(), 1.0);
+        Assert.assertEquals(ec2.getBullets().get(1).isFireAssistValid(), false);
+        Assert.assertEquals(ec2.getBullets().get(2).isFireAssistValid(), true);
+        Assert.assertEquals(ec2.getBullets().get(2).getBulletId(), -128);
+    }
 
-		ec.setBodyTurnRemaining(150.123);
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		final byte[] data = new byte[20];
+    @Test
+    public void withMessages() throws IOException {
+        ExecCommands ec = new ExecCommands();
 
-		data[10] = 10;
-		ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", data));
-		ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
+        ec.setBodyTurnRemaining(150.123);
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        final byte[] data = new byte[20];
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-		RbSerializer rbs = new RbSerializer();
+        data[10] = 10;
+        ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", data));
+        ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
 
-		rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
-		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-		ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+        RbSerializer rbs = new RbSerializer();
 
-		Assert.assertEquals(ec2.getTeamMessages().get(0).message[0], 0);
-		Assert.assertEquals(ec2.getTeamMessages().get(0).message[10], 10);
-		Assert.assertEquals(ec2.getTeamMessages().get(0).sender, "Foo");
-		Assert.assertEquals(ec2.getTeamMessages().get(0).recipient, "Bar");
-		Assert.assertEquals(ec2.getTeamMessages().get(1).message, null);
-	}
+        rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
 
-	@Test
-	public void withProperties() throws IOException {
-		ExecCommands ec = new ExecCommands();
+        Assert.assertEquals(ec2.getTeamMessages().get(0).message[0], 0);
+        Assert.assertEquals(ec2.getTeamMessages().get(0).message[10], 10);
+        Assert.assertEquals(ec2.getTeamMessages().get(0).sender, "Foo");
+        Assert.assertEquals(ec2.getTeamMessages().get(0).recipient, "Bar");
+        Assert.assertEquals(ec2.getTeamMessages().get(1).message, null);
+    }
 
-		ec.setBodyTurnRemaining(150.123);
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
-		ec.getDebugProperties().add(
-				new DebugProperty("UTF8 Native characters", "Pøíliš žlu?ouèký kùò úpìl ïábelské ódy"));
+    @Test
+    public void withProperties() throws IOException {
+        ExecCommands ec = new ExecCommands();
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
-		RbSerializer rbs = new RbSerializer();
+        ec.setBodyTurnRemaining(150.123);
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
+        ec.getDebugProperties().add(
+                new DebugProperty("UTF8 Native characters", "Pøíliš žlu?ouèký kùò úpìl ïábelské ódy"));
 
-		rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
-		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-		ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+        RbSerializer rbs = new RbSerializer();
 
-		Assert.assertEquals(ec2.getDebugProperties().get(0).getKey(), "UTF8 Native characters");
-		Assert.assertEquals(ec2.getDebugProperties().get(0).getValue(), "Pøíliš žlu?ouèký kùò úpìl ïábelské ódy");
-	}
+        rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
 
-	// @Test
-	// 14 seconds for 1000 000,
-	// 15x faster
-	public void speed() throws IOException {
-		ExecCommands ec = new ExecCommands();
+        Assert.assertEquals(ec2.getDebugProperties().get(0).getKey(), "UTF8 Native characters");
+        Assert.assertEquals(ec2.getDebugProperties().get(0).getValue(), "Pøíliš žlu?ouèký kùò úpìl ïábelské ódy");
+    }
 
-		ec.setBodyTurnRemaining(150.123);
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
-		ec.getDebugProperties().add(new DebugProperty("ooooh", "aaaah"));
+    // @Test
+    // 14 seconds for 1000 000,
+    // 15x faster
+    public void speed() throws IOException {
+        ExecCommands ec = new ExecCommands();
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+        ec.setBodyTurnRemaining(150.123);
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
+        ec.getDebugProperties().add(new DebugProperty("ooooh", "aaaah"));
 
-		for (int i = 0; i < 1000000; i++) {
-			out.reset();
-			ec.setGunColor(i);
-			RbSerializer rbs = new RbSerializer();
+        ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
 
-			rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
-			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-			ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
+        for (int i = 0; i < 1000000; i++) {
+            out.reset();
+            ec.setGunColor(i);
+            RbSerializer rbs = new RbSerializer();
 
-			Assert.assertEquals(ec2.getGunColor(), i);
-		}
-	}
+            rbs.serialize(out, RbSerializer.ExecCommands_TYPE, ec);
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+            ExecCommands ec2 = (ExecCommands) rbs.deserialize(in);
 
-	// @Test
-	// 21 seconds for 100 000
-	public void speed2() {
-		ExecCommands ec = new ExecCommands();
+            Assert.assertEquals(ec2.getGunColor(), i);
+        }
+    }
 
-		ec.setBodyTurnRemaining(150.123);
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
-		ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
-		ec.getDebugProperties().add(new DebugProperty("ooooh", "aaaah"));
+    // @Test
+    // 21 seconds for 100 000
+    public void speed2() {
+        ExecCommands ec = new ExecCommands();
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+        ec.setBodyTurnRemaining(150.123);
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getBullets().add(new BulletCommand(1.0, true, 0.9354, 11));
+        ec.getTeamMessages().add(new TeamMessage("Foo", "Bar", null));
+        ec.getDebugProperties().add(new DebugProperty("ooooh", "aaaah"));
 
-		for (int i = 0; i < 100000; i++) {
-			out.reset();
-			ec.setGunColor(i);
-			ExecCommands ec2 = (ExecCommands) ObjectCloner.deepCopy(ec);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
 
-			Assert.assertEquals(ec2.getGunColor(), i);
-		}
-	}
+        for (int i = 0; i < 100000; i++) {
+            out.reset();
+            ec.setGunColor(i);
+            ExecCommands ec2 = (ExecCommands) ObjectCloner.deepCopy(ec);
 
-	@SuppressWarnings("serial")
-	@Test
-	public void graphics() throws InterruptedException {
-		final Graphics2DSerialized sg = new Graphics2DSerialized();
+            Assert.assertEquals(ec2.getGunColor(), i);
+        }
+    }
 
-		sg.setPaintingEnabled(true);
-		sg.setBackground(Color.GREEN);
-		sg.setColor(Color.RED);
-		Arc2D a = new Arc2D.Double(Arc2D.PIE);
+    @SuppressWarnings("serial")
+    @Test
+    public void graphics() throws InterruptedException {
+        final Graphics2DSerialized sg = new Graphics2DSerialized();
 
-		a.setAngleExtent(10);
-		a.setAngleStart(-30);
-		a.setFrame(0, 0, 80, 80);
-		sg.draw(a);
+        sg.setPaintingEnabled(true);
+        sg.setBackground(Color.GREEN);
+        sg.setColor(Color.RED);
+        Arc2D a = new Arc2D.Double(Arc2D.PIE);
 
-		sg.setColor(Color.BLUE);
-		sg.draw(new Line2D.Double(99, 98, 78, 3));
+        a.setAngleExtent(10);
+        a.setAngleStart(-30);
+        a.setFrame(0, 0, 80, 80);
+        sg.draw(a);
 
-		sg.setColor(Color.YELLOW);
-		sg.draw(new Rectangle2D.Double(20, 20, 30, 50));
+        sg.setColor(Color.BLUE);
+        sg.draw(new Line2D.Double(99, 98, 78, 3));
 
-		sg.setColor(Color.BLACK);
-		sg.drawLine(99, 3, 78, 3);
-		sg.drawRect(90, 20, 30, 50);
+        sg.setColor(Color.YELLOW);
+        sg.draw(new Rectangle2D.Double(20, 20, 30, 50));
 
-		sg.setColor(Color.CYAN);
+        sg.setColor(Color.BLACK);
+        sg.drawLine(99, 3, 78, 3);
+        sg.drawRect(90, 20, 30, 50);
 
-		sg.setStroke(new BasicStroke(1, 2, BasicStroke.JOIN_ROUND, 4, null, 0));
-		sg.fill(new Rectangle2D.Double(20, 70, 30, 50));
-		sg.fill(new Ellipse2D.Double(70, 70, 30, 50));
+        sg.setColor(Color.CYAN);
 
-		sg.setColor(Color.MAGENTA);
-		sg.fill(new RoundRectangle2D.Double(110, 70, 30, 50, 13.5, 16.1));
+        sg.setStroke(new BasicStroke(1, 2, BasicStroke.JOIN_ROUND, 4, null, 0));
+        sg.fill(new Rectangle2D.Double(20, 70, 30, 50));
+        sg.fill(new Ellipse2D.Double(70, 70, 30, 50));
 
-		exception = null;
-		
-		Canvas d = new Canvas() {
-			@Override
-			public void paint(Graphics g) {
-				synchronized (this) {
-					try {
-						sg.processTo((Graphics2D) g);
-					} catch (Exception e) {
-						exception = e;
-					}
-				}
-			}
-		};
+        sg.setColor(Color.MAGENTA);
+        sg.fill(new RoundRectangle2D.Double(110, 70, 30, 50, 13.5, 16.1));
 
-		d.setSize(200, 200);
+        exception = null;
 
-		JFrame f = new JFrame() {};
+        Canvas d = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                synchronized (this) {
+                    try {
+                        sg.processTo((Graphics2D) g);
+                    } catch (Exception e) {
+                        exception = e;
+                    }
+                }
+            }
+        };
 
-		f.add(d);
-		f.pack();
-		f.setVisible(true);
-		f.setFocusable(true);
-		Thread.sleep(100);
-		f.setVisible(false);
+        d.setSize(200, 200);
 
-		Assert.assertNull("Exception occured: " + exception, exception);
-	}
+        JFrame f = new JFrame() {
+        };
 
-	public static void assertNear(double v1, double v2) {
-		org.junit.Assert.assertEquals(v1, v2, Utils.NEAR_DELTA);
-	}
+        f.add(d);
+        f.pack();
+        f.setVisible(true);
+        f.setFocusable(true);
+        Thread.sleep(100);
+        f.setVisible(false);
+
+        Assert.assertNull("Exception occured: " + exception, exception);
+    }
+
+    public static void assertNear(double v1, double v2) {
+        org.junit.Assert.assertEquals(v1, v2, Utils.NEAR_DELTA);
+    }
 }

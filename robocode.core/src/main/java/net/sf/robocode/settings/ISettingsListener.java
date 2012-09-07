@@ -11,10 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.settings;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface ISettingsListener {
-	void settingChanged(String property);
+
+    void settingChanged(String property);
 }
