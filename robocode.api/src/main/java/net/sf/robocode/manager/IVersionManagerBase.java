@@ -11,16 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.manager;
 
+
 /**
  * @author Pavel Savara (original)
  */
 public interface IVersionManagerBase {
-
-    String getVersion();
-
-    String getVersionN();
-
-    int getVersionAsInt();
-
-    boolean isLastRunVersionChanged();
+	String getVersion();
+	String getVersionN();
+	int getVersionAsInt();
+	boolean isLastRunVersionChanged();
 }

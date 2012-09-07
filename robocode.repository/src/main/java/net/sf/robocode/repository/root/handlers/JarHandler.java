@@ -11,66 +11,66 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root.handlers;
 
+
+import net.sf.robocode.repository.Database;
+import net.sf.robocode.repository.root.IRepositoryRoot;
+import net.sf.robocode.repository.root.JarRoot;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.util.Map;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-import net.sf.robocode.repository.Database;
-import net.sf.robocode.repository.root.IRepositoryRoot;
-import net.sf.robocode.repository.root.JarRoot;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class JarHandler extends RootHandler {
+	public void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
+		if (!isDevel) {
+			// find jar files
+			final File[] jars = dir.listFiles(new FileFilter() {
+				public boolean accept(File pathname) {
+					final String low = pathname.toString().toLowerCase();
 
-    @Override
-    public void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
-        if (!isDevel) {
-            // find jar files
-            final File[] jars = dir.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    final String low = pathname.toString().toLowerCase();
+					return pathname.isFile() && (low.endsWith(".jar") || low.endsWith(".zip"));
+				}
+			});
 
-                    return pathname.isFile() && (low.endsWith(".jar") || low.endsWith(".zip"));
-                }
-            });
+			if (jars == null) {
+				return; // Avoid NPE by returning
+			}
 
-            if (jars == null) {
-                return; // Avoid NPE by returning
-            }
+			// update jar files
+			for (File jar : jars) {
+				String key;
 
-            // update jar files
-            for (File jar : jars) {
-                String key;
+				try {
+					key = "jar:" + jar.toURI().toURL().toString() + "!/";
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+					continue;
+				}
+				IRepositoryRoot root = roots.get(key);
 
-                try {
-                    key = "jar:" + jar.toURI().toURL().toString() + "!/";
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    continue;
-                }
-                IRepositoryRoot root = roots.get(key);
+				if (root == null) {
+					root = new JarRoot(db, jar);
+				} else {
+					roots.remove(key);
+				}
 
-                if (root == null) {
-                    root = new JarRoot(db, jar);
-                } else {
-                    roots.remove(key);
-                }
+				root.update(force);
+				newroots.put(key, root);
 
-                root.update(force);
-                newroots.put(key, root);
-
-                try {
-                    URLJarCollector.closeJarURLConnection(jar.toURI().toURL());
-                } catch (MalformedURLException e) {
-                    Logger.logError(e);
-                }
-                URLJarCollector.gc();
-            }
-        }
-    }
+				try {
+					URLJarCollector.closeJarURLConnection(jar.toURI().toURL());
+				} catch (MalformedURLException e) {
+					Logger.logError(e);
+				}
+				URLJarCollector.gc();
+			}
+		}
+	}
 }

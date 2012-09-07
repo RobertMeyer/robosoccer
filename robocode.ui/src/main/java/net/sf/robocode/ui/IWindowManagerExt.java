@@ -11,63 +11,65 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-import javax.swing.*;
+
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.BattleResultsTableModel;
 import robocode.control.events.BattleCompletedEvent;
+
+import javax.swing.*;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IWindowManagerExt extends IWindowManager {
+	void showAboutBox();
 
-    void showAboutBox();
+	String showBattleOpenDialog(String defExt, String name);
 
-    String showBattleOpenDialog(String defExt, String name);
+	String saveBattleDialog(String path, String defExt, String name);
 
-    String saveBattleDialog(String path, String defExt, String name);
+	void showReadMe();
+	
+	void showVersionsTxt();
 
-    void showReadMe();
+	void showHelpApi();
 
-    void showVersionsTxt();
+	void showFaq();
 
-    void showHelpApi();
+	void showOnlineHelp();
 
-    void showFaq();
+	void showJavaDocumentation();
 
-    void showOnlineHelp();
+	void showRobocodeHome();
 
-    void showJavaDocumentation();
+	void showRoboWiki();
 
-    void showRobocodeHome();
+	void showYahooGroupRobocode();
 
-    void showRoboWiki();
+	void showRobocodeRepository();
 
-    void showYahooGroupRobocode();
+	void showOptionsPreferences();
 
-    void showRobocodeRepository();
+	void showResultsDialog(BattleCompletedEvent event);
 
-    void showOptionsPreferences();
+	void showRankingDialog(boolean visible);
 
-    void showResultsDialog(BattleCompletedEvent event);
+	void showRobocodeEditor();
 
-    void showRankingDialog(boolean visible);
+	void showRobotPackager();
 
-    void showRobocodeEditor();
+	void showRobotExtractor(JFrame owner);
 
-    void showRobotPackager();
+	void showNewBattleDialog(BattleProperties battleProperties, boolean openBattle);
 
-    void showRobotExtractor(JFrame owner);
+	boolean closeRobocodeEditor();
 
-    void showNewBattleDialog(BattleProperties battleProperties, boolean openBattle);
+	void showCreateTeamDialog();
 
-    boolean closeRobocodeEditor();
+	void showImportRobotDialog();
 
-    void showCreateTeamDialog();
+	void showSaveResultsDialog(BattleResultsTableModel tableModel);
 
-    void showImportRobotDialog();
-
-    void showSaveResultsDialog(BattleResultsTableModel tableModel);
-
-    int getFPS();
+	int getFPS();
 }

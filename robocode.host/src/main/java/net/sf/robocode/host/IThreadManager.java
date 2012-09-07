@@ -11,37 +11,39 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
-import java.io.PrintStream;
+
 import net.sf.robocode.security.IThreadManagerBase;
+
+import java.io.PrintStream;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IThreadManager extends IThreadManagerBase {
+	void addThreadGroup(ThreadGroup g, IHostedThread robotProxy);
 
-    void addThreadGroup(ThreadGroup g, IHostedThread robotProxy);
+	IHostedThread getLoadingRobot();
 
-    IHostedThread getLoadingRobot();
+	IHostedThread getLoadingRobotProxy(Thread t);
 
-    IHostedThread getLoadingRobotProxy(Thread t);
+	IHostedThread getLoadedOrLoadingRobotProxy(Thread t);
 
-    IHostedThread getLoadedOrLoadingRobotProxy(Thread t);
+	IHostedThread getRobotProxy(Thread t);
 
-    IHostedThread getRobotProxy(Thread t);
+	void reset();
 
-    void reset();
+	void setLoadingRobot(IHostedThread newLoadingRobotProxy);
 
-    void setLoadingRobot(IHostedThread newLoadingRobotProxy);
+	void addSafeThread(Thread safeThread);
+	
+	void addSafeThreadGroup(ThreadGroup safeThreadGroup);
 
-    void addSafeThread(Thread safeThread);
+	void removeSafeThread(Thread safeThread);
 
-    void addSafeThreadGroup(ThreadGroup safeThreadGroup);
+	boolean isSafeThread(Thread c);
 
-    void removeSafeThread(Thread safeThread);
+	PrintStream getRobotOutputStream();
 
-    boolean isSafeThread(Thread c);
-
-    PrintStream getRobotOutputStream();
-
-    boolean checkRobotFileStream();
+	boolean checkRobotFileStream();
 }

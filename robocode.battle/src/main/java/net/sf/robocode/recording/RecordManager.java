@@ -11,14 +11,7 @@
  *******************************************************************************/
 package net.sf.robocode.recording;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.io.FileUtil;
@@ -33,429 +26,427 @@ import robocode.BattleResults;
 import robocode.BattleRules;
 import robocode.control.snapshot.ITurnSnapshot;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+
 /**
  * @author Pavel Savara (original)
  */
 public class RecordManager implements IRecordManager {
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
-    private final ISettingsManager properties;
-    private File tempFile;
-    private BattleRecorder recorder;
-    public BattleRecordInfo recordInfo;
-    private FileOutputStream fileWriteStream;
-    private BufferedOutputStream bufferedWriteStream;
-    private ObjectOutputStream objectWriteStream;
-    private FileInputStream fileReadStream;
-    private BufferedInputStream bufferedReadStream;
-    private ObjectInputStream objectReadStream;
+	private final ISettingsManager properties;
 
-    public RecordManager(ISettingsManager properties) {
-        this.properties = properties;
-        recorder = new BattleRecorder(this, properties);
-    }
+	private File tempFile;
+	private BattleRecorder recorder;
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            cleanup();
-        } finally {
-            super.finalize();
-        }
-    }
+	public BattleRecordInfo recordInfo;
+	private FileOutputStream fileWriteStream;
+	private BufferedOutputStream bufferedWriteStream;
+	private ObjectOutputStream objectWriteStream;
 
-    private void cleanup() {
-        cleanupStreams();
-        if (tempFile != null && tempFile.exists()) {
-            if (tempFile.delete() == false) {
-                Logger.logError("Could not delete temp file");
-            }
-            tempFile = null;
-        }
-        recordInfo = null;
-    }
+	private FileInputStream fileReadStream;
+	private BufferedInputStream bufferedReadStream;
+	private ObjectInputStream objectReadStream;
 
-    public void cleanupStreams() {
-        FileUtil.cleanupStream(objectWriteStream);
-        objectWriteStream = null;
-        FileUtil.cleanupStream(bufferedWriteStream);
-        bufferedWriteStream = null;
-        FileUtil.cleanupStream(fileWriteStream);
-        fileWriteStream = null;
+	public RecordManager(ISettingsManager properties) {
+		this.properties = properties;
+		recorder = new BattleRecorder(this, properties);
+	}
 
-        FileUtil.cleanupStream(objectReadStream);
-        objectReadStream = null;
-        FileUtil.cleanupStream(bufferedReadStream);
-        bufferedReadStream = null;
-        FileUtil.cleanupStream(fileReadStream);
-        fileReadStream = null;
-    }
+	protected void finalize() throws Throwable {
+		try {
+			cleanup();
+		} finally {
+			super.finalize();
+		}
+	}
 
-    @Override
-    public void attachRecorder(BattleEventDispatcher battleEventDispatcher) {
-        recorder.attachRecorder(battleEventDispatcher);
-    }
+	private void cleanup() {
+		cleanupStreams();
+		if (tempFile != null && tempFile.exists()) {
+			if (tempFile.delete() == false) {
+				Logger.logError("Could not delete temp file");
+			}
+			tempFile = null;
+		}
+		recordInfo = null;
+	}
 
-    @Override
-    public void detachRecorder() {
-        recorder.detachRecorder();
-    }
+	public void cleanupStreams() {
+		FileUtil.cleanupStream(objectWriteStream);
+		objectWriteStream = null;
+		FileUtil.cleanupStream(bufferedWriteStream);
+		bufferedWriteStream = null;
+		FileUtil.cleanupStream(fileWriteStream);
+		fileWriteStream = null;
 
-    private void createTempFile() {
-        try {
-            if (tempFile == null) {
-                tempFile = File.createTempFile("robocode-battle-records", ".tmp");
-                tempFile.deleteOnExit();
-            } else {
-                if (!tempFile.delete()) {
-                    Logger.logError("Could not delete temp file");
-                }
-                if (!tempFile.createNewFile()) {
-                    throw new Error("Temp file creation failed");
-                }
-            }
-        } catch (IOException e) {
-            logError(e);
-            throw new Error("Temp file creation failed", e);
-        }
-    }
+		FileUtil.cleanupStream(objectReadStream);
+		objectReadStream = null;
+		FileUtil.cleanupStream(bufferedReadStream);
+		bufferedReadStream = null;
+		FileUtil.cleanupStream(fileReadStream);
+		fileReadStream = null;
+	}
 
-    public void prepareInputStream() {
-        try {
-            fileReadStream = new FileInputStream(tempFile);
-            bufferedReadStream = new BufferedInputStream(fileReadStream);
-            objectReadStream = new ObjectInputStream(bufferedReadStream);
-        } catch (FileNotFoundException e) {
-            logError(e);
-            fileReadStream = null;
-            bufferedReadStream = null;
-            objectReadStream = null;
-        } catch (IOException e) {
-            logError(e);
-            fileReadStream = null;
-            bufferedReadStream = null;
-            objectReadStream = null;
-        }
-    }
+	public void attachRecorder(BattleEventDispatcher battleEventDispatcher) {
+		recorder.attachRecorder(battleEventDispatcher);
+	}
 
-    public ITurnSnapshot readSnapshot(int currentTime) {
-        if (objectReadStream == null) {
-            return null;
-        }
-        try {
-            // TODO implement seek to currentTime, warn you. turns don't have same size in bytes
-            return (ITurnSnapshot) objectReadStream.readObject();
-        } catch (EOFException e) {
-            logError(e);
-            return null;
-        } catch (Exception e) {
-            logError(e);
-            return null;
-        }
-    }
+	public void detachRecorder() {
+		recorder.detachRecorder();
+	}
 
-    @Override
-    public void loadRecord(String recordFilename, BattleRecordFormat format) {
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-        ZipInputStream zis = null;
-        ObjectInputStream ois = null;
-        InputStream xis = null;
+	private void createTempFile() {
+		try {
+			if (tempFile == null) {
+				tempFile = File.createTempFile("robocode-battle-records", ".tmp");
+				tempFile.deleteOnExit();
+			} else {
+				if (!tempFile.delete()) {
+					Logger.logError("Could not delete temp file");
+				}
+				if (!tempFile.createNewFile()) {
+					throw new Error("Temp file creation failed");					
+				}
+			}
+		} catch (IOException e) {
+			logError(e);
+			throw new Error("Temp file creation failed", e);
+		}
+	}
 
-        FileOutputStream fos = null;
-        BufferedOutputStream bos = null;
-        ObjectOutputStream oos = null;
+	public void prepareInputStream() {
+		try {
+			fileReadStream = new FileInputStream(tempFile);
+			bufferedReadStream = new BufferedInputStream(fileReadStream);
+			objectReadStream = new ObjectInputStream(bufferedReadStream);
+		} catch (FileNotFoundException e) {
+			logError(e);
+			fileReadStream = null;
+			bufferedReadStream = null;
+			objectReadStream = null;
+		} catch (IOException e) {
+			logError(e);
+			fileReadStream = null;
+			bufferedReadStream = null;
+			objectReadStream = null;
+		}
+	}
 
-        try {
-            createTempFile();
-            fis = new FileInputStream(recordFilename);
-            bis = new BufferedInputStream(fis, 1024 * 1024);
+	public ITurnSnapshot readSnapshot(int currentTime) {
+		if (objectReadStream == null) {
+			return null;
+		}
+		try {
+			// TODO implement seek to currentTime, warn you. turns don't have same size in bytes
+			return (ITurnSnapshot) objectReadStream.readObject();
+		} catch (EOFException e) {
+			logError(e);
+			return null;
+		} catch (Exception e) {
+			logError(e);
+			return null;
+		}
+	}
 
-            if (format == BattleRecordFormat.BINARY) {
-                ois = new ObjectInputStream(bis);
-            } else if (format == BattleRecordFormat.BINARY_ZIP) {
-                zis = new ZipInputStream(bis);
-                zis.getNextEntry();
-                ois = new ObjectInputStream(zis);
-            } else if (format == BattleRecordFormat.XML_ZIP) {
-                zis = new ZipInputStream(bis);
-                zis.getNextEntry();
-                xis = zis;
-            } else if (format == BattleRecordFormat.XML) {
-                xis = bis;
-            }
-            if (format == BattleRecordFormat.BINARY || format == BattleRecordFormat.BINARY_ZIP) {
-                recordInfo = (BattleRecordInfo) ois.readObject();
-                if (recordInfo.turnsInRounds != null) {
-                    fos = new FileOutputStream(tempFile);
-                    bos = new BufferedOutputStream(fos, 1024 * 1024);
-                    oos = new ObjectOutputStream(bos);
+	public void loadRecord(String recordFilename, BattleRecordFormat format) {
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		ZipInputStream zis = null;
+		ObjectInputStream ois = null;
+		InputStream xis = null;
 
-                    for (int i = 0; i < recordInfo.turnsInRounds.length; i++) {
-                        for (int j = recordInfo.turnsInRounds[i] - 1; j >= 0; j--) {
-                            try {
-                                ITurnSnapshot turn = (ITurnSnapshot) ois.readObject();
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
+		ObjectOutputStream oos = null;
 
-                                oos.writeObject(turn);
-                            } catch (ClassNotFoundException e) {
-                                logError(e);
-                            }
-                        }
-                    }
-                }
-            } else {
-                final RecordRoot root = new RecordRoot();
+		try {
+			createTempFile();
+			fis = new FileInputStream(recordFilename);
+			bis = new BufferedInputStream(fis, 1024 * 1024);
 
-                fos = new FileOutputStream(tempFile);
-                bos = new BufferedOutputStream(fos, 1024 * 1024);
-                root.oos = new ObjectOutputStream(bos);
-                XmlReader.deserialize(xis, root);
-                if (root.lastException != null) {
-                    logError(root.lastException);
-                }
-                recordInfo = root.recordInfo;
-            }
-        } catch (IOException e) {
-            logError(e);
-            createTempFile();
-            recordInfo = null;
-        } catch (ClassNotFoundException e) {
-            if (e.getMessage().contains("robocode.recording.BattleRecordInfo")) {
-                Logger.logError("Sorry, backward compatibility with record from version 1.6 is not provided.");
-            } else {
-                logError(e);
-            }
-            createTempFile();
-            recordInfo = null;
-        } finally {
-            FileUtil.cleanupStream(oos);
-            FileUtil.cleanupStream(bos);
-            FileUtil.cleanupStream(fos);
-            FileUtil.cleanupStream(ois);
-            FileUtil.cleanupStream(zis);
-            FileUtil.cleanupStream(bis);
-            FileUtil.cleanupStream(fis);
-        }
-    }
+			if (format == BattleRecordFormat.BINARY) {
+				ois = new ObjectInputStream(bis);
+			} else if (format == BattleRecordFormat.BINARY_ZIP) {
+				zis = new ZipInputStream(bis);
+				zis.getNextEntry();
+				ois = new ObjectInputStream(zis);
+			} else if (format == BattleRecordFormat.XML_ZIP) {
+				zis = new ZipInputStream(bis);
+				zis.getNextEntry();
+				xis = zis;
+			} else if (format == BattleRecordFormat.XML) {
+				xis = bis;
+			}
+			if (format == BattleRecordFormat.BINARY || format == BattleRecordFormat.BINARY_ZIP) {
+				recordInfo = (BattleRecordInfo) ois.readObject();
+				if (recordInfo.turnsInRounds != null) {
+					fos = new FileOutputStream(tempFile);
+					bos = new BufferedOutputStream(fos, 1024 * 1024);
+					oos = new ObjectOutputStream(bos);
 
-    private static class RecordRoot implements IXmlSerializable {
+					for (int i = 0; i < recordInfo.turnsInRounds.length; i++) {
+						for (int j = recordInfo.turnsInRounds[i] - 1; j >= 0; j--) {
+							try {
+								ITurnSnapshot turn = (ITurnSnapshot) ois.readObject();
 
-        public RecordRoot() {
-            me = this;
-        }
-        public ObjectOutputStream oos;
-        public IOException lastException;
-        public final RecordRoot me;
-        public BattleRecordInfo recordInfo;
+								oos.writeObject(turn);
+							} catch (ClassNotFoundException e) {
+								logError(e);
+							}
+						}
+					}
+				}
+			} else {
+				final RecordRoot root = new RecordRoot();
 
-        @Override
-        public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
-        }
+				fos = new FileOutputStream(tempFile);
+				bos = new BufferedOutputStream(fos, 1024 * 1024);
+				root.oos = new ObjectOutputStream(bos);
+				XmlReader.deserialize(xis, root);
+				if (root.lastException != null) {
+					logError(root.lastException);
+				}
+				recordInfo = root.recordInfo;
+			}
+		} catch (IOException e) {
+			logError(e);
+			createTempFile();
+			recordInfo = null;
+		} catch (ClassNotFoundException e) {
+			if (e.getMessage().contains("robocode.recording.BattleRecordInfo")) {
+				Logger.logError("Sorry, backward compatibility with record from version 1.6 is not provided.");
+			} else {
+				logError(e);
+			}
+			createTempFile();
+			recordInfo = null;
+		} finally {
+			FileUtil.cleanupStream(oos);
+			FileUtil.cleanupStream(bos);
+			FileUtil.cleanupStream(fos);
+			FileUtil.cleanupStream(ois);
+			FileUtil.cleanupStream(zis);
+			FileUtil.cleanupStream(bis);
+			FileUtil.cleanupStream(fis);
+		}
+	}
 
-        @Override
-        public XmlReader.Element readXml(XmlReader reader) {
-            return reader.expect("record", new XmlReader.Element() {
-                @Override
-                public IXmlSerializable read(final XmlReader reader) {
+	private static class RecordRoot implements IXmlSerializable {
 
-                    final XmlReader.Element element = (new BattleRecordInfo()).readXml(reader);
+		public RecordRoot() {
+			me = this;
+		}
 
-                    reader.expect("recordInfo", new XmlReader.ElementClose() {
-                        @Override
-                        public IXmlSerializable read(XmlReader reader) {
-                            recordInfo = (BattleRecordInfo) element.read(reader);
-                            return recordInfo;
-                        }
+		public ObjectOutputStream oos;
+		public IOException lastException;
+		public final RecordRoot me;
+		public BattleRecordInfo recordInfo;
 
-                        @Override
-                        public void close() {
-                            reader.getContext().put("robots", recordInfo.robotCount);
-                        }
-                    });
+		public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {}
 
-                    reader.expect("turns", new XmlReader.ListElement() {
-                        @Override
-                        public IXmlSerializable read(XmlReader reader) {
-                            // prototype
-                            return new TurnSnapshot();
-                        }
+		public XmlReader.Element readXml(XmlReader reader) {
+			return reader.expect("record", new XmlReader.Element() {
+				public IXmlSerializable read(final XmlReader reader) {
 
-                        @Override
-                        public void add(IXmlSerializable child) {
-                            try {
-                                me.oos.writeObject(child);
-                            } catch (IOException e) {
-                                me.lastException = e;
-                            }
-                        }
+					final XmlReader.Element element = (new BattleRecordInfo()).readXml(reader);
 
-                        @Override
-                        public void close() {
-                        }
-                    });
+					reader.expect("recordInfo", new XmlReader.ElementClose() {
+						public IXmlSerializable read(XmlReader reader) {
+							recordInfo = (BattleRecordInfo) element.read(reader);
+							return recordInfo;
+						}
 
-                    return me;
-                }
-            });
-        }
-    }
+						public void close() {
+							reader.getContext().put("robots", recordInfo.robotCount);
+						}
+					});
 
-    @Override
-    public void saveRecord(String recordFilename, BattleRecordFormat format, SerializableOptions options) {
-        FileOutputStream fos = null;
-        BufferedOutputStream bos = null;
-        ZipOutputStream zos = null;
-        ObjectOutputStream oos = null;
-        OutputStreamWriter osw = null;
-        XmlWriter xwr = null;
+					reader.expect("turns", new XmlReader.ListElement() {
+						public IXmlSerializable read(XmlReader reader) {
+							// prototype
+							return new TurnSnapshot();
+						}
 
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-        ObjectInputStream ois = null;
+						public void add(IXmlSerializable child) {
+							try {
+								me.oos.writeObject(child);
+							} catch (IOException e) {
+								me.lastException = e;
+							}
+						}
 
-        final boolean isbin = format == BattleRecordFormat.BINARY || format == BattleRecordFormat.BINARY_ZIP;
-        final boolean isxml = format == BattleRecordFormat.XML || format == BattleRecordFormat.XML_ZIP;
-        Calendar calendar = Calendar.getInstance();
+						public void close() {}
+					});
 
-        try {
-            fos = new FileOutputStream(recordFilename);
-            bos = new BufferedOutputStream(fos, 1024 * 1024);
+					return me;
+				}
+			});
+		}
+	}
 
-            if (format == BattleRecordFormat.BINARY) {
-                oos = new ObjectOutputStream(bos);
-            } else if (format == BattleRecordFormat.BINARY_ZIP) {
-                zos = new ZipOutputStream(bos);
-                zos.putNextEntry(new ZipEntry(dateFormat.format(calendar.getTime()) + "-robocode.br"));
-                oos = new ObjectOutputStream(zos);
-            } else if (format == BattleRecordFormat.XML) {
-                final Charset utf8 = Charset.forName("UTF-8");
+	public void saveRecord(String recordFilename, BattleRecordFormat format, SerializableOptions options) {
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
+		ZipOutputStream zos = null;
+		ObjectOutputStream oos = null;
+		OutputStreamWriter osw = null;
+		XmlWriter xwr = null;
 
-                osw = new OutputStreamWriter(bos, utf8);
-                xwr = new XmlWriter(osw, true);
-            } else if (format == BattleRecordFormat.XML_ZIP) {
-                final Charset utf8 = Charset.forName("UTF-8");
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		ObjectInputStream ois = null;
 
-                zos = new ZipOutputStream(bos);
-                zos.putNextEntry(new ZipEntry(dateFormat.format(calendar.getTime()) + "-robocode.xml"));
+		final boolean isbin = format == BattleRecordFormat.BINARY || format == BattleRecordFormat.BINARY_ZIP;
+		final boolean isxml = format == BattleRecordFormat.XML || format == BattleRecordFormat.XML_ZIP;
+		Calendar calendar = Calendar.getInstance();
 
-                osw = new OutputStreamWriter(zos, utf8);
-                xwr = new XmlWriter(osw, false);
-            }
+		try {
+			fos = new FileOutputStream(recordFilename);
+			bos = new BufferedOutputStream(fos, 1024 * 1024);
 
-            if (isbin) {
-                oos.writeObject(recordInfo);
-            } else if (isxml) {
-                xwr.startDocument();
-                xwr.startElement("record");
-                xwr.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-                if (options.shortAttributes) {
-                    xwr.writeAttribute("xsi:noNamespaceSchemaLocation", "battleRecordS.xsd");
-                } else {
-                    xwr.writeAttribute("xsi:noNamespaceSchemaLocation", "battleRecord.xsd");
-                }
-                recordInfo.writeXml(xwr, options);
-                xwr.startElement("turns");
-            }
+			if (format == BattleRecordFormat.BINARY) {
+				oos = new ObjectOutputStream(bos);
+			} else if (format == BattleRecordFormat.BINARY_ZIP) {
+				zos = new ZipOutputStream(bos);
+				zos.putNextEntry(new ZipEntry(dateFormat.format(calendar.getTime()) + "-robocode.br"));
+				oos = new ObjectOutputStream(zos);
+			} else if (format == BattleRecordFormat.XML) {
+				final Charset utf8 = Charset.forName("UTF-8");
 
-            if (recordInfo.turnsInRounds != null) {
-                fis = new FileInputStream(tempFile);
-                bis = new BufferedInputStream(fis, 1024 * 1024);
-                ois = new ObjectInputStream(bis);
+				osw = new OutputStreamWriter(bos, utf8);
+				xwr = new XmlWriter(osw, true);
+			} else if (format == BattleRecordFormat.XML_ZIP) {
+				final Charset utf8 = Charset.forName("UTF-8");
 
-                for (int i = 0; i < recordInfo.turnsInRounds.length; i++) {
-                    if (recordInfo.turnsInRounds[i] > 0) {
-                        for (int j = 0; j <= recordInfo.turnsInRounds[i] - 1; j++) {
-                            try {
-                                TurnSnapshot turn = (TurnSnapshot) ois.readObject();
+				zos = new ZipOutputStream(bos);
+				zos.putNextEntry(new ZipEntry(dateFormat.format(calendar.getTime()) + "-robocode.xml"));
 
-                                if (j != turn.getTurn()) {
-                                    throw new Error("Something rotten");
-                                }
+				osw = new OutputStreamWriter(zos, utf8);
+				xwr = new XmlWriter(osw, false);
+			}
 
-                                if (isbin) {
-                                    turn.stripDetails(options);
-                                    oos.writeObject(turn);
-                                } else if (isxml) {
-                                    turn.writeXml(xwr, options);
-                                }
-                            } catch (ClassNotFoundException e) {
-                                logError(e);
-                            }
-                        }
-                        if (isbin) {
-                            oos.flush();
-                        } else if (isxml) {
-                            osw.flush();
-                        }
-                        bos.flush();
-                        fos.flush();
-                    }
-                }
-                if (isxml) {
-                    xwr.endElement(); // turns
-                    xwr.endElement(); // record
-                    osw.flush();
-                }
-            }
+			if (isbin) {
+				oos.writeObject(recordInfo);
+			} else if (isxml) {
+				xwr.startDocument();
+				xwr.startElement("record");
+				xwr.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+				if (options.shortAttributes) {
+					xwr.writeAttribute("xsi:noNamespaceSchemaLocation", "battleRecordS.xsd");
+				} else {
+					xwr.writeAttribute("xsi:noNamespaceSchemaLocation", "battleRecord.xsd");
+				}
+				recordInfo.writeXml(xwr, options);
+				xwr.startElement("turns");
+			}
 
-        } catch (IOException e) {
-            logError(e);
-            recorder = new BattleRecorder(this, properties);
-            createTempFile();
-        } finally {
-            FileUtil.cleanupStream(ois);
-            FileUtil.cleanupStream(bis);
-            FileUtil.cleanupStream(fis);
-            FileUtil.cleanupStream(oos);
-            FileUtil.cleanupStream(zos);
-            FileUtil.cleanupStream(bos);
-            FileUtil.cleanupStream(fos);
-            FileUtil.cleanupStream(osw);
-        }
-    }
+			if (recordInfo.turnsInRounds != null) {
+				fis = new FileInputStream(tempFile);
+				bis = new BufferedInputStream(fis, 1024 * 1024);
+				ois = new ObjectInputStream(bis);
 
-    @Override
-    public boolean hasRecord() {
-        return recordInfo != null;
-    }
+				for (int i = 0; i < recordInfo.turnsInRounds.length; i++) {
+					if (recordInfo.turnsInRounds[i] > 0) {
+						for (int j = 0; j <= recordInfo.turnsInRounds[i] - 1; j++) {
+							try {
+								TurnSnapshot turn = (TurnSnapshot) ois.readObject();
 
-    public void createRecordInfo(BattleRules rules, int numRobots) {
-        try {
-            createTempFile();
+								if (j != turn.getTurn()) {
+									throw new Error("Something rotten");
+								}
 
-            fileWriteStream = new FileOutputStream(tempFile);
-            bufferedWriteStream = new BufferedOutputStream(fileWriteStream, 1024 * 1024);
-            objectWriteStream = new ObjectOutputStream(bufferedWriteStream);
-        } catch (IOException e) {
-            logError(e);
-        }
+								if (isbin) {
+									turn.stripDetails(options);
+									oos.writeObject(turn);
+								} else if (isxml) {
+									turn.writeXml(xwr, options);
+								}
+							} catch (ClassNotFoundException e) {
+								logError(e);
+							}
+						}
+						if (isbin) {
+							oos.flush();
+						} else if (isxml) {
+							osw.flush();
+						}
+						bos.flush();
+						fos.flush();
+					}
+				}
+				if (isxml) {
+					xwr.endElement(); // turns
+					xwr.endElement(); // record
+					osw.flush();
+				}
+			}
 
-        recordInfo = new BattleRecordInfo();
-        recordInfo.robotCount = numRobots;
-        recordInfo.battleRules = rules;
-        recordInfo.turnsInRounds = new Integer[rules.getNumRounds()];
-        for (int i = 0; i < rules.getNumRounds(); i++) {
-            recordInfo.turnsInRounds[i] = 0;
-        }
-    }
+		} catch (IOException e) {
+			logError(e);
+			recorder = new BattleRecorder(this, properties);
+			createTempFile();
+		} finally {
+			FileUtil.cleanupStream(ois);
+			FileUtil.cleanupStream(bis);
+			FileUtil.cleanupStream(fis);
+			FileUtil.cleanupStream(oos);
+			FileUtil.cleanupStream(zos);
+			FileUtil.cleanupStream(bos);
+			FileUtil.cleanupStream(fos);
+			FileUtil.cleanupStream(osw);
+		}
+	}
 
-    public void updateRecordInfoResults(List<BattleResults> results) {
-        recordInfo.results = results;
-    }
+	public boolean hasRecord() {
+		return recordInfo != null;
+	}
 
-    public void writeTurn(ITurnSnapshot turn, int round, int time) {
-        try {
-            if (time != recordInfo.turnsInRounds[round]) {
-                throw new Error("Something rotten");
-            }
-            if (time == 0) {
-                objectWriteStream.reset();
-            }
-            recordInfo.turnsInRounds[round]++;
-            recordInfo.roundsCount = round + 1;
-            objectWriteStream.writeObject(turn);
-        } catch (IOException e) {
-            logError(e);
-        }
-    }
+	public void createRecordInfo(BattleRules rules, int numRobots) {
+		try {
+			createTempFile();
+
+			fileWriteStream = new FileOutputStream(tempFile);
+			bufferedWriteStream = new BufferedOutputStream(fileWriteStream, 1024 * 1024);
+			objectWriteStream = new ObjectOutputStream(bufferedWriteStream);
+		} catch (IOException e) {
+			logError(e);
+		}
+
+		recordInfo = new BattleRecordInfo();
+		recordInfo.robotCount = numRobots;
+		recordInfo.battleRules = rules;
+		recordInfo.turnsInRounds = new Integer[rules.getNumRounds()];
+		for (int i = 0; i < rules.getNumRounds(); i++) {
+			recordInfo.turnsInRounds[i] = 0; 
+		}
+	}
+
+	public void updateRecordInfoResults(List<BattleResults> results) {
+		recordInfo.results = results;
+	}
+
+	public void writeTurn(ITurnSnapshot turn, int round, int time) {
+		try {
+			if (time != recordInfo.turnsInRounds[round]) {
+				throw new Error("Something rotten");
+			}
+			if (time == 0) {
+				objectWriteStream.reset();
+			}
+			recordInfo.turnsInRounds[round]++;
+			recordInfo.roundsCount = round + 1;
+			objectWriteStream.writeObject(turn);
+		} catch (IOException e) {
+			logError(e);
+		}
+	}
 }

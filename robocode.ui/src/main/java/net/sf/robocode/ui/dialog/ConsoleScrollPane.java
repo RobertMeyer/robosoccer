@@ -15,13 +15,16 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+
+import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -30,143 +33,144 @@ import javax.swing.text.DefaultCaret;
 @SuppressWarnings("serial")
 public class ConsoleScrollPane extends JScrollPane {
 
-    private static final int MAX_ROWS = 500;
-    private static final String TEXT_TRUNCATED_MSG = "^^^ TEXT TRUNCATED ^^^";
-    private JTextArea textArea;
-    private int lines;
-    private int maxRows;
+	private static final int MAX_ROWS = 500;
+	private static final String TEXT_TRUNCATED_MSG = "^^^ TEXT TRUNCATED ^^^";
 
-    public ConsoleScrollPane() {
-        super();
-        setViewportView(getTextPane());
-    }
+	private JTextArea textArea;
+	private int lines;
+	private int maxRows;
 
-    public JTextArea getTextPane() {
-        if (textArea == null) {
-            textArea = new JTextArea();
+	public ConsoleScrollPane() {
+		super();
+		setViewportView(getTextPane());
+	}
 
-            textArea.setEditable(false);
-            textArea.setTabSize(4);
-            textArea.setBackground(Color.DARK_GRAY);
-            textArea.setForeground(Color.WHITE);
-            textArea.setBounds(0, 0, 1000, 1000);
+	public JTextArea getTextPane() {
+		if (textArea == null) {
+			textArea = new JTextArea();
 
-            // Make sure the caret is not reset every time text is updated, meaning that
-            // the view will not reset it's position until we want it to.
-            ((DefaultCaret) textArea.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-        }
-        return textArea;
-    }
+			textArea.setEditable(false);
+			textArea.setTabSize(4);
+			textArea.setBackground(Color.DARK_GRAY);
+			textArea.setForeground(Color.WHITE);
+			textArea.setBounds(0, 0, 1000, 1000);
 
-    public void append(String str) {
-        // Return if the string is null or empty
-        if (str == null || str.length() == 0) {
-            return;
-        }
-        // Append the new string to the text pane
-        getTextPane().append(str);
+			// Make sure the caret is not reset every time text is updated, meaning that
+			// the view will not reset it's position until we want it to.
+			((DefaultCaret) textArea.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+		}
+		return textArea;
+	}
 
-        // Count number of new lines, i.e. lines ended with '\n'
-        int numNewLines = str.replaceAll("[^\\n]", "").length();
+	public void append(String str) {
+		// Return if the string is null or empty
+		if (str == null || str.length() == 0) {
+			return;
+		}
+		// Append the new string to the text pane
+		getTextPane().append(str);
 
-        // Increment the current number of lines with the new lines
-        lines += numNewLines;
+		// Count number of new lines, i.e. lines ended with '\n'
+		int numNewLines = str.replaceAll("[^\\n]", "").length();
 
-        // Calculate number lines exceeded compared to the max. number of lines
-        int linesExceeded = lines - MAX_ROWS;
+		// Increment the current number of lines with the new lines
+		lines += numNewLines;
 
-        // Check if we exceeded the number of max. lines
-        if (linesExceeded > 0) {
-            // We use a rolling buffer so that the oldest lines are removed first.
-            // Remove the number of lines we are exceeding in the beginning of the contained text.
+		// Calculate number lines exceeded compared to the max. number of lines
+		int linesExceeded = lines - MAX_ROWS;
 
-            // Cut down the number of lines to max. number of lines
-            lines = MAX_ROWS;
+		// Check if we exceeded the number of max. lines
+		if (linesExceeded > 0) {
+			// We use a rolling buffer so that the oldest lines are removed first.
+			// Remove the number of lines we are exceeding in the beginning of the contained text.
 
-            // Find the index where to cut the number of exceeding lines in the beginning of the text
-            String text = getText();
-            int cutIndex = -1;
+			// Cut down the number of lines to max. number of lines
+			lines = MAX_ROWS;
 
-            for (int c = 0; c < linesExceeded; c++) {
-                cutIndex = text.indexOf('\n', cutIndex + 1);
-            }
-            // Replace the first lines of the contained text till the cut index
-            textArea.replaceRange(null, 0, cutIndex + 1);
+			// Find the index where to cut the number of exceeding lines in the beginning of the text
+			String text = getText();
+			int cutIndex = -1;
 
-            // Replace first line with a message that text has been truncated
-            textArea.replaceRange(TEXT_TRUNCATED_MSG, 0, getText().indexOf('\n'));
-        }
+			for (int c = 0; c < linesExceeded; c++) {
+				cutIndex = text.indexOf('\n', cutIndex + 1);
+			}
+			// Replace the first lines of the contained text till the cut index
+			textArea.replaceRange(null, 0, cutIndex + 1);
 
-        // Set the max. number of lines text pane
-        maxRows = Math.max(maxRows, lines);
-        textArea.setRows(maxRows);
-    }
+			// Replace first line with a message that text has been truncated
+			textArea.replaceRange(TEXT_TRUNCATED_MSG, 0, getText().indexOf('\n'));
+		}
 
-    public String getSelectedText() {
-        return getTextPane().getSelectedText();
-    }
+		// Set the max. number of lines text pane
+		maxRows = Math.max(maxRows, lines);
+		textArea.setRows(maxRows);
+	}
 
-    public String getText() {
-        return getTextPane().getText();
-    }
+	public String getSelectedText() {
+		return getTextPane().getSelectedText();
+	}
 
-    public void setText(String t) {
-        // Return if the string is null or empty
-        if (t == null || t.length() == 0) {
-            t = null;
-            lines = 0;
-            maxRows = 0;
-        } else {
-            // Calculate and set the new number of lines for the text pane
-            lines = t.replaceAll("[^\\n]", "").length();
+	public String getText() {
+		return getTextPane().getText();
+	}
 
-            // Calculate number lines exceeded compared to the max. number of lines
-            int linesExceeded = lines - MAX_ROWS;
+	public void setText(String t) {
+		// Return if the string is null or empty
+		if (t == null || t.length() == 0) {
+			t = null;
+			lines = 0;
+			maxRows = 0;
+		} else {
+			// Calculate and set the new number of lines for the text pane
+			lines = t.replaceAll("[^\\n]", "").length();
+	
+			// Calculate number lines exceeded compared to the max. number of lines
+			int linesExceeded = lines - MAX_ROWS;
+	
+			// Check if we exceeded the number of max. lines
+			if (linesExceeded > 0) {
+				// We use a rolling buffer so that the oldest lines are removed first.
+				// Remove the number of lines we are exceeding in the beginning of the contained text.
+	
+				// Cut down the number of lines to max. number of lines
+				lines = MAX_ROWS;
+	
+				// Find the index where to cut the number of exceeding lines in the beginning of the text
+				int index = -1;
+	
+				for (int c = 0; c < linesExceeded; c++) {
+					index = t.indexOf('\n', index + 1);
+				}
+				// Replace the first lines of the contained text till the cut index
+				t = t.substring(index + 1);
+	
+				// Replace first line with a message that text has been truncated
+				t = TEXT_TRUNCATED_MSG + t.substring(t.indexOf('\n') + 1);
+			}
+		}
+		// Set the text on the text pane
+		textArea.setText(t);
 
-            // Check if we exceeded the number of max. lines
-            if (linesExceeded > 0) {
-                // We use a rolling buffer so that the oldest lines are removed first.
-                // Remove the number of lines we are exceeding in the beginning of the contained text.
+		// Set the max. number of lines text pane
+		maxRows = Math.max(maxRows, lines);
+		textArea.setRows(maxRows);
+	}
 
-                // Cut down the number of lines to max. number of lines
-                lines = MAX_ROWS;
+	public void processStream(InputStream input) {
+		BufferedReader br = new BufferedReader(new InputStreamReader(input));
+		String line;
 
-                // Find the index where to cut the number of exceeding lines in the beginning of the text
-                int index = -1;
+		try {
+			while ((line = br.readLine()) != null) {
+				append(line + "\n");
+			}
+		} catch (IOException e) {
+			append("SYSTEM: IOException: " + e);
+		}
+		scrollToBottom();
+	}
 
-                for (int c = 0; c < linesExceeded; c++) {
-                    index = t.indexOf('\n', index + 1);
-                }
-                // Replace the first lines of the contained text till the cut index
-                t = t.substring(index + 1);
-
-                // Replace first line with a message that text has been truncated
-                t = TEXT_TRUNCATED_MSG + t.substring(t.indexOf('\n') + 1);
-            }
-        }
-        // Set the text on the text pane
-        textArea.setText(t);
-
-        // Set the max. number of lines text pane
-        maxRows = Math.max(maxRows, lines);
-        textArea.setRows(maxRows);
-    }
-
-    public void processStream(InputStream input) {
-        BufferedReader br = new BufferedReader(new InputStreamReader(input));
-        String line;
-
-        try {
-            while ((line = br.readLine()) != null) {
-                append(line + "\n");
-            }
-        } catch (IOException e) {
-            append("SYSTEM: IOException: " + e);
-        }
-        scrollToBottom();
-    }
-
-    public void scrollToBottom() {
-        textArea.setCaretPosition(textArea.getDocument().getLength());
-    }
+	public void scrollToBottom() {
+		textArea.setCaretPosition(textArea.getDocument().getLength());
+	}
 }

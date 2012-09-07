@@ -11,49 +11,50 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-import net.sf.robocode.test.helpers.Assert;
-import net.sf.robocode.test.helpers.RobocodeTestBed;
+
 import org.junit.Test;
+import net.sf.robocode.test.helpers.RobocodeTestBed;
+import net.sf.robocode.test.helpers.Assert;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class TestCustomEvents extends RobocodeTestBed {
 
-    @Test
-    @Override
-    public void run() {
-        super.run();
-    }
+	@Test
+	public void run() {
+		super.run();
+	}
 
-    @Override
-    public void onTurnEnded(TurnEndedEvent event) {
-        super.onTurnEnded(event);
-        IRobotSnapshot gh = event.getTurnSnapshot().getRobots()[1];
+	@Override
+	public void onTurnEnded(TurnEndedEvent event) {
+		super.onTurnEnded(event);
+		IRobotSnapshot gh = event.getTurnSnapshot().getRobots()[1];
 
-        switch (event.getTurnSnapshot().getTurn()) {
-            case 130:
-                test(gh, "130 onTick99\n130 onTick30");
-                break;
+		switch (event.getTurnSnapshot().getTurn()) {
+		case 130:
+			test(gh, "130 onTick99\n130 onTick30");
+			break;
 
-            case 1451:
-                test(gh, "1451 onTick99\n1451 onLowEnergy98\n1451 onTick30\n1451 onScannedRobot10");
-                break;
+		case 1451:
+			test(gh, "1451 onTick99\n1451 onLowEnergy98\n1451 onTick30\n1451 onScannedRobot10");
+			break;
 
-            default:
-                break;
-        }
-    }
+		default:
+			break;
+		}
+	}
 
-    private void test(IRobotSnapshot gh, String s) {
-        Assert.assertTrue("got: " + gh.getOutputStreamSnapshot() + ", expected: " + s,
-                          gh.getOutputStreamSnapshot().contains(s));
-    }
+	private void test(IRobotSnapshot gh, String s) {
+		Assert.assertTrue("got: " + gh.getOutputStreamSnapshot() + ", expected: " + s,
+				gh.getOutputStreamSnapshot().contains(s));
+	}
 
-    @Override
-    public String getRobotNames() {
-        return "sample.Target,tested.robots.CustomEvents";
-    }
+	@Override
+	public String getRobotNames() {
+		return "sample.Target,tested.robots.CustomEvents";
+	}
 }

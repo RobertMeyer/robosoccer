@@ -30,7 +30,7 @@
             <outputDirectory>testing/javadoc</outputDirectory>
             <unpack>true</unpack>
         </dependencySet>
-        <!-- testing samples -->
+		<!-- testing samples -->
         <dependencySet>
             <includes>
                 <include>net.sf.robocode:robocode.testing.samples</include>

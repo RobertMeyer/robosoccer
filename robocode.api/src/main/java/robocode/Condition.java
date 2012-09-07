@@ -17,6 +17,7 @@
  *******************************************************************************/
 package robocode;
 
+
 /**
  * Condition is used to define custom  {@link AdvancedRobot#waitFor(Condition)
  * waitFor(Condition)} and custom events for an {@link AdvancedRobot}. The code
@@ -45,113 +46,111 @@ package robocode;
  */
 public abstract class Condition {
 
-    /**
-     * The priority of this condition. Defaults to 80.
-     */
-    public int priority = 80;
-    /**
-     * The name of this condition.
-     */
-    public String name;
+	/**
+	 * The priority of this condition. Defaults to 80.
+	 */
+	public int priority = 80;
 
-    /**
-     * Creates a new, unnamed Condition with the default priority, which is 80.
-     */
-    public Condition() {
-    }
+	/**
+	 * The name of this condition.
+	 */
+	public String name;
 
-    /**
-     * Creates a new Condition with the specified name, and default priority,
-     * which is 80.
-     *
-     * @param name the name for the new Condition
-     */
-    public Condition(String name) {
-        this.name = name;
-    }
+	/**
+	 * Creates a new, unnamed Condition with the default priority, which is 80.
+	 */
+	public Condition() {}
 
-    /**
-     * Creates a new Condition with the specified name and priority.
-     * A condition priority is a value from 0 - 99. The higher value, the
-     * higher priority. The default priority is 80.
-     *
-     * @param name	 the name for the new condition
-     * @param priority the priority of the new condition
-     */
-    public Condition(String name, int priority) {
-        this.name = name;
-        if (priority < 0) {
-            System.out.println("SYSTEM: Priority must be between 0 and 99.");
-            System.out.println("SYSTEM: Priority for condition " + name + " will be 0.");
-            priority = 0;
-        } else if (priority > 99) {
-            System.out.println("SYSTEM: Priority must be between 0 and 99.");
-            System.out.println("SYSTEM: Priority for condition " + name + " will be 99.");
-            priority = 99;
-        }
-        this.priority = priority;
-    }
+	/**
+	 * Creates a new Condition with the specified name, and default priority,
+	 * which is 80.
+	 *
+	 * @param name the name for the new Condition
+	 */
+	public Condition(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Returns the name of this condition.
-     *
-     * @return the name of this condition
-     */
-    public String getName() {
-        return (name != null) ? name : getClass().getName();
-    }
+	/**
+	 * Creates a new Condition with the specified name and priority.
+	 * A condition priority is a value from 0 - 99. The higher value, the
+	 * higher priority. The default priority is 80.
+	 *
+	 * @param name	 the name for the new condition
+	 * @param priority the priority of the new condition
+	 */
+	public Condition(String name, int priority) {
+		this.name = name;
+		if (priority < 0) {
+			System.out.println("SYSTEM: Priority must be between 0 and 99.");
+			System.out.println("SYSTEM: Priority for condition " + name + " will be 0.");
+			priority = 0;
+		} else if (priority > 99) {
+			System.out.println("SYSTEM: Priority must be between 0 and 99.");
+			System.out.println("SYSTEM: Priority for condition " + name + " will be 99.");
+			priority = 99;
+		}
+		this.priority = priority;
+	}
 
-    /**
-     * Returns the priority of this condition.
-     * A condition priority is a value from 0 - 99. The higher value, the
-     * higher priority. The default priority is 80.
-     *
-     * @return the priority of this condition
-     */
-    public final int getPriority() {
-        return priority;
-    }
+	/**
+	 * Returns the name of this condition.
+	 *
+	 * @return the name of this condition
+	 */
+	public String getName() {
+		return (name != null) ? name : getClass().getName();
+	}
 
-    /**
-     * Sets the name of this condition.
-     *
-     * @param newName the new name of this condition
-     */
-    public void setName(String newName) {
-        name = newName;
-    }
+	/**
+	 * Returns the priority of this condition.
+	 * A condition priority is a value from 0 - 99. The higher value, the
+	 * higher priority. The default priority is 80.
+	 *
+	 * @return the priority of this condition
+	 */
+	public final int getPriority() {
+		return priority;
+	}
 
-    /**
-     * Sets the priority of this condition.
-     * A condition priority is a value from 0 - 99. The higher value, the
-     * higher priority. The default priority is 80.
-     *
-     * @param newPriority the new priority of this condition.
-     */
-    public void setPriority(int newPriority) {
-        priority = newPriority;
-    }
+	/**
+	 * Sets the name of this condition.
+	 *
+	 * @param newName the new name of this condition
+	 */
+	public void setName(String newName) {
+		name = newName;
+	}
 
-    /**
-     * Overriding the test() method is the point of a Condition.
-     * The game will call your test() function, and take action if it returns
-     * {@code true}. This is valid for both {@link AdvancedRobot#waitFor} and
-     * {@link AdvancedRobot#addCustomEvent}.
-     * <p/>
-     * You may not take any actions inside of test().
-     *
-     * @return {@code true} if the condition has been met, {@code false}
-     *         otherwise.
-     */
-    public abstract boolean test();
+	/**
+	 * Sets the priority of this condition.
+	 * A condition priority is a value from 0 - 99. The higher value, the
+	 * higher priority. The default priority is 80.
+	 *
+	 * @param newPriority the new priority of this condition.
+	 */
+	public void setPriority(int newPriority) {
+		priority = newPriority;
+	}
 
-    /**
-     * Called by the system in order to clean up references to internal objects.
-     *
-     * @since 1.4.3
-     */
-    public void cleanup() {/* Do nothing: Should be overridden by sub-classes to perform needed
-         clean up to ensure that there are NO circular references */
+	/**
+	 * Overriding the test() method is the point of a Condition.
+	 * The game will call your test() function, and take action if it returns
+	 * {@code true}. This is valid for both {@link AdvancedRobot#waitFor} and
+	 * {@link AdvancedRobot#addCustomEvent}.
+	 * <p/>
+	 * You may not take any actions inside of test().
+	 *
+	 * @return {@code true} if the condition has been met, {@code false}
+	 *         otherwise.
+	 */
+	public abstract boolean test();
 
-    }
+	/**
+	 * Called by the system in order to clean up references to internal objects.
+	 *
+	 * @since 1.4.3
+	 */
+	public void cleanup() {/* Do nothing: Should be overridden by sub-classes to perform needed
+		 clean up to ensure that there are NO circular references */}
 }

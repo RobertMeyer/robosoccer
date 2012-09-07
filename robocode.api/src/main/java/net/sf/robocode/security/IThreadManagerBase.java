@@ -11,15 +11,15 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
+
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IThreadManagerBase {
-
-    boolean isSafeThread();
-
-    FileOutputStream createRobotFileStream(String fileName, boolean append) throws IOException;
+	boolean isSafeThread();
+	FileOutputStream createRobotFileStream(String fileName, boolean append) throws IOException;
 }

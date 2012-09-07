@@ -11,20 +11,17 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
+
 import robocode.robotinterfaces.IBasicRobot;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRobotClassLoader {
-
-    Class<?> loadRobotMainClass(boolean resolve) throws ClassNotFoundException;
-
-    IBasicRobot createRobotInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException;
-
-    String[] getReferencedClasses();
-
-    void setRobotProxy(Object robotProxy);
-
-    void cleanup();
+	Class<?> loadRobotMainClass(boolean resolve) throws ClassNotFoundException;
+	IBasicRobot createRobotInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException;
+	String[] getReferencedClasses();
+	void setRobotProxy(Object robotProxy);
+	void cleanup();
 }

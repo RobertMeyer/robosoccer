@@ -11,6 +11,15 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items;
 
+
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.root.IRepositoryRoot;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.version.IVersionManager;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,249 +29,229 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import net.sf.robocode.core.Container;
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.root.IRepositoryRoot;
-import net.sf.robocode.version.IVersionManager;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class TeamItem extends NamedItem implements IRepositoryItem {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
-    private final static String TEAM_DESCRIPTION = "team.description";
-    private final static String TEAM_AUTHOR_NAME = "team.author.name";
-    // private final static String TEAM_AUTHOR_EMAIL = "team.author.email";
-    private final static String TEAM_AUTHOR_WEBSITE = "team.author.website";
-    private final static String TEAM_VERSION = "team.version";
-    private final static String TEAM_WEBPAGE = "team.webpage";
-    private final static String TEAM_MEMBERS = "team.members";
-    private final static String ROBOCODE_VERSION = "robocode.version";
-    private final String fullTeamName;
+	private final static String TEAM_DESCRIPTION = "team.description";
+	private final static String TEAM_AUTHOR_NAME = "team.author.name";
+	// private final static String TEAM_AUTHOR_EMAIL = "team.author.email";
+	private final static String TEAM_AUTHOR_WEBSITE = "team.author.website";
+	private final static String TEAM_VERSION = "team.version";
+	private final static String TEAM_WEBPAGE = "team.webpage";
+	private final static String TEAM_MEMBERS = "team.members";
+	private final static String ROBOCODE_VERSION = "robocode.version";
 
-    public TeamItem(URL itemURL, IRepositoryRoot root) {
-        super(itemURL, root);
-        String tUrl = itemURL.toString();
+	private final String fullTeamName;
 
-        tUrl = tUrl.substring(0, tUrl.lastIndexOf(".team"));
-        final int versionSeparator = tUrl.lastIndexOf(' ');
-        final int rootLen = root.getURL().toString().length();
+	public TeamItem(URL itemURL, IRepositoryRoot root) {
+		super(itemURL, root);
+		String tUrl = itemURL.toString();
 
-        if (versionSeparator != -1) {
-            fullTeamName = tUrl.substring(rootLen, versionSeparator).replace('/', '.').replace('\\', '.');
-        } else {
-            fullTeamName = tUrl.substring(rootLen).replace('/', '.').replace('\\', '.');
-        }
-        if (loadProperties()) {
-            isValid = true;
-        }
-    }
+		tUrl = tUrl.substring(0, tUrl.lastIndexOf(".team"));
+		final int versionSeparator = tUrl.lastIndexOf(" ");
+		final int rootLen = root.getURL().toString().length();
 
-    private void htmlURLFromPropertiesURL() {
-        try {
-            htmlURL = new URL(itemURL.toString().replaceAll("\\.team", ".html"));
+		if (versionSeparator != -1) {
+			fullTeamName = tUrl.substring(rootLen, versionSeparator).replace('/', '.').replace('\\', '.');
+		} else {
+			fullTeamName = tUrl.substring(rootLen).replace('/', '.').replace('\\', '.');
+		}
+		if (loadProperties()) {
+			isValid = true;
+		}
+	}
 
-            // test that html file exists
-            final URLConnection conn = URLJarCollector.openConnection(htmlURL);
+	private void htmlURLFromPropertiesURL() {
+		try {
+			htmlURL = new URL(itemURL.toString().replaceAll("\\.team", ".html"));
 
-            conn.getInputStream().close();
-        } catch (IOException ignored) {
-            // doesn't exist
-            htmlURL = null;
-        }
-    }
+			// test that html file exists
+			final URLConnection conn = URLJarCollector.openConnection(htmlURL);
 
-    @Override
-    public List<String> getFriendlyURLs() {
-        final Set<String> urls = new HashSet<String>();
+			conn.getInputStream().close();
+		} catch (IOException ignored) {
+			// doesn't exist
+			htmlURL = null;
+		}
+	}
 
-        final String tUrl = itemURL.toString();
-        final String noType = tUrl.substring(0, tUrl.lastIndexOf('.'));
+	public List<String> getFriendlyURLs() {
+		final Set<String> urls = new HashSet<String>();
 
-        urls.add(tUrl);
-        urls.add(noType);
-        urls.add(itemURL.getPath());
+		final String tUrl = itemURL.toString();
+		final String noType = tUrl.substring(0, tUrl.lastIndexOf('.'));
 
-        if (System.getProperty("TESTING", "false").equals("true")) {
-            urls.add(getFullClassName());
-        } else {
-            urls.add(getUniqueFullClassName());
-        }
-        urls.add(getUniqueFullClassNameWithVersion());
+		urls.add(tUrl);
+		urls.add(noType);
+		urls.add(itemURL.getPath());
 
-        return new ArrayList<String>(urls);
-    }
+		if (System.getProperty("TESTING", "false").equals("true")) {
+			urls.add(getFullClassName());
+		} else {
+			urls.add(getUniqueFullClassName());
+		}
+		urls.add(getUniqueFullClassNameWithVersion());
 
-    @Override
-    public void update(long lastModified, boolean force) {
-        if (lastModified > this.lastModified || force) {
-            this.lastModified = lastModified;
-            loadProperties();
-        }
-    }
+		return new ArrayList<String>(urls);
+	}
 
-    private boolean loadProperties() {
-        if (itemURL != null) {
-            InputStream ios = null;
+	public void update(long lastModified, boolean force) {
+		if (lastModified > this.lastModified || force) {
+			this.lastModified = lastModified;
+			loadProperties();
+		}
+	}
 
-            try {
-                final URLConnection connection = URLJarCollector.openConnection(itemURL);
+	private boolean loadProperties() {
+		if (itemURL != null) {
+			InputStream ios = null;
 
-                ios = connection.getInputStream();
+			try {
+				final URLConnection connection = URLJarCollector.openConnection(itemURL);
 
-                properties.load(ios);
-                return true;
-            } catch (IOException e) {
-                Logger.logError(e);
-            } finally {
-                FileUtil.cleanupStream(ios);
-            }
-        }
-        return false;
-    }
+				ios = connection.getInputStream();
+				
+				properties.load(ios);
+				return true;
+			} catch (IOException e) {
+				Logger.logError(e);
+			} finally {
+				FileUtil.cleanupStream(ios);
+			}
+		}
+		return false;
+	}
 
-    @Override
-    public URL getHtmlURL() {
-        // lazy
-        if (htmlURL == null) {
-            htmlURLFromPropertiesURL();
-        }
-        return htmlURL;
-    }
+	public URL getHtmlURL() {
+		// lazy
+		if (htmlURL == null) {
+			htmlURLFromPropertiesURL();
+		}
+		return htmlURL;
+	}
 
-    @Override
-    public URL getPropertiesURL() {
-        return itemURL;
-    }
+	public URL getPropertiesURL() {
+		return itemURL;
+	}
 
-    @Override
-    public boolean isTeam() {
-        return true;
-    }
+	public boolean isTeam() {
+		return true;
+	}
 
-    @Override
-    public String getFullClassName() {
-        return fullTeamName;
-    }
+	public String getFullClassName() {
+		return fullTeamName;
+	}
 
-    public String getMembers() {
-        return properties.getProperty(TEAM_MEMBERS, null);
-    }
+	public String getMembers() {
+		return properties.getProperty(TEAM_MEMBERS, null);
+	}
 
-    @Override
-    public String getVersion() {
-        return properties.getProperty(TEAM_VERSION, null);
-    }
+	public String getVersion() {
+		return properties.getProperty(TEAM_VERSION, null);
+	}
 
-    @Override
-    public String getDescription() {
-        return properties.getProperty(TEAM_DESCRIPTION, null);
-    }
+	public String getDescription() {
+		return properties.getProperty(TEAM_DESCRIPTION, null);
+	}
 
-    @Override
-    public String getAuthorName() {
-        return properties.getProperty(TEAM_AUTHOR_NAME, null);
-    }
+	public String getAuthorName() {
+		return properties.getProperty(TEAM_AUTHOR_NAME, null);
+	}
 
-    @Override
-    public URL getWebpage() {
-        try {
-            return new URL(properties.getProperty(TEAM_AUTHOR_WEBSITE, null));
-        } catch (MalformedURLException e) {
-            return null;
-        }
-    }
+	public URL getWebpage() {
+		try {
+			return new URL(properties.getProperty(TEAM_AUTHOR_WEBSITE, null));
+		} catch (MalformedURLException e) {
+			return null;
+		}
+	}
 
-    @Override
-    public boolean getIncludeSource() {
-        return false;
-    }
+	public boolean getIncludeSource() {
+		return false;
+	}
 
-    @Override
-    public boolean isSourceIncluded() {
-        return false;
-    }
+	public boolean isSourceIncluded() {
+		return false;
+	}
 
-    @Override
-    public String getRobocodeVersion() {
-        return properties.getProperty(ROBOCODE_VERSION, null);
-    }
+	public String getRobocodeVersion() {
+		return properties.getProperty(ROBOCODE_VERSION, null);
+	}
 
-    @Override
-    public String toString() {
-        return itemURL.toString();
-    }
+	public String toString() {
+		return itemURL.toString();
+	}
 
-    @Override
-    public void storeProperties(OutputStream os, boolean includeSources, String version, String desc, String author, URL web) throws IOException {
-        if (version != null) {
-            properties.setProperty(TEAM_VERSION, version);
-        }
-        if (desc != null) {
-            properties.setProperty(TEAM_DESCRIPTION, desc);
-        }
-        if (author != null) {
-            properties.setProperty(TEAM_AUTHOR_NAME, author);
-        }
-        if (web != null) {
-            properties.setProperty(TEAM_WEBPAGE, web.toString());
-        }
-        properties.setProperty(ROBOCODE_VERSION, Container.getComponent(IVersionManager.class).getVersion());
+	public void storeProperties(OutputStream os, boolean includeSources, String version, String desc, String author, URL web) throws IOException {
+		if (version != null) {
+			properties.setProperty(TEAM_VERSION, version);
+		}
+		if (desc != null) {
+			properties.setProperty(TEAM_DESCRIPTION, desc);
+		}
+		if (author != null) {
+			properties.setProperty(TEAM_AUTHOR_NAME, author);
+		}
+		if (web != null) {
+			properties.setProperty(TEAM_WEBPAGE, web.toString());
+		}
+		properties.setProperty(ROBOCODE_VERSION, Container.getComponent(IVersionManager.class).getVersion());
 
-        properties.store(os, "Robocode Robot Team");
-    }
+		properties.store(os, "Robocode Robot Team");
+	}
 
-    public static void createOrUpdateTeam(File target, URL web, String desc, String author, String members, String teamVersion, String robocodeVersion) throws IOException {
-        FileOutputStream os = null;
+	public static void createOrUpdateTeam(File target, URL web, String desc, String author, String members, String teamVersion, String robocodeVersion) throws IOException {
+		FileOutputStream os = null;
 
-        try {
-            Properties team = loadTeamProperties(target);
+		try {
+			Properties team = loadTeamProperties(target);
 
-            if (robocodeVersion != null) {
-                team.setProperty(ROBOCODE_VERSION, robocodeVersion);
-            }
-            if (web != null) {
-                team.setProperty(TEAM_WEBPAGE, web.toString());
-            }
-            if (desc != null) {
-                team.setProperty(TEAM_DESCRIPTION, desc);
-            }
-            if (author != null) {
-                team.setProperty(TEAM_AUTHOR_NAME, author);
-            }
-            if (members != null) {
-                team.setProperty(TEAM_MEMBERS, members);
-            }
-            if (teamVersion != null) {
-                team.setProperty(TEAM_VERSION, teamVersion);
-            }
+			if (robocodeVersion != null) {
+				team.setProperty(ROBOCODE_VERSION, robocodeVersion);
+			}
+			if (web != null) {
+				team.setProperty(TEAM_WEBPAGE, web.toString());
+			}
+			if (desc != null) {
+				team.setProperty(TEAM_DESCRIPTION, desc);
+			}
+			if (author != null) {
+				team.setProperty(TEAM_AUTHOR_NAME, author);
+			}
+			if (members != null) {
+				team.setProperty(TEAM_MEMBERS, members);
+			}
+			if (teamVersion != null) {
+				team.setProperty(TEAM_VERSION, teamVersion);
+			}
 
-            os = new FileOutputStream(target);
-            team.store(os, "Robocode robot team");
-        } finally {
-            FileUtil.cleanupStream(os);
-        }
-    }
+			os = new FileOutputStream(target);
+			team.store(os, "Robocode robot team");
+		} finally {
+			FileUtil.cleanupStream(os);
+		}
+	}
 
-    private static Properties loadTeamProperties(File target) {
-        Properties team = new Properties();
+	private static Properties loadTeamProperties(File target) {
+		Properties team = new Properties();
 
-        if (target.exists()) {
-            FileInputStream fis = null;
+		if (target.exists()) {
+			FileInputStream fis = null;
 
-            try {
-                fis = new FileInputStream(target);
-                team.load(fis);
-            } catch (Exception e) {
-                Logger.logError(e);
-            } finally {
-                FileUtil.cleanupStream(fis);
-            }
-        }
-        return team;
-    }
+			try {
+				fis = new FileInputStream(target);
+				team.load(fis);
+			} catch (Exception e) {
+				Logger.logError(e);
+			} finally {
+				FileUtil.cleanupStream(fis);
+			}
+		}
+		return team;
+	}
 }

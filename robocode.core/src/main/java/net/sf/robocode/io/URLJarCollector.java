@@ -14,14 +14,16 @@
  *******************************************************************************/
 package net.sf.robocode.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.URL;
+
 import java.net.URLConnection;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.jar.JarFile;
+import java.io.File;
+import java.io.IOException;
+
 
 /**
  * This ugly class is helping with closing of robot .jar files when used with URL, URLConnection and useCaches=true
@@ -29,188 +31,185 @@ import java.util.jar.JarFile;
  * If we are not on SUN's JVM, we fallback to useCaches=false, to not lock the files.
  * Collection is now called after reposiotry refresh and after battle ended.
  * Collection is disabled/posponed during running battle.
- *
+ * 
  * @author Pavel Savara (original)
  * @author Flemming N. Larsen (contributor)
  */
 public class URLJarCollector {
+	static Object factory;
+	static HashMap<?, ?> fileCache;
+	static HashMap<?, ?> urlCache;
+	static Field jarFileURL;
+	static final boolean sunJVM;
+	static boolean enabled;
+	static Set<URL> urlsToClean = new HashSet<URL>();
 
-    static Object factory;
-    static HashMap<?, ?> fileCache;
-    static HashMap<?, ?> urlCache;
-    static Field jarFileURL;
-    static final boolean sunJVM;
-    static boolean enabled;
-    static Set<URL> urlsToClean = new HashSet<URL>();
+	static {
+		boolean localSunJVM = false;
 
-    static {
-        boolean localSunJVM = false;
+		try {
+			final Class<?> jarConn = ClassLoader.getSystemClassLoader().loadClass(
+					"sun.net.www.protocol.jar.JarURLConnection");
+			final Field factoryF = jarConn.getDeclaredField("factory");
 
-        try {
-            final Class<?> jarConn = ClassLoader.getSystemClassLoader().loadClass(
-                    "sun.net.www.protocol.jar.JarURLConnection");
-            final Field factoryF = jarConn.getDeclaredField("factory");
+			factoryF.setAccessible(true);
+			factory = factoryF.get(null);
 
-            factoryF.setAccessible(true);
-            factory = factoryF.get(null);
+			final Class<?> jarFactory = ClassLoader.getSystemClassLoader().loadClass(
+					"sun.net.www.protocol.jar.JarFileFactory");
+			final Field fileCacheF = jarFactory.getDeclaredField("fileCache");
 
-            final Class<?> jarFactory = ClassLoader.getSystemClassLoader().loadClass(
-                    "sun.net.www.protocol.jar.JarFileFactory");
-            final Field fileCacheF = jarFactory.getDeclaredField("fileCache");
+			fileCacheF.setAccessible(true);
+			fileCache = (HashMap<?, ?>) fileCacheF.get(null);
 
-            fileCacheF.setAccessible(true);
-            fileCache = (HashMap<?, ?>) fileCacheF.get(null);
+			final Field urlCacheF = jarFactory.getDeclaredField("urlCache");
 
-            final Field urlCacheF = jarFactory.getDeclaredField("urlCache");
+			urlCacheF.setAccessible(true);
+			urlCache = (HashMap<?, ?>) urlCacheF.get(null);
 
-            urlCacheF.setAccessible(true);
-            urlCache = (HashMap<?, ?>) urlCacheF.get(null);
+			final Class<?> jarURLConnection = ClassLoader.getSystemClassLoader().loadClass(
+					"sun.net.www.protocol.jar.JarURLConnection");
 
-            final Class<?> jarURLConnection = ClassLoader.getSystemClassLoader().loadClass(
-                    "sun.net.www.protocol.jar.JarURLConnection");
+			jarFileURL = jarURLConnection.getDeclaredField("jarFileURL");
+			jarFileURL.setAccessible(true);
 
-            jarFileURL = jarURLConnection.getDeclaredField("jarFileURL");
-            jarFileURL.setAccessible(true);
+			localSunJVM = true;
+		} catch (ClassNotFoundException ignore) {
+			Logger.logError(ignore);
+		} catch (NoSuchFieldException ignore) {
+			Logger.logError(ignore);
+		} catch (IllegalAccessException ignore) {
+			Logger.logError(ignore);
+		}
+		sunJVM = localSunJVM;
+	}
 
-            localSunJVM = true;
-        } catch (ClassNotFoundException ignore) {
-            Logger.logError(ignore);
-        } catch (NoSuchFieldException ignore) {
-            Logger.logError(ignore);
-        } catch (IllegalAccessException ignore) {
-            Logger.logError(ignore);
-        }
-        sunJVM = localSunJVM;
-    }
+	public static synchronized URLConnection openConnection(URL url) throws IOException {
+		// Logger.logMessage("Open connection to URL: " + url);
+		final URLConnection urlConnection = url.openConnection();
 
-    public static synchronized URLConnection openConnection(URL url) throws IOException {
-        // Logger.logMessage("Open connection to URL: " + url);
-        final URLConnection urlConnection = url.openConnection();
+		if (sunJVM) {
+			registerConnection(urlConnection);
+			urlConnection.setUseCaches(true);
+		} else {
+			urlConnection.setUseCaches(false);
+		}
+		return urlConnection;
+	}
 
-        if (sunJVM) {
-            registerConnection(urlConnection);
-            urlConnection.setUseCaches(true);
-        } else {
-            urlConnection.setUseCaches(false);
-        }
-        return urlConnection;
-    }
+	public static synchronized void enableGc(boolean enabled) {
+		URLJarCollector.enabled = enabled;
+	}
 
-    public static synchronized void enableGc(boolean enabled) {
-        URLJarCollector.enabled = enabled;
-    }
+	public static synchronized void gc() {
+		if (sunJVM) {
+			// Close all JarURLConnections if garbage collection is enabled
+			if (enabled) {
+				synchronized (urlsToClean) {
+					for (URL url : urlsToClean) {
+						closeJarURLConnection(url);
+					}
+					urlsToClean.clear();
+				}
+			}
 
-    public static synchronized void gc() {
-        if (sunJVM) {
-            // Close all JarURLConnections if garbage collection is enabled
-            if (enabled) {
-                synchronized (urlsToClean) {
-                    for (URL url : urlsToClean) {
-                        closeJarURLConnection(url);
-                    }
-                    urlsToClean.clear();
-                }
-            }
+			// Bug fix [2867326] - Lockup on start if too many bots in robots dir (cont'd).
 
-            // Bug fix [2867326] - Lockup on start if too many bots in robots dir (cont'd).
+			// Remove all cache entries to temporary jar cache files created
+			// for connections using the jarjar protocol that get stuck up.
+			for (Iterator<?> it = fileCache.keySet().iterator(); it.hasNext();) {
+				Object urlJarFile = it.next();
 
-            // Remove all cache entries to temporary jar cache files created
-            // for connections using the jarjar protocol that get stuck up.
-            for (Iterator<?> it = fileCache.keySet().iterator(); it.hasNext();) {
-                Object urlJarFile = it.next();
+				final JarFile jarFile = (JarFile) fileCache.get(urlJarFile);
 
-                final JarFile jarFile = (JarFile) fileCache.get(urlJarFile);
+				String filename = jarFile.getName();
 
-                String filename = jarFile.getName();
+				filename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1).toLowerCase();
 
-                filename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1).toLowerCase();
+				if (filename.startsWith("jar_cache")) {
+					it.remove();
+					synchronized (urlCache) {
+						urlCache.remove(jarFile);
+					}
+				}
+			}
+		}
+	}
 
-                if (filename.startsWith("jar_cache")) {
-                    it.remove();
-                    synchronized (urlCache) {
-                        urlCache.remove(jarFile);
-                    }
-                }
-            }
-        }
-    }
+	private static void registerConnection(URLConnection conn) {
+		if (conn != null) {
+			final String cl = conn.getClass().getName();
 
-    private static void registerConnection(URLConnection conn) {
-        if (conn != null) {
-            final String cl = conn.getClass().getName();
+			if (cl.equals("sun.net.www.protocol.jar.JarURLConnection")) {
+				try {
+					final URL url = (URL) jarFileURL.get(conn);
 
-            if (cl.equals("sun.net.www.protocol.jar.JarURLConnection")) {
-                try {
-                    final URL url = (URL) jarFileURL.get(conn);
+					if (!urlsToClean.contains(url)) {
+						synchronized (urlsToClean) {
+							urlsToClean.add(url);
+						}
+					}
+				} catch (IllegalAccessException ignore) {}
+			}
+		}
+	}
 
-                    if (!urlsToClean.contains(url)) {
-                        synchronized (urlsToClean) {
-                            urlsToClean.add(url);
-                        }
-                    }
-                } catch (IllegalAccessException ignore) {
-                }
-            }
-        }
-    }
+	// Added due to bug fix [2867326] - Lockup on start if too many bots in robots dir (cont'd).
+	public synchronized static void closeJarURLConnection(URL url) {
+		if (url != null) {
+			for (Iterator<?> it = fileCache.keySet().iterator(); it.hasNext();) {
+				Object urlJarFile = it.next();
 
-    // Added due to bug fix [2867326] - Lockup on start if too many bots in robots dir (cont'd).
-    public synchronized static void closeJarURLConnection(URL url) {
-        if (url != null) {
-            for (Iterator<?> it = fileCache.keySet().iterator(); it.hasNext();) {
-                Object urlJarFile = it.next();
+				final JarFile jarFile = (JarFile) fileCache.get(urlJarFile);
 
-                final JarFile jarFile = (JarFile) fileCache.get(urlJarFile);
+				String urlPath = url.getPath();
 
-                String urlPath = url.getPath();
+				try {
+					urlPath = URLDecoder.decode(urlPath, "UTF-8");
+				} catch (java.io.UnsupportedEncodingException ignore) {}
 
-                try {
-                    urlPath = URLDecoder.decode(urlPath, "UTF-8");
-                } catch (java.io.UnsupportedEncodingException ignore) {
-                }
+				File urlFile = new File(urlPath);
 
-                File urlFile = new File(urlPath);
+				String jarFileName = jarFile.getName();
+				String urlFileName = urlFile.getPath();
 
-                String jarFileName = jarFile.getName();
-                String urlFileName = urlFile.getPath();
+				if (urlFileName.equals(jarFileName)) {
+					it.remove();
+					synchronized (urlCache) {
+						urlCache.remove(jarFile);
+					}
+					try {
+						jarFile.close();
+					} catch (IOException e) {
+						Logger.logError(e);
+					}
+				}
+			}
+		}
+	}
 
-                if (urlFileName.equals(jarFileName)) {
-                    it.remove();
-                    synchronized (urlCache) {
-                        urlCache.remove(jarFile);
-                    }
-                    try {
-                        jarFile.close();
-                    } catch (IOException e) {
-                        Logger.logError(e);
-                    }
-                }
-            }
-        }
-    }
+	public static void dumpSunFileCache() {
+		if (sunJVM) {
+			Logger.logMessage("Dumping fileCache...");
+			for (Object url : fileCache.keySet()) {
+				final JarFile jarFile = (JarFile) fileCache.get(url);
 
-    public static void dumpSunFileCache() {
-        if (sunJVM) {
-            Logger.logMessage("Dumping fileCache...");
-            for (Object url : fileCache.keySet()) {
-                final JarFile jarFile = (JarFile) fileCache.get(url);
+				Logger.logMessage("fileCache dump: url=" + url + ", jarFile.getName()=" + jarFile.getName());
+			}
+			Logger.logMessage("fileCache size: " + fileCache.size());
+		}
+	}
 
-                Logger.logMessage("fileCache dump: url=" + url + ", jarFile.getName()=" + jarFile.getName());
-            }
-            Logger.logMessage("fileCache size: " + fileCache.size());
-        }
-    }
+	public static void dumpSunUrlCache() {
+		if (sunJVM) {
+			Logger.logMessage("Dumping urlCache...");
+			for (Object urlJarFile : urlCache.keySet()) {
+				final URL url = (URL) urlCache.get(urlJarFile);
+				final JarFile jarFile = (JarFile) urlJarFile;
 
-    public static void dumpSunUrlCache() {
-        if (sunJVM) {
-            Logger.logMessage("Dumping urlCache...");
-            for (Object urlJarFile : urlCache.keySet()) {
-                final URL url = (URL) urlCache.get(urlJarFile);
-                final JarFile jarFile = (JarFile) urlJarFile;
-
-                Logger.logMessage("urlCache dump: url=" + url + ", jarFile.getName()=" + jarFile.getName());
-            }
-            Logger.logMessage("urlCache size: " + urlCache.size());
-        }
-    }
+				Logger.logMessage("urlCache dump: url=" + url + ", jarFile.getName()=" + jarFile.getName());
+			}
+			Logger.logMessage("urlCache size: " + urlCache.size());
+		}
+	}
 }

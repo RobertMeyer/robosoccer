@@ -11,14 +11,7 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.StringWriter;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
@@ -27,219 +20,229 @@ import net.sf.robocode.ui.IWindowManager;
 import robocode.control.events.*;
 import robocode.control.snapshot.ITurnSnapshot;
 
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.StringWriter;
+
+
 /**
  * @author Pavel Savara (original)
  */
 public class BattleDialog extends JFrame {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
-    private final BattleObserver battleObserver = new BattleObserver();
-    private ConsoleScrollPane consoleScrollPane;
-    private ConsoleScrollPane turnSnapshotScrollPane;
-    private JTabbedPane tabbedPane;
-    private JButton okButton;
-    private JButton clearButton;
-    private JPanel battleDialogContentPane;
-    private JPanel buttonPanel;
-    private final IWindowManager windowManager;
-    private boolean isListening;
-    private ITurnSnapshot lastSnapshot;
-    private boolean paintSnapshot;
+	private final BattleObserver battleObserver = new BattleObserver();
 
-    public BattleDialog(IWindowManager windowManager) {
-        this.windowManager = windowManager;
-        initialize();
-    }
+	private ConsoleScrollPane consoleScrollPane;
+	private ConsoleScrollPane turnSnapshotScrollPane;
+	private JTabbedPane tabbedPane;
+	private JButton okButton;
+	private JButton clearButton;
+	private JPanel battleDialogContentPane;
+	private JPanel buttonPanel;
 
-    private void initialize() {
-        this.setTitle("Main battle log");
-        this.add(getBattleDialogContentPane());
-        pack();
-    }
+	private final IWindowManager windowManager;
+	private boolean isListening;
+	private ITurnSnapshot lastSnapshot;
+	private boolean paintSnapshot;
 
-    public void detach() {
-        if (isListening) {
-            windowManager.removeBattleListener(battleObserver);
-            isListening = false;
-        }
-    }
+	public BattleDialog(IWindowManager windowManager) {
+		this.windowManager = windowManager;
+		initialize();
+	}
 
-    public void reset() {
-        getConsoleScrollPane().setText(null);
-        getTurnSnapshotScrollPane().setText(null);
-        lastSnapshot = null;
-    }
+	private void initialize() {
+		this.setTitle("Main battle log");
+		this.add(getBattleDialogContentPane());
+		pack();
+	}
 
-    public void attach() {
-        if (!isListening) {
-            isListening = true;
-            windowManager.addBattleListener(battleObserver);
-        }
-    }
+	public void detach() {
+		if (isListening) {
+			windowManager.removeBattleListener(battleObserver);
+			isListening = false;
+		}
+	}
 
-    /**
-     * When robotDialog is packed, we want to set a reasonable size. However,
-     * after that, we need a null preferred size so the scroll pane will scroll.
-     * (preferred size should be based on the text inside)
-     */
-    @Override
-    public void pack() {
-        getConsoleScrollPane().setPreferredSize(new Dimension(426, 200));
-        super.pack();
-        getTabbedPane().setPreferredSize(null);
-    }
+	public void reset() {
+		getConsoleScrollPane().setText(null);
+		getTurnSnapshotScrollPane().setText(null);
+		lastSnapshot = null;
+	}
 
-    private JPanel getBattleDialogContentPane() {
-        if (battleDialogContentPane == null) {
-            battleDialogContentPane = new JPanel();
-            battleDialogContentPane.setLayout(new BorderLayout());
-            battleDialogContentPane.add(getTabbedPane());
-            battleDialogContentPane.add(getButtonPanel(), BorderLayout.SOUTH);
-        }
-        return battleDialogContentPane;
-    }
+	public void attach() {
+		if (!isListening) {
+			isListening = true;
+			windowManager.addBattleListener(battleObserver);
+		}
+	}
 
-    private JPanel getButtonPanel() {
-        if (buttonPanel == null) {
-            buttonPanel = new JPanel();
-            buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-            buttonPanel.add(getOkButton());
-            buttonPanel.add(getClearButton());
-        }
-        return buttonPanel;
-    }
+	/**
+	 * When robotDialog is packed, we want to set a reasonable size. However,
+	 * after that, we need a null preferred size so the scroll pane will scroll.
+	 * (preferred size should be based on the text inside)
+	 */
+	@Override
+	public void pack() {
+		getConsoleScrollPane().setPreferredSize(new Dimension(426, 200));
+		super.pack();
+		getTabbedPane().setPreferredSize(null);
+	}
 
-    private JButton getOkButton() {
-        if (okButton == null) {
-            okButton = getNewButton("OK");
-        }
-        return okButton;
-    }
+	private JPanel getBattleDialogContentPane() {
+		if (battleDialogContentPane == null) {
+			battleDialogContentPane = new JPanel();
+			battleDialogContentPane.setLayout(new BorderLayout());
+			battleDialogContentPane.add(getTabbedPane());
+			battleDialogContentPane.add(getButtonPanel(), BorderLayout.SOUTH);
+		}
+		return battleDialogContentPane;
+	}
 
-    private JButton getClearButton() {
-        if (clearButton == null) {
-            clearButton = getNewButton("Clear");
-        }
-        return clearButton;
-    }
+	private JPanel getButtonPanel() {
+		if (buttonPanel == null) {
+			buttonPanel = new JPanel();
+			buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			buttonPanel.add(getOkButton());
+			buttonPanel.add(getClearButton());
+		}
+		return buttonPanel;
+	}
 
-    private JButton getNewButton(String text) {
-        JButton button = new JButton(text);
+	private JButton getOkButton() {
+		if (okButton == null) {
+			okButton = getNewButton("OK");
+		}
+		return okButton;
+	}
 
-        button.addActionListener(eventHandler);
-        return button;
-    }
-    private final transient ActionListener eventHandler = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object src = e.getSource();
+	private JButton getClearButton() {
+		if (clearButton == null) {
+			clearButton = getNewButton("Clear");
+		}
+		return clearButton;
+	}
 
-            if (src == BattleDialog.this.getOkButton()) {
-                okButtonActionPerformed();
-            } else if (src == BattleDialog.this.getClearButton()) {
-                clearButtonActionPerformed();
-            }
-        }
-    };
+	private JButton getNewButton(String text) {
+		JButton button = new JButton(text);
 
-    private JTabbedPane getTabbedPane() {
-        if (tabbedPane == null) {
-            tabbedPane = new JTabbedPane();
-            tabbedPane.setLayout(new BorderLayout());
-            tabbedPane.addTab("Console", getConsoleScrollPane());
-            tabbedPane.addTab("Turn Snapshot", getTurnSnapshotScrollPane());
-            tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		button.addActionListener(eventHandler);
+		return button;
+	}
 
-            tabbedPane.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    paintSnapshot = (tabbedPane.getSelectedIndex() == 1);
-                    paintSnapshot();
-                }
-            });
-        }
-        return tabbedPane;
-    }
+	private final transient ActionListener eventHandler = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			Object src = e.getSource();
 
-    private ConsoleScrollPane getConsoleScrollPane() {
-        if (consoleScrollPane == null) {
-            consoleScrollPane = new ConsoleScrollPane();
-        }
-        return consoleScrollPane;
-    }
+			if (src == BattleDialog.this.getOkButton()) {
+				okButtonActionPerformed();
+			} else if (src == BattleDialog.this.getClearButton()) {
+				clearButtonActionPerformed();
+			}
+		}
+	};
 
-    private ConsoleScrollPane getTurnSnapshotScrollPane() {
-        if (turnSnapshotScrollPane == null) {
-            turnSnapshotScrollPane = new ConsoleScrollPane();
-        }
-        return turnSnapshotScrollPane;
-    }
+	private JTabbedPane getTabbedPane() {
+		if (tabbedPane == null) {
+			tabbedPane = new JTabbedPane();
+			tabbedPane.setLayout(new BorderLayout());
+			tabbedPane.addTab("Console", getConsoleScrollPane());
+			tabbedPane.addTab("Turn Snapshot", getTurnSnapshotScrollPane());
+			tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-    private void okButtonActionPerformed() {
-        dispose();
-    }
+			tabbedPane.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					paintSnapshot = (tabbedPane.getSelectedIndex() == 1);
+					paintSnapshot();
+				}
+			});
+		}
+		return tabbedPane;
+	}
 
-    private void clearButtonActionPerformed() {
-        reset();
-    }
+	private ConsoleScrollPane getConsoleScrollPane() {
+		if (consoleScrollPane == null) {
+			consoleScrollPane = new ConsoleScrollPane();
+		}
+		return consoleScrollPane;
+	}
 
-    private void paintSnapshot() {
-        if (paintSnapshot) {
-            String text = null;
+	private ConsoleScrollPane getTurnSnapshotScrollPane() {
+		if (turnSnapshotScrollPane == null) {
+			turnSnapshotScrollPane = new ConsoleScrollPane();
+		}
+		return turnSnapshotScrollPane;
+	}
 
-            if (lastSnapshot != null) {
-                final StringWriter writer = new StringWriter();
-                final XmlWriter xmlWriter = new XmlWriter(writer, true);
+	private void okButtonActionPerformed() {
+		dispose();
+	}
 
-                try {
-                    ((IXmlSerializable) lastSnapshot).writeXml(xmlWriter, new SerializableOptions(false));
-                    writer.close();
-                } catch (IOException e) {
-                    Logger.logError(e);
-                }
-                text = writer.toString();
-            }
-            getTurnSnapshotScrollPane().setText(text);
-        }
-    }
+	private void clearButtonActionPerformed() {
+		reset();
+	}
 
-    private class BattleObserver extends BattleAdaptor {
+	private void paintSnapshot() {
+		if (paintSnapshot) {
+			String text = null;
 
-        @Override
-        public void onBattleMessage(BattleMessageEvent event) {
-            final String text = event.getMessage();
+			if (lastSnapshot != null) {
+				final StringWriter writer = new StringWriter();
+				final XmlWriter xmlWriter = new XmlWriter(writer, true);
 
-            if (text != null && text.length() > 0) {
-                getConsoleScrollPane().append(text + "\n");
-                getConsoleScrollPane().scrollToBottom();
-            }
-        }
+				try {
+					((IXmlSerializable) lastSnapshot).writeXml(xmlWriter, new SerializableOptions(false));
+					writer.close();
+				} catch (IOException e) {
+					Logger.logError(e);
+				}
+				text = writer.toString();
+			}
+			getTurnSnapshotScrollPane().setText(text);
+		}
+	}
 
-        @Override
-        public void onBattleError(BattleErrorEvent event) {
-            final String text = event.getError();
+	private class BattleObserver extends BattleAdaptor {
 
-            if (text != null && text.length() > 0) {
-                getConsoleScrollPane().append(text + "\n");
-                getConsoleScrollPane().scrollToBottom();
-            }
-        }
+		@Override
+		public void onBattleMessage(BattleMessageEvent event) {
+			final String text = event.getMessage();
 
-        @Override
-        public void onTurnEnded(TurnEndedEvent event) {
-            lastSnapshot = event.getTurnSnapshot();
-            paintSnapshot();
-        }
+			if (text != null && text.length() > 0) {
+				getConsoleScrollPane().append(text + "\n");
+				getConsoleScrollPane().scrollToBottom();
+			}
+		}
 
-        @Override
-        public void onBattleStarted(final BattleStartedEvent event) {
-            reset();
-        }
+		@Override
+		public void onBattleError(BattleErrorEvent event) {
+			final String text = event.getError();
 
-        @Override
-        public void onBattleFinished(BattleFinishedEvent event) {
-            lastSnapshot = null;
-            paintSnapshot();
-        }
-    }
+			if (text != null && text.length() > 0) {
+				getConsoleScrollPane().append(text + "\n");
+				getConsoleScrollPane().scrollToBottom();
+			}
+		}
+
+		@Override
+		public void onTurnEnded(TurnEndedEvent event) {
+			lastSnapshot = event.getTurnSnapshot();
+			paintSnapshot();
+		}
+
+		public void onBattleStarted(final BattleStartedEvent event) {
+			reset();
+		}
+
+		@Override
+		public void onBattleFinished(BattleFinishedEvent event) {
+			lastSnapshot = null;
+			paintSnapshot();
+		}
+	}
 }

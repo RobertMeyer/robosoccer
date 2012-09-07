@@ -11,25 +11,26 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
+
 import net.sf.robocode.host.io.RobotFileSystemManager;
 import net.sf.robocode.host.io.RobotOutputStream;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IHostedThread extends Runnable {
+	void println(String s);
 
-    void println(String s);
+	void drainEnergy();
 
-    void drainEnergy();
+	void punishSecurityViolation(String message);
 
-    void punishSecurityViolation(String message);
+	RobotStatics getStatics();
 
-    RobotStatics getStatics();
+	RobotFileSystemManager getRobotFileSystemManager();
 
-    RobotFileSystemManager getRobotFileSystemManager();
+	RobotOutputStream getOut();
 
-    RobotOutputStream getOut();
-
-    ClassLoader getRobotClassloader();
+	ClassLoader getRobotClassloader();
 }

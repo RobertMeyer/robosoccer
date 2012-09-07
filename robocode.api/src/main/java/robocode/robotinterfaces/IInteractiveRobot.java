@@ -13,6 +13,7 @@
  *******************************************************************************/
 package robocode.robotinterfaces;
 
+
 /**
  * A robot interface for creating an interactive type of robot like
  * {@link robocode.Robot} and {@link robocode.AdvancedRobot} that is able to
@@ -34,14 +35,14 @@ package robocode.robotinterfaces;
  */
 public interface IInteractiveRobot extends IBasicRobot {
 
-    /**
-     * This method is called by the game to notify this robot about interactive
-     * events, i.e. keyboard and mouse events. Hence, this method must be
-     * implemented so it returns your {@link IInteractiveEvents} listener.
-     *
-     * @return listener to interactive events or {@code null} if this robot
-     *         should not receive the notifications.
-     * @since 1.6
-     */
-    IInteractiveEvents getInteractiveEventListener();
+	/**
+	 * This method is called by the game to notify this robot about interactive
+	 * events, i.e. keyboard and mouse events. Hence, this method must be
+	 * implemented so it returns your {@link IInteractiveEvents} listener.
+	 *
+	 * @return listener to interactive events or {@code null} if this robot
+	 *         should not receive the notifications.
+	 * @since 1.6
+	 */
+	IInteractiveEvents getInteractiveEventListener();
 }

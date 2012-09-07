@@ -18,8 +18,11 @@
  *******************************************************************************/
 package robocode.control;
 
+
 import java.io.File;
+
 import net.sf.robocode.security.IHiddenSpecificationHelper;
+
 
 /**
  * Defines the properties of a robot, which is returned from
@@ -30,160 +33,157 @@ import net.sf.robocode.security.IHiddenSpecificationHelper;
  */
 public class RobotSpecification implements java.io.Serializable {
 
-    private static final long serialVersionUID = 1L;
-    private final Object fileSpecification;
-    private final String name;
-    private final String author;
-    private final String webpage;
-    private final String version;
-    private final String robocodeVersion;
-    private final String jarFile;
-    private final String fullClassName;
-    private final String description;
-    private String teamId;
+	private static final long serialVersionUID = 1L;
 
-    private RobotSpecification(Object fileSpecification, String name, String author, String webpage, String version, String robocodeVersion, String jarFile, String fullClassName, String description) {
-        this.fileSpecification = fileSpecification;
-        this.name = name;
-        this.author = author;
-        this.webpage = webpage;
-        this.version = version;
-        this.robocodeVersion = robocodeVersion;
-        this.jarFile = jarFile;
-        this.fullClassName = fullClassName;
-        this.description = description;
-    }
+	private final Object fileSpecification;
+	private final String name;
+	private final String author;
+	private final String webpage;
+	private final String version;
+	private final String robocodeVersion;
+	private final String jarFile;
+	private final String fullClassName;
+	private final String description;
+	private String teamId;
 
-    /**
-     * Returns the name of this robot or team.
-     *
-     * @return the name of this robot or team.
-     * @see #getVersion()
-     * @see #getNameAndVersion()
-     */
-    public String getName() {
-        return name;
-    }
+	private RobotSpecification(Object fileSpecification, String name, String author, String webpage, String version, String robocodeVersion, String jarFile, String fullClassName, String description) {
+		this.fileSpecification = fileSpecification;
+		this.name = name;
+		this.author = author;
+		this.webpage = webpage;
+		this.version = version;
+		this.robocodeVersion = robocodeVersion;
+		this.jarFile = jarFile;
+		this.fullClassName = fullClassName;
+		this.description = description;
+	}
 
-    /**
-     * Returns the version of this robot or team.
-     *
-     * @return the version of this robot or team.
-     * @see #getName()
-     * @see #getNameAndVersion()
-     */
-    public String getVersion() {
-        return version;
-    }
+	/**
+	 * Returns the name of this robot or team.
+	 *
+	 * @return the name of this robot or team.
+	 * @see #getVersion()
+	 * @see #getNameAndVersion()
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Returns the name and version of this robot or team.
-     *
-     * @return the name and version of this robot or team.
-     * @see #getName()
-     * @see #getVersion()
-     * @since 1.3
-     */
-    public String getNameAndVersion() {
-        String nameAndVersion = getName();
-        String version = getVersion();
+	/**
+	 * Returns the version of this robot or team.
+	 *
+	 * @return the version of this robot or team.
+	 * @see #getName()
+	 * @see #getNameAndVersion()
+	 */
+	public String getVersion() {
+		return version;
+	}
 
-        if (version != null && version.trim().length() > 0) {
-            nameAndVersion += ' ' + version.trim();
-        }
-        return nameAndVersion;
-    }
+	/**
+	 * Returns the name and version of this robot or team.
+	 *
+	 * @return the name and version of this robot or team.
+	 * @see #getName()
+	 * @see #getVersion()
+	 * @since 1.3
+	 */
+	public String getNameAndVersion() {
+		String nameAndVersion = getName();
+		String version = getVersion();
 
-    /**
-     * Returns the full class name of this robot or team.
-     *
-     * @return the full class name of this robot or team.
-     */
-    public String getClassName() {
-        return fullClassName;
-    }
+		if (version != null && version.trim().length() > 0) {
+			nameAndVersion += ' ' + version.trim();
+		}
+		return nameAndVersion;
+	}
 
-    /**
-     * Returns the JAR file containing this robot or team, or {@code null} if it
-     * does not come from a JAR file (could be class files instead).
-     *
-     * @return the JAR file containing this robot or team, or {@code null} if it
-     *         does not come from a JAR file (could be class files instead).
-     */
-    public File getJarFile() {
-        return new File(jarFile);
-    }
+	/**
+	 * Returns the full class name of this robot or team.
+	 *
+	 * @return the full class name of this robot or team.
+	 */
+	public String getClassName() {
+		return fullClassName;
+	}
 
-    /**
-     * Returns the description provided by the author of this robot or team.
-     *
-     * @return the description provided by the author of this robot or team.
-     */
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * Returns the JAR file containing this robot or team, or {@code null} if it
+	 * does not come from a JAR file (could be class files instead).
+	 *
+	 * @return the JAR file containing this robot or team, or {@code null} if it
+	 *         does not come from a JAR file (could be class files instead).
+	 */
+	public File getJarFile() {
+		return new File(jarFile);
+	}
 
-    /**
-     * Returns the version of Robocode this robot or team was build with.
-     *
-     * @return the version of Robocode this robot or team was build with.
-     */
-    public String getRobocodeVersion() {
-        return robocodeVersion;
-    }
+	/**
+	 * Returns the description provided by the author of this robot or team.
+	 *
+	 * @return the description provided by the author of this robot or team.
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    /**
-     * Returns the link to the web page for this robot or team.
-     *
-     * @return the link to the web page for this robot or team.
-     */
-    public String getWebpage() {
-        return webpage;
-    }
+	/**
+	 * Returns the version of Robocode this robot or team was build with.
+	 *
+	 * @return the version of Robocode this robot or team was build with.
+	 */
+	public String getRobocodeVersion() {
+		return robocodeVersion;
+	}
 
-    /**
-     * Returns the name of the author of this robot or team.
-     *
-     * @return the name of the author of this robot or team.
-     */
-    public String getAuthorName() {
-        return author;
-    }
+	/**
+	 * Returns the link to the web page for this robot or team.
+	 *
+	 * @return the link to the web page for this robot or team.
+	 */
+	public String getWebpage() {
+		return webpage;
+	}
 
-    /**
-     * Returns id of the team in current battle.
-     *
-     * @return id of the team in current battle.
-     */
-    public String getTeamId() {
-        return teamId != null ? teamId : getNameAndVersion();
-    }
+	/**
+	 * Returns the name of the author of this robot or team.
+	 *
+	 * @return the name of the author of this robot or team.
+	 */
+	public String getAuthorName() {
+		return author;
+	}
 
-    static IHiddenSpecificationHelper createHiddenHelper() {
-        return new HiddenHelper();
-    }
+	/**
+	 * Returns id of the team in current battle.
+	 *
+	 * @return id of the team in current battle.
+	 */
+	public String getTeamId() {
+		return teamId != null ? teamId : getNameAndVersion();
+	}
 
-    private static class HiddenHelper implements IHiddenSpecificationHelper {
+	static IHiddenSpecificationHelper createHiddenHelper() {
+		return new HiddenHelper();
+	}
 
-        @Override
-        public RobotSpecification createSpecification(Object fileSpecification, String name, String author, String webpage, String version, String robocodeVersion, String jarFile, String fullClassName, String description) {
-            return new RobotSpecification(fileSpecification, name, author, webpage, version, robocodeVersion, jarFile,
-                                          fullClassName, description);
-        }
+	private static class HiddenHelper implements IHiddenSpecificationHelper {
 
-        @Override
-        public Object getFileSpecification(RobotSpecification specification) {
-            return specification.fileSpecification;
-        }
+		public RobotSpecification createSpecification(Object fileSpecification, String name, String author, String webpage, String version, String robocodeVersion, String jarFile, String fullClassName, String description) {
+			return new RobotSpecification(fileSpecification, name, author, webpage, version, robocodeVersion, jarFile,
+					fullClassName, description);
+		}
 
-        @Override
-        public void setTeamName(RobotSpecification specification, String teamName) {
-            specification.teamId = teamName;
-        }
+		public Object getFileSpecification(RobotSpecification specification) {
+			return specification.fileSpecification;
+		}
 
-        @Override
-        public String getTeamName(RobotSpecification specification) {
-            return specification.teamId;
-        }
-    }
+		public void setTeamName(RobotSpecification specification, String teamName) {
+			specification.teamId = teamName;
+		}
+
+		public String getTeamName(RobotSpecification specification) {
+			return specification.teamId;
+		}
+	}
 }

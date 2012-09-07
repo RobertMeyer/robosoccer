@@ -11,65 +11,67 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-import java.io.File;
+
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import robocode.control.events.TurnEndedEvent;
+
+import java.io.File;
+
 
 /**
  * @author Pavel Savara (original)
  */
 @Ignore("This test has been unreliable in student builds, and is not important for CSSE2003")
 public class TestFileAttack extends RobocodeTestBed {
+	boolean messagedWrite;
+	boolean messagedRead;
 
-    boolean messagedWrite;
-    boolean messagedRead;
+	@Test
+	public void run() {
+		super.run();
+	}
 
-    @Test
-    @Override
-    public void run() {
-        super.run();
-    }
+	@Override
+	public void onTurnEnded(TurnEndedEvent event) {
+		super.onTurnEnded(event);
+		final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
 
-    @Override
-    public void onTurnEnded(TurnEndedEvent event) {
-        super.onTurnEnded(event);
-        final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
+		if (out.contains("Preventing tested.robots.FileAttack from access: (java.io.FilePermission C:\\MSDOS.SYS read)")) {
+			messagedRead = true;
+		}
+		if (out.contains(
+				"Preventing tested.robots.FileAttack from access: (java.io.FilePermission C:\\Robocode.attack write)")) {
+			messagedWrite = true;
+		}
+	}
 
-        if (out.contains("Preventing tested.robots.FileAttack from access: (java.io.FilePermission C:\\MSDOS.SYS read)")) {
-            messagedRead = true;
-        }
-        if (out.contains(
-                "Preventing tested.robots.FileAttack from access: (java.io.FilePermission C:\\Robocode.attack write)")) {
-            messagedWrite = true;
-        }
-    }
+	@Override
+	public String getRobotNames() {
+		return "sample.Fire,tested.robots.FileAttack";
+	}
 
-    @Override
-    public String getRobotNames() {
-        return "sample.Fire,tested.robots.FileAttack";
-    }
+	@Override
+	protected void runSetup() {
+		File attack = new File("C:\\Robocode.attack");
 
-    @Override
-    protected void runSetup() {
-        File attack = new File("C:\\Robocode.attack");
+		if (attack.exists()) {
+			Assert.assertTrue(attack.delete());
+		}
+	}
 
-        if (attack.exists()) {
-            Assert.assertTrue(attack.delete());
-        }
-    }
+	@Override
+	protected void runTeardown() {
+		Assert.assertTrue("Didn't seen preventing read", messagedRead);
+		Assert.assertTrue("Didn't seen preventing write", messagedWrite);
+		Assert.assertFalse("Found attack file", new File("C:\\Robocode.attack").exists());
+	}
 
-    @Override
-    protected void runTeardown() {
-        Assert.assertTrue("Didn't seen preventing read", messagedRead);
-        Assert.assertTrue("Didn't seen preventing write", messagedWrite);
-        Assert.assertFalse("Found attack file", new File("C:\\Robocode.attack").exists());
-    }
-
-    @Override
-    protected int getExpectedErrors() {
-        return 2; // Security error must be reported as an error
-    }
+	@Override
+	protected int getExpectedErrors() {
+		return 2; // Security error must be reported as an error
+	}
 }

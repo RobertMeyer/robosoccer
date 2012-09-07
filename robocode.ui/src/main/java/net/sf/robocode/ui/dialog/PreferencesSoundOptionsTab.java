@@ -11,13 +11,16 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+
+import net.sf.robocode.settings.ISettingsManager;
+
+import javax.sound.sampled.*;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import javax.sound.sampled.*;
-import javax.swing.*;
-import net.sf.robocode.settings.ISettingsManager;
+import java.util.Vector;
+
 
 /**
  * @author Flemming N. Larsen (original)
@@ -25,370 +28,374 @@ import net.sf.robocode.settings.ISettingsManager;
 @SuppressWarnings("serial")
 public class PreferencesSoundOptionsTab extends WizardPanel {
 
-    private final ISettingsManager properties;
-    private final EventHandler eventHandler = new EventHandler();
-    private JPanel soundOptionsPanel;
-    private JPanel mixerOptionsPanel;
-    private JCheckBox enableSoundCheckBox;
-    private JCheckBox enableGunshotCheckBox;
-    private JCheckBox enableBulletHitCheckBox;
-    private JCheckBox enableRobotDeathCheckBox;
-    private JCheckBox enableWallCollisionCheckBox;
-    private JCheckBox enableRobotCollisionCheckBox;
-    private JButton enableAllSoundsButton;
-    private JButton disableAllSoundsButton;
-    private JComboBox mixerComboBox;
-    private JButton mixerDefaultButton;
-    private JCheckBox enableMixerVolumeCheckBox;
-    private JCheckBox enableMixerPanCheckBox;
+	private final ISettingsManager properties;
 
-    public PreferencesSoundOptionsTab(ISettingsManager properties) {
-        super();
-        this.properties = properties;
-        initialize();
-    }
+	private final EventHandler eventHandler = new EventHandler();
 
-    private void initialize() {
-        setLayout(new GridLayout(1, 2));
+	private JPanel soundOptionsPanel;
+	private JPanel mixerOptionsPanel;
 
-        add(getSoundOptionsPanel());
-        add(getMixerOptionsPanel());
+	private JCheckBox enableSoundCheckBox;
+	private JCheckBox enableGunshotCheckBox;
+	private JCheckBox enableBulletHitCheckBox;
+	private JCheckBox enableRobotDeathCheckBox;
+	private JCheckBox enableWallCollisionCheckBox;
+	private JCheckBox enableRobotCollisionCheckBox;
 
-        loadPreferences(properties);
-    }
+	private JButton enableAllSoundsButton;
+	private JButton disableAllSoundsButton;
 
-    private JPanel getSoundOptionsPanel() {
-        if (soundOptionsPanel == null) {
-            soundOptionsPanel = new JPanel();
-            soundOptionsPanel.setBorder(
-                    BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Sound Effects"));
+	private JComboBox mixerComboBox;
+	private JButton mixerDefaultButton;
 
-            soundOptionsPanel.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
+	private JCheckBox enableMixerVolumeCheckBox;
+	private JCheckBox enableMixerPanCheckBox;
 
-            c.fill = 1;
-            c.weightx = 1;
-            c.anchor = GridBagConstraints.NORTHWEST;
+	public PreferencesSoundOptionsTab(ISettingsManager properties) {
+		super();
+		this.properties = properties;
+		initialize();
+	}
 
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            soundOptionsPanel.add(getEnableSoundCheckBox(), c);
-            soundOptionsPanel.add(getEnableGunshotCheckBox(), c);
-            soundOptionsPanel.add(getEnableBulletHitCheckBox(), c);
-            soundOptionsPanel.add(getEnableRobotDeathCheckBox(), c);
-            soundOptionsPanel.add(getEnableWallCollisionCheckBox(), c);
-            soundOptionsPanel.add(getEnableRobotCollisionCheckBox(), c);
+	private void initialize() {
+		setLayout(new GridLayout(1, 2));
 
-            c.insets = new Insets(10, 0, 0, 10);
-            c.gridwidth = 1;
-            c.fill = 0;
-            c.weighty = 1;
-            c.weightx = 0;
-            soundOptionsPanel.add(getEnableAllSoundsButton(), c);
-            c.weightx = 1;
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            soundOptionsPanel.add(getDisableAllSoundsButton(), c);
+		add(getSoundOptionsPanel());
+		add(getMixerOptionsPanel());
 
-            if (AudioSystem.getMixerInfo().length == 0) {
-                for (Component child : soundOptionsPanel.getComponents()) {
-                    child.setEnabled(false);
-                }
-            }
-        }
-        return soundOptionsPanel;
-    }
+		loadPreferences(properties);
+	}
 
-    private JCheckBox getEnableSoundCheckBox() {
-        if (enableSoundCheckBox == null) {
-            enableSoundCheckBox = new JCheckBox("Enable Sound");
-            enableSoundCheckBox.setMnemonic('E');
-        }
-        return enableSoundCheckBox;
-    }
+	private JPanel getSoundOptionsPanel() {
+		if (soundOptionsPanel == null) {
+			soundOptionsPanel = new JPanel();
+			soundOptionsPanel.setBorder(
+					BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Sound Effects"));
 
-    private JCheckBox getEnableGunshotCheckBox() {
-        if (enableGunshotCheckBox == null) {
-            enableGunshotCheckBox = new JCheckBox("Gun Shots");
-            enableGunshotCheckBox.setMnemonic('G');
-        }
-        return enableGunshotCheckBox;
-    }
+			soundOptionsPanel.setLayout(new GridBagLayout());
+			GridBagConstraints c = new GridBagConstraints();
 
-    private JCheckBox getEnableBulletHitCheckBox() {
-        if (enableBulletHitCheckBox == null) {
-            enableBulletHitCheckBox = new JCheckBox("Bullet Hit");
-            enableBulletHitCheckBox.setMnemonic('H');
-            enableBulletHitCheckBox.setDisplayedMnemonicIndex(7);
-        }
-        return enableBulletHitCheckBox;
-    }
+			c.fill = 1;
+			c.weightx = 1;
+			c.anchor = GridBagConstraints.NORTHWEST;
 
-    private JCheckBox getEnableRobotDeathCheckBox() {
-        if (enableRobotDeathCheckBox == null) {
-            enableRobotDeathCheckBox = new JCheckBox("Robot Death Explosions");
-            enableRobotDeathCheckBox.setMnemonic('x');
-            enableRobotDeathCheckBox.setDisplayedMnemonicIndex(13);
-        }
-        return enableRobotDeathCheckBox;
-    }
+			c.gridwidth = GridBagConstraints.REMAINDER;
+			soundOptionsPanel.add(getEnableSoundCheckBox(), c);
+			soundOptionsPanel.add(getEnableGunshotCheckBox(), c);
+			soundOptionsPanel.add(getEnableBulletHitCheckBox(), c);
+			soundOptionsPanel.add(getEnableRobotDeathCheckBox(), c);
+			soundOptionsPanel.add(getEnableWallCollisionCheckBox(), c);
+			soundOptionsPanel.add(getEnableRobotCollisionCheckBox(), c);
 
-    private JCheckBox getEnableRobotCollisionCheckBox() {
-        if (enableRobotCollisionCheckBox == null) {
-            enableRobotCollisionCheckBox = new JCheckBox("Robot Collisions");
-            enableRobotCollisionCheckBox.setMnemonic('t');
-            enableRobotCollisionCheckBox.setDisplayedMnemonicIndex(4);
-        }
-        return enableRobotCollisionCheckBox;
-    }
+			c.insets = new Insets(10, 0, 0, 10);
+			c.gridwidth = 1;
+			c.fill = 0;
+			c.weighty = 1;
+			c.weightx = 0;
+			soundOptionsPanel.add(getEnableAllSoundsButton(), c);
+			c.weightx = 1;
+			c.gridwidth = GridBagConstraints.REMAINDER;
+			soundOptionsPanel.add(getDisableAllSoundsButton(), c);
 
-    private JCheckBox getEnableWallCollisionCheckBox() {
-        if (enableWallCollisionCheckBox == null) {
-            enableWallCollisionCheckBox = new JCheckBox("Wall Collisions");
-            enableWallCollisionCheckBox.setMnemonic('l');
-            enableWallCollisionCheckBox.setDisplayedMnemonicIndex(2);
-        }
-        return enableWallCollisionCheckBox;
-    }
+			if (AudioSystem.getMixerInfo().length == 0) {
+				for (Component child : soundOptionsPanel.getComponents()) {
+					child.setEnabled(false);
+				}
+			}
+		}
+		return soundOptionsPanel;
+	}
 
-    private JButton getEnableAllSoundsButton() {
-        if (enableAllSoundsButton == null) {
-            enableAllSoundsButton = new JButton("Enable all");
-            enableAllSoundsButton.setMnemonic('a');
-            enableAllSoundsButton.setDisplayedMnemonicIndex(7);
-            enableAllSoundsButton.addActionListener(eventHandler);
-        }
-        return enableAllSoundsButton;
-    }
+	private JCheckBox getEnableSoundCheckBox() {
+		if (enableSoundCheckBox == null) {
+			enableSoundCheckBox = new JCheckBox("Enable Sound");
+			enableSoundCheckBox.setMnemonic('E');
+		}
+		return enableSoundCheckBox;
+	}
 
-    private JButton getDisableAllSoundsButton() {
-        if (disableAllSoundsButton == null) {
-            disableAllSoundsButton = new JButton("Disable all");
-            disableAllSoundsButton.setMnemonic('i');
-            disableAllSoundsButton.setDisplayedMnemonicIndex(1);
-            disableAllSoundsButton.addActionListener(eventHandler);
-        }
-        return disableAllSoundsButton;
-    }
+	private JCheckBox getEnableGunshotCheckBox() {
+		if (enableGunshotCheckBox == null) {
+			enableGunshotCheckBox = new JCheckBox("Gun Shots");
+			enableGunshotCheckBox.setMnemonic('G');
+		}
+		return enableGunshotCheckBox;
+	}
 
-    private JPanel getMixerOptionsPanel() {
-        if (mixerOptionsPanel == null) {
-            mixerOptionsPanel = new JPanel();
-            mixerOptionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Mixer"));
+	private JCheckBox getEnableBulletHitCheckBox() {
+		if (enableBulletHitCheckBox == null) {
+			enableBulletHitCheckBox = new JCheckBox("Bullet Hit");
+			enableBulletHitCheckBox.setMnemonic('H');
+			enableBulletHitCheckBox.setDisplayedMnemonicIndex(7);
+		}
+		return enableBulletHitCheckBox;
+	}
 
-            mixerOptionsPanel.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
+	private JCheckBox getEnableRobotDeathCheckBox() {
+		if (enableRobotDeathCheckBox == null) {
+			enableRobotDeathCheckBox = new JCheckBox("Robot Death Explosions");
+			enableRobotDeathCheckBox.setMnemonic('x');
+			enableRobotDeathCheckBox.setDisplayedMnemonicIndex(13);
+		}
+		return enableRobotDeathCheckBox;
+	}
 
-            c.anchor = GridBagConstraints.NORTHWEST;
-            c.fill = GridBagConstraints.NONE;
-            c.weightx = 1;
+	private JCheckBox getEnableRobotCollisionCheckBox() {
+		if (enableRobotCollisionCheckBox == null) {
+			enableRobotCollisionCheckBox = new JCheckBox("Robot Collisions");
+			enableRobotCollisionCheckBox.setMnemonic('t');
+			enableRobotCollisionCheckBox.setDisplayedMnemonicIndex(4);
+		}
+		return enableRobotCollisionCheckBox;
+	}
 
-            c.insets = new Insets(8, 4, 0, 0);
-            mixerOptionsPanel.add(new JLabel("Select mixer:"), c);
+	private JCheckBox getEnableWallCollisionCheckBox() {
+		if (enableWallCollisionCheckBox == null) {
+			enableWallCollisionCheckBox = new JCheckBox("Wall Collisions");
+			enableWallCollisionCheckBox.setMnemonic('l');
+			enableWallCollisionCheckBox.setDisplayedMnemonicIndex(2);
+		}
+		return enableWallCollisionCheckBox;
+	}
 
-            c.gridy = 1;
-            mixerOptionsPanel.add(getMixerComboBox(), c);
+	private JButton getEnableAllSoundsButton() {
+		if (enableAllSoundsButton == null) {
+			enableAllSoundsButton = new JButton("Enable all");
+			enableAllSoundsButton.setMnemonic('a');
+			enableAllSoundsButton.setDisplayedMnemonicIndex(7);
+			enableAllSoundsButton.addActionListener(eventHandler);
+		}
+		return enableAllSoundsButton;
+	}
 
-            c.gridy = 2;
-            mixerOptionsPanel.add(getMixerDefaultButton(), c);
+	private JButton getDisableAllSoundsButton() {
+		if (disableAllSoundsButton == null) {
+			disableAllSoundsButton = new JButton("Disable all");
+			disableAllSoundsButton.setMnemonic('i');
+			disableAllSoundsButton.setDisplayedMnemonicIndex(1);
+			disableAllSoundsButton.addActionListener(eventHandler);
+		}
+		return disableAllSoundsButton;
+	}
 
-            c.insets = new Insets(16, 4, 0, 0);
-            c.gridy = 3;
-            mixerOptionsPanel.add(new JLabel("Enable mixer features:"), c);
+	private JPanel getMixerOptionsPanel() {
+		if (mixerOptionsPanel == null) {
+			mixerOptionsPanel = new JPanel();
+			mixerOptionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Mixer"));
 
-            c.insets = new Insets(6, 0, 0, 0);
-            c.gridy = 4;
-            mixerOptionsPanel.add(getEnableMixerVolumeCheckBox(), c);
+			mixerOptionsPanel.setLayout(new GridBagLayout());
+			GridBagConstraints c = new GridBagConstraints();
 
-            c.insets = new Insets(0, 0, 0, 0);
-            c.gridy = 5;
-            mixerOptionsPanel.add(getEnableMixerPanCheckBox(), c);
+			c.anchor = GridBagConstraints.NORTHWEST;
+			c.fill = GridBagConstraints.NONE;
+			c.weightx = 1;
 
-            if (AudioSystem.getMixerInfo().length == 0) {
-                for (Component child : mixerOptionsPanel.getComponents()) {
-                    child.setEnabled(false);
-                }
-            }
-        }
-        return mixerOptionsPanel;
-    }
+			c.insets = new Insets(8, 4, 0, 0);
+			mixerOptionsPanel.add(new JLabel("Select mixer:"), c);
 
-    private JComboBox getMixerComboBox() {
-        if (mixerComboBox == null) {
-            Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
+			c.gridy = 1;
+			mixerOptionsPanel.add(getMixerComboBox(), c);
 
-            Line.Info clipLineInfo = new Line.Info(Clip.class);
+			c.gridy = 2;
+			mixerOptionsPanel.add(getMixerDefaultButton(), c);
 
-            ArrayList<Mixer.Info> mixers = new ArrayList<Mixer.Info>();
+			c.insets = new Insets(16, 4, 0, 0);
+			c.gridy = 3;
+			mixerOptionsPanel.add(new JLabel("Enable mixer features:"), c);
 
-            for (Mixer.Info mi : mixerInfo) {
-                if (AudioSystem.getMixer(mi).getSourceLineInfo(clipLineInfo).length > 0) {
-                    mixers.add(mi);
-                }
-            }
+			c.insets = new Insets(6, 0, 0, 0);
+			c.gridy = 4;
+			mixerOptionsPanel.add(getEnableMixerVolumeCheckBox(), c);
 
-            mixerComboBox = new JComboBox(mixers.toArray());
-            mixerComboBox.setRenderer(new MixerInfoCellRenderer());
-            mixerComboBox.addActionListener(eventHandler);
-        }
-        return mixerComboBox;
-    }
+			c.insets = new Insets(0, 0, 0, 0);
+			c.gridy = 5;
+			mixerOptionsPanel.add(getEnableMixerPanCheckBox(), c);
 
-    private JButton getMixerDefaultButton() {
-        if (mixerDefaultButton == null) {
-            mixerDefaultButton = new JButton("Default");
-            mixerDefaultButton.setMnemonic('u');
-            mixerDefaultButton.setDisplayedMnemonicIndex(4);
-            mixerDefaultButton.addActionListener(eventHandler);
-        }
-        return mixerDefaultButton;
-    }
+			if (AudioSystem.getMixerInfo().length == 0) {
+				for (Component child : mixerOptionsPanel.getComponents()) {
+					child.setEnabled(false);
+				}
+			}
+		}
+		return mixerOptionsPanel;
+	}
 
-    private JCheckBox getEnableMixerVolumeCheckBox() {
-        if (enableMixerVolumeCheckBox == null) {
-            enableMixerVolumeCheckBox = new JCheckBox("Volume");
-            enableMixerVolumeCheckBox.setMnemonic('V');
-            enableMixerVolumeCheckBox.addActionListener(eventHandler);
-        }
-        return enableMixerVolumeCheckBox;
-    }
+	private JComboBox getMixerComboBox() {
+		if (mixerComboBox == null) {
+			Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
 
-    private JCheckBox getEnableMixerPanCheckBox() {
-        if (enableMixerPanCheckBox == null) {
-            enableMixerPanCheckBox = new JCheckBox("Pan");
-            enableMixerPanCheckBox.setMnemonic('P');
-            enableMixerPanCheckBox.addActionListener(eventHandler);
-        }
-        return enableMixerPanCheckBox;
-    }
+			Line.Info clipLineInfo = new Line.Info(Clip.class);
 
-    private void loadPreferences(ISettingsManager robocodeProperties) {
-        getEnableSoundCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableSound());
-        getEnableGunshotCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableGunshot());
-        getEnableBulletHitCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableBulletHit());
-        getEnableRobotDeathCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableRobotDeath());
-        getEnableRobotCollisionCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableRobotCollision());
-        getEnableWallCollisionCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableWallCollision());
-        getEnableMixerVolumeCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableMixerVolume());
-        getEnableMixerPanCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableMixerPan());
+			Vector<Mixer.Info> mixers = new Vector<Mixer.Info>();
 
-        setMixerCompoBox(robocodeProperties.getOptionsSoundMixer());
-    }
+			for (Mixer.Info mi : mixerInfo) {
+				if (AudioSystem.getMixer(mi).getSourceLineInfo(clipLineInfo).length > 0) {
+					mixers.add(mi);
+				}
+			}
 
-    public void storePreferences() {
-        ISettingsManager props = properties;
+			mixerComboBox = new JComboBox(mixers);
+			mixerComboBox.setRenderer(new MixerInfoCellRenderer());
+			mixerComboBox.addActionListener(eventHandler);
+		}
+		return mixerComboBox;
+	}
 
-        props.setOptionsSoundEnableSound(getEnableSoundCheckBox().isSelected());
-        props.setOptionsSoundEnableGunshot(getEnableGunshotCheckBox().isSelected());
-        props.setOptionsSoundEnableBulletHit(getEnableBulletHitCheckBox().isSelected());
-        props.setOptionsSoundEnableRobotDeath(getEnableRobotDeathCheckBox().isSelected());
-        props.setOptionsSoundEnableRobotCollision(getEnableRobotCollisionCheckBox().isSelected());
-        props.setOptionsSoundEnableWallCollision(getEnableWallCollisionCheckBox().isSelected());
-        props.setOptionsSoundEnableMixerVolume(getEnableMixerVolumeCheckBox().isSelected());
-        props.setOptionsSoundEnableMixerPan(getEnableMixerPanCheckBox().isSelected());
+	private JButton getMixerDefaultButton() {
+		if (mixerDefaultButton == null) {
+			mixerDefaultButton = new JButton("Default");
+			mixerDefaultButton.setMnemonic('u');
+			mixerDefaultButton.setDisplayedMnemonicIndex(4);
+			mixerDefaultButton.addActionListener(eventHandler);
+		}
+		return mixerDefaultButton;
+	}
 
-        String mixerClassName = null;
-        Mixer.Info mixerInfo = (Mixer.Info) getMixerComboBox().getSelectedItem();
+	private JCheckBox getEnableMixerVolumeCheckBox() {
+		if (enableMixerVolumeCheckBox == null) {
+			enableMixerVolumeCheckBox = new JCheckBox("Volume");
+			enableMixerVolumeCheckBox.setMnemonic('V');
+			enableMixerVolumeCheckBox.addActionListener(eventHandler);
+		}
+		return enableMixerVolumeCheckBox;
+	}
 
-        if (mixerInfo != null) {
-            Mixer mixer = AudioSystem.getMixer((Mixer.Info) getMixerComboBox().getSelectedItem());
+	private JCheckBox getEnableMixerPanCheckBox() {
+		if (enableMixerPanCheckBox == null) {
+			enableMixerPanCheckBox = new JCheckBox("Pan");
+			enableMixerPanCheckBox.setMnemonic('P');
+			enableMixerPanCheckBox.addActionListener(eventHandler);
+		}
+		return enableMixerPanCheckBox;
+	}
 
-            if (mixer != null) {
-                mixerClassName = mixer.getClass().getSimpleName();
-            }
-        }
-        if (mixerClassName != null) {
-            props.setOptionsSoundMixer(mixerClassName);
-        }
+	private void loadPreferences(ISettingsManager robocodeProperties) {
+		getEnableSoundCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableSound());
+		getEnableGunshotCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableGunshot());
+		getEnableBulletHitCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableBulletHit());
+		getEnableRobotDeathCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableRobotDeath());
+		getEnableRobotCollisionCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableRobotCollision());
+		getEnableWallCollisionCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableWallCollision());
+		getEnableMixerVolumeCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableMixerVolume());
+		getEnableMixerPanCheckBox().setSelected(robocodeProperties.getOptionsSoundEnableMixerPan());
 
-        properties.saveProperties();
-    }
+		setMixerCompoBox(robocodeProperties.getOptionsSoundMixer());
+	}
 
-    @Override
-    public boolean isReady() {
-        return true;
-    }
+	public void storePreferences() {
+		ISettingsManager props = properties;
 
-    private void setMixerCompoBox(String mixerName) {
-        for (Mixer.Info mi : AudioSystem.getMixerInfo()) {
-            if (AudioSystem.getMixer(mi).getClass().getSimpleName().equals(mixerName)) {
-                getMixerComboBox().setSelectedItem(mi);
-                break;
-            }
-        }
-    }
+		props.setOptionsSoundEnableSound(getEnableSoundCheckBox().isSelected());
+		props.setOptionsSoundEnableGunshot(getEnableGunshotCheckBox().isSelected());
+		props.setOptionsSoundEnableBulletHit(getEnableBulletHitCheckBox().isSelected());
+		props.setOptionsSoundEnableRobotDeath(getEnableRobotDeathCheckBox().isSelected());
+		props.setOptionsSoundEnableRobotCollision(getEnableRobotCollisionCheckBox().isSelected());
+		props.setOptionsSoundEnableWallCollision(getEnableWallCollisionCheckBox().isSelected());
+		props.setOptionsSoundEnableMixerVolume(getEnableMixerVolumeCheckBox().isSelected());
+		props.setOptionsSoundEnableMixerPan(getEnableMixerPanCheckBox().isSelected());
 
-    private class EventHandler implements ActionListener {
+		String mixerClassName = null;
+		Mixer.Info mixerInfo = (Mixer.Info) getMixerComboBox().getSelectedItem();
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object src = e.getSource();
+		if (mixerInfo != null) {
+			Mixer mixer = AudioSystem.getMixer((Mixer.Info) getMixerComboBox().getSelectedItem());
 
-            if (src == enableAllSoundsButton) {
-                setAllSoundsButtonsEnabled(true);
-            } else if (src == disableAllSoundsButton) {
-                setAllSoundsButtonsEnabled(false);
-            } else if (src == mixerComboBox) {
-                mixerComboBoxActionPerformed();
-            } else if (src == mixerDefaultButton) {
-                mixerDefaultButtonActionPerformed();
-            }
-        }
-    }
+			if (mixer != null) {
+				mixerClassName = mixer.getClass().getSimpleName();
+			}
+		}
+		if (mixerClassName != null) {
+			props.setOptionsSoundMixer(mixerClassName);
+		}
 
-    private void setAllSoundsButtonsEnabled(boolean enabled) {
-        enableSoundCheckBox.setSelected(enabled);
-        enableGunshotCheckBox.setSelected(enabled);
-        enableBulletHitCheckBox.setSelected(enabled);
-        enableRobotDeathCheckBox.setSelected(enabled);
-        enableWallCollisionCheckBox.setSelected(enabled);
-        enableRobotCollisionCheckBox.setSelected(enabled);
-    }
+		properties.saveProperties();
+	}
 
-    private void mixerComboBoxActionPerformed() {
-        Mixer mixer = AudioSystem.getMixer((Mixer.Info) mixerComboBox.getSelectedItem());
+	@Override
+	public boolean isReady() {
+		return true;
+	}
 
-        Line.Info lineInfo = mixer.getSourceLineInfo(new Line.Info(Clip.class))[0];
+	private void setMixerCompoBox(String mixerName) {
+		for (Mixer.Info mi : AudioSystem.getMixerInfo()) {
+			if (AudioSystem.getMixer(mi).getClass().getSimpleName().equals(mixerName)) {
+				getMixerComboBox().setSelectedItem(mi);
+				break;
+			}
+		}
+	}
 
-        boolean volumeSupported;
-        boolean panSupported;
+	private class EventHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			Object src = e.getSource();
 
-        try {
-            Line line = mixer.getLine(lineInfo);
+			if (src == enableAllSoundsButton) {
+				setAllSoundsButtonsEnabled(true);
+			} else if (src == disableAllSoundsButton) {
+				setAllSoundsButtonsEnabled(false);
+			} else if (src == mixerComboBox) {
+				mixerComboBoxActionPerformed();
+			} else if (src == mixerDefaultButton) {
+				mixerDefaultButtonActionPerformed();
+			}
+		}
+	}
 
-            volumeSupported = line.isControlSupported(FloatControl.Type.MASTER_GAIN);
-            panSupported = line.isControlSupported(FloatControl.Type.PAN);
-        } catch (LineUnavailableException e) {
-            volumeSupported = false;
-            panSupported = false;
-        }
+	private void setAllSoundsButtonsEnabled(boolean enabled) {
+		enableSoundCheckBox.setSelected(enabled);
+		enableGunshotCheckBox.setSelected(enabled);
+		enableBulletHitCheckBox.setSelected(enabled);
+		enableRobotDeathCheckBox.setSelected(enabled);
+		enableWallCollisionCheckBox.setSelected(enabled);
+		enableRobotCollisionCheckBox.setSelected(enabled);
+	}
 
-        enableMixerVolumeCheckBox.setEnabled(volumeSupported);
-        enableMixerPanCheckBox.setEnabled(panSupported);
-    }
+	private void mixerComboBoxActionPerformed() {
+		Mixer mixer = AudioSystem.getMixer((Mixer.Info) mixerComboBox.getSelectedItem());
 
-    private void mixerDefaultButtonActionPerformed() {
-        setMixerCompoBox("DirectAudioDevice");
-    }
+		Line.Info lineInfo = mixer.getSourceLineInfo(new Line.Info(Clip.class))[0];
 
-    private static class MixerInfoCellRenderer extends javax.swing.plaf.basic.BasicComboBoxRenderer {
+		boolean volumeSupported;
+		boolean panSupported;
 
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+		try {
+			Line line = mixer.getLine(lineInfo);
 
-            Mixer.Info mi = (Mixer.Info) value;
+			volumeSupported = line.isControlSupported(FloatControl.Type.MASTER_GAIN);
+			panSupported = line.isControlSupported(FloatControl.Type.PAN);
+		} catch (LineUnavailableException e) {
+			volumeSupported = false;
+			panSupported = false;
+		}
 
-            if (mi != null) {
-                String text = mi.getName();
+		enableMixerVolumeCheckBox.setEnabled(volumeSupported);
+		enableMixerPanCheckBox.setEnabled(panSupported);
+	}
 
-                if (!"Unknown Version".equals(mi.getVersion())) {
-                    text += ' ' + mi.getVersion();
-                }
-                if (!"Unknown Vendor".equals(mi.getVendor())) {
-                    text += " by " + mi.getVendor();
-                }
-                setText(text);
-            }
-            return component;
-        }
-    }
+	private void mixerDefaultButtonActionPerformed() {
+		setMixerCompoBox("DirectAudioDevice");
+	}
+
+	private static class MixerInfoCellRenderer extends javax.swing.plaf.basic.BasicComboBoxRenderer {
+
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+			Mixer.Info mi = (Mixer.Info) value;
+
+			if (mi != null) {
+				String text = mi.getName();
+
+				if (!"Unknown Version".equals(mi.getVersion())) {
+					text += ' ' + mi.getVersion();
+				}
+				if (!"Unknown Vendor".equals(mi.getVendor())) {
+					text += " by " + mi.getVendor();
+				}
+				setText(text);
+			}
+			return component;
+		}
+	}
 }

@@ -11,16 +11,17 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
+
 import net.sf.robocode.core.BaseModule;
 import net.sf.robocode.core.Container;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class Module extends BaseModule {
-
-    static {
-        Container.cache.addComponent(RobocodeCompilerFactory.class);
-        Container.cache.addComponent(RobocodeEditor.class);
-    }
+	static {
+		Container.cache.addComponent(RobocodeCompilerFactory.class);
+		Container.cache.addComponent(RobocodeEditor.class);
+	}
 }

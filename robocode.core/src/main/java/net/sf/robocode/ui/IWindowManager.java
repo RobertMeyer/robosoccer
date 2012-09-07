@@ -11,49 +11,51 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-import javax.swing.*;
+
 import net.sf.robocode.gui.IWindowManagerBase;
 import robocode.control.events.IBattleListener;
 import robocode.control.snapshot.ITurnSnapshot;
+
+import javax.swing.*;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IWindowManager extends IWindowManagerBase {
+	void init();
 
-    void init();
+	void setEnableGUI(boolean enable);
 
-    void setEnableGUI(boolean enable);
+	boolean isGUIEnabled();
 
-    boolean isGUIEnabled();
+	boolean isSlave();
 
-    boolean isSlave();
+	boolean isShowResultsEnabled();
 
-    boolean isShowResultsEnabled();
+	void setEnableShowResults(boolean enable);
 
-    void setEnableShowResults(boolean enable);
+	void setSlave(boolean slave);
 
-    void setSlave(boolean slave);
+	void showRobocodeFrame(boolean visible, boolean iconified);
 
-    void showRobocodeFrame(boolean visible, boolean iconified);
+	void showSplashScreen();
 
-    void showSplashScreen();
+	void cleanup();
 
-    void cleanup();
+	JFrame getRobocodeFrame();
 
-    JFrame getRobocodeFrame();
+	void setBusyPointer(boolean enabled);
 
-    void setBusyPointer(boolean enabled);
+	void setStatus(String s);
 
-    void setStatus(String s);
+	void messageWarning(String s);
 
-    void messageWarning(String s);
+	ITurnSnapshot getLastSnapshot();
 
-    ITurnSnapshot getLastSnapshot();
+	void addBattleListener(IBattleListener listener);
 
-    void addBattleListener(IBattleListener listener);
+	void removeBattleListener(IBattleListener listener);
 
-    void removeBattleListener(IBattleListener listener);
-
-    void runIntroBattle();
+	void runIntroBattle();
 }

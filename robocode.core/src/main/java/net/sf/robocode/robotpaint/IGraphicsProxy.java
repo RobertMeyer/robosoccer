@@ -11,18 +11,18 @@
  *******************************************************************************/
 package net.sf.robocode.robotpaint;
 
+
 import java.awt.*;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IGraphicsProxy {
+	void setPaintingEnabled(boolean enabled);
+	void processTo(Graphics2D g, Object graphicsCalls);
 
-    void setPaintingEnabled(boolean enabled);
+	void processTo(Graphics2D g);
 
-    void processTo(Graphics2D g, Object graphicsCalls);
-
-    void processTo(Graphics2D g);
-
-    Object readoutQueuedCalls();
+	Object readoutQueuedCalls();
 }

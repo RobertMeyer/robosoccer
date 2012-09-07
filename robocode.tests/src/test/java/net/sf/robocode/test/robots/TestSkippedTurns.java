@@ -11,48 +11,47 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
+
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.Ignore;
 import robocode.control.events.TurnEndedEvent;
+
 
 /**
  * @author Pavel Savara (original)
  */
 @Ignore("is very timing sensitive test, so it usually fails on different machines, please run explicitly if you did something to security or timing")
 public class TestSkippedTurns extends RobocodeTestBed {
+	boolean messagedBattle;
+	boolean messagedEvent;
 
-    boolean messagedBattle;
-    boolean messagedEvent;
+	@Test
+	public void run() {
+		super.run();
+	}
 
-    @Test
-    @Override
-    public void run() {
-        super.run();
-    }
+	public void onTurnEnded(TurnEndedEvent event) {
+		super.onTurnEnded(event);
+		final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
 
-    @Override
-    public void onTurnEnded(TurnEndedEvent event) {
-        super.onTurnEnded(event);
-        final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
+		if (out.contains("Skipped!!!")) {
+			messagedEvent = true;
+		}
+		if (out.contains("not performed any actions in a reasonable")) {
+			messagedBattle = true;
+		}
+	}
 
-        if (out.contains("Skipped!!!")) {
-            messagedEvent = true;
-        }
-        if (out.contains("not performed any actions in a reasonable")) {
-            messagedBattle = true;
-        }
-    }
+	@Override
+	public String getRobotNames() {
+		return "sample.TrackFire,tested.robots.SkipTurns";
+	}
 
-    @Override
-    public String getRobotNames() {
-        return "sample.TrackFire,tested.robots.SkipTurns";
-    }
-
-    @Override
-    protected void runTeardown() {
-        Assert.assertTrue(messagedEvent);
-        Assert.assertTrue(messagedBattle);
-    }
+	@Override
+	protected void runTeardown() {
+		Assert.assertTrue(messagedEvent);
+		Assert.assertTrue(messagedBattle);
+	}
 }

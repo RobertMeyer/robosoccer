@@ -18,10 +18,7 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
+
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.ui.IRobotDialogManager;
 import net.sf.robocode.ui.IWindowManager;
@@ -35,6 +32,12 @@ import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
 /**
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
@@ -42,197 +45,195 @@ import robocode.control.snapshot.ITurnSnapshot;
 @SuppressWarnings("serial")
 public class RobotButton extends JButton implements ActionListener {
 
-    private static final int BAR_MARGIN = 2;
-    private static final int BAR_HEIGHT = 3;
-    private final IWindowManagerExt windowManager;
-    private final IBattleManager battleManager;
-    private final BattleObserver battleObserver = new BattleObserver();
-    private final IRobotDialogManager dialogManager;
-    private RobotDialog robotDialog;
-    private String name;
-    private int robotIndex;
-    private int contestantIndex;
-    private int maxEnergy = 1;
-    private int maxScore = 1;
-    private int lastEnergy;
-    private int lastScore;
-    private boolean isListening;
+	private static final int BAR_MARGIN = 2;
+	private static final int BAR_HEIGHT = 3;
 
-    public RobotButton(IWindowManager windowManager, IBattleManager battleManager, IRobotDialogManager dialogManager) {
-        this.windowManager = (IWindowManagerExt) windowManager;
-        this.battleManager = battleManager;
-        this.dialogManager = dialogManager;
-    }
+	private final IWindowManagerExt windowManager;
+	private final IBattleManager battleManager;
+	private final BattleObserver battleObserver = new BattleObserver();
+	private final IRobotDialogManager dialogManager;
+	private RobotDialog robotDialog;
+	private String name;
+	private int robotIndex;
+	private int contestantIndex;
+	private int maxEnergy = 1;
+	private int maxScore = 1;
+	private int lastEnergy;
+	private int lastScore;
+	private boolean isListening;
 
-    public void setup(String name, int maxEnergy, int robotIndex, int contestantIndex, boolean attach) {
-        this.name = name;
-        this.robotIndex = robotIndex;
-        this.contestantIndex = contestantIndex;
-        this.lastEnergy = maxEnergy;
-        this.maxEnergy = maxEnergy;
-        initialize();
-        if (attach) {
-            attach();
-            robotDialog.reset();
-            battleManager.setPaintEnabled(robotIndex, robotDialog.isPaintEnabled());
-            battleManager.setSGPaintEnabled(robotIndex, robotDialog.isSGPaintEnabled());
-        }
-    }
+	public RobotButton(IWindowManager windowManager, IBattleManager battleManager, IRobotDialogManager dialogManager) {
+		this.windowManager = (IWindowManagerExt) windowManager;
+		this.battleManager = battleManager;
+		this.dialogManager = dialogManager;
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (robotDialog == null) {
-            attach();
-            if (!robotDialog.isVisible() || robotDialog.getState() != Frame.NORMAL) {
-                WindowUtil.packPlaceShow(robotDialog);
-            }
-        } else {
-            robotDialog.setVisible(true);
-        }
-    }
+	public void setup(String name, int maxEnergy, int robotIndex, int contestantIndex, boolean attach) {
+		this.name = name;
+		this.robotIndex = robotIndex;
+		this.contestantIndex = contestantIndex;
+		this.lastEnergy = maxEnergy;
+		this.maxEnergy = maxEnergy;
+		initialize();
+		if (attach) {
+			attach();
+			robotDialog.reset();
+			battleManager.setPaintEnabled(robotIndex, robotDialog.isPaintEnabled());
+			battleManager.setSGPaintEnabled(robotIndex, robotDialog.isSGPaintEnabled());
+		}
+	}
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+	public void actionPerformed(ActionEvent e) {
+		if (robotDialog == null) {
+			attach();
+			if (!robotDialog.isVisible() || robotDialog.getState() != Frame.NORMAL) {
+				WindowUtil.packPlaceShow(robotDialog);
+			}
+		} else {
+			robotDialog.setVisible(true);
+		}
+	}
 
-        Graphics2D g2 = (Graphics2D) g;
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
 
-        final int barMaxWidth = getWidth() - (2 * BAR_MARGIN);
+		Graphics2D g2 = (Graphics2D) g;
 
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
+		final int barMaxWidth = getWidth() - (2 * BAR_MARGIN);
 
-        if (lastEnergy > 0) {
-            Color color;
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
 
-            if (lastEnergy > 50) {
-                color = Color.GREEN;
-            } else if (lastEnergy > 25) {
-                color = Color.YELLOW;
-            } else {
-                color = Color.RED;
-            }
-            g.setColor(color);
+		if (lastEnergy > 0) {
+			Color color;
 
-            final int widthLife = Math.max(Math.min(barMaxWidth * lastEnergy / maxEnergy, barMaxWidth), 0);
+			if (lastEnergy > 50) {
+				color = Color.GREEN;
+			} else if (lastEnergy > 25) {
+				color = Color.YELLOW;
+			} else {
+				color = Color.RED;
+			}
+			g.setColor(color);
 
-            g.fillRect(BAR_MARGIN, getHeight() - (2 * BAR_HEIGHT + BAR_MARGIN), widthLife, BAR_HEIGHT);
-        }
-        if (lastScore > 0) {
-            g.setColor(Color.BLUE);
+			final int widthLife = Math.max(Math.min(barMaxWidth * lastEnergy / maxEnergy, barMaxWidth), 0);
 
-            final int widthScore = Math.max(Math.min(barMaxWidth * lastScore / maxScore, barMaxWidth), 0);
+			g.fillRect(BAR_MARGIN, getHeight() - (2 * BAR_HEIGHT + BAR_MARGIN), widthLife, BAR_HEIGHT);
+		}
+		if (lastScore > 0) {
+			g.setColor(Color.BLUE);
 
-            g.fillRect(BAR_MARGIN, getHeight() - (BAR_HEIGHT + BAR_MARGIN), widthScore, BAR_HEIGHT);
-        }
-    }
+			final int widthScore = Math.max(Math.min(barMaxWidth * lastScore / maxScore, barMaxWidth), 0);
 
-    /**
-     * Initialize the class.
-     */
-    private void initialize() {
-        addActionListener(this);
-        setPreferredSize(new Dimension(110, 25));
-        setMinimumSize(new Dimension(110, 25));
-        setMaximumSize(new Dimension(110, 25));
-        setHorizontalAlignment(SwingConstants.LEFT);
-        setMargin(new Insets(0, 0, 0, 0));
-        setToolTipText(name);
-    }
+			g.fillRect(BAR_MARGIN, getHeight() - (BAR_HEIGHT + BAR_MARGIN), widthScore, BAR_HEIGHT);
+		}
+	}
 
-    public void attach() {
-        if (!isListening) {
-            isListening = true;
-            windowManager.addBattleListener(battleObserver);
-        }
-        if (robotDialog == null) {
-            robotDialog = dialogManager.getRobotDialog(this, name, true);
-        }
-        robotDialog.attach(this);
-    }
+	/**
+	 * Initialize the class.
+	 */
+	private void initialize() {
+		addActionListener(this);
+		setPreferredSize(new Dimension(110, 25));
+		setMinimumSize(new Dimension(110, 25));
+		setMaximumSize(new Dimension(110, 25));
+		setHorizontalAlignment(SwingConstants.LEFT);
+		setMargin(new Insets(0, 0, 0, 0));
+		setToolTipText(name);
+	}
 
-    public void detach() {
-        if (isListening) {
-            windowManager.removeBattleListener(battleObserver);
-            isListening = false;
-        }
-        if (robotDialog != null) {
-            final RobotDialog dialog = robotDialog;
+	public void attach() {
+		if (!isListening) {
+			isListening = true;
+			windowManager.addBattleListener(battleObserver);
+		}
+		if (robotDialog == null) {
+			robotDialog = dialogManager.getRobotDialog(this, name, true);
+		}
+		robotDialog.attach(this);
+	}
 
-            robotDialog = null;
-            dialog.detach();
-        }
-    }
+	public void detach() {
+		if (isListening) {
+			windowManager.removeBattleListener(battleObserver);
+			isListening = false;
+		}
+		if (robotDialog != null) {
+			final RobotDialog dialog = robotDialog;
 
-    public int getRobotIndex() {
-        return robotIndex;
-    }
+			robotDialog = null;
+			dialog.detach();
+		}
+	}
 
-    public String getRobotName() {
-        return name;
-    }
+	public int getRobotIndex() {
+		return robotIndex;
+	}
 
-    private class BattleObserver extends BattleAdaptor {
+	public String getRobotName() {
+		return name;
+	}
 
-        @Override
-        public void onTurnEnded(TurnEndedEvent event) {
-            final ITurnSnapshot turn = event.getTurnSnapshot();
+	private class BattleObserver extends BattleAdaptor {
 
-            if (turn == null) {
-                return;
-            }
-            final IRobotSnapshot[] robots = turn.getRobots();
-            final IScoreSnapshot[] scoreSnapshotList = event.getTurnSnapshot().getIndexedTeamScores();
+		@Override
+		public void onTurnEnded(TurnEndedEvent event) {
+			final ITurnSnapshot turn = event.getTurnSnapshot();
 
-            maxEnergy = 0;
-            for (IRobotSnapshot robot : robots) {
-                if (maxEnergy < robot.getEnergy()) {
-                    maxEnergy = (int) robot.getEnergy();
-                }
-            }
-            if (maxEnergy == 0) {
-                maxEnergy = 1;
-            }
+			if (turn == null) {
+				return;
+			}
+			final IRobotSnapshot[] robots = turn.getRobots();
+			final IScoreSnapshot[] scoreSnapshotList = event.getTurnSnapshot().getIndexedTeamScores();
 
-            maxScore = 0;
-            for (IScoreSnapshot team : scoreSnapshotList) {
-                if (maxScore < team.getCurrentScore()) {
-                    maxScore = (int) team.getCurrentScore();
-                }
-            }
-            if (maxScore == 0) {
-                maxScore = 1;
-            }
+			maxEnergy = 0;
+			for (IRobotSnapshot robot : robots) {
+				if (maxEnergy < robot.getEnergy()) {
+					maxEnergy = (int) robot.getEnergy();
+				}
+			}
+			if (maxEnergy == 0) {
+				maxEnergy = 1;
+			}
 
-            final int newScore = (int) scoreSnapshotList[contestantIndex].getCurrentScore();
-            final int newEnergy = (int) robots[robotIndex].getEnergy();
-            boolean rep = (lastEnergy != newEnergy || lastScore != newScore);
+			maxScore = 0;
+			for (IScoreSnapshot team : scoreSnapshotList) {
+				if (maxScore < team.getCurrentScore()) {
+					maxScore = (int) team.getCurrentScore();
+				}
+			}
+			if (maxScore == 0) {
+				maxScore = 1;
+			}
 
-            lastEnergy = newEnergy;
-            lastScore = newScore;
-            if (rep) {
-                repaint();
-            }
-        }
+			final int newScore = (int) scoreSnapshotList[contestantIndex].getCurrentScore();
+			final int newEnergy = (int) robots[robotIndex].getEnergy();
+			boolean rep = (lastEnergy != newEnergy || lastScore != newScore);
 
-        @Override
-        public void onBattleCompleted(final BattleCompletedEvent event) {
-            maxScore = 0;
-            for (BattleResults team : event.getIndexedResults()) {
-                if (maxScore < team.getScore()) {
-                    maxScore = team.getScore();
-                }
-            }
-            if (maxScore == 0) {
-                maxScore = 1;
-            }
-            lastScore = event.getIndexedResults()[contestantIndex].getScore();
-            repaint();
-        }
+			lastEnergy = newEnergy;
+			lastScore = newScore;
+			if (rep) {
+				repaint();
+			}
+		}
 
-        @Override
-        public void onBattleFinished(final BattleFinishedEvent event) {
-            lastEnergy = 0;
-            repaint();
-        }
-    }
+		public void onBattleCompleted(final BattleCompletedEvent event) {
+			maxScore = 0;
+			for (BattleResults team : event.getIndexedResults()) {
+				if (maxScore < team.getScore()) {
+					maxScore = team.getScore();
+				}
+			}
+			if (maxScore == 0) {
+				maxScore = 1;
+			}
+			lastScore = event.getIndexedResults()[contestantIndex].getScore();
+			repaint();
+		}
+		
+		public void onBattleFinished(final BattleFinishedEvent event) {
+			lastEnergy = 0;
+			repaint();
+		}
+	}
 }

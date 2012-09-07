@@ -11,32 +11,34 @@
  *******************************************************************************/
 package net.sf.robocode.host.io;
 
+
 import java.io.IOException;
 import java.io.InputStream;
+
 
 /**
  * @author Mathew A. Nelson (original)
  */
 public class BufferedPipedInputStream extends InputStream {
 
-    private final BufferedPipedOutputStream out;
+	private final BufferedPipedOutputStream out;
 
-    protected BufferedPipedInputStream(BufferedPipedOutputStream out) {
-        this.out = out;
-    }
+	protected BufferedPipedInputStream(BufferedPipedOutputStream out) {
+		this.out = out;
+	}
 
-    @Override
-    public int read() throws IOException {
-        return out.read();
-    }
+	@Override
+	public int read() throws IOException {
+		return out.read();
+	}
 
-    @Override
-    public int read(byte b[], int off, int len) throws IOException {
-        return out.read(b, off, len);
-    }
+	@Override
+	public int read(byte b[], int off, int len) throws IOException {
+		return out.read(b, off, len);
+	}
 
-    @Override
-    public int available() {
-        return out.available();
-    }
+	@Override
+	public int available() {
+		return out.available();
+	}
 }

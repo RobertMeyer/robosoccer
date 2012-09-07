@@ -11,102 +11,97 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-import net.sf.robocode.host.IHostManager;
+
 import net.sf.robocode.host.RobotStatics;
+import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import robocode.RobotStatus;
 import robocode.robotinterfaces.peer.IStandardRobotPeer;
 
+
 /**
  * @author Pavel Savara (original)
  */
-public class StandardRobotProxy extends BasicRobotProxy implements
-        IStandardRobotPeer {
+public class StandardRobotProxy extends BasicRobotProxy implements IStandardRobotPeer {
 
-    private boolean isStopped;
-    private double saveAngleToTurn;
-    private double saveDistanceToGo;
-    private double saveGunAngleToTurn;
-    private double saveRadarAngleToTurn;
+	private boolean isStopped;
+	private double saveAngleToTurn;
+	private double saveDistanceToGo;
+	private double saveGunAngleToTurn;
+	private double saveRadarAngleToTurn;
 
-    public StandardRobotProxy(IRobotRepositoryItem specification, IHostManager hostManager, IRobotPeer peer, RobotStatics statics) {
-        super(specification, hostManager, peer, statics);
-    }
+	public StandardRobotProxy(IRobotRepositoryItem specification, IHostManager hostManager, IRobotPeer peer, RobotStatics statics) {
+		super(specification, hostManager, peer, statics);
+	}
 
-    @Override
-    protected void initializeRound(ExecCommands commands, RobotStatus status) {
-        super.initializeRound(commands, status);
-        isStopped = true;
-    }
+	@Override
+	protected void initializeRound(ExecCommands commands, RobotStatus status) {
+		super.initializeRound(commands, status);
+		isStopped = true;
+	}
 
-    // blocking actions
-    @Override
-    public void stop(boolean overwrite) {
-        setStopImpl(overwrite);
-        execute();
-    }
+	// blocking actions
+	public void stop(boolean overwrite) {
+		setStopImpl(overwrite);
+		execute();
+	}
 
-    @Override
-    public void resume() {
-        setResumeImpl();
-        execute();
-    }
+	public void resume() {
+		setResumeImpl();
+		execute();
+	}
 
-    @Override
-    public void turnRadar(double radians) {
-        setTurnRadarImpl(radians);
-        do {
-            execute(); // Always tick at least once
-        } while (getRadarTurnRemaining() != 0);
-    }
+	public void turnRadar(double radians) {
+		setTurnRadarImpl(radians);
+		do {
+			execute(); // Always tick at least once
+		} while (getRadarTurnRemaining() != 0);
+	}
 
-    // fast setters
-    @Override
-    public void setAdjustGunForBodyTurn(boolean newAdjustGunForBodyTurn) {
-        setCall();
-        commands.setAdjustGunForBodyTurn(newAdjustGunForBodyTurn);
-    }
+	// fast setters
+	public void setAdjustGunForBodyTurn(boolean newAdjustGunForBodyTurn) {
+		setCall();
+		commands.setAdjustGunForBodyTurn(newAdjustGunForBodyTurn);
+	}
 
-    @Override
-    public void setAdjustRadarForGunTurn(boolean newAdjustRadarForGunTurn) {
-        setCall();
-        commands.setAdjustRadarForGunTurn(newAdjustRadarForGunTurn);
-        if (!commands.isAdjustRadarForBodyTurnSet()) {
-            commands.setAdjustRadarForBodyTurn(newAdjustRadarForGunTurn);
-        }
-    }
+	public void setAdjustRadarForGunTurn(boolean newAdjustRadarForGunTurn) {
+		setCall();
+		commands.setAdjustRadarForGunTurn(newAdjustRadarForGunTurn);
+		if (!commands.isAdjustRadarForBodyTurnSet()) {
+			commands.setAdjustRadarForBodyTurn(newAdjustRadarForGunTurn);
+		}
+	}
 
-    @Override
-    public void setAdjustRadarForBodyTurn(boolean newAdjustRadarForBodyTurn) {
-        setCall();
-        commands.setAdjustRadarForBodyTurn(newAdjustRadarForBodyTurn);
-        commands.setAdjustRadarForBodyTurnSet(true);
-    }
+	public void setAdjustRadarForBodyTurn(boolean newAdjustRadarForBodyTurn) {
+		setCall();
+		commands.setAdjustRadarForBodyTurn(newAdjustRadarForBodyTurn);
+		commands.setAdjustRadarForBodyTurnSet(true);
+	}
 
-    protected final void setResumeImpl() {
-        if (isStopped) {
-            isStopped = false;
-            commands.setDistanceRemaining(saveDistanceToGo);
-            commands.setBodyTurnRemaining(saveAngleToTurn);
-            commands.setGunTurnRemaining(saveGunAngleToTurn);
-            commands.setRadarTurnRemaining(saveRadarAngleToTurn);
-        }
-    }
+	protected final void setResumeImpl() {
+		if (isStopped) {
+			isStopped = false;
+			commands.setDistanceRemaining(saveDistanceToGo);
+			commands.setBodyTurnRemaining(saveAngleToTurn);
+			commands.setGunTurnRemaining(saveGunAngleToTurn);
+			commands.setRadarTurnRemaining(saveRadarAngleToTurn);
+		}
+	}
 
-    protected final void setStopImpl(boolean overwrite) {
-        if (!isStopped || overwrite) {
-            this.saveDistanceToGo = getDistanceRemaining();
-            this.saveAngleToTurn = getBodyTurnRemaining();
-            this.saveGunAngleToTurn = getGunTurnRemaining();
-            this.saveRadarAngleToTurn = getRadarTurnRemaining();
-        }
-        isStopped = true;
+	protected final void setStopImpl(boolean overwrite) {
+		if (!isStopped || overwrite) {
+			this.saveDistanceToGo = getDistanceRemaining();
+			this.saveAngleToTurn = getBodyTurnRemaining();
+			this.saveGunAngleToTurn = getGunTurnRemaining();
+			this.saveRadarAngleToTurn = getRadarTurnRemaining();
+		}
+		isStopped = true;
 
-        commands.setDistanceRemaining(0);
-        commands.setBodyTurnRemaining(0);
-        commands.setGunTurnRemaining(0);
-        commands.setRadarTurnRemaining(0);
-    }
+		commands.setDistanceRemaining(0);
+		commands.setBodyTurnRemaining(0);
+		commands.setGunTurnRemaining(0);
+		commands.setRadarTurnRemaining(0);
+	}
 }

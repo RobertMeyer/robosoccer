@@ -13,127 +13,131 @@
  */
 package net.sf.robocode.repository;
 
+
 import java.io.Serializable;
 
+
 public class RobotType implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
-    transient public static final RobotType INVALID = new RobotType(0);
-    transient public static final RobotType JUNIOR = new RobotType(1);
-    transient public static final RobotType STANDARD = new RobotType(2);
-    transient public static final RobotType ADVANCED = new RobotType(4);
-    transient public static final RobotType TEAM = new RobotType(8);
-    transient public static final RobotType DROID = new RobotType(16);
-    transient public static final RobotType INTERACTIVE = new RobotType(32);
-    transient public static final RobotType PAINTING = new RobotType(64);
-    transient public static final RobotType HOUSE = new RobotType(128);
-    private int code;
+	transient public static final RobotType INVALID = new RobotType(0);
+	transient public static final RobotType JUNIOR = new RobotType(1);
+	transient public static final RobotType STANDARD = new RobotType(2);
+	transient public static final RobotType ADVANCED = new RobotType(4);
+	transient public static final RobotType TEAM = new RobotType(8);
+	transient public static final RobotType DROID = new RobotType(16);
+	transient public static final RobotType INTERACTIVE = new RobotType(32);
+	transient public static final RobotType PAINTING = new RobotType(64);
+	transient public static final RobotType HOUSE = new RobotType(128);
 
-    public RobotType(int code) {
-        this.code = code;
-    }
+	private int code;
 
-    public RobotType(
-            boolean isJuniorRobot,
-            boolean isStandardRobot,
-            boolean isInteractiveRobot,
-            boolean isPaintRobot,
-            boolean isAdvancedRobot,
-            boolean isTeamRobot,
-            boolean isDroid,
-            boolean isHouse) {
-        this.code = 0;
-        if (isJuniorRobot) {
-            code += JUNIOR.getCode();
-        }
-        if (isStandardRobot) {
-            code += STANDARD.getCode();
-        }
-        if (isInteractiveRobot) {
-            code += INTERACTIVE.getCode();
-        }
-        if (isPaintRobot) {
-            code += PAINTING.getCode();
-        }
-        if (isAdvancedRobot) {
-            code += ADVANCED.getCode();
-        }
-        if (isTeamRobot) {
-            code += TEAM.getCode();
-        }
-        if (isDroid) {
-            code += DROID.getCode();
-        }
-        if (isHouse) {
-            code += HOUSE.getCode();
-        }
-    }
+	public RobotType(int code) {
+		this.code = code;
+	}
 
-    public int getCode() {
-        return code;
-    }
+	public RobotType(
+			boolean isJuniorRobot,
+			boolean isStandardRobot,
+			boolean isInteractiveRobot,
+			boolean isPaintRobot,
+			boolean isAdvancedRobot,
+			boolean isTeamRobot,
+			boolean isDroid,
+			boolean isHouse
+			) {
+		this.code = 0;
+		if (isJuniorRobot) {
+			code += JUNIOR.getCode();
+		}
+		if (isStandardRobot) {
+			code += STANDARD.getCode();
+		}
+		if (isInteractiveRobot) {
+			code += INTERACTIVE.getCode();
+		}
+		if (isPaintRobot) {
+			code += PAINTING.getCode();
+		}
+		if (isAdvancedRobot) {
+			code += ADVANCED.getCode();
+		}
+		if (isTeamRobot) {
+			code += TEAM.getCode();
+		}
+		if (isDroid) {
+			code += DROID.getCode();
+		}
+		if (isHouse) {
+			code += HOUSE.getCode();
+		}
+	}
 
-    public boolean isValid() {
-        return isJuniorRobot() || isStandardRobot() || isAdvancedRobot();
-    }
+	public int getCode() {
+		return code;
+	}
 
-    public boolean isDroid() {
-        return (code & DROID.code) != 0;
-    }
+	public boolean isValid() {
+		return isJuniorRobot() || isStandardRobot() || isAdvancedRobot();
+	}
 
-    public boolean isTeamRobot() {
-        return (code & TEAM.code) != 0;
-    }
+	public boolean isDroid() {
+		return (code & DROID.code) != 0;
+	}
 
-    public boolean isAdvancedRobot() {
-        return (code & ADVANCED.code) != 0;
-    }
+	public boolean isTeamRobot() {
+		return (code & TEAM.code) != 0;
+	}
 
-    public boolean isStandardRobot() {
-        return (code & STANDARD.code) != 0;
-    }
+	public boolean isAdvancedRobot() {
+		return (code & ADVANCED.code) != 0;
+	}
 
-    public boolean isInteractiveRobot() {
-        return (code & INTERACTIVE.code) != 0;
-    }
+	public boolean isStandardRobot() {
+		return (code & STANDARD.code) != 0;
+	}
 
-    public boolean isPaintRobot() {
-        return (code & PAINTING.code) != 0;
-    }
+	public boolean isInteractiveRobot() {
+		return (code & INTERACTIVE.code) != 0;
+	}
 
-    public boolean isJuniorRobot() {
-        return (code & JUNIOR.code) != 0;
-    }
+	public boolean isPaintRobot() {
+		return (code & PAINTING.code) != 0;
+	}
 
-    public boolean isHouseRobot() {
-        return (code & HOUSE.code) != 0;
-    }
+	public boolean isJuniorRobot() {
+		return (code & JUNIOR.code) != 0;
+	}
+	
+	public boolean isHouseRobot() {
+		return (code & HOUSE.code) != 0;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
 
-        result = prime * result + code;
-        return result;
-    }
+		result = prime * result + code;
+		return result;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        RobotType other = (RobotType) obj;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		RobotType other = (RobotType) obj;
 
-        if (code != other.code) {
-            return false;
-        }
-        return true;
-    }
+		if (code != other.code) {
+			return false;
+		}
+		return true;
+	}
 }

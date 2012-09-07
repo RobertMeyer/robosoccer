@@ -11,7 +11,9 @@
  *******************************************************************************/
 package tested.robots;
 
+
 import robocode.AdvancedRobot;
+
 
 /**
  * @author Pavel Savara (original)
@@ -19,12 +21,11 @@ import robocode.AdvancedRobot;
  */
 public class GunHeat extends AdvancedRobot {
 
-    @Override
-    public void run() {
-        while (true) {
-            setFireBullet(3.0);
-            out.println(getTime() + " gunHeat after fire: " + getGunHeat());
-            execute();
-        }
-    }
+	public void run() {
+		while (true) {
+			setFireBullet(3.0);
+			out.println(getTime() + " gunHeat after fire: " + getGunHeat());
+			execute();
+		}
+	}
 }

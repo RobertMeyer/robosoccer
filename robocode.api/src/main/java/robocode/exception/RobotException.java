@@ -11,18 +11,18 @@
  *******************************************************************************/
 package robocode.exception;
 
+
 /**
  * @author Mathew A. Nelson (original)
  */
 public class RobotException extends Error { // Must be error!
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
+	public RobotException() {
+		super();
+	}
 
-    public RobotException() {
-        super();
-    }
-
-    public RobotException(String s) {
-        super(s);
-    }
+	public RobotException(String s) {
+		super(s);
+	}
 }

@@ -11,15 +11,16 @@
  *******************************************************************************/
 package net.sf.robocode.sound;
 
+
 import net.sf.robocode.core.BaseModule;
 import net.sf.robocode.core.Container;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class Module extends BaseModule {
-
-    static {
-        Container.cache.addComponent(ISoundManager.class, SoundManager.class);
-    }
+	static {
+		Container.cache.addComponent(ISoundManager.class, SoundManager.class);
+	}
 }

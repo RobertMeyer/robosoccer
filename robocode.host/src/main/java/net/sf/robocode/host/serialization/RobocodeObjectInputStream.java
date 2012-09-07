@@ -13,10 +13,12 @@
  *******************************************************************************/
 package net.sf.robocode.host.serialization;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -24,21 +26,21 @@ import java.io.ObjectStreamClass;
  */
 public class RobocodeObjectInputStream extends ObjectInputStream {
 
-    private ClassLoader classLoader;
+	private ClassLoader classLoader;
 
-    public RobocodeObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
-        super(in);
-        this.classLoader = classLoader;
-    }
+	public RobocodeObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
+		super(in);
+		this.classLoader = classLoader;
+	}
 
-    @Override
-    protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-        String name = desc.getName();
+	@Override
+	protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+		String name = desc.getName();
 
-        try {
-            return Class.forName(name, false, classLoader);
-        } catch (ClassNotFoundException ex) {
-            return super.resolveClass(desc);
-        }
-    }
+		try {
+			return Class.forName(name, false, classLoader);
+		} catch (ClassNotFoundException ex) {
+			return super.resolveClass(desc);
+		}
+	}
 }

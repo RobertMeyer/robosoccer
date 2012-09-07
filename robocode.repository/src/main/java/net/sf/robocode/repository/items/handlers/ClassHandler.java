@@ -11,11 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items.handlers;
 
-import java.net.URL;
+
 import net.sf.robocode.repository.Database;
 import net.sf.robocode.repository.items.IItem;
 import net.sf.robocode.repository.items.RobotItem;
 import net.sf.robocode.repository.root.IRepositoryRoot;
+
+import java.net.URL;
+
 
 /**
  * Handler for accepting and registering .class files.
@@ -23,27 +26,25 @@ import net.sf.robocode.repository.root.IRepositoryRoot;
  * @author Pavel Savara (original)
  */
 public class ClassHandler extends ItemHandler {
+	public IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db) {
+		final String name = itemURL.toString().toLowerCase();
 
-    @Override
-    public IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db) {
-        final String name = itemURL.toString().toLowerCase();
+		if (name.endsWith(".class") && !name.contains("$")) {
+			return register(itemURL, root, db);
+		}
+		return null;
+	}
 
-        if (name.endsWith(".class") && !name.contains("$")) {
-            return register(itemURL, root, db);
-        }
-        return null;
-    }
+	private IItem register(URL itemURL, IRepositoryRoot root, Database db) {
+		RobotItem item = (RobotItem) db.getItem(itemURL.toString());
 
-    private IItem register(URL itemURL, IRepositoryRoot root, Database db) {
-        RobotItem item = (RobotItem) db.getItem(itemURL.toString());
+		if (item == null) {
+			item = new RobotItem(itemURL, root);
+		}
+		item.setClassPathURL(root.getURL());
+		item.setClassURL(itemURL);
 
-        if (item == null) {
-            item = new RobotItem(itemURL, root);
-        }
-        item.setClassPathURL(root.getURL());
-        item.setClassURL(itemURL);
-
-        db.putItem(item);
-        return item;
-    }
+		db.putItem(item);
+		return item;
+	}
 }

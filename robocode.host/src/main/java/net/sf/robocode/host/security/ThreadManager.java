@@ -19,19 +19,22 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+
 import net.sf.robocode.host.IHostedThread;
 import net.sf.robocode.host.IThreadManager;
 import net.sf.robocode.host.io.RobotFileOutputStream;
 import net.sf.robocode.host.io.RobotFileSystemManager;
 import robocode.exception.RobotException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -40,206 +43,191 @@ import robocode.exception.RobotException;
  */
 public class ThreadManager implements IThreadManager {
 
-    private final PrintStream syserr = System.err;
-    private final List<Thread> safeThreads = new CopyOnWriteArrayList<Thread>();
-    private final List<ThreadGroup> safeThreadGroups = new CopyOnWriteArrayList<ThreadGroup>();
-    private final List<ThreadGroup> groups = new CopyOnWriteArrayList<ThreadGroup>();
-    private final List<Thread> outputStreamThreads = new CopyOnWriteArrayList<Thread>();
-    private final List<IHostedThread> robots = new CopyOnWriteArrayList<IHostedThread>();
-    private Thread robotLoaderThread;
-    private IHostedThread loadingRobot;
+	private final PrintStream syserr = System.err;
 
-    public ThreadManager() {
-    }
+	private final List<Thread> safeThreads = new CopyOnWriteArrayList<Thread>();
+	private final List<ThreadGroup> safeThreadGroups = new CopyOnWriteArrayList<ThreadGroup>();
+	private final List<ThreadGroup> groups = new CopyOnWriteArrayList<ThreadGroup>();
+	private final List<Thread> outputStreamThreads = new CopyOnWriteArrayList<Thread>();
+	private final List<IHostedThread> robots = new CopyOnWriteArrayList<IHostedThread>();
 
-    @Override
-    public void addSafeThread(Thread safeThread) {
-        safeThreads.add(safeThread);
-    }
+	private Thread robotLoaderThread;
+	private IHostedThread loadingRobot;
 
-    @Override
-    public void removeSafeThread(Thread safeThread) {
-        safeThreads.remove(safeThread);
-    }
+	public ThreadManager() {}
 
-    @Override
-    public void addSafeThreadGroup(ThreadGroup safeThreadGroup) {
-        safeThreadGroups.add(safeThreadGroup);
-    }
+	public void addSafeThread(Thread safeThread) {
+		safeThreads.add(safeThread);
+	}
 
-    @Override
-    public void addThreadGroup(ThreadGroup g, IHostedThread robotProxy) {
-        if (!groups.contains(g)) {
-            groups.add(g);
-            robots.add(robotProxy);
-        }
-    }
+	public void removeSafeThread(Thread safeThread) {
+		safeThreads.remove(safeThread);
+	}
 
-    @Override
-    public synchronized IHostedThread getLoadingRobot() {
-        return loadingRobot;
-    }
+	public void addSafeThreadGroup(ThreadGroup safeThreadGroup) {
+		safeThreadGroups.add(safeThreadGroup);
+	}
 
-    @Override
-    public synchronized IHostedThread getLoadingRobotProxy(Thread t) {
-        if (t != null && robotLoaderThread != null
-                && (t.equals(robotLoaderThread)
-                    || (t.getThreadGroup() != null && t.getThreadGroup().equals(robotLoaderThread.getThreadGroup())))) {
-            return loadingRobot;
-        }
-        return null;
-    }
+	public void addThreadGroup(ThreadGroup g, IHostedThread robotProxy) {
+		if (!groups.contains(g)) {
+			groups.add(g);
+			robots.add(robotProxy);
+		}
+	}
 
-    @Override
-    public synchronized IHostedThread getLoadedOrLoadingRobotProxy(Thread t) {
-        IHostedThread robotProxy = getRobotProxy(t);
+	public synchronized IHostedThread getLoadingRobot() {
+		return loadingRobot;
+	}
 
-        if (robotProxy == null) {
-            robotProxy = getLoadingRobotProxy(t);
-        }
-        return robotProxy;
-    }
+	public synchronized IHostedThread getLoadingRobotProxy(Thread t) {
+		if (t != null && robotLoaderThread != null
+				&& (t.equals(robotLoaderThread)
+				|| (t.getThreadGroup() != null && t.getThreadGroup().equals(robotLoaderThread.getThreadGroup())))) {
+			return loadingRobot;
+		}
+		return null;
+	}
 
-    @Override
-    public IHostedThread getRobotProxy(Thread t) {
-        ThreadGroup g = t.getThreadGroup();
+	public synchronized IHostedThread getLoadedOrLoadingRobotProxy(Thread t) {
+		IHostedThread robotProxy = getRobotProxy(t);
 
-        if (g == null) {
-            return null;
-        }
-        int index = groups.indexOf(g);
+		if (robotProxy == null) {
+			robotProxy = getLoadingRobotProxy(t);
+		}
+		return robotProxy;
+	}
 
-        if (index == -1) {
-            return null;
-        }
-        return robots.get(index);
-    }
+	public IHostedThread getRobotProxy(Thread t) {
+		ThreadGroup g = t.getThreadGroup();
 
-    @Override
-    public void reset() {
-        groups.clear();
-        robots.clear();
-    }
+		if (g == null) {
+			return null;
+		}
+		int index = groups.indexOf(g);
 
-    @Override
-    public synchronized void setLoadingRobot(IHostedThread newLoadingRobotProxy) {
-        if (newLoadingRobotProxy == null) {
-            this.robotLoaderThread = null;
-            loadingRobot = null;
-        } else {
-            this.robotLoaderThread = Thread.currentThread();
-            loadingRobot = newLoadingRobotProxy;
-        }
-    }
+		if (index == -1) {
+			return null;
+		}
+		return robots.get(index);
+	}
 
-    @Override
-    public boolean isSafeThread() {
-        return isSafeThread(Thread.currentThread());
-    }
+	public void reset() {
+		groups.clear();
+		robots.clear();
+	}
 
-    @Override
-    public FileOutputStream createRobotFileStream(String fileName, boolean append) throws IOException {
-        final Thread c = Thread.currentThread();
+	public synchronized void setLoadingRobot(IHostedThread newLoadingRobotProxy) {
+		if (newLoadingRobotProxy == null) {
+			this.robotLoaderThread = null;
+			loadingRobot = null;
+		} else {
+			this.robotLoaderThread = Thread.currentThread();
+			loadingRobot = newLoadingRobotProxy;
+		}
+	}
 
-        final IHostedThread robotProxy = getRobotProxy(c);
+	public boolean isSafeThread() {
+		return isSafeThread(Thread.currentThread());
+	}
 
-        if (robotProxy == null) {
-            syserr.println("RobotProxy is null");
-            return null;
-        }
-        if (!robotProxy.getStatics().isAdvancedRobot()) {
-            throw new RobotException("Only advanced robots could create files");
-        }
+	public FileOutputStream createRobotFileStream(String fileName, boolean append) throws IOException {
+		final Thread c = Thread.currentThread();
 
-        final File dir = robotProxy.getRobotFileSystemManager().getWritableDirectory();
+		final IHostedThread robotProxy = getRobotProxy(c);
 
-        if (!dir.exists()) {
-            robotProxy.println("SYSTEM: Creating a data directory for you.");
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    outputStreamThreads.add(c);
-                    if (!dir.exists() && !dir.mkdirs()) {
-                        syserr.println("Can't create dir " + dir.toString());
-                    }
-                    return null;
-                }
-            });
-        }
+		if (robotProxy == null) {
+			syserr.println("RobotProxy is null");
+			return null;
+		}
+		if (!robotProxy.getStatics().isAdvancedRobot()) {
+			throw new RobotException("Only advanced robots could create files");
+		}
+		
+		final File dir = robotProxy.getRobotFileSystemManager().getWritableDirectory();
 
-        final RobotFileSystemManager fileSystemManager = robotProxy.getRobotFileSystemManager();
+		if (!dir.exists()) {
+			robotProxy.println("SYSTEM: Creating a data directory for you.");
+			AccessController.doPrivileged(new PrivilegedAction<Object>() {
+				public Object run() {
+					outputStreamThreads.add(c);
+					if (!dir.exists() && !dir.mkdirs()) {
+						syserr.println("Can't create dir " + dir.toString());
+					}
+					return null;
+				}
+			});
+		}
 
-        File f = new File(fileName);
-        long len;
+		final RobotFileSystemManager fileSystemManager = robotProxy.getRobotFileSystemManager();
 
-        if (f.exists()) {
-            len = f.length();
-        } else {
-            fileSystemManager.checkQuota();
-            len = 0;
-        }
+		File f = new File(fileName);
+		long len;
 
-        if (!append) {
-            fileSystemManager.adjustQuota(-len);
-        }
+		if (f.exists()) {
+			len = f.length();
+		} else {
+			fileSystemManager.checkQuota();
+			len = 0;
+		}
 
-        outputStreamThreads.add(c);
-        return new RobotFileOutputStream(fileName, append, fileSystemManager);
-    }
+		if (!append) {
+			fileSystemManager.adjustQuota(-len);
+		}
 
-    @Override
-    public boolean checkRobotFileStream() {
-        final Thread c = Thread.currentThread();
+		outputStreamThreads.add(c);
+		return new RobotFileOutputStream(fileName, append, fileSystemManager);
+	}
 
-        synchronized (outputStreamThreads) {
-            if (outputStreamThreads.contains(c)) {
-                outputStreamThreads.remove(c);
-                return true;
-            }
-        }
-        return false;
-    }
+	public boolean checkRobotFileStream() {
+		final Thread c = Thread.currentThread();
 
-    @Override
-    public boolean isSafeThread(Thread c) {
-        try {
-            if (safeThreads.contains(c)) {
-                return true;
-            }
+		synchronized (outputStreamThreads) {
+			if (outputStreamThreads.contains(c)) {
+				outputStreamThreads.remove(c);
+				return true;
+			}
+		}
+		return false;
+	}
 
-            for (ThreadGroup tg : safeThreadGroups) {
-                if (c.getThreadGroup() == tg) {
-                    safeThreads.add(c);
-                    return true;
-                }
-            }
+	public boolean isSafeThread(Thread c) {
+		try {
+			if (safeThreads.contains(c)) {
+				return true;
+			}
 
-            return false;
-        } catch (Exception e) {
-            syserr.println("Exception checking safe thread: ");
-            e.printStackTrace(syserr);
-            return false;
-        }
-    }
+			for (ThreadGroup tg : safeThreadGroups) {
+				if (c.getThreadGroup() == tg) {
+					safeThreads.add(c);
+					return true;
+				}
+			}
 
-    @Override
-    public PrintStream getRobotOutputStream() {
-        Thread c = Thread.currentThread();
+			return false;
+		} catch (Exception e) {
+			syserr.println("Exception checking safe thread: ");
+			e.printStackTrace(syserr);
+			return false;
+		}
+	}
 
-        if (isSafeThread(c)) {
-            return null;
-        }
+	public PrintStream getRobotOutputStream() {
+		Thread c = Thread.currentThread();
 
-        IHostedThread robotProxy = getLoadedOrLoadingRobotProxy(c);
+		if (isSafeThread(c)) {
+			return null;
+		}
 
-        return (robotProxy != null) ? robotProxy.getOut() : null;
-    }
+		IHostedThread robotProxy = getLoadedOrLoadingRobotProxy(c);
 
-    public void printlnToRobot(String s) {
-        final PrintStream stream = getRobotOutputStream();
+		return (robotProxy != null) ? robotProxy.getOut() : null;
+	}
 
-        if (stream != null) {
-            stream.println(s);
-        }
-    }
+	public void printlnToRobot(String s) {
+		final PrintStream stream = getRobotOutputStream();
+
+		if (stream != null) {
+			stream.println(s);
+		}
+	}
 }

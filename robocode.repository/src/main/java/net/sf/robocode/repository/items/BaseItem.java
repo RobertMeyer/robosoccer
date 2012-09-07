@@ -11,52 +11,51 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items;
 
+
+import net.sf.robocode.repository.root.IRepositoryRoot;
+
 import java.io.Serializable;
 import java.net.URL;
-import net.sf.robocode.repository.root.IRepositoryRoot;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public abstract class BaseItem implements IItem, Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
-    protected URL itemURL;
-    protected IRepositoryRoot root;
-    protected long lastModified;
-    protected boolean isValid;
+	protected URL itemURL;
+	protected IRepositoryRoot root;
+	protected long lastModified;
+	protected boolean isValid;
 
-    public BaseItem(URL itemURL, IRepositoryRoot root) {
-        this.itemURL = itemURL;
-        this.root = root;
-        this.lastModified = 0;
-    }
+	public BaseItem(URL itemURL, IRepositoryRoot root) {
+		this.itemURL = itemURL;
+		this.root = root;
+		this.lastModified = 0;
+	}
 
-    @Override
-    public URL getItemURL() {
-        return itemURL;
-    }
+	public URL getItemURL() {
+		return itemURL;
+	}
 
-    @Override
-    public IRepositoryRoot getRoot() {
-        return root;
-    }
+	public IRepositoryRoot getRoot() {
+		return root;
+	}
 
-    public boolean isInJAR() {
-        return root.isJAR();
-    }
+	public boolean isInJAR() {
+		return root.isJAR();
+	}
 
-    @Override
-    public long getLastModified() {
-        return lastModified;
-    }
+	public long getLastModified() {
+		return lastModified;
+	}
 
-    @Override
-    public boolean isValid() {
-        return isValid;
-    }
+	public boolean isValid() {
+		return isValid;
+	}
 
-    public void setValid(boolean valid) {
-        isValid = valid;
-    }
+	public void setValid(boolean valid) {
+		isValid = valid;
+	}
 }

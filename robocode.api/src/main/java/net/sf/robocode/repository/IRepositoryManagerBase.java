@@ -11,16 +11,15 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
+
 import robocode.control.RobotSpecification;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRepositoryManagerBase {
-
-    boolean refresh();
-
-    RobotSpecification[] getSpecifications();
-
-    RobotSpecification[] loadSelectedRobots(String selectedRobots);
+	boolean refresh();
+	RobotSpecification[] getSpecifications();
+	RobotSpecification[] loadSelectedRobots(String selectedRobots);
 }

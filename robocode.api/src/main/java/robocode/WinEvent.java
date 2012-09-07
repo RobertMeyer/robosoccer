@@ -13,15 +13,16 @@
  *******************************************************************************/
 package robocode;
 
-import java.awt.*;
-import java.nio.ByteBuffer;
+
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
-import robocode.Event;
-import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicRobot;
+
+import java.awt.*;
+import java.nio.ByteBuffer;
+
 
 /**
  * This event is sent to {@link Robot#onWin(WinEvent) onWin()} when your robot
@@ -30,79 +31,73 @@ import robocode.robotinterfaces.IBasicRobot;
  * @author Mathew A. Nelson (original)
  */
 public final class WinEvent extends Event {
+	private static final long serialVersionUID = 1L;
+	private final static int DEFAULT_PRIORITY = 100; // System event -> cannot be changed!
 
-    private static final long serialVersionUID = 1L;
-    private final static int DEFAULT_PRIORITY = 100; // System event -> cannot be changed!
+	/**
+	 * Called by the game to create a new WinEvent.
+	 */
+	public WinEvent() {
+		super();
+	}
 
-    /**
-     * Called by the game to create a new WinEvent.
-     */
-    public WinEvent() {
-        super();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getPriority() {
+		return DEFAULT_PRIORITY;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final int getPriority() {
-        return DEFAULT_PRIORITY;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	final int getDefaultPriority() {
+		return DEFAULT_PRIORITY;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final int getDefaultPriority() {
-        return DEFAULT_PRIORITY;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+		IBasicEvents listener = robot.getBasicEventListener();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-        IBasicEvents listener = robot.getBasicEventListener();
+		if (listener != null) {
+			listener.onWin(this);
+		}
+	}
 
-        if (listener != null) {
-            listener.onWin(this);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	final boolean isCriticalEvent() {
+		return true;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final boolean isCriticalEvent() {
-        return true;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	byte getSerializationType() {
+		return RbSerializer.WinEvent_TYPE;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    byte getSerializationType() {
-        return RbSerializer.WinEvent_TYPE;
-    }
+	static ISerializableHelper createHiddenSerializer() {
+		return new SerializableHelper();
+	}
 
-    static ISerializableHelper createHiddenSerializer() {
-        return new SerializableHelper();
-    }
+	private static class SerializableHelper implements ISerializableHelper {
+		public int sizeOf(RbSerializer serializer, Object object) {
+			return RbSerializer.SIZEOF_TYPEINFO;
+		}
 
-    private static class SerializableHelper implements ISerializableHelper {
+		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {}
 
-        @Override
-        public int sizeOf(RbSerializer serializer, Object object) {
-            return RbSerializer.SIZEOF_TYPEINFO;
-        }
-
-        @Override
-        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-        }
-
-        @Override
-        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-            return new WinEvent();
-        }
-    }
+		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+			return new WinEvent();
+		}
+	}
 }

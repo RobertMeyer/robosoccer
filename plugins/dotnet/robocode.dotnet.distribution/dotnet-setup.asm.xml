@@ -26,10 +26,10 @@
         </dependencySet>
         <!-- other libraries -->
         <dependencySet>
-            <includes>
+			<includes>
                 <include>net.sf.robocode:robocode.dotnet.*</include>
-                <include>net.sf.jni4net:*</include>
-            </includes>
+				<include>net.sf.jni4net:*</include>
+			</includes>
             <excludes>
                 <!-- Used for creating this assembly -->
                 <exclude>net.sf.robocode:robocode.dotnet.distribution</exclude>

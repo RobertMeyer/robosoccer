@@ -11,39 +11,41 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
+
+import robocode.control.RobotSpecification;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import robocode.control.RobotSpecification;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRepositoryManager extends IRepositoryManagerBase {
+	File getRobotsDirectory();
 
-    File getRobotsDirectory();
+	List<File> getDevelDirectories();
 
-    List<File> getDevelDirectories();
+	void refresh(String file);
 
-    void refresh(String file);
+	boolean refresh(boolean force);
+	void reload(boolean forced);
 
-    boolean refresh(boolean force);
+	List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage,
+			boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar);
 
-    void reload(boolean forced);
+	RobotSpecification[] loadSelectedRobots(RobotSpecification[] selectedRobots);
 
-    List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage,
-                                                boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar);
+	List<IRepositoryItem> getSelectedSpecifications(String selectedRobots);
 
-    RobotSpecification[] loadSelectedRobots(RobotSpecification[] selectedRobots);
+	boolean verifyRobotName(String robotName, String shortClassName);
 
-    List<IRepositoryItem> getSelectedSpecifications(String selectedRobots);
+	int extractJar(IRepositoryItem item);
 
-    boolean verifyRobotName(String robotName, String shortClassName);
+	void createTeam(File target, URL web, String desc, String author, String members, String teamVersion) throws IOException;
 
-    int extractJar(IRepositoryItem item);
+	String createPackage(File target, URL web, String desc, String author, String version, boolean source, List<IRepositoryItem> selectedRobots);
 
-    void createTeam(File target, URL web, String desc, String author, String members, String teamVersion) throws IOException;
-
-    String createPackage(File target, URL web, String desc, String author, String version, boolean source, List<IRepositoryItem> selectedRobots);
 }

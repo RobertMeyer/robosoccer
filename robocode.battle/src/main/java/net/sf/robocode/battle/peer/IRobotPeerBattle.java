@@ -11,62 +11,63 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-import java.util.List;
-import net.sf.robocode.battle.ItemDrop;
+
 import robocode.Event;
+
+import java.util.List;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRobotPeerBattle extends ContestantPeer {
+	void setSGPaintEnabled(boolean enabled);
 
-    void setSGPaintEnabled(boolean enabled);
+	RobotStatistics getRobotStatistics();
 
-    RobotStatistics getRobotStatistics();
+	TeamPeer getTeamPeer();
 
-    TeamPeer getTeamPeer();
+	void publishStatus(long currentTurn);
 
-    void publishStatus(long currentTurn);
+	void addEvent(Event event);
 
-    void addEvent(Event event);
+	void setPaintEnabled(boolean enabled);
 
-    void setPaintEnabled(boolean enabled);
+	void kill();
 
-    void kill();
+	void cleanup();
 
-    void cleanup();
+	boolean isDead();
 
-    boolean isDead();
+	boolean isAlive();
 
-    boolean isAlive();
+	boolean isRunning();
 
-    boolean isRunning();
+	boolean isWinner();
 
-    boolean isWinner();
+	boolean isTeamLeader();
 
-    boolean isTeamLeader();
+	void setHalt(boolean value);
 
-    void setHalt(boolean value);
+	void println(String s);
 
-    void println(String s);
+	void waitWakeup();
 
-    void waitWakeup();
+	void waitSleeping(long millisWait, int nanosWait);
 
-    void waitSleeping(long millisWait, int nanosWait);
+	void waitForStop();
 
-    void waitForStop();
+	void setWinner(boolean newWinner);
 
-    void setWinner(boolean newWinner);
+	void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions);
 
-    void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions);
+	void startRound(long millisWait, int nanosWait);
 
-    void startRound(long millisWait, int nanosWait);
+	void checkSkippedTurn();
 
-    void checkSkippedTurn();
+	void performLoadCommands();
 
-    void performLoadCommands();
+	void performMove(List<RobotPeer> robots, double zapEnergy);
 
-    void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy);
-
-    void performScan(List<RobotPeer> robots);
+	void performScan(List<RobotPeer> robots);
 }

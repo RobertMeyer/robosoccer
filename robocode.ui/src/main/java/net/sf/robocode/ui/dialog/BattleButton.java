@@ -11,50 +11,51 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class BattleButton extends JButton implements ActionListener {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
-    private final BattleDialog battleDialog;
+	private final BattleDialog battleDialog;
 
-    public BattleButton(BattleDialog battleDialog) {
-        this.battleDialog = battleDialog;
+	public BattleButton(BattleDialog battleDialog) {
+		this.battleDialog = battleDialog;
 
-        initialize();
-    }
+		initialize();
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        attach();
-        if (!battleDialog.isVisible() || battleDialog.getState() != Frame.NORMAL) {
-            WindowUtil.packPlaceShow(battleDialog);
-        } else {
-            battleDialog.setVisible(true);
-        }
-    }
+	public void actionPerformed(ActionEvent e) {
+		attach();
+		if (!battleDialog.isVisible() || battleDialog.getState() != Frame.NORMAL) {
+			WindowUtil.packPlaceShow(battleDialog);
+		} else {
+			battleDialog.setVisible(true);
+		}
+	}
 
-    /**
-     * Initialize the class.
-     */
-    private void initialize() {
-        addActionListener(this);
-        setPreferredSize(new Dimension(110, 25));
-        setMinimumSize(new Dimension(110, 25));
-        setMaximumSize(new Dimension(110, 25));
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setMargin(new Insets(0, 0, 0, 0));
-        setText("Main battle log");
-        setToolTipText("Main battle log");
-    }
+	/**
+	 * Initialize the class.
+	 */
+	private void initialize() {
+		addActionListener(this);
+		setPreferredSize(new Dimension(110, 25));
+		setMinimumSize(new Dimension(110, 25));
+		setMaximumSize(new Dimension(110, 25));
+		setHorizontalAlignment(SwingConstants.CENTER);
+		setMargin(new Insets(0, 0, 0, 0));
+		setText("Main battle log");
+		setToolTipText("Main battle log");
+	}
 
-    public void attach() {
-        battleDialog.attach();
-    }
+	public void attach() {
+		battleDialog.attach();
+	}
 }

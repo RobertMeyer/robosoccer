@@ -23,6 +23,5 @@ import javax.swing.JFrame;
  * @author lee
  */
 public interface IFullScreenListener {
-
     public void fullScreenModeChanged(JFrame w, boolean isNowFullScreen);
 }

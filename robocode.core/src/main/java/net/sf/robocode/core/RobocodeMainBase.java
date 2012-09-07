@@ -11,84 +11,86 @@
  *******************************************************************************/
 package net.sf.robocode.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
+
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
 import robocode.control.events.IBattleListener;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
+
+
 /**
  * There are entrypoints called with reflection from HiddenAccess in robocode.api module,
  * they cross classloaders boundaries.
- *
+ * 
  * @author Pavel Savara (original)
  */
 public abstract class RobocodeMainBase implements Runnable {
+	public abstract void loadSetup(String[] args);
 
-    public abstract void loadSetup(String[] args);
+	public abstract void initForRobocodeEngine(IBattleListener listener);
 
-    public abstract void initForRobocodeEngine(IBattleListener listener);
+	public abstract void cleanup();
 
-    public abstract void cleanup();
+	// -----------
+	// entrypoints called with reflection from HiddenAccess in robocode.api module
+	// -----------
 
-    // -----------
-    // entrypoints called with reflection from HiddenAccess in robocode.api module
-    // -----------
-    public static void robocodeMain(Object args) {
-        // here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
-        RobocodeMainBase main = Container.getComponent(RobocodeMainBase.class);
+	public static void robocodeMain(Object args) {
+		// here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
+		RobocodeMainBase main = Container.getComponent(RobocodeMainBase.class);
 
-        main.loadSetup((String[]) args);
+		main.loadSetup((String[]) args);
 
-        // Make sure ALL uncaught exceptions are logged
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                Logger.logError("UncaughtException on thread " + t.getClass(), e);
-            }
-        });
+		// Make sure ALL uncaught exceptions are logged
+		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			public void uncaughtException(Thread t, Throwable e) {
+				Logger.logError("UncaughtException on thread " + t.getClass(), e);
+			}
+		});
 
-        ThreadGroup group = new ThreadGroup("Robocode thread group");
+		ThreadGroup group = new ThreadGroup("Robocode thread group");
 
-        new Thread(group, main, "Robocode main thread").start();
-    }
+		new Thread(group, main, "Robocode main thread").start();
+	}
 
-    public static void initContainer() {
-        // here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
-        Container.init();
-    }
+	public static void initContainer() {
+		// here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
+		Container.init();
+	}
 
-    public static void cleanupForRobocodeEngine() {
-        // here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
-        RobocodeMainBase main = Container.getComponent(RobocodeMainBase.class);
+	public static void cleanupForRobocodeEngine() {
+		// here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
+		RobocodeMainBase main = Container.getComponent(RobocodeMainBase.class);
 
-        main.cleanup();
-    }
+		main.cleanup();
+	}
 
-    public static void initContainerForRobocodeEngine(File robocodeHome, IBattleListener listener) {
-        try {
-            if (robocodeHome == null) {
-                robocodeHome = FileUtil.getCwd();
-            }
-            FileUtil.setCwd(robocodeHome);
+	public static void initContainerForRobocodeEngine(File robocodeHome, IBattleListener listener) {
+		try {
+			if (robocodeHome == null) {
+				robocodeHome = FileUtil.getCwd();
+			}
+			FileUtil.setCwd(robocodeHome);
 
-            File robotsDir = FileUtil.getRobotsDir();
+			File robotsDir = FileUtil.getRobotsDir();
 
-            if (robotsDir == null) {
-                throw new RuntimeException("No valid robot directory is specified");
-            } else if (!(robotsDir.exists() && robotsDir.isDirectory())) {
-                throw new RuntimeException('\'' + robotsDir.getAbsolutePath() + "' is not a valid robot directory");
-            }
+			if (robotsDir == null) {
+				throw new RuntimeException("No valid robot directory is specified");
+			} else if (!(robotsDir.exists() && robotsDir.isDirectory())) {
+				throw new RuntimeException('\'' + robotsDir.getAbsolutePath() + "' is not a valid robot directory");
+			}
 
-        } catch (IOException e) {
-            System.err.println(e);
-            return;
-        }
+		} catch (IOException e) {
+			System.err.println(e);
+			return;
+		}
 
-        // here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
-        RobocodeMainBase main = Container.getComponent(RobocodeMainBase.class);
+		// here we cross transition to EngineClassLoader classes using interface which is defined in system classLoader
+		RobocodeMainBase main = Container.getComponent(RobocodeMainBase.class);
 
-        main.initForRobocodeEngine(listener);
-    }
+		main.initForRobocodeEngine(listener);
+	}
 }

@@ -11,27 +11,29 @@
  *******************************************************************************/
 package tested.robots;
 
+
 import robocode.AdvancedRobot;
+
 
 /**
  * This test robot is based on Eric Simonton's 3 caveats on the RoboWiki
  * where Robocode did not work as expected when updating the robot movements
- * with deceleration.
+ * with deceleration. 
  *
  * @author Flemming N. Larsen (original)
  */
 public class DecelerationCaveat2 extends AdvancedRobot {
 
-    @Override
-    public void run() {
-        setAhead(100);
-        for (int i = 1; i <= 8; i++) {
-            execute();
-        }
+	@Override
+	public void run() {
+		setAhead(100);
+		for (int i = 1; i <= 8; i++) {
+			execute();
+		}
 
-        setAhead(22.5);
-        for (int i = 1; i <= 6; i++) {
-            execute();
-        }
-    }
+		setAhead(22.5);
+		for (int i = 1; i <= 6; i++) {
+			execute();
+		}
+	}
 }

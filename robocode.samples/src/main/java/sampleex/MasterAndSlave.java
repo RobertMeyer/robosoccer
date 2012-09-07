@@ -11,7 +11,7 @@
  *******************************************************************************/
 package sampleex;
 
-import java.io.PrintStream;
+
 import robocode.AdvancedRobot;
 import robocode.HitByBulletEvent;
 import robocode.ScannedRobotEvent;
@@ -21,100 +21,99 @@ import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IInteractiveEvents;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 
+import java.io.PrintStream;
+
+
 /**
  * @author Pavel Savara (original)
  */
 public class MasterAndSlave extends MasterBase implements IAdvancedRobot {
 
-    /**
-     * This is not showing any aditional qualities over normal MyFirst robot.
-     * But it could, because architecture is no more tied by inheritance from Robot base class.
-     */
-    @Override
-    public void run() {
-        while (true) {
-            ahead(100); // Move ahead 100
-            turnGunRight(360); // Spin gun around
-            back(100); // Move back 100
-            turnGunRight(360); // Spin gun around
-        }
-    }
+	/**
+	 * This is not showing any aditional qualities over normal MyFirst robot.
+	 * But it could, because architecture is no more tied by inheritance from Robot base class.
+	 */
+	public void run() {
+		while (true) {
+			ahead(100); // Move ahead 100
+			turnGunRight(360); // Spin gun around
+			back(100); // Move back 100
+			turnGunRight(360); // Spin gun around
+		}
+	}
 
-    @Override
-    public void onScannedRobot(ScannedRobotEvent e) {
-        fire(1);
-    }
+	public void onScannedRobot(ScannedRobotEvent e) {
+		fire(1);
+	}
 
-    @Override
-    public void onHitByBullet(HitByBulletEvent e) {
-        turnLeft(90 - e.getBearing());
-    }
+	public void onHitByBullet(HitByBulletEvent e) {
+		turnLeft(90 - e.getBearing());
+	}
 
-    public IInteractiveEvents getInteractiveEventListener() {
-        return null;
-    }
+	public IInteractiveEvents getInteractiveEventListener() {
+		return null;
+	}
 }
+
 
 /**
  * Infrastructure base class, for helpers and boring implementation details
  */
 abstract class MasterBase {
 
-    public MasterBase() {
-        helperRobot = new Slave(this);
-    }
-    private final AdvancedRobot helperRobot;
+	public MasterBase() {
+		helperRobot = new Slave(this);
+	}
 
-    public IAdvancedEvents getAdvancedEventListener() {
-        return helperRobot;
-    }
+	private final AdvancedRobot helperRobot;
 
-    public IInteractiveEvents getSystemEventListener() {
-        return helperRobot;
-    }
+	public IAdvancedEvents getAdvancedEventListener() {
+		return helperRobot;
+	}
 
-    public Runnable getRobotRunnable() {
-        return helperRobot;
-    }
+	public IInteractiveEvents getSystemEventListener() {
+		return helperRobot;
+	}
 
-    public IBasicEvents getBasicEventListener() {
-        return helperRobot;
-    }
+	public Runnable getRobotRunnable() {
+		return helperRobot;
+	}
 
-    public void setPeer(IBasicRobotPeer robotPeer) {
-        helperRobot.setPeer(robotPeer);
-    }
+	public IBasicEvents getBasicEventListener() {
+		return helperRobot;
+	}
 
-    public void setOut(PrintStream printStream) {
-        helperRobot.setOut(printStream);
-    }
+	public void setPeer(IBasicRobotPeer robotPeer) {
+		helperRobot.setPeer(robotPeer);
+	}
 
-    public void turnGunRight(double degrees) {
-        helperRobot.turnGunRight(degrees);
-    }
+	public void setOut(PrintStream printStream) {
+		helperRobot.setOut(printStream);
+	}
 
-    public void turnLeft(double degrees) {
-        helperRobot.turnLeft(degrees);
-    }
+	public void turnGunRight(double degrees) {
+		helperRobot.turnGunRight(degrees);
+	}
 
-    public void ahead(double distance) {
-        helperRobot.ahead(distance);
-    }
+	public void turnLeft(double degrees) {
+		helperRobot.turnLeft(degrees);
+	}
 
-    public void back(double distance) {
-        helperRobot.back(distance);
-    }
+	public void ahead(double distance) {
+		helperRobot.ahead(distance);
+	}
 
-    public void fire(double power) {
-        helperRobot.fire(power);
-    }
+	public void back(double distance) {
+		helperRobot.back(distance);
+	}
 
-    public void onScannedRobot(ScannedRobotEvent e) {
-    }
+	public void fire(double power) {
+		helperRobot.fire(power);
+	}
 
-    public void onHitByBullet(HitByBulletEvent e) {
-    }
+	public void onScannedRobot(ScannedRobotEvent e) {}
 
-    public void run() {
-    }
+	public void onHitByBullet(HitByBulletEvent e) {}
+
+	public void run() {}
 }

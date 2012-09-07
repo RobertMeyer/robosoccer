@@ -11,42 +11,43 @@
  *******************************************************************************/
 package tested.robots;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.*;
+
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class ConstructorReflectionAttack extends robocode.AdvancedRobot {
 
-    static ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	static ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    static {
-        try {
-            Field field = System.class.getField("out");
+	static {
+		try {
+			Field field = System.class.getField("out");
 
-            field.setAccessible(true);
-            Object obj = field.get(null);
-            Method method = obj.getClass().getMethod("print", new Class[]{String.class});
+			field.setAccessible(true);
+			Object obj = field.get(null);
+			Method method = obj.getClass().getMethod("print", new Class[] { String.class });
 
-            method.setAccessible(true);
-            method.invoke(obj, new Object[]{"Hello World"});
+			method.setAccessible(true);
+			method.invoke(obj, new Object[] { "Hello World" });
 
-        } catch (Exception e) {
-            // The stack trace from the exception is redirected to a temporary buffer,
-            // which is read and written out to the robot's output in the run() method.
+		} catch (Exception e) {
+			// The stack trace from the exception is redirected to a temporary buffer,
+			// which is read and written out to the robot's output in the run() method.
 
-            PrintStream ps = new PrintStream(baos);
+			PrintStream ps = new PrintStream(baos);
 
-            e.printStackTrace(ps);
-            ps.flush();
-        }
-    }
-
-    @Override
-    public void run() {
-        // Write out the buffered output
-        out.append(baos.toString());
-    }
+			e.printStackTrace(ps);
+			ps.flush();
+		}
+	}
+	
+	public void run() {
+		// Write out the buffered output
+		out.append(baos.toString());
+	}
 }

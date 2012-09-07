@@ -11,69 +11,69 @@
  *******************************************************************************/
 package tested.robots;
 
+
 /**
  * @author Flemming N. Larsen (original)
  */
 public class BodyTurnRate extends robocode.AdvancedRobot {
 
-    @Override
-    public void run() {
-        // Test turn rate at all speed moving ahead and turning left
+	public void run() {
+		// Test turn rate at all speed moving ahead and turning left
+		
+		setAhead(1000);
+		setTurnLeft(360);
+		executeAndDumpTurnRate9turns();
 
-        setAhead(1000);
-        setTurnLeft(360);
-        executeAndDumpTurnRate9turns();
+		stopMoving();
 
-        stopMoving();
+		// Test turn rate at all speed moving ahead and turning right
 
-        // Test turn rate at all speed moving ahead and turning right
+		setAhead(1000);
+		setTurnRight(360);
+		executeAndDumpTurnRate9turns();
 
-        setAhead(1000);
-        setTurnRight(360);
-        executeAndDumpTurnRate9turns();
+		stopMoving();
 
-        stopMoving();
+		// Test turn rate at all speed moving back and turning right
 
-        // Test turn rate at all speed moving back and turning right
+		setBack(1000);
+		setTurnRight(360);
+		executeAndDumpTurnRate9turns();
 
-        setBack(1000);
-        setTurnRight(360);
-        executeAndDumpTurnRate9turns();
+		stopMoving();
 
-        stopMoving();
+		// Test turn rate at all speed moving back and turning left
 
-        // Test turn rate at all speed moving back and turning left
+		setBack(1000);
+		setTurnLeft(360);
+		executeAndDumpTurnRate9turns();
 
-        setBack(1000);
-        setTurnLeft(360);
-        executeAndDumpTurnRate9turns();
+		stopMoving();
+	}
 
-        stopMoving();
-    }
+	private void executeAndDumpTurnRate9turns() {
+		for (int i = 0; i < 9; i++) {
+			executeAndDumpTurnRate();
+		}
+	}
 
-    private void executeAndDumpTurnRate9turns() {
-        for (int i = 0; i < 9; i++) {
-            executeAndDumpTurnRate();
-        }
-    }
+	private void executeAndDumpTurnRate() {
+		double lastHeading = getHeading();
+		double lastVelocity = getVelocity();
 
-    private void executeAndDumpTurnRate() {
-        double lastHeading = getHeading();
-        double lastVelocity = getVelocity();
+		execute();
 
-        execute();
+		double turnRate = robocode.util.Utils.normalRelativeAngleDegrees(getHeading() - lastHeading);
 
-        double turnRate = robocode.util.Utils.normalRelativeAngleDegrees(getHeading() - lastHeading);
+		out.println(getTime() + ": " + lastVelocity + ", " + turnRate);
+	}
 
-        out.println(getTime() + ": " + lastVelocity + ", " + turnRate);
-    }
-
-    private void stopMoving() {
-        setAhead(0);
-        setTurnLeft(0);
-
-        for (int i = 0; i < 6; i++) {
-            executeAndDumpTurnRate();
-        }
-    }
+	private void stopMoving() {
+		setAhead(0);
+		setTurnLeft(0);
+		
+		for (int i = 0; i < 6; i++) {
+			executeAndDumpTurnRate();
+		}
+	}
 }

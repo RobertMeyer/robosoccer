@@ -11,12 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.sound;
 
+
 /**
  * @author Pavel Savara (original)
  */
 public interface ISoundManager {
+	void setEnableSound(boolean enable);
 
-    void setEnableSound(boolean enable);
-
-    void playThemeMusic();
+	void playThemeMusic();
 }

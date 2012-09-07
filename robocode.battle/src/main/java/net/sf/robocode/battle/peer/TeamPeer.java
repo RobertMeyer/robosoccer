@@ -20,8 +20,10 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -31,80 +33,74 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class TeamPeer extends ArrayList<RobotPeer> implements ContestantPeer {
 
-    private final List<String> memberNames;
-    private final String name;
-    private final int teamIndex;
-    private RobotPeer teamLeader;
-    private final TeamStatistics teamStatistics;
+	private final List<String> memberNames;
+	private final String name;
+	private final int teamIndex;
+	private RobotPeer teamLeader;
+	private final TeamStatistics teamStatistics;
 
-    public TeamPeer(String name, List<String> memberNames, int teamIndex) {
-        this.name = name;
-        this.teamIndex = teamIndex;
-        this.memberNames = memberNames;
-        this.teamStatistics = new TeamStatistics(this);
-    }
+	public TeamPeer(String name, List<String> memberNames, int teamIndex) {
+		this.name = name;
+		this.teamIndex = teamIndex;
+		this.memberNames = memberNames;
+		this.teamStatistics = new TeamStatistics(this);
+	}
 
-    @Override
-    public int compareTo(ContestantPeer cp) {
-        double myScore = teamStatistics.getTotalScore();
-        double hisScore = cp.getStatistics().getTotalScore();
+	public int compareTo(ContestantPeer cp) {
+		double myScore = teamStatistics.getTotalScore();
+		double hisScore = cp.getStatistics().getTotalScore();
 
-        if (teamLeader != null && teamLeader.getRobotStatistics().isInRound()) {
-            myScore += teamStatistics.getCurrentScore();
-            hisScore += cp.getStatistics().getCurrentScore();
-        }
-        if (myScore < hisScore) {
-            return -1;
-        }
-        if (myScore > hisScore) {
-            return 1;
-        }
-        return 0;
-    }
+		if (teamLeader != null && teamLeader.getRobotStatistics().isInRound()) {
+			myScore += teamStatistics.getCurrentScore();
+			hisScore += cp.getStatistics().getCurrentScore();
+		}
+		if (myScore < hisScore) {
+			return -1;
+		}
+		if (myScore > hisScore) {
+			return 1;
+		}
+		return 0;
+	}
 
-    @Override
-    public ContestantStatistics getStatistics() {
-        return teamStatistics;
-    }
+	public ContestantStatistics getStatistics() {
+		return teamStatistics;
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public int getRobotIndex() {
-        return -1;
-    }
+	public int getRobotIndex() {
+		return -1;
+	}
 
-    @Override
-    public int getTeamIndex() {
-        return teamIndex;
-    }
+	public int getTeamIndex() {
+		return teamIndex;
+	}
 
-    @Override
-    public int getContestantIndex() {
-        return teamIndex; // This contestant is always a team for this TeamPeer
-    }
+	public int getContestantIndex() {
+		return teamIndex; // This contestant is always a team for this TeamPeer
+	}
 
-    public List<String> getMemberNames() {
-        return memberNames;
-    }
+	public List<String> getMemberNames() {
+		return memberNames;
+	}
 
-    public RobotPeer getTeamLeader() {
-        return teamLeader;
-    }
+	public RobotPeer getTeamLeader() {
+		return teamLeader;
+	}
 
-    @Override
-    public boolean add(RobotPeer r) {
-        if (teamLeader == null) {
-            teamLeader = r;
-        }
-        return super.add(r);
-    }
+	@Override
+	public boolean add(RobotPeer r) {
+		if (teamLeader == null) {
+			teamLeader = r;
+		}
+		return super.add(r);
+	}
 
-    @Override
-    public String toString() {
-        return " [" + size() + "] " + getName();
-    }
+	@Override
+	public String toString() {
+		return " [" + size() + "] " + getName();
+	}
 }

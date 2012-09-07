@@ -11,20 +11,15 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+
 import net.sf.robocode.core.Container;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.io.URLJarCollector;
-import net.sf.robocode.repository.items.BaseItem;
 import net.sf.robocode.repository.items.IItem;
 import net.sf.robocode.repository.items.RobotItem;
 import net.sf.robocode.repository.items.TeamItem;
+import net.sf.robocode.repository.items.BaseItem;
 import net.sf.robocode.repository.packager.JarCreator;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsListener;
@@ -33,291 +28,285 @@ import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.RobotSpecification;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+
 /**
  * @author Pavel Savara (original)
  */
 public class RepositoryManager implements IRepositoryManager {
 
-    private final ISettingsManager properties;
-    private Database db;
+	private final ISettingsManager properties;
+	private Database db;
 
-    public RepositoryManager(ISettingsManager properties) {
-        this.properties = properties;
-        properties.addPropertyListener(new SettingsListener());
-    }
+	public RepositoryManager(ISettingsManager properties) {
+		this.properties = properties;
+		properties.addPropertyListener(new SettingsListener());
+	}
 
-    // ------------------------------------------
-    // interfaces
-    // ------------------------------------------
-    @Override
-    public File getRobotsDirectory() {
-        return FileUtil.getRobotsDir();
-    }
+	// ------------------------------------------
+	// interfaces
+	// ------------------------------------------
 
-    @Override
-    public List<File> getDevelDirectories() {
-        List<File> develDirectories = new ArrayList<File>();
+	public File getRobotsDirectory() {
+		return FileUtil.getRobotsDir();
+	}
 
-        for (String path : properties.getOptionsEnabledDevelopmentPaths()) {
-            try {
-                develDirectories.add(new File(path).getCanonicalFile());
-            } catch (IOException e) {
-                Logger.logError(e);
-            }
-        }
-        return develDirectories;
-    }
+	public List<File> getDevelDirectories() {
+		List<File> develDirectories = new ArrayList<File>();
 
-    @Override
-    public void refresh(String file) {
-        if (!db.update(file, true)) {
-            refresh(true);
-        }
-        URLJarCollector.gc();
-    }
+		for (String path : properties.getOptionsEnabledDevelopmentPaths()) {
+			try {
+				develDirectories.add(new File(path).getCanonicalFile());
+			} catch (IOException e) {
+				Logger.logError(e);
+			}
+		}
+		return develDirectories;
+	}
 
-    @Override
-    public boolean refresh() {
-        return refresh(false);
-    }
+	public void refresh(String file) {
+		if (!db.update(file, true)) {
+			refresh(true);
+		}
+		URLJarCollector.gc();
+	}
 
-    @Override
-    public boolean refresh(boolean force) {
-        boolean refreshed = db.update(getRobotsDirectory(), getDevelDirectories(), force);
+	public boolean refresh() {
+		return refresh(false);
+	}
 
-        if (refreshed) {
-            setStatus("Saving robot database");
-            db.save();
-        }
+	public boolean refresh(boolean force) {
+		boolean refreshed = db.update(getRobotsDirectory(), getDevelDirectories(), force);
 
-        setStatus("");
-        URLJarCollector.gc();
+		if (refreshed) {
+			setStatus("Saving robot database");
+			db.save();
+		}
 
-        return refreshed;
-    }
+		setStatus("");
+		URLJarCollector.gc();
 
-    @Override
-    public void reload(boolean forced) {
-        // Bug fix [2867326] - Lockup on start if too many bots in robots dir (cont'd).
-        URLJarCollector.enableGc(true);
-        URLJarCollector.gc();
+		return refreshed;
+	}
 
-        if (forced) {
-            Logger.logMessage("Rebuilding robot database...");
-            db = new Database(this);
-        } else if (db == null) {
-            setStatus("Reading robot database");
-            db = Database.load(this);
-            if (db == null) {
-                setStatus("Building robot database");
-                db = new Database(this);
-            }
-        }
-        refresh(true);
-        setStatus("");
-    }
+	public void reload(boolean forced) {
+		// Bug fix [2867326] - Lockup on start if too many bots in robots dir (cont'd).
+		URLJarCollector.enableGc(true);
+		URLJarCollector.gc();
 
-    @Override
-    public RobotSpecification[] getSpecifications() {
-        checkDbExists();
-        final Collection<IRepositoryItem> list = db.getAllSpecifications();
-        Collection<RobotSpecification> res = new ArrayList<RobotSpecification>();
+		if (forced) {
+			Logger.logMessage("Rebuilding robot database...");
+			db = new Database(this);
+		} else if (db == null) {
+			setStatus("Reading robot database");
+			db = Database.load(this);
+			if (db == null) {
+				setStatus("Building robot database");
+				db = new Database(this);
+			}
+		}
+		refresh(true);
+		setStatus("");
+	}
 
-        for (IRepositoryItem s : list) {
-            res.add(s.createRobotSpecification());
-        }
-        return res.toArray(new RobotSpecification[res.size()]);
-    }
+	public RobotSpecification[] getSpecifications() {
+		checkDbExists();
+		final Collection<IRepositoryItem> list = db.getAllSpecifications();
+		Collection<RobotSpecification> res = new ArrayList<RobotSpecification>();
 
-    /**
-     * Expand teams, validate robots
-     * @param selectedRobots, names of robots and teams, comma separated
-     * @return robots in teams
-     */
-    @Override
-    public RobotSpecification[] loadSelectedRobots(RobotSpecification[] selectedRobots) {
-        checkDbExists();
-        Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
-        int teamNum = 0;
+		for (IRepositoryItem s : list) {
+			res.add(s.createRobotSpecification());
+		}
+		return res.toArray(new RobotSpecification[res.size()]);
+	}
 
-        for (RobotSpecification spec : selectedRobots) {
-            IRepositoryItem item = (IRepositoryItem) HiddenAccess.getFileSpecification(spec);
+	/**
+	 * Expand teams, validate robots
+	 * @param selectedRobots, names of robots and teams, comma separated
+	 * @return robots in teams
+	 */
+	public RobotSpecification[] loadSelectedRobots(RobotSpecification[] selectedRobots) {
+		checkDbExists();
+		Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
+		int teamNum = 0;
 
-            if (item == null) {
-                item = getRobot(spec.getNameAndVersion());
-            }
-            loadItem(battlingRobotsList, spec, item, teamNum);
-            teamNum++;
-        }
-        return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
-    }
+		for (RobotSpecification spec: selectedRobots) {
+			IRepositoryItem item = (IRepositoryItem) HiddenAccess.getFileSpecification(spec);
 
-    /**
-     * Expand teams, validate robots
-     * @param selectedRobots, names of robots and teams, comma separated
-     * @return robots in teams
-     */
-    @Override
-    public RobotSpecification[] loadSelectedRobots(String selectedRobots) {
-        checkDbExists();
-        Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
-        final Collection<IRepositoryItem> list = db.getSelectedSpecifications(selectedRobots);
-        int teamNum = 0;
+			if (item == null) {
+				item = getRobot(spec.getNameAndVersion());
+			}
+			loadItem(battlingRobotsList, spec, item, teamNum);
+			teamNum++;
+		}
+		return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
+	}
 
-        for (IRepositoryItem item : list) {
-            loadItem(battlingRobotsList, null, item, teamNum);
-            teamNum++;
-        }
-        return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
-    }
+	/**
+	 * Expand teams, validate robots
+	 * @param selectedRobots, names of robots and teams, comma separated
+	 * @return robots in teams
+	 */
+	public RobotSpecification[] loadSelectedRobots(String selectedRobots) {
+		checkDbExists();
+		Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
+		final Collection<IRepositoryItem> list = db.getSelectedSpecifications(selectedRobots);
+		int teamNum = 0;
 
-    private boolean loadItem(Collection<RobotSpecification> battlingRobotsList, RobotSpecification spec, IRepositoryItem item, int teamNum) {
-        String teamId = String.format("%4d", teamNum);
+		for (IRepositoryItem item: list) {
+			loadItem(battlingRobotsList, null, item, teamNum);
+			teamNum++;
+		}
+		return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
+	}
 
-        if (item != null) {
-            if (item.isTeam()) {
-                teamId = item.getFullClassNameWithVersion() + "[" + teamId + "]";
-                final Collection<RobotItem> members = db.expandTeam((TeamItem) item);
+	private boolean loadItem(Collection<RobotSpecification> battlingRobotsList, RobotSpecification spec, IRepositoryItem item, int teamNum) {
+		String teamId = String.format("%4d", teamNum);
 
-                for (IRepositoryItem member : members) {
-                    final RobotItem robot = (RobotItem) member;
+		if (item != null) {
+			if (item.isTeam()) {
+				teamId = item.getFullClassNameWithVersion() + "[" + teamId + "]";
+				final Collection<RobotItem> members = db.expandTeam((TeamItem) item);
 
-                    boolean tested = false;
+				for (IRepositoryItem member : members) {
+					final RobotItem robot = (RobotItem) member;
 
-                    for (RobotSpecification loaded : battlingRobotsList) {
-                        if (HiddenAccess.getFileSpecification(loaded).equals(robot)) {
-                            tested = true;
-                            break;
-                        }
-                    }
+					boolean tested = false;
 
-                    if (tested || robot.validate()) {
-                        battlingRobotsList.add(robot.createRobotSpecification(null, teamId));
-                    }
-                }
-            } else {
-                final RobotItem robot = (RobotItem) item;
+					for (RobotSpecification loaded : battlingRobotsList) {
+						if (HiddenAccess.getFileSpecification(loaded).equals(robot)) {
+							tested = true;
+							break;
+						}
+					}
 
-                if (robot.validate()) {
-                    battlingRobotsList.add(robot.createRobotSpecification(spec, null));
-                } else {
-                    Logger.logError("Could not load robot: " + robot.getFullClassName());
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
+					if (tested || robot.validate()) {
+						battlingRobotsList.add(robot.createRobotSpecification(null, teamId));
+					}
+				}
+			} else {
+				final RobotItem robot = (RobotItem) item;
 
-    /**
-     * @param selectedRobots, names of robots and teams, comma separated
-     * @return robots and teams
-     */
-    public RobotSpecification[] getSelectedRobots(String selectedRobots) {
-        checkDbExists();
-        Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
-        final Collection<IRepositoryItem> list = db.getSelectedSpecifications(selectedRobots);
+				if (robot.validate()) {
+					battlingRobotsList.add(robot.createRobotSpecification(spec, null));
+				} else {
+					Logger.logError("Could not load robot: " + robot.getFullClassName());
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 
-        for (IRepositoryItem item : list) {
-            battlingRobotsList.add(item.createRobotSpecification());
-        }
-        return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
-    }
+	/**
+	 * @param selectedRobots, names of robots and teams, comma separated
+	 * @return robots and teams
+	 */
+	public RobotSpecification[] getSelectedRobots(String selectedRobots) {
+		checkDbExists();
+		Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
+		final Collection<IRepositoryItem> list = db.getSelectedSpecifications(selectedRobots);
 
-    @Override
-    public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
-        checkDbExists();
-        return db.getSelectedSpecifications(selectedRobots);
-    }
+		for (IRepositoryItem item: list) {
+			battlingRobotsList.add(item.createRobotSpecification());
+		}
+		return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
+	}
 
-    @Override
-    public List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar) {
-        checkDbExists();
-        return db.filterSpecifications(onlyWithSource, onlyWithPackage, onlyRobots, onlyDevelopment, onlyNotDevelopment,
-                                       onlyInJar);
-    }
+	public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
+		checkDbExists();
+		return db.getSelectedSpecifications(selectedRobots);
+	}
 
-    @Override
-    public boolean verifyRobotName(String robotName, String shortClassName) {
-        return RobotItem.verifyRobotName(robotName, shortClassName, true);
-    }
+	public List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar) {
+		checkDbExists();
+		return db.filterSpecifications(onlyWithSource, onlyWithPackage, onlyRobots, onlyDevelopment, onlyNotDevelopment,
+				onlyInJar);
+	}
 
-    @Override
-    public int extractJar(IRepositoryItem item) {
-        if (!item.isInJAR()) {
-            return -2;
-        }
-        ((BaseItem) item).getRoot().extractJAR();
-        return 0;
-    }
+	public boolean verifyRobotName(String robotName, String shortClassName) {
+		return RobotItem.verifyRobotName(robotName, shortClassName, true);
+	}
 
-    @Override
-    public void createTeam(File target, URL web, String desc, String author, String members, String teamVersion) throws IOException {
-        checkDbExists();
-        final String ver = Container.getComponent(IVersionManager.class).getVersion();
+	public int extractJar(IRepositoryItem item) {
+		if (!item.isInJAR()) {
+			return -2;
+		}
+		((BaseItem) item).getRoot().extractJAR();
+		return 0; 
+	}
 
-        TeamItem.createOrUpdateTeam(target, web, desc, author, members, teamVersion, ver);
-        refresh(target.toURI().toString());
-    }
+	public void createTeam(File target, URL web, String desc, String author, String members, String teamVersion) throws IOException {
+		checkDbExists();
+		final String ver = Container.getComponent(IVersionManager.class).getVersion();
 
-    @Override
-    public String createPackage(File target, URL web, String desc, String author, String version, boolean source, List<IRepositoryItem> selectedRobots) {
-        checkDbExists();
-        final List<RobotItem> robots = db.expandTeams(selectedRobots);
-        final List<TeamItem> teams = db.filterTeams(selectedRobots);
+		TeamItem.createOrUpdateTeam(target, web, desc, author, members, teamVersion, ver);
+		refresh(target.toURI().toString());
+	}
 
-        final String res = JarCreator.createPackage(target, source, robots, teams, web, desc, author, version);
+	public String createPackage(File target, URL web, String desc, String author, String version, boolean source, List<IRepositoryItem> selectedRobots) {
+		checkDbExists();
+		final List<RobotItem> robots = db.expandTeams(selectedRobots);
+		final List<TeamItem> teams = db.filterTeams(selectedRobots);
 
-        refresh(target.toURI().toString());
-        return res;
-    }
+		final String res = JarCreator.createPackage(target, source, robots, teams, web, desc, author, version);
 
-    private IRepositoryItem getRobot(String fullClassNameWithVersion) {
-        final IItem item = db.getItem(fullClassNameWithVersion);
+		refresh(target.toURI().toString());
+		return res;
+	}
 
-        if (item == null || !item.isValid()) {
-            return null;
-        }
-        return (IRepositoryItem) item;
-    }
+	private IRepositoryItem getRobot(String fullClassNameWithVersion) {
+		final IItem item = db.getItem(fullClassNameWithVersion);
 
-    private void setStatus(String message) {
-        IWindowManager windowManager = Container.getComponent(IWindowManager.class);
+		if (item == null || !item.isValid()) {
+			return null;
+		}
+		return (IRepositoryItem) item;
+	}
 
-        if (windowManager != null) {
-            windowManager.setStatus(message);
-        }
-        if (message.length() > 0) {
-            Logger.logMessage(message);
-        }
-    }
+	private void setStatus(String message) {
+		IWindowManager windowManager = Container.getComponent(IWindowManager.class);
 
-    private void checkDbExists() {
-        if (db == null) {
-            reload(false);
-        }
-    }
+		if (windowManager != null) {
+			windowManager.setStatus(message);
+		}
+		if (message.length() > 0) {
+			Logger.logMessage(message);
+		}
+	}
 
-    // ------------------------------------------
-    // settings listener
-    // ------------------------------------------
-    private class SettingsListener implements ISettingsListener {
+	private void checkDbExists() {
+		if (db == null) {
+			reload(false);
+		}
+	}
 
-        private Collection<String> lastEnabledDevelPaths;
+	// ------------------------------------------
+	// settings listener
+	// ------------------------------------------
 
-        @Override
-        public void settingChanged(String property) {
-            if (property.equals(ISettingsManager.OPTIONS_DEVELOPMENT_PATH)
-                    || property.equals(ISettingsManager.OPTIONS_DEVELOPMENT_PATH_EXCLUDED)) {
+	private class SettingsListener implements ISettingsListener {
 
-                Collection<String> enabledDevelPaths = properties.getOptionsEnabledDevelopmentPaths();
+		private Collection<String> lastEnabledDevelPaths;
 
-                if (lastEnabledDevelPaths == null || !enabledDevelPaths.equals(lastEnabledDevelPaths)) {
-                    lastEnabledDevelPaths = enabledDevelPaths;
-                    reload(false);
-                }
-            }
-        }
-    }
+		public void settingChanged(String property) {
+			if (property.equals(ISettingsManager.OPTIONS_DEVELOPMENT_PATH)
+					|| property.equals(ISettingsManager.OPTIONS_DEVELOPMENT_PATH_EXCLUDED)) {
+
+				Collection<String> enabledDevelPaths = properties.getOptionsEnabledDevelopmentPaths();
+
+				if (lastEnabledDevelPaths == null || !enabledDevelPaths.equals(lastEnabledDevelPaths)) {
+					lastEnabledDevelPaths = enabledDevelPaths;
+					reload(false);
+				}
+			}
+		}
+	}
 }

@@ -11,7 +11,9 @@
  *******************************************************************************/
 package robocode;
 
+
 import net.sf.robocode.security.HiddenAccess;
+
 
 /**
  * Robocode - A programming game involving battling AI tanks.<br>
@@ -24,16 +26,16 @@ import net.sf.robocode.security.HiddenAccess;
  */
 public class Robocode {
 
-    /**
-     * Use the command-line to start Robocode.
-     * The command is:
-     * <pre>
-     *    java -Xmx512M -Dsun.io.useCanonCaches=false -cp libs/robocode.jar robocode.Robocode
-     * </pre>
-     *
-     * @param args an array of command-line arguments
-     */
-    public static void main(final String[] args) {
-        HiddenAccess.robocodeMain(args);
-    }
+	/**
+	 * Use the command-line to start Robocode.
+	 * The command is:
+	 * <pre>
+	 *    java -Xmx512M -Dsun.io.useCanonCaches=false -cp libs/robocode.jar robocode.Robocode
+	 * </pre>
+	 *
+	 * @param args an array of command-line arguments
+	 */
+	public static void main(final String[] args) {
+		HiddenAccess.robocodeMain(args);
+	}
 }

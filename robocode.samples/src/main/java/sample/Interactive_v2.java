@@ -9,9 +9,15 @@
  *     Flemming N. Larsen
  *     - Initial implementation
  *     Tuan Anh Nguyen
- *     - Modified controls to use absolute movement
+ *     - Modified controls to use absolute movement 
  *******************************************************************************/
 package sample;
+
+
+import robocode.AdvancedRobot;
+import robocode.util.Utils;
+import static robocode.util.Utils.normalAbsoluteAngle;
+import static robocode.util.Utils.normalRelativeAngle;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -20,10 +26,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.HashSet;
 import java.util.Set;
-import robocode.AdvancedRobot;
-import robocode.util.Utils;
-import static robocode.util.Utils.normalAbsoluteAngle;
-import static robocode.util.Utils.normalRelativeAngle;
+
 
 /**
  * Interactive_v2 - a modified version of the sample robot Interactive by Flemming N. Larsen
@@ -61,211 +64,204 @@ import static robocode.util.Utils.normalRelativeAngle;
  */
 public class Interactive_v2 extends AdvancedRobot {
 
-    // The coordinate of the aim (x,y)
-    int aimX, aimY;
-    // Fire power, where 0 = don't fire
-    int firePower;
+	// The coordinate of the aim (x,y)
+	int aimX, aimY;
 
-    // Absolute directions on the screen
-    private enum Direction {
+	// Fire power, where 0 = don't fire
+	int firePower;
 
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
-    }
-    // Current move directions
-    private final Set<Direction> directions = new HashSet<Direction>();
+	// Absolute directions on the screen
+	private enum Direction {
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	}
 
-    // Called when the robot must run
-    @Override
-    public void run() {
+	// Current move directions
+	private final Set<Direction> directions = new HashSet<Direction>();
 
-        // Sets the colors of the robot
-        // body = black, gun = white, radar = red
-        setColors(Color.BLACK, Color.WHITE, Color.RED);
+	// Called when the robot must run
+	public void run() {
 
-        // Loop forever
-        for (;;) {
-            // Move the robot compared to the distance to move
-            setAhead(distanceToMove());
+		// Sets the colors of the robot
+		// body = black, gun = white, radar = red
+		setColors(Color.BLACK, Color.WHITE, Color.RED);
 
-            // Turn the body to it points in the correct direction
-            setTurnRight(angleToTurnInDegrees());
+		// Loop forever
+		for (;;) {
+			// Move the robot compared to the distance to move
+			setAhead(distanceToMove());
 
-            // Turns the gun toward the current aim coordinate (x,y) controlled by
-            // the current mouse coordinate
-            double angle = normalAbsoluteAngle(Math.atan2(aimX - getX(), aimY - getY()));
+			// Turn the body to it points in the correct direction
+			setTurnRight(angleToTurnInDegrees());
 
-            setTurnGunRightRadians(normalRelativeAngle(angle - getGunHeadingRadians()));
+			// Turns the gun toward the current aim coordinate (x,y) controlled by
+			// the current mouse coordinate
+			double angle = normalAbsoluteAngle(Math.atan2(aimX - getX(), aimY - getY()));
 
-            // Fire the gun with the specified fire power, unless the fire power = 0
-            if (firePower > 0) {
-                setFire(firePower);
-            }
+			setTurnGunRightRadians(normalRelativeAngle(angle - getGunHeadingRadians()));
 
-            // Execute all pending set-statements
-            execute();
+			// Fire the gun with the specified fire power, unless the fire power = 0
+			if (firePower > 0) {
+				setFire(firePower);
+			}
 
-            // Next turn is processed in this loop..
-        }
-    }
+			// Execute all pending set-statements
+			execute();
 
-    // Called when a key has been pressed
-    @Override
-    public void onKeyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case VK_UP:
-            case VK_W:
-                directions.add(Direction.UP);
-                break;
+			// Next turn is processed in this loop..
+		}
+	}
 
-            case VK_DOWN:
-            case VK_S:
-                directions.add(Direction.DOWN);
-                break;
+	// Called when a key has been pressed
+	public void onKeyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case VK_UP:
+		case VK_W:
+			directions.add(Direction.UP);
+			break;
 
-            case VK_RIGHT:
-            case VK_D:
-                directions.add(Direction.RIGHT);
-                break;
+		case VK_DOWN:
+		case VK_S:
+			directions.add(Direction.DOWN);
+			break;
 
-            case VK_LEFT:
-            case VK_A:
-                directions.add(Direction.LEFT);
-                break;
-        }
-    }
+		case VK_RIGHT:
+		case VK_D:
+			directions.add(Direction.RIGHT);
+			break;
 
-    // Called when a key has been released (after being pressed)
-    @Override
-    public void onKeyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case VK_UP:
-            case VK_W:
-                directions.remove(Direction.UP);
-                break;
+		case VK_LEFT:
+		case VK_A:
+			directions.add(Direction.LEFT);
+			break;
+		}
+	}
 
-            case VK_DOWN:
-            case VK_S:
-                directions.remove(Direction.DOWN);
-                break;
+	// Called when a key has been released (after being pressed)
+	public void onKeyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case VK_UP:
+		case VK_W:
+			directions.remove(Direction.UP);
+			break;
 
-            case VK_RIGHT:
-            case VK_D:
-                directions.remove(Direction.RIGHT);
-                break;
+		case VK_DOWN:
+		case VK_S:
+			directions.remove(Direction.DOWN);
+			break;
 
-            case VK_LEFT:
-            case VK_A:
-                directions.remove(Direction.LEFT);
-                break;
-        }
-    }
+		case VK_RIGHT:
+		case VK_D:
+			directions.remove(Direction.RIGHT);
+			break;
 
-    // Called when the mouse wheel is rotated
-    @Override
-    public void onMouseWheelMoved(MouseWheelEvent e) {// Do nothing
-    }
+		case VK_LEFT:
+		case VK_A:
+			directions.remove(Direction.LEFT);
+			break;
+		}
+	}
 
-    // Called when the mouse has been moved
-    @Override
-    public void onMouseMoved(MouseEvent e) {
-        // Set the aim coordinate = the mouse pointer coordinate
-        aimX = e.getX();
-        aimY = e.getY();
-    }
+	// Called when the mouse wheel is rotated
+	public void onMouseWheelMoved(MouseWheelEvent e) {// Do nothing
+	}
 
-    // Called when a mouse button has been pressed
-    @Override
-    public void onMousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            // Button 3: fire power = 3 energy points, bullet color = red
-            firePower = 3;
-            setBulletColor(Color.RED);
-        } else if (e.getButton() == MouseEvent.BUTTON2) {
-            // Button 2: fire power = 2 energy points, bullet color = orange
-            firePower = 2;
-            setBulletColor(Color.ORANGE);
-        } else {
-            // Button 1 or unknown button:
-            // fire power = 1 energy points, bullet color = yellow
-            firePower = 1;
-            setBulletColor(Color.YELLOW);
-        }
-    }
+	// Called when the mouse has been moved
+	public void onMouseMoved(MouseEvent e) {
+		// Set the aim coordinate = the mouse pointer coordinate
+		aimX = e.getX();
+		aimY = e.getY();
+	}
 
-    // Called when a mouse button has been released (after being pressed)
-    @Override
-    public void onMouseReleased(MouseEvent e) {
-        // Fire power = 0, which means "don't fire"
-        firePower = 0;
-    }
+	// Called when a mouse button has been pressed
+	public void onMousePressed(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			// Button 3: fire power = 3 energy points, bullet color = red
+			firePower = 3;
+			setBulletColor(Color.RED);
+		} else if (e.getButton() == MouseEvent.BUTTON2) {
+			// Button 2: fire power = 2 energy points, bullet color = orange
+			firePower = 2;
+			setBulletColor(Color.ORANGE);
+		} else {
+			// Button 1 or unknown button:
+			// fire power = 1 energy points, bullet color = yellow
+			firePower = 1;
+			setBulletColor(Color.YELLOW);
+		}
+	}
 
-    // Called in order to paint graphics for this robot.
-    // "Paint" button on the robot console window for this robot must be
-    // enabled in order to see the paintings.
-    @Override
-    public void onPaint(Graphics2D g) {
-        // Draw a red cross hair with the center at the current aim
-        // coordinate (x,y)
-        g.setColor(Color.RED);
-        g.drawOval(aimX - 15, aimY - 15, 30, 30);
-        g.drawLine(aimX, aimY - 4, aimX, aimY + 4);
-        g.drawLine(aimX - 4, aimY, aimX + 4, aimY);
-    }
+	// Called when a mouse button has been released (after being pressed)
+	public void onMouseReleased(MouseEvent e) {
+		// Fire power = 0, which means "don't fire"
+		firePower = 0;
+	}
 
-    // Returns the angle to turn, which is the delta between the desired
-    // direction and the current heading of the robot
-    private double angleToTurnInDegrees() {
-        if (directions.isEmpty()) {
-            return 0;
-        }
-        return Utils.normalRelativeAngleDegrees(desiredDirection() - getHeading());
-    }
+	// Called in order to paint graphics for this robot.
+	// "Paint" button on the robot console window for this robot must be
+	// enabled in order to see the paintings.
+	public void onPaint(Graphics2D g) {
+		// Draw a red cross hair with the center at the current aim
+		// coordinate (x,y)
+		g.setColor(Color.RED);
+		g.drawOval(aimX - 15, aimY - 15, 30, 30);
+		g.drawLine(aimX, aimY - 4, aimX, aimY + 4);
+		g.drawLine(aimX - 4, aimY, aimX + 4, aimY);
+	}
 
-    // Returns the distance to move
-    private double distanceToMove() {
-        // If no keys are pressed, we should not move at all
-        if (directions.isEmpty()) {
-            return 0;
-        }
-        // If the robot has more than 45 degrees to turn, move only 5 pixel
-        if (Math.abs(angleToTurnInDegrees()) > 45) {
-            return 5;
-        }
-        // Otherwise, move at full speed
-        return Double.POSITIVE_INFINITY;
-    }
+	// Returns the angle to turn, which is the delta between the desired
+	// direction and the current heading of the robot
+	private double angleToTurnInDegrees() {
+		if (directions.isEmpty()) {
+			return 0;
+		}
+		return Utils.normalRelativeAngleDegrees(desiredDirection() - getHeading());
+	}
 
-    // Return the desired direction depending on the pending move directions.
-    // With one arrow key pressed, the move to N, E, S, W.
-    // With two keys pressed, the robot also move to NE, NW, SE, SW.
-    private double desiredDirection() {
-        if (directions.contains(Direction.UP)) {
-            if (directions.contains(Direction.RIGHT)) {
-                return 45;
-            }
-            if (directions.contains(Direction.LEFT)) {
-                return 315;
-            }
-            return 0;
-        }
-        if (directions.contains(Direction.DOWN)) {
-            if (directions.contains(Direction.RIGHT)) {
-                return 135;
-            }
-            if (directions.contains(Direction.LEFT)) {
-                return 225;
-            }
-            return 180;
-        }
-        if (directions.contains(Direction.RIGHT)) {
-            return 90;
-        }
-        if (directions.contains(Direction.LEFT)) {
-            return 270;
-        }
-        return 0;
-    }
+	// Returns the distance to move
+	private double distanceToMove() {
+		// If no keys are pressed, we should not move at all
+		if (directions.isEmpty()) {
+			return 0;
+		}
+		// If the robot has more than 45 degrees to turn, move only 5 pixel 
+		if (Math.abs(angleToTurnInDegrees()) > 45) {
+			return 5;
+		}
+		// Otherwise, move at full speed
+		return Double.POSITIVE_INFINITY;
+	}
+
+	// Return the desired direction depending on the pending move directions.
+	// With one arrow key pressed, the move to N, E, S, W.
+	// With two keys pressed, the robot also move to NE, NW, SE, SW.
+	private double desiredDirection() {
+		if (directions.contains(Direction.UP)) {
+			if (directions.contains(Direction.RIGHT)) {
+				return 45;
+			}
+			if (directions.contains(Direction.LEFT)) {
+				return 315;
+			}
+			return 0;
+		}
+		if (directions.contains(Direction.DOWN)) {
+			if (directions.contains(Direction.RIGHT)) {
+				return 135;
+			}
+			if (directions.contains(Direction.LEFT)) {
+				return 225;
+			}
+			return 180;
+		}
+		if (directions.contains(Direction.RIGHT)) {
+			return 90;
+		}
+		if (directions.contains(Direction.LEFT)) {
+			return 270;
+		}
+		return 0;
+	}
 }

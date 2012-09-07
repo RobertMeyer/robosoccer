@@ -11,34 +11,37 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
-import java.io.PrintStream;
+
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.repository.RobotType;
 import robocode.control.RobotSpecification;
+
+import java.io.PrintStream;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IHostManager {
 
-    void initSecurity();
+	void initSecurity();
 
-    long getRobotFilesystemQuota();
+	long getRobotFilesystemQuota();
 
-    void resetThreadManager();
+	void resetThreadManager();
 
-    void addSafeThread(Thread safeThread);
+	void addSafeThread(Thread safeThread);
+	
+	void removeSafeThread(Thread safeThread);
 
-    void removeSafeThread(Thread safeThread);
+	PrintStream getRobotOutputStream();
 
-    PrintStream getRobotOutputStream();
+	Object createRobotProxy(RobotSpecification robotSpecification, RobotStatics statics, IRobotPeer peer);
 
-    Object createRobotProxy(RobotSpecification robotSpecification, RobotStatics statics, IRobotPeer peer);
+	void cleanup();
 
-    void cleanup();
+	String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem);
 
-    String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem);
-
-    RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message);
+	RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message);
 }

@@ -11,10 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
+
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Assert;
 import org.junit.Ignore;
+
 import robocode.control.events.TurnEndedEvent;
+
 
 /**
  * @author Flemming N. Larsen (original)
@@ -22,37 +25,37 @@ import robocode.control.events.TurnEndedEvent;
 @Ignore("This test has been unreliable in student builds, and is not important for CSSE2003")
 public class TestConstructorHttpAttack extends RobocodeTestBed {
 
-    private boolean messagedInitialization;
-    private boolean messagedAccessDenied;
+	private boolean messagedInitialization;
+	private boolean messagedAccessDenied;
+	
+	@Override
+	public String getRobotNames() {
+		return "tested.robots.ConstructorHttpAttack,sample.Target";
+	}
 
-    @Override
-    public String getRobotNames() {
-        return "tested.robots.ConstructorHttpAttack,sample.Target";
-    }
+	@Override
+	public void onTurnEnded(TurnEndedEvent event) {
+		super.onTurnEnded(event);
 
-    @Override
-    public void onTurnEnded(TurnEndedEvent event) {
-        super.onTurnEnded(event);
+		final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
 
-        final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
+		if (out.contains("An error occurred during initialization")) {
+			messagedInitialization = true;	
+		}	
 
-        if (out.contains("An error occurred during initialization")) {
-            messagedInitialization = true;
-        }
+		if (out.contains("access denied (java.net.SocketPermission")) {
+			messagedAccessDenied = true;	
+		}	
+	}
 
-        if (out.contains("access denied (java.net.SocketPermission")) {
-            messagedAccessDenied = true;
-        }
-    }
+	@Override
+	protected void runTeardown() {
+		Assert.assertTrue("Error during initialization", messagedInitialization);
+		Assert.assertTrue("HTTP connection is not allowed", messagedAccessDenied);
+	}
 
-    @Override
-    protected void runTeardown() {
-        Assert.assertTrue("Error during initialization", messagedInitialization);
-        Assert.assertTrue("HTTP connection is not allowed", messagedAccessDenied);
-    }
-
-    @Override
-    protected int getExpectedErrors() {
-        return 2; // Security error must be reported as an error
-    }
+	@Override
+	protected int getExpectedErrors() {
+		return 2; // Security error must be reported as an error
+	}
 }

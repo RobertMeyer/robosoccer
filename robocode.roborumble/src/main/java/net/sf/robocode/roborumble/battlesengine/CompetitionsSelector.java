@@ -16,12 +16,15 @@
  *******************************************************************************/
 package net.sf.robocode.roborumble.battlesengine;
 
+
 import codesize.Codesize;
 import codesize.Codesize.Item;
-import java.io.File;
-import java.util.Properties;
 import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 import static net.sf.robocode.roborumble.util.PropertiesUtil.storeProperties;
+
+import java.io.File;
+import java.util.Properties;
+
 
 /**
  * This class is used to control which competitions a robot is allowed to
@@ -34,67 +37,67 @@ import static net.sf.robocode.roborumble.util.PropertiesUtil.storeProperties;
  * @author Flemming N. Larsen (contributor)
  */
 public class CompetitionsSelector {
+	private final String repository;
+	private final String sizesfile;
+	private final Properties sizes;
 
-    private final String repository;
-    private final String sizesfile;
-    private final Properties sizes;
+	public CompetitionsSelector(String sizesfile, String repository) {
+		this.repository = repository;
+		// open sizes file
+		this.sizesfile = sizesfile;
 
-    public CompetitionsSelector(String sizesfile, String repository) {
-        this.repository = repository;
-        // open sizes file
-        this.sizesfile = sizesfile;
+		sizes = getProperties(sizesfile);
+	}
 
-        sizes = getProperties(sizesfile);
-    }
+	public boolean checkCompetitorsForSize(String bot1, String bot2, long maxsize) {
+		String bot1name = bot1.replace(' ', '_');
+		String bot2name = bot2.replace(' ', '_');
 
-    public boolean checkCompetitorsForSize(String bot1, String bot2, long maxsize) {
-        String bot1name = bot1.replace(' ', '_');
-        String bot2name = bot2.replace(' ', '_');
+		// Read sizes
+		long size1 = Long.parseLong(sizes.getProperty(bot1name, "0"));
+		long size2 = Long.parseLong(sizes.getProperty(bot2name, "0"));
 
-        // Read sizes
-        long size1 = Long.parseLong(sizes.getProperty(bot1name, "0"));
-        long size2 = Long.parseLong(sizes.getProperty(bot2name, "0"));
+		// find out the size if not in the file
+		boolean fileneedsupdate = false;
 
-        // find out the size if not in the file
-        boolean fileneedsupdate = false;
+		if (size1 == 0) {
+			fileneedsupdate = true;
+			File f = new File(repository + bot1name + ".jar");
 
-        if (size1 == 0) {
-            fileneedsupdate = true;
-            File f = new File(repository + bot1name + ".jar");
+			if (f.exists()) {
+				Item s1 = Codesize.processZipFile(f);
 
-            if (f.exists()) {
-                Item s1 = Codesize.processZipFile(f);
+				if (s1 != null) {
+					size1 = s1.getCodeSize();
+				}
+				if (size1 != 0) {
+					sizes.setProperty(bot1name, Long.toString(size1));
+				}
+			}
+		}
+		if (size2 == 0) {
+			fileneedsupdate = true;
+			File f = new File(repository + bot2name + ".jar");
 
-                if (s1 != null) {
-                    size1 = s1.getCodeSize();
-                }
-                if (size1 != 0) {
-                    sizes.setProperty(bot1name, Long.toString(size1));
-                }
-            }
-        }
-        if (size2 == 0) {
-            fileneedsupdate = true;
-            File f = new File(repository + bot2name + ".jar");
+			if (f.exists()) {
+				Item s2 = Codesize.processZipFile(f);
 
-            if (f.exists()) {
-                Item s2 = Codesize.processZipFile(f);
+				if (s2 != null) {
+					size2 = s2.getCodeSize();
+				}
+				if (size2 != 0) {
+					sizes.setProperty(bot2name, Long.toString(size2));
+				}
+			}
+		}
 
-                if (s2 != null) {
-                    size2 = s2.getCodeSize();
-                }
-                if (size2 != 0) {
-                    sizes.setProperty(bot2name, Long.toString(size2));
-                }
-            }
-        }
+		// if the file needs update, then save the file
+		if (fileneedsupdate && size1 != 0 && size2 != 0) {
+			storeProperties(sizes, sizesfile, "Bots code size");
+		}
 
-        // if the file needs update, then save the file
-        if (fileneedsupdate && size1 != 0 && size2 != 0) {
-            storeProperties(sizes, sizesfile, "Bots code size");
-        }
-
-        // check the values
-        return (size1 != 0 && size1 < maxsize && size2 != 0 && size2 < maxsize);
-    }
+		// check the values
+		return (size1 != 0 && size1 < maxsize && size2 != 0 && size2 < maxsize);
+	}
 }
+

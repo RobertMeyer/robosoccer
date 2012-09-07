@@ -11,27 +11,28 @@
  *******************************************************************************/
 package tested.robots;
 
+
 import java.lang.reflect.*;
+
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class ReflectionAttack extends robocode.AdvancedRobot {
 
-    @Override
-    public void run() {
-        try {
-            Field field = System.class.getField("out");
+	public void run() {
+		try {
+			Field field = System.class.getField("out");
 
-            field.setAccessible(true);
-            Object obj = field.get(null);
-            Method method = obj.getClass().getMethod("print", new Class[]{String.class});
+			field.setAccessible(true);
+			Object obj = field.get(null);
+			Method method = obj.getClass().getMethod("print", new Class[] { String.class });
 
-            method.setAccessible(true);
-            method.invoke(obj, new Object[]{"Hello World"});
+			method.setAccessible(true);
+			method.invoke(obj, new Object[] { "Hello World" });
 
-        } catch (Exception e) {
-            e.printStackTrace(out);
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace(out);
+		}
+	}
 }

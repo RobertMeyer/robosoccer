@@ -23,6 +23,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.ui.IWindowManager;
+import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,11 +37,7 @@ import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
-import javax.swing.*;
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.ui.IWindowManager;
-import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -44,134 +47,134 @@ import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
  */
 @SuppressWarnings("serial")
 public class RobotExtractor extends JDialog implements WizardListener {
+	String unusedrobotPath;
 
-    String unusedrobotPath;
-    private static final int MIN_ROBOTS = 1;
-    private static final int MAX_ROBOTS = 1; // 250;
-    private JPanel robotImporterContentPane;
-    private WizardCardPanel wizardPanel;
-    private WizardController buttonsPanel;
-    private RobotSelectionPanel robotSelectionPanel;
-    public byte buf[] = new byte[4096];
-    private StringWriter output;
-    private final IWindowManager windowManager;
-    private final IRepositoryManager repositoryManager;
-    private final EventHandler eventHandler = new EventHandler();
+	private static final int MIN_ROBOTS = 1;
+	private static final int MAX_ROBOTS = 1; // 250;
 
-    class EventHandler implements ActionListener {
+	private JPanel robotImporterContentPane;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("Refresh")) {
-                getRobotSelectionPanel().refreshRobotList(false);
-            }
-        }
-    }
+	private WizardCardPanel wizardPanel;
+	private WizardController buttonsPanel;
+	private RobotSelectionPanel robotSelectionPanel;
 
-    public RobotExtractor(JFrame owner, IWindowManager windowManager, IRepositoryManager repositoryManager) {
-        super(owner);
-        this.repositoryManager = repositoryManager;
-        this.windowManager = windowManager;
-        initialize();
-    }
+	public byte buf[] = new byte[4096];
+	private StringWriter output;
+	private final IWindowManager windowManager;
+	private final IRepositoryManager repositoryManager;
 
-    public void update() {
-        getRobotSelectionPanel().refreshRobotList(false);
-    }
+	private final EventHandler eventHandler = new EventHandler();
 
-    @Override
-    public void cancelButtonActionPerformed() {
-        dispose();
-    }
+	class EventHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if (e.getActionCommand().equals("Refresh")) {
+				getRobotSelectionPanel().refreshRobotList(false);
+			}
+		}
+	}
 
-    @Override
-    public void finishButtonActionPerformed() {
-        int rc = extractRobot();
-        ConsoleDialog d;
+	public RobotExtractor(JFrame owner, IWindowManager windowManager, IRepositoryManager repositoryManager) {
+		super(owner);
+		this.repositoryManager = repositoryManager;
+		this.windowManager = windowManager;
+		initialize();
+	}
 
-        d = new ConsoleDialog(windowManager.getRobocodeFrame(), "Extract results", false);
-        d.setText(output.toString());
-        d.pack();
-        d.pack();
-        WindowUtil.packCenterShow(this, d);
-        if (rc < 8) {
-            this.dispose();
-        }
-    }
+	public void update() {
+		getRobotSelectionPanel().refreshRobotList(false);
+	}
 
-    private WizardController getButtonsPanel() {
-        if (buttonsPanel == null) {
-            buttonsPanel = getWizardPanel().getWizardController();
-        }
-        return buttonsPanel;
-    }
+	public void cancelButtonActionPerformed() {
+		dispose();
+	}
 
-    private JPanel getRobotImporterContentPane() {
-        if (robotImporterContentPane == null) {
-            robotImporterContentPane = new JPanel();
-            robotImporterContentPane.setLayout(new BorderLayout());
-            robotImporterContentPane.add(getButtonsPanel(), BorderLayout.SOUTH);
-            robotImporterContentPane.add(getWizardPanel(), BorderLayout.CENTER);
-            getWizardPanel().getWizardController().setFinishButtonTextAndMnemonic("Extract!", 'E', 0);
-            robotImporterContentPane.registerKeyboardAction(eventHandler, "Refresh",
-                                                            KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK),
-                                                            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-            robotImporterContentPane.registerKeyboardAction(eventHandler, "Refresh",
-                                                            KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK), JComponent.WHEN_FOCUSED);
-        }
-        return robotImporterContentPane;
-    }
+	public void finishButtonActionPerformed() {
+		int rc = extractRobot();
+		ConsoleDialog d;
 
-    public RobotSelectionPanel getRobotSelectionPanel() {
-        if (robotSelectionPanel == null) {
-            robotSelectionPanel = net.sf.robocode.core.Container.createComponent(RobotSelectionPanel.class);
-            robotSelectionPanel.setup(MIN_ROBOTS, MAX_ROBOTS, false,
-                                      "Select the robot you would like to extract to the robots directory.  Robots not shown do not include source.",
-                                      true, true, true, false, true, true, null);
-        }
-        return robotSelectionPanel;
-    }
+		d = new ConsoleDialog(windowManager.getRobocodeFrame(), "Extract results", false);
+		d.setText(output.toString());
+		d.pack();
+		d.pack();
+		WindowUtil.packCenterShow(this, d);
+		if (rc < 8) {
+			this.dispose();
+		}
+	}
 
-    private WizardCardPanel getWizardPanel() {
-        if (wizardPanel == null) {
-            wizardPanel = new WizardCardPanel(this);
-            wizardPanel.add(getRobotSelectionPanel(), "Select robot");
-        }
-        return wizardPanel;
-    }
+	private WizardController getButtonsPanel() {
+		if (buttonsPanel == null) {
+			buttonsPanel = getWizardPanel().getWizardController();
+		}
+		return buttonsPanel;
+	}
 
-    private void initialize() {
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Robot Extract");
-        setContentPane(getRobotImporterContentPane());
-    }
+	private JPanel getRobotImporterContentPane() {
+		if (robotImporterContentPane == null) {
+			robotImporterContentPane = new JPanel();
+			robotImporterContentPane.setLayout(new BorderLayout());
+			robotImporterContentPane.add(getButtonsPanel(), BorderLayout.SOUTH);
+			robotImporterContentPane.add(getWizardPanel(), BorderLayout.CENTER);
+			getWizardPanel().getWizardController().setFinishButtonTextAndMnemonic("Extract!", 'E', 0);
+			robotImporterContentPane.registerKeyboardAction(eventHandler, "Refresh",
+					KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK),
+					JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+			robotImporterContentPane.registerKeyboardAction(eventHandler, "Refresh",
+					KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK), JComponent.WHEN_FOCUSED);
+		}
+		return robotImporterContentPane;
+	}
 
-    private int extractRobot() {
-        repositoryManager.refresh();
-        int rv = 0;
+	public RobotSelectionPanel getRobotSelectionPanel() {
+		if (robotSelectionPanel == null) {
+			robotSelectionPanel = net.sf.robocode.core.Container.createComponent(RobotSelectionPanel.class);
+			robotSelectionPanel.setup(MIN_ROBOTS, MAX_ROBOTS, false,
+					"Select the robot you would like to extract to the robots directory.  Robots not shown do not include source.",
+					true, true, true, false, true, true, null);
+		}
+		return robotSelectionPanel;
+	}
 
-        output = new StringWriter();
-        PrintWriter out = new PrintWriter(output);
+	private WizardCardPanel getWizardPanel() {
+		if (wizardPanel == null) {
+			wizardPanel = new WizardCardPanel(this);
+			wizardPanel.add(getRobotSelectionPanel(), "Select robot");
+		}
+		return wizardPanel;
+	}
 
-        out.println("Robot Extract");
-        List<IRepositoryItem> selectedRobots = getRobotSelectionPanel().getSelectedRobots();
-        IRepositoryItem spec = selectedRobots.get(0);
+	private void initialize() {
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setTitle("Robot Extract");
+		setContentPane(getRobotImporterContentPane());
+	}
 
-        try {
-            WindowUtil.setStatusWriter(out);
+	private int extractRobot() {
+		repositoryManager.refresh();
+		int rv = 0;
 
-            rv = repositoryManager.extractJar(spec);
-            WindowUtil.setStatusWriter(null);
-            WindowUtil.setStatus("");
-            if (rv == 0) {
-                out.println("Robot extracted successfully.");
-            } else if (rv == -1) {
-                out.println("Cancelled.");
-            }
-        } catch (Exception e) {
-            out.println(e);
-            rv = 8;
-        }
-        return rv;
-    }
+		output = new StringWriter();
+		PrintWriter out = new PrintWriter(output);
+
+		out.println("Robot Extract");
+		List<IRepositoryItem> selectedRobots = getRobotSelectionPanel().getSelectedRobots();
+		IRepositoryItem spec = selectedRobots.get(0);
+
+		try {
+			WindowUtil.setStatusWriter(out);
+
+			rv = repositoryManager.extractJar(spec);
+			WindowUtil.setStatusWriter(null);
+			WindowUtil.setStatus("");
+			if (rv == 0) {
+				out.println("Robot extracted successfully.");
+			} else if (rv == -1) {
+				out.println("Cancelled.");
+			}
+		} catch (Exception e) {
+			out.println(e);
+			rv = 8;
+		}
+		return rv;
+	}
 }

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
+
 /**
  * Interface of a debug property, which is a key-value pair.
  *
@@ -22,17 +23,17 @@ package robocode.control.snapshot;
  */
 public interface IDebugProperty {
 
-    /**
-     * Returns the key of the property.
-     *
-     * @return the key of the property.
-     */
-    String getKey();
+	/**
+	 * Returns the key of the property.
+	 *
+	 * @return the key of the property.
+	 */
+	String getKey();
 
-    /**
-     * Returns the value of the property.
-     *
-     * @return the value of the property.
-     */
-    String getValue();
+	/**
+	 * Returns the value of the property.
+	 *
+	 * @return the value of the property.
+	 */
+	String getValue();
 }

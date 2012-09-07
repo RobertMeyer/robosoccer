@@ -11,12 +11,15 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.IImageManager;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.IImageManager;
+
 
 /**
  * @author Flemming N. Larsen (original)
@@ -24,272 +27,275 @@ import net.sf.robocode.ui.IImageManager;
 @SuppressWarnings("serial")
 public class PreferencesRenderingOptionsTab extends WizardPanel {
 
-    private final ISettingsManager properties;
-    private JPanel specificSettingsPanel;
-    private JPanel predefinedSettingsPanel;
-    private JPanel otherSettingsPanel;
-    private JComboBox optionsRenderingAntialiasingComboBox;
-    private JComboBox optionsRenderingTextAntialiasingComboBox;
-    private JComboBox optionsRenderingMethodComboBox;
-    private JComboBox optionsRenderingNoBuffersComboBox;
-    private JCheckBox optionsRenderingBufferImagesCheckBox;
-    private JCheckBox optionsRenderingForceBulletColorCheckBox;
-    private JButton predefinedPlaformDefaultButton;
-    private JButton predefinedSpeedButton;
-    private JButton predefinedQualityButton;
-    private EventHandler eventHandler;
-    private final IImageManager imageManager;
+	private final ISettingsManager properties;
 
-    public PreferencesRenderingOptionsTab(ISettingsManager properties, IImageManager imageManager) {
-        super();
-        this.properties = properties;
-        this.imageManager = imageManager;
-        initialize();
-    }
+	private JPanel specificSettingsPanel;
+	private JPanel predefinedSettingsPanel;
+	private JPanel otherSettingsPanel;
 
-    private void initialize() {
-        eventHandler = new EventHandler();
+	private JComboBox optionsRenderingAntialiasingComboBox;
+	private JComboBox optionsRenderingTextAntialiasingComboBox;
+	private JComboBox optionsRenderingMethodComboBox;
+	private JComboBox optionsRenderingNoBuffersComboBox;
+	private JCheckBox optionsRenderingBufferImagesCheckBox;
+	private JCheckBox optionsRenderingForceBulletColorCheckBox;
 
-        setLayout(new GridLayout(1, 3));
+	private JButton predefinedPlaformDefaultButton;
+	private JButton predefinedSpeedButton;
+	private JButton predefinedQualityButton;
 
-        add(getSpecificSettingsPanel());
-        add(getPredefinedSettingsPanel());
-        add(getOtherSettingsPanel());
+	private EventHandler eventHandler;
+	private final IImageManager imageManager;
 
-        loadPreferences(properties);
-    }
+	public PreferencesRenderingOptionsTab(ISettingsManager properties, IImageManager imageManager) {
+		super();
+		this.properties = properties;
+		this.imageManager = imageManager;
+		initialize();
+	}
 
-    private JPanel getSpecificSettingsPanel() {
-        if (specificSettingsPanel == null) {
-            specificSettingsPanel = new JPanel();
-            specificSettingsPanel.setBorder(
-                    BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Specific settings"));
-            specificSettingsPanel.setLayout(new GridBagLayout());
+	private void initialize() {
+		eventHandler = new EventHandler();
 
-            GridBagConstraints c = new GridBagConstraints();
+		setLayout(new GridLayout(1, 3));
 
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.insets = new Insets(5, 5, 5, 5);
-            c.anchor = GridBagConstraints.PAGE_START;
+		add(getSpecificSettingsPanel());
+		add(getPredefinedSettingsPanel());
+		add(getOtherSettingsPanel());
 
-            c.weightx = 0;
+		loadPreferences(properties);
+	}
 
-            c.gridwidth = 2;
+	private JPanel getSpecificSettingsPanel() {
+		if (specificSettingsPanel == null) {
+			specificSettingsPanel = new JPanel();
+			specificSettingsPanel.setBorder(
+					BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Specific settings"));
+			specificSettingsPanel.setLayout(new GridBagLayout());
 
-            c.gridx = 0;
-            c.gridy = 0;
-            specificSettingsPanel.add(new JLabel("Set individual rendering options:"), c);
+			GridBagConstraints c = new GridBagConstraints();
 
-            c.gridwidth = 1;
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.insets = new Insets(5, 5, 5, 5);
+			c.anchor = GridBagConstraints.PAGE_START;
 
-            c.gridy = 1;
-            specificSettingsPanel.add(new JLabel("Antialiasing", SwingConstants.RIGHT), c);
-            c.gridx = 1;
-            specificSettingsPanel.add(getOptionsRenderingAntialiasingComboBox(), c);
+			c.weightx = 0;
 
-            c.gridx = 0;
-            c.gridy = 2;
-            specificSettingsPanel.add(new JLabel("Text Antialiasing", SwingConstants.RIGHT), c);
-            c.gridx = 1;
-            specificSettingsPanel.add(getOptionsRenderingTextAntialiasingComboBox(), c);
+			c.gridwidth = 2;
 
-            c.gridx = 0;
-            c.gridy = 3;
-            specificSettingsPanel.add(new JLabel("Rendering Method", SwingConstants.RIGHT), c);
-            c.gridx = 1;
-            specificSettingsPanel.add(getOptionsRenderingMethodComboBox(), c);
+			c.gridx = 0;
+			c.gridy = 0;
+			specificSettingsPanel.add(new JLabel("Set individual rendering options:"), c);
 
-            c.gridx = 0;
-            c.gridy = 4;
-            specificSettingsPanel.add(new JLabel(" "), c);
+			c.gridwidth = 1;
 
-            c.gridx = 0;
-            c.gridy = 5;
-            specificSettingsPanel.add(new JLabel("Number of buffers", SwingConstants.RIGHT), c);
-            c.gridx = 1;
-            specificSettingsPanel.add(getOptionsRenderingNoBuffersComboBox(), c);
-        }
-        return specificSettingsPanel;
-    }
+			c.gridy = 1;
+			specificSettingsPanel.add(new JLabel("Antialiasing", SwingConstants.RIGHT), c);
+			c.gridx = 1;
+			specificSettingsPanel.add(getOptionsRenderingAntialiasingComboBox(), c);
 
-    private JPanel getPredefinedSettingsPanel() {
-        if (predefinedSettingsPanel == null) {
-            predefinedSettingsPanel = new JPanel();
-            predefinedSettingsPanel.setBorder(
-                    BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Predefined settings"));
-            predefinedSettingsPanel.setLayout(new GridBagLayout());
+			c.gridx = 0;
+			c.gridy = 2;
+			specificSettingsPanel.add(new JLabel("Text Antialiasing", SwingConstants.RIGHT), c);
+			c.gridx = 1;
+			specificSettingsPanel.add(getOptionsRenderingTextAntialiasingComboBox(), c);
 
-            GridBagConstraints c = new GridBagConstraints();
+			c.gridx = 0;
+			c.gridy = 3;
+			specificSettingsPanel.add(new JLabel("Rendering Method", SwingConstants.RIGHT), c);
+			c.gridx = 1;
+			specificSettingsPanel.add(getOptionsRenderingMethodComboBox(), c);
 
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.insets = new Insets(5, 5, 5, 5);
-            c.anchor = GridBagConstraints.PAGE_START;
+			c.gridx = 0;
+			c.gridy = 4;
+			specificSettingsPanel.add(new JLabel(" "), c);
 
-            c.gridx = 0;
-            c.gridy = 0;
-            c.gridwidth = 3;
-            predefinedSettingsPanel.add(new JLabel("Set all rendering settings towards:"), c);
+			c.gridx = 0;
+			c.gridy = 5;
+			specificSettingsPanel.add(new JLabel("Number of buffers", SwingConstants.RIGHT), c);
+			c.gridx = 1;
+			specificSettingsPanel.add(getOptionsRenderingNoBuffersComboBox(), c);
+		}
+		return specificSettingsPanel;
+	}
 
-            c.weightx = 1f / 3;
-            c.gridwidth = 1;
-            c.gridy = 2;
-            predefinedSettingsPanel.add(getPredefinedPlatformDefaultButton(), c);
-            c.gridx = 1;
-            predefinedSettingsPanel.add(getPredefinedSpeedButton(), c);
-            c.gridx = 2;
-            predefinedSettingsPanel.add(getPredefinedQualityButton(), c);
-        }
-        return predefinedSettingsPanel;
-    }
+	private JPanel getPredefinedSettingsPanel() {
+		if (predefinedSettingsPanel == null) {
+			predefinedSettingsPanel = new JPanel();
+			predefinedSettingsPanel.setBorder(
+					BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Predefined settings"));
+			predefinedSettingsPanel.setLayout(new GridBagLayout());
 
-    private JPanel getOtherSettingsPanel() {
-        if (otherSettingsPanel == null) {
-            otherSettingsPanel = new JPanel();
-            otherSettingsPanel.setBorder(
-                    BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Other settings"));
-            otherSettingsPanel.setLayout(new BoxLayout(otherSettingsPanel, BoxLayout.Y_AXIS));
-            otherSettingsPanel.add(getOptionsRenderingBufferImagesCheckBox());
-            otherSettingsPanel.add(getOptionsRenderingForceBulletColorCheckBox());
-        }
-        return otherSettingsPanel;
-    }
+			GridBagConstraints c = new GridBagConstraints();
 
-    private JComboBox getOptionsRenderingAntialiasingComboBox() {
-        if (optionsRenderingAntialiasingComboBox == null) {
-            optionsRenderingAntialiasingComboBox = new JComboBox(new String[]{"Default", "On", "Off"});
-            optionsRenderingAntialiasingComboBox.addActionListener(eventHandler);
-        }
-        return optionsRenderingAntialiasingComboBox;
-    }
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.insets = new Insets(5, 5, 5, 5);
+			c.anchor = GridBagConstraints.PAGE_START;
 
-    private JComboBox getOptionsRenderingTextAntialiasingComboBox() {
-        if (optionsRenderingTextAntialiasingComboBox == null) {
-            optionsRenderingTextAntialiasingComboBox = new JComboBox(new String[]{"Default", "On", "Off"});
-            optionsRenderingTextAntialiasingComboBox.addActionListener(eventHandler);
-        }
-        return optionsRenderingTextAntialiasingComboBox;
-    }
+			c.gridx = 0;
+			c.gridy = 0;
+			c.gridwidth = 3;
+			predefinedSettingsPanel.add(new JLabel("Set all rendering settings towards:"), c);
 
-    private JComboBox getOptionsRenderingMethodComboBox() {
-        if (optionsRenderingMethodComboBox == null) {
-            optionsRenderingMethodComboBox = new JComboBox(new String[]{"Default", "Quality", "Speed"});
-            optionsRenderingMethodComboBox.addActionListener(eventHandler);
-        }
-        return optionsRenderingMethodComboBox;
-    }
+			c.weightx = 1f / 3;
+			c.gridwidth = 1;
+			c.gridy = 2;
+			predefinedSettingsPanel.add(getPredefinedPlatformDefaultButton(), c);
+			c.gridx = 1;
+			predefinedSettingsPanel.add(getPredefinedSpeedButton(), c);
+			c.gridx = 2;
+			predefinedSettingsPanel.add(getPredefinedQualityButton(), c);
+		}
+		return predefinedSettingsPanel;
+	}
 
-    private JComboBox getOptionsRenderingNoBuffersComboBox() {
-        if (optionsRenderingNoBuffersComboBox == null) {
-            optionsRenderingNoBuffersComboBox = new JComboBox(
-                    new String[]{"Single buffering", "Double buffering", "Triple buffering"});
-            optionsRenderingNoBuffersComboBox.addActionListener(eventHandler);
-        }
-        return optionsRenderingNoBuffersComboBox;
-    }
+	private JPanel getOtherSettingsPanel() {
+		if (otherSettingsPanel == null) {
+			otherSettingsPanel = new JPanel();
+			otherSettingsPanel.setBorder(
+					BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Other settings"));
+			otherSettingsPanel.setLayout(new BoxLayout(otherSettingsPanel, BoxLayout.Y_AXIS));
+			otherSettingsPanel.add(getOptionsRenderingBufferImagesCheckBox());
+			otherSettingsPanel.add(getOptionsRenderingForceBulletColorCheckBox());
+		}
+		return otherSettingsPanel;
+	}
 
-    private JButton getPredefinedPlatformDefaultButton() {
-        if (predefinedPlaformDefaultButton == null) {
-            predefinedPlaformDefaultButton = new JButton("Default");
-            predefinedPlaformDefaultButton.setMnemonic('u');
-            predefinedPlaformDefaultButton.setDisplayedMnemonicIndex(4);
-            predefinedPlaformDefaultButton.addActionListener(eventHandler);
-        }
-        return predefinedPlaformDefaultButton;
-    }
+	private JComboBox getOptionsRenderingAntialiasingComboBox() {
+		if (optionsRenderingAntialiasingComboBox == null) {
+			optionsRenderingAntialiasingComboBox = new JComboBox(new String[] { "Default", "On", "Off"});
+			optionsRenderingAntialiasingComboBox.addActionListener(eventHandler);
+		}
+		return optionsRenderingAntialiasingComboBox;
+	}
 
-    private JButton getPredefinedSpeedButton() {
-        if (predefinedSpeedButton == null) {
-            predefinedSpeedButton = new JButton("Speed");
-            predefinedSpeedButton.setMnemonic('p');
-            predefinedSpeedButton.setDisplayedMnemonicIndex(1);
-            predefinedSpeedButton.addActionListener(eventHandler);
-        }
-        return predefinedSpeedButton;
-    }
+	private JComboBox getOptionsRenderingTextAntialiasingComboBox() {
+		if (optionsRenderingTextAntialiasingComboBox == null) {
+			optionsRenderingTextAntialiasingComboBox = new JComboBox(new String[] { "Default", "On", "Off"});
+			optionsRenderingTextAntialiasingComboBox.addActionListener(eventHandler);
+		}
+		return optionsRenderingTextAntialiasingComboBox;
+	}
 
-    private JButton getPredefinedQualityButton() {
-        if (predefinedQualityButton == null) {
-            predefinedQualityButton = new JButton("Quality");
-            predefinedQualityButton.setMnemonic('Q');
-            predefinedQualityButton.addActionListener(eventHandler);
-        }
-        return predefinedQualityButton;
-    }
+	private JComboBox getOptionsRenderingMethodComboBox() {
+		if (optionsRenderingMethodComboBox == null) {
+			optionsRenderingMethodComboBox = new JComboBox(new String[] { "Default", "Quality", "Speed"});
+			optionsRenderingMethodComboBox.addActionListener(eventHandler);
+		}
+		return optionsRenderingMethodComboBox;
+	}
 
-    private JCheckBox getOptionsRenderingBufferImagesCheckBox() {
-        if (optionsRenderingBufferImagesCheckBox == null) {
-            optionsRenderingBufferImagesCheckBox = new JCheckBox("Buffer images (uses memory)");
-            optionsRenderingBufferImagesCheckBox.setMnemonic('i');
-            optionsRenderingBufferImagesCheckBox.setDisplayedMnemonicIndex(7);
-            optionsRenderingBufferImagesCheckBox.addActionListener(eventHandler);
-        }
-        return optionsRenderingBufferImagesCheckBox;
-    }
+	private JComboBox getOptionsRenderingNoBuffersComboBox() {
+		if (optionsRenderingNoBuffersComboBox == null) {
+			optionsRenderingNoBuffersComboBox = new JComboBox(
+					new String[] { "Single buffering", "Double buffering", "Triple buffering"});
+			optionsRenderingNoBuffersComboBox.addActionListener(eventHandler);
+		}
+		return optionsRenderingNoBuffersComboBox;
+	}
 
-    private JCheckBox getOptionsRenderingForceBulletColorCheckBox() {
-        if (optionsRenderingForceBulletColorCheckBox == null) {
-            optionsRenderingForceBulletColorCheckBox = new JCheckBox("Make all bullets white");
-            optionsRenderingForceBulletColorCheckBox.setMnemonic('M');
-            optionsRenderingForceBulletColorCheckBox.addActionListener(eventHandler);
-        }
-        return optionsRenderingForceBulletColorCheckBox;
-    }
+	private JButton getPredefinedPlatformDefaultButton() {
+		if (predefinedPlaformDefaultButton == null) {
+			predefinedPlaformDefaultButton = new JButton("Default");
+			predefinedPlaformDefaultButton.setMnemonic('u');
+			predefinedPlaformDefaultButton.setDisplayedMnemonicIndex(4);
+			predefinedPlaformDefaultButton.addActionListener(eventHandler);
+		}
+		return predefinedPlaformDefaultButton;
+	}
 
-    private void loadPreferences(ISettingsManager props) {
-        getOptionsRenderingAntialiasingComboBox().setSelectedIndex(props.getOptionsRenderingAntialiasing());
-        getOptionsRenderingTextAntialiasingComboBox().setSelectedIndex(props.getOptionsRenderingTextAntialiasing());
-        getOptionsRenderingMethodComboBox().setSelectedIndex(props.getOptionsRenderingMethod());
-        getOptionsRenderingNoBuffersComboBox().setSelectedIndex(props.getOptionsRenderingNoBuffers() - 1);
-        getOptionsRenderingBufferImagesCheckBox().setSelected(props.getOptionsRenderingBufferImages());
-        getOptionsRenderingForceBulletColorCheckBox().setSelected(props.getOptionsRenderingForceBulletColor());
-    }
+	private JButton getPredefinedSpeedButton() {
+		if (predefinedSpeedButton == null) {
+			predefinedSpeedButton = new JButton("Speed");
+			predefinedSpeedButton.setMnemonic('p');
+			predefinedSpeedButton.setDisplayedMnemonicIndex(1);
+			predefinedSpeedButton.addActionListener(eventHandler);
+		}
+		return predefinedSpeedButton;
+	}
 
-    public void storePreferences() {
-        ISettingsManager props = properties;
+	private JButton getPredefinedQualityButton() {
+		if (predefinedQualityButton == null) {
+			predefinedQualityButton = new JButton("Quality");
+			predefinedQualityButton.setMnemonic('Q');
+			predefinedQualityButton.addActionListener(eventHandler);
+		}
+		return predefinedQualityButton;
+	}
 
-        props.setOptionsRenderingAntialiasing(optionsRenderingAntialiasingComboBox.getSelectedIndex());
-        props.setOptionsRenderingTextAntialiasing(optionsRenderingTextAntialiasingComboBox.getSelectedIndex());
-        props.setOptionsRenderingMethod(optionsRenderingMethodComboBox.getSelectedIndex());
-        props.setOptionsRenderingNoBuffers(optionsRenderingNoBuffersComboBox.getSelectedIndex() + 1);
-        props.setOptionsRenderingBufferImages(optionsRenderingBufferImagesCheckBox.isSelected());
-        props.setOptionsRenderingForceBulletColor(optionsRenderingForceBulletColorCheckBox.isSelected());
-        properties.saveProperties();
-    }
+	private JCheckBox getOptionsRenderingBufferImagesCheckBox() {
+		if (optionsRenderingBufferImagesCheckBox == null) {
+			optionsRenderingBufferImagesCheckBox = new JCheckBox("Buffer images (uses memory)");
+			optionsRenderingBufferImagesCheckBox.setMnemonic('i');
+			optionsRenderingBufferImagesCheckBox.setDisplayedMnemonicIndex(7);
+			optionsRenderingBufferImagesCheckBox.addActionListener(eventHandler);
+		}
+		return optionsRenderingBufferImagesCheckBox;
+	}
 
-    @Override
-    public boolean isReady() {
-        return true;
-    }
+	private JCheckBox getOptionsRenderingForceBulletColorCheckBox() {
+		if (optionsRenderingForceBulletColorCheckBox == null) {
+			optionsRenderingForceBulletColorCheckBox = new JCheckBox("Make all bullets white");
+			optionsRenderingForceBulletColorCheckBox.setMnemonic('M');
+			optionsRenderingForceBulletColorCheckBox.addActionListener(eventHandler);
+		}
+		return optionsRenderingForceBulletColorCheckBox;
+	}
 
-    private void setPredefinedSettings(int index) {
-        optionsRenderingAntialiasingComboBox.setSelectedIndex(index);
-        optionsRenderingTextAntialiasingComboBox.setSelectedIndex(index);
-        optionsRenderingMethodComboBox.setSelectedIndex(index);
-    }
+	private void loadPreferences(ISettingsManager props) {
+		getOptionsRenderingAntialiasingComboBox().setSelectedIndex(props.getOptionsRenderingAntialiasing());
+		getOptionsRenderingTextAntialiasingComboBox().setSelectedIndex(props.getOptionsRenderingTextAntialiasing());
+		getOptionsRenderingMethodComboBox().setSelectedIndex(props.getOptionsRenderingMethod());
+		getOptionsRenderingNoBuffersComboBox().setSelectedIndex(props.getOptionsRenderingNoBuffers() - 1);
+		getOptionsRenderingBufferImagesCheckBox().setSelected(props.getOptionsRenderingBufferImages());
+		getOptionsRenderingForceBulletColorCheckBox().setSelected(props.getOptionsRenderingForceBulletColor());
+	}
 
-    private class EventHandler implements ActionListener {
+	public void storePreferences() {
+		ISettingsManager props = properties;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object src = e.getSource();
+		props.setOptionsRenderingAntialiasing(optionsRenderingAntialiasingComboBox.getSelectedIndex());
+		props.setOptionsRenderingTextAntialiasing(optionsRenderingTextAntialiasingComboBox.getSelectedIndex());
+		props.setOptionsRenderingMethod(optionsRenderingMethodComboBox.getSelectedIndex());
+		props.setOptionsRenderingNoBuffers(optionsRenderingNoBuffersComboBox.getSelectedIndex() + 1);
+		props.setOptionsRenderingBufferImages(optionsRenderingBufferImagesCheckBox.isSelected());
+		props.setOptionsRenderingForceBulletColor(optionsRenderingForceBulletColorCheckBox.isSelected());
+		properties.saveProperties();
+	}
 
-            if (src == predefinedPlaformDefaultButton) {
-                setPredefinedSettings(0);
-            } else if (src == predefinedQualityButton) {
-                setPredefinedSettings(1);
-            } else if (src == predefinedSpeedButton) {
-                setPredefinedSettings(2);
-            } else if (src == optionsRenderingBufferImagesCheckBox) {
-                // Reset images so they are reloaded and gets buffered or unbuffered
-                new Thread() {
-                    @Override
-                    public void run() {
-                        storePreferences();
-                        imageManager.initialize();
-                    }
-                }.start();
-                return;
-            }
-        }
-    }
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+
+	private void setPredefinedSettings(int index) {
+		optionsRenderingAntialiasingComboBox.setSelectedIndex(index);
+		optionsRenderingTextAntialiasingComboBox.setSelectedIndex(index);
+		optionsRenderingMethodComboBox.setSelectedIndex(index);
+	}
+
+	private class EventHandler implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			Object src = e.getSource();
+
+			if (src == predefinedPlaformDefaultButton) {
+				setPredefinedSettings(0);
+			} else if (src == predefinedQualityButton) {
+				setPredefinedSettings(1);
+			} else if (src == predefinedSpeedButton) {
+				setPredefinedSettings(2);
+			} else if (src == optionsRenderingBufferImagesCheckBox) {
+				// Reset images so they are reloaded and gets buffered or unbuffered
+				new Thread() {
+					@Override
+					public void run() {
+						storePreferences();
+						imageManager.initialize();
+					}
+				}.start();
+				return;
+			}
+		}
+	}
 }

@@ -11,46 +11,46 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
+
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
 import robocode.control.events.TurnEndedEvent;
 
+
 /**
  * @author Pavel Savara (original)
  */
 public class TestEnvAttack extends RobocodeTestBed {
+	boolean messagedAttack;
 
-    boolean messagedAttack;
+	@Test
+	public void run() {
+		super.run();
+	}
 
-    @Test
-    @Override
-    public void run() {
-        super.run();
-    }
+	@Override
+	public String getRobotNames() {
+		return "tested.robots.BattleLost,tested.robots.EnvAttack";
+	}
 
-    @Override
-    public String getRobotNames() {
-        return "tested.robots.BattleLost,tested.robots.EnvAttack";
-    }
+	@Override
+	protected int getExpectedErrors() {
+		return 1;
+	}
 
-    @Override
-    protected int getExpectedErrors() {
-        return 1;
-    }
+	@Override
+	public void onTurnEnded(TurnEndedEvent event) {
+		super.onTurnEnded(event);
+		final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
 
-    @Override
-    public void onTurnEnded(TurnEndedEvent event) {
-        super.onTurnEnded(event);
-        final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
+		if (out.contains("AccessControlException: access denied")) {
+			messagedAttack = true;
+		}
+	}
 
-        if (out.contains("AccessControlException: access denied")) {
-            messagedAttack = true;
-        }
-    }
-
-    @Override
-    protected void runTeardown() {
-        Assert.assertTrue(messagedAttack);
-    }
+	@Override
+	protected void runTeardown() {
+		Assert.assertTrue(messagedAttack);
+	}
 }

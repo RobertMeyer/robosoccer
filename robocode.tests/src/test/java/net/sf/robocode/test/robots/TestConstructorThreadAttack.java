@@ -11,34 +11,35 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
+
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import robocode.control.events.TurnEndedEvent;
+
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class TestConstructorThreadAttack extends RobocodeTestBed {
+	boolean messagedUnknown;
 
-    boolean messagedUnknown;
+	@Override
+	public void onTurnEnded(TurnEndedEvent event) {
+		super.onTurnEnded(event);
+		final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
 
-    @Override
-    public void onTurnEnded(TurnEndedEvent event) {
-        super.onTurnEnded(event);
-        final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
+		if (out.contains("Preventing Thread-") && out.contains("from access to MyAttack")) {
+			messagedUnknown = true;
+		}
+	}
 
-        if (out.contains("Preventing Thread-") && out.contains("from access to MyAttack")) {
-            messagedUnknown = true;
-        }
-    }
+	@Override
+	public String getRobotNames() {
+		return "tested.robots.ConstructorThreadAttack,sample.Target";
+	}
 
-    @Override
-    public String getRobotNames() {
-        return "tested.robots.ConstructorThreadAttack,sample.Target";
-    }
-
-    @Override
-    protected void runTeardown() {
-        Assert.assertTrue(messagedUnknown);
-    }
+	@Override
+	protected void runTeardown() {
+		Assert.assertTrue(messagedUnknown);
+	}
 }

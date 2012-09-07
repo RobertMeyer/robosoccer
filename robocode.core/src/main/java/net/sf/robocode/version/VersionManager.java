@@ -11,16 +11,19 @@
  *******************************************************************************/
 package net.sf.robocode.version;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+
 import net.sf.robocode.io.FileUtil;
 import static net.sf.robocode.io.Logger.logError;
 import static net.sf.robocode.io.Logger.logMessage;
 import static net.sf.robocode.io.Logger.logWarning;
 import net.sf.robocode.settings.ISettingsManager;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 
 /**
  * @author Pavel Savara (original)
@@ -29,196 +32,187 @@ import net.sf.robocode.settings.ISettingsManager;
  */
 public final class VersionManager implements IVersionManager {
 
-    private static final String VERSIONS_TXT = "versions.txt";
-    private static final String UNKNOWN_VERSION = "unknown";
-    private static Version version;
-    final ISettingsManager settingsManager;
-    final boolean versionChanged;
+	private static final String VERSIONS_TXT = "versions.txt";
+	private static final String UNKNOWN_VERSION = "unknown";
 
-    public VersionManager(ISettingsManager settingsManager) {
-        this.settingsManager = settingsManager;
-        if (settingsManager != null) {
-            versionChanged = !settingsManager.getLastRunVersion().equals(getVersion());
-            if (versionChanged) {
-                settingsManager.setLastRunVersion(getVersion());
-            }
-        } else {
-            versionChanged = false;
-        }
-    }
+	private static Version version;
+	final ISettingsManager settingsManager;
+	final boolean versionChanged;
 
-    @Override
-    public String checkForNewVersion() {
-        String newVersLine = null;
-        InputStream inputStream = null;
-        InputStreamReader inputStreamReader = null;
-        BufferedReader reader = null;
+	public VersionManager(ISettingsManager settingsManager) {
+		this.settingsManager = settingsManager;
+		if (settingsManager != null) {
+			versionChanged = !settingsManager.getLastRunVersion().equals(getVersion());
+			if (versionChanged) {
+				settingsManager.setLastRunVersion(getVersion());
+			}
+		} else {
+			versionChanged = false;			
+		}
+	}
 
-        try {
-            URL url = new URL("http://robocode.sourceforge.net/version/version.html");
+	public String checkForNewVersion() {
+		String newVersLine = null;
+		InputStream inputStream = null;
+		InputStreamReader inputStreamReader = null;
+		BufferedReader reader = null;
 
-            URLConnection urlConnection = url.openConnection();
+		try {
+			URL url = new URL("http://robocode.sourceforge.net/version/version.html");
 
-            urlConnection.setConnectTimeout(5000);
+			URLConnection urlConnection = url.openConnection();
 
-            if (urlConnection instanceof HttpURLConnection) {
-                logMessage("Update checking with http.");
-                HttpURLConnection h = (HttpURLConnection) urlConnection;
+			urlConnection.setConnectTimeout(5000);
 
-                if (h.usingProxy()) {
-                    logMessage("http using proxy.");
-                }
-            }
-            inputStream = urlConnection.getInputStream();
-            inputStreamReader = new InputStreamReader(inputStream);
-            reader = new BufferedReader(inputStreamReader);
+			if (urlConnection instanceof HttpURLConnection) {
+				logMessage("Update checking with http.");
+				HttpURLConnection h = (HttpURLConnection) urlConnection;
 
-            newVersLine = reader.readLine();
+				if (h.usingProxy()) {
+					logMessage("http using proxy.");
+				}
+			}
+			inputStream = urlConnection.getInputStream();
+			inputStreamReader = new InputStreamReader(inputStream);
+			reader = new BufferedReader(inputStreamReader);
 
-        } catch (MalformedURLException e) {
-            logError("Unable to check for new version", e);
-            newVersLine = null;
-        } catch (IOException e) {
-            logError("Unable to check for new version", e);
-            newVersLine = null;
-        } finally {
-            FileUtil.cleanupStream(inputStream);
-            FileUtil.cleanupStream(inputStreamReader);
-            FileUtil.cleanupStream(reader);
-        }
-        return newVersLine;
-    }
+			newVersLine = reader.readLine();
 
-    @Override
-    public String getVersion() {
-        return getVersionInstance().toString();
-    }
+		} catch (MalformedURLException e) {
+			logError("Unable to check for new version", e);
+			newVersLine = null;
+		} catch (IOException e) {
+			logError("Unable to check for new version", e);
+			newVersLine = null;
+		} finally {
+			FileUtil.cleanupStream(inputStream);
+			FileUtil.cleanupStream(inputStreamReader);
+			FileUtil.cleanupStream(reader);
+		}
+		return newVersLine;
+	}
 
-    private static Version getVersionInstance() {
-        if (version == null) {
-            version = new Version(getVersionFromJar());
-        }
-        return version;
-    }
+	public String getVersion() {
+		return getVersionInstance().toString();
+	}
 
-    @Override
-    public boolean isLastRunVersionChanged() {
-        return versionChanged;
-    }
+	private static Version getVersionInstance() {
+		if (version == null) {
+			version = new Version(getVersionFromJar());
+		}
+		return version;
+	}
 
-    @Override
-    public String getVersionN() {
-        Version v = getVersionInstance();
+	public boolean isLastRunVersionChanged() {
+		return versionChanged;
+	}
 
-        return v.getMajor() + "." + v.getMinor() + "." + v.getRevision() + "." + v.getBuild();
-    }
+	public String getVersionN() {
+		Version v = getVersionInstance();
 
-    @Override
-    public int getVersionAsInt() {
-        Version v = getVersionInstance();
+		return v.getMajor() + "." + v.getMinor() + "." + v.getRevision() + "." + v.getBuild();
+	}
 
-        return (v.getMajor() << 24) + (v.getMinor() << 16) + (v.getRevision() << 8) + v.getBuild();
-    }
+	public int getVersionAsInt() {
+		Version v = getVersionInstance();
 
-    private static String getVersionFromJar() {
-        String versionString = null;
+		return (v.getMajor() << 24) + (v.getMinor() << 16) + (v.getRevision() << 8) + v.getBuild();
+	}
 
-        BufferedReader in = null;
+	private static String getVersionFromJar() {
+		String versionString = null;
 
-        try {
-            URL versionsUrl = VersionManager.class.getResource("/" + VERSIONS_TXT);
+		BufferedReader in = null;
 
-            if (versionsUrl == null) {
-                logError("The URL for the " + VERSIONS_TXT + " was not found");
-                versionString = UNKNOWN_VERSION;
-            } else {
-                final URLConnection connection = versionsUrl.openConnection();
+		try {
+			URL versionsUrl = VersionManager.class.getResource("/" + VERSIONS_TXT);
 
-                connection.setUseCaches(false);
-                final InputStream is = connection.getInputStream();
+			if (versionsUrl == null) {
+				logError("The URL for the " + VERSIONS_TXT + " was not found");
+				versionString = UNKNOWN_VERSION;
+			} else {
+				final URLConnection connection = versionsUrl.openConnection();
 
-                in = new BufferedReader(new InputStreamReader(is));
+				connection.setUseCaches(false);
+				final InputStream is = connection.getInputStream();
 
-                versionString = in.readLine();
-                while (versionString != null && !versionString.substring(0, 8).equalsIgnoreCase("Version ")) {
-                    versionString = in.readLine();
-                }
-            }
-        } catch (FileNotFoundException e) {
-            logError("No " + VERSIONS_TXT + " file in robocode.jar");
-            versionString = UNKNOWN_VERSION;
-        } catch (IOException e) {
-            logError("Error while reading " + VERSIONS_TXT + " from robocode.jar: " + e);
-            versionString = UNKNOWN_VERSION;
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ignored) {
-                }
-            }
-        }
+				in = new BufferedReader(new InputStreamReader(is));
 
-        String version = UNKNOWN_VERSION;
+				versionString = in.readLine();
+				while (versionString != null && !versionString.substring(0, 8).equalsIgnoreCase("Version ")) {
+					versionString = in.readLine();
+				}
+			}
+		} catch (FileNotFoundException e) {
+			logError("No " + VERSIONS_TXT + " file in robocode.jar");
+			versionString = UNKNOWN_VERSION;
+		} catch (IOException e) {
+			logError("Error while reading " + VERSIONS_TXT + " from robocode.jar: " + e);
+			versionString = UNKNOWN_VERSION;
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {}
+			}
+		}
 
-        if (versionString != null && !versionString.equals(UNKNOWN_VERSION)) {
-            try {
-                version = versionString.substring(7);
-            } catch (Exception ignore) {
-            }
-        }
-        if (version.equals(UNKNOWN_VERSION)) {
-            logWarning("Getting version from file");
-            return getVersionFromFile();
-        }
-        return version;
-    }
+		String version = UNKNOWN_VERSION;
 
-    private static String getVersionFromFile() {
-        String versionString = null;
+		if (versionString != null && !versionString.equals(UNKNOWN_VERSION)) {
+			try {
+				version = versionString.substring(7);
+			} catch (Exception ignore) {}
+		}
+		if (version.equals(UNKNOWN_VERSION)) {
+			logWarning("Getting version from file");
+			return getVersionFromFile();
+		}
+		return version;
+	}
 
-        FileReader fileReader = null;
-        BufferedReader in = null;
+	private static String getVersionFromFile() {
+		String versionString = null;
 
-        try {
-            File dir = FileUtil.getCwd();
+		FileReader fileReader = null;
+		BufferedReader in = null;
 
-            if (System.getProperty("TESTING", "false").equals("true")) {
-                dir = dir.getParentFile().getParentFile().getParentFile();
-            }
-            fileReader = new FileReader(new File(dir, VERSIONS_TXT));
-            in = new BufferedReader(fileReader);
+		try {
+			File dir = FileUtil.getCwd();
 
-            versionString = in.readLine();
-        } catch (FileNotFoundException e) {
-            logError("No " + VERSIONS_TXT + " file.");
-            versionString = UNKNOWN_VERSION;
-        } catch (IOException e) {
-            logError("IO Exception reading " + VERSIONS_TXT, e);
-            versionString = UNKNOWN_VERSION;
-        } finally {
-            if (fileReader != null) {
-                try {
-                    fileReader.close();
-                } catch (IOException ignored) {
-                }
-            }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ignored) {
-                }
-            }
-        }
+			if (System.getProperty("TESTING", "false").equals("true")) {
+				dir = dir.getParentFile().getParentFile().getParentFile();
+			}
+			fileReader = new FileReader(new File(dir, VERSIONS_TXT));
+			in = new BufferedReader(fileReader);
 
-        String version = UNKNOWN_VERSION;
+			versionString = in.readLine();
+		} catch (FileNotFoundException e) {
+			logError("No " + VERSIONS_TXT + " file.");
+			versionString = UNKNOWN_VERSION;
+		} catch (IOException e) {
+			logError("IO Exception reading " + VERSIONS_TXT, e);
+			versionString = UNKNOWN_VERSION;
+		} finally {
+			if (fileReader != null) {
+				try {
+					fileReader.close();
+				} catch (IOException ignored) {}
+			}
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException ignored) {}
+			}
+		}
 
-        if (versionString != null && !versionString.equals(UNKNOWN_VERSION)) {
-            try {
-                version = versionString.substring(7);
-            } catch (Exception ignore) {
-            }
-        }
-        return version;
-    }
+		String version = UNKNOWN_VERSION;
+
+		if (versionString != null && !versionString.equals(UNKNOWN_VERSION)) {
+			try {
+				version = versionString.substring(7);
+			} catch (Exception ignore) {}
+		}
+		return version;
+	}
 }

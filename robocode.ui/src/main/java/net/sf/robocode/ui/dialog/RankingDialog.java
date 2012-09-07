@@ -19,20 +19,22 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
+
 import net.sf.robocode.battle.BattleRankingTableModel;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
-import net.sf.robocode.ui.dialog.MenuBar;
 import robocode.control.events.BattleAdaptor;
 import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.ITurnSnapshot;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.atomic.AtomicReference;
+
 
 /**
  * Frame to display the battle results or ranking during battles.
@@ -44,89 +46,84 @@ import robocode.control.snapshot.ITurnSnapshot;
  */
 @SuppressWarnings("serial")
 public class RankingDialog extends BaseScoreDialog {
+	private final BattleRankingTableModel tableModel;
+	private final Timer timerTask;
+	private final BattleObserver battleObserver;
+	private final AtomicReference<ITurnSnapshot> snapshot;
+	private ITurnSnapshot lastSnapshot;
+	private int lastRows;
+	private final MenuBar menu;
+	private final IWindowManager windowManager;
 
-    private final BattleRankingTableModel tableModel;
-    private final Timer timerTask;
-    private final BattleObserver battleObserver;
-    private final AtomicReference<ITurnSnapshot> snapshot;
-    private ITurnSnapshot lastSnapshot;
-    private int lastRows;
-    private final MenuBar menu;
-    private final IWindowManager windowManager;
+	public RankingDialog(IWindowManager windowManager, ISettingsManager settingsManager, MenuBar menu) {
+		super(settingsManager.getOptionsCommonDontHideRankings() ? null : windowManager, false);
 
-    public RankingDialog(IWindowManager windowManager, ISettingsManager settingsManager, MenuBar menu) {
-        super(settingsManager.getOptionsCommonDontHideRankings() ? null : windowManager, false);
+		initialize();
 
-        initialize();
+		this.windowManager = windowManager;
+		battleObserver = new BattleObserver();
+		timerTask = new Timer(1000 / 2, new TimerTask());
+		snapshot = new AtomicReference<ITurnSnapshot>();
+		lastRows = 0;
+		tableModel = new BattleRankingTableModel();
+		this.menu = menu;
+		setTitle("Ranking");
+	}
 
-        this.windowManager = windowManager;
-        battleObserver = new BattleObserver();
-        timerTask = new Timer(1000 / 2, new TimerTask());
-        snapshot = new AtomicReference<ITurnSnapshot>();
-        lastRows = 0;
-        tableModel = new BattleRankingTableModel();
-        this.menu = menu;
-        setTitle("Ranking");
-    }
+	@Override
+	protected AbstractTableModel getTableModel() {
+		return tableModel;
+	}
 
-    @Override
-    protected AbstractTableModel getTableModel() {
-        return tableModel;
-    }
+	private void update() {
+		final ITurnSnapshot current = snapshot.get();
 
-    private void update() {
-        final ITurnSnapshot current = snapshot.get();
+		if (lastSnapshot != current) {
+			setResultsData();
 
-        if (lastSnapshot != current) {
-            setResultsData();
+			lastSnapshot = current;
+			tableModel.updateSource(lastSnapshot);
+			if (table.getModel().getRowCount() != lastRows) {
+				lastRows = table.getModel().getRowCount();
 
-            lastSnapshot = current;
-            tableModel.updateSource(lastSnapshot);
-            if (table.getModel().getRowCount() != lastRows) {
-                lastRows = table.getModel().getRowCount();
+				table.setPreferredSize(
+						new Dimension(table.getColumnModel().getTotalColumnWidth(),
+						table.getModel().getRowCount() * table.getRowHeight()));
+				table.setPreferredScrollableViewportSize(table.getPreferredSize());
+				pack();
+			}
+			repaint();
+		}
+	}
 
-                table.setPreferredSize(
-                        new Dimension(table.getColumnModel().getTotalColumnWidth(),
-                                      table.getModel().getRowCount() * table.getRowHeight()));
-                table.setPreferredScrollableViewportSize(table.getPreferredSize());
-                pack();
-            }
-            repaint();
-        }
-    }
+	protected void onDialogShown() {
+		windowManager.addBattleListener(battleObserver);
+		timerTask.start();
+	}
 
-    @Override
-    protected void onDialogShown() {
-        windowManager.addBattleListener(battleObserver);
-        timerTask.start();
-    }
+	protected void onDialogHidden() {
+		menu.getOptionsShowRankingCheckBoxMenuItem().setState(false);
+		timerTask.stop();
+		windowManager.removeBattleListener(battleObserver);
+		dispose();
+	}
 
-    @Override
-    protected void onDialogHidden() {
-        menu.getOptionsShowRankingCheckBoxMenuItem().setState(false);
-        timerTask.stop();
-        windowManager.removeBattleListener(battleObserver);
-        dispose();
-    }
+	private class BattleObserver extends BattleAdaptor {
+		@Override
+		public void onBattleFinished(BattleFinishedEvent event) {
+			snapshot.set(null);
+		}
 
-    private class BattleObserver extends BattleAdaptor {
+		@Override
+		public void onTurnEnded(TurnEndedEvent event) {
+			snapshot.set(event.getTurnSnapshot());
+		}
+	}
 
-        @Override
-        public void onBattleFinished(BattleFinishedEvent event) {
-            snapshot.set(null);
-        }
 
-        @Override
-        public void onTurnEnded(TurnEndedEvent event) {
-            snapshot.set(event.getTurnSnapshot());
-        }
-    }
-
-    private class TimerTask implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            update();
-        }
-    }
+	private class TimerTask implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			update();
+		}
+	}
 }

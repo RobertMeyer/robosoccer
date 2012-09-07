@@ -26,9 +26,12 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-import javax.swing.table.AbstractTableModel;
+
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
+
+import javax.swing.table.AbstractTableModel;
+
 
 /**
  * This table model extracts the robot ranking from the current battle,
@@ -42,175 +45,174 @@ import robocode.control.snapshot.ITurnSnapshot;
 @SuppressWarnings("serial")
 public class BattleRankingTableModel extends AbstractTableModel {
 
-    IScoreSnapshot[] scoreSnapshotList;
-    // The sum of the scores gathered by the robots in the actual round
-    private double currentSum;
-    // The sum of the scores gathered by the robots in the previous rounds
-    private double totalSum;
+	IScoreSnapshot[] scoreSnapshotList;
 
-    /**
-     * Function for counting the sum of the scores gathered by the robots.
-     */
-    private void countTotalScores() {
-        currentSum = 0;
-        totalSum = 0;
+	// The sum of the scores gathered by the robots in the actual round
+	private double currentSum;
 
-        for (IScoreSnapshot score : scoreSnapshotList) {
-            currentSum += score.getCurrentScore();
-            totalSum += score.getTotalScore();
-        }
-    }
+	// The sum of the scores gathered by the robots in the previous rounds
+	private double totalSum;
 
-    public void updateSource(ITurnSnapshot snapshot) {
-        if (snapshot != null) {
-            scoreSnapshotList = snapshot.getSortedTeamScores();
-            countTotalScores();
-        } else {
-            scoreSnapshotList = null;
-        }
-    }
+	/**
+	 * Function for counting the sum of the scores gathered by the robots.
+	 */
+	private void countTotalScores() {
+		currentSum = 0;
+		totalSum = 0;
 
-    @Override
-    public int getColumnCount() {
-        return 12;
-    }
+		for (IScoreSnapshot score : scoreSnapshotList) {
+			currentSum += score.getCurrentScore();
+			totalSum += score.getTotalScore();
+		}
+	}
 
-    @Override
-    public int getRowCount() {
-        return scoreSnapshotList == null ? 0 : scoreSnapshotList.length;
-    }
+	public void updateSource(ITurnSnapshot snapshot) {
+		if (snapshot != null) {
+			scoreSnapshotList = snapshot.getSortedTeamScores();
+			countTotalScores();
+		} else {
+			scoreSnapshotList = null;
+		}
+	}
 
-    @Override
-    public String getColumnName(int col) {
-        switch (col) {
-            case 0:
-                return "Rank";
+	public int getColumnCount() {
+		return 12;
+	}
 
-            case 1:
-                return "Robot Name";
+	public int getRowCount() {
+		return scoreSnapshotList == null ? 0 : scoreSnapshotList.length;
+	}
 
-            case 2:
-                return "          Total Score          ";
+	@Override
+	public String getColumnName(int col) {
+		switch (col) {
+		case 0:
+			return "Rank";
 
-            case 3:
-                return "     Survival     ";
+		case 1:
+			return "Robot Name";
 
-            case 4:
-                return "Surv Bonus";
+		case 2:
+			return "          Total Score          ";
 
-            case 5:
-                return "    Bullet Dmg    ";
+		case 3:
+			return "     Survival     ";
 
-            case 6:
-                return " Bullet Bonus ";
+		case 4:
+			return "Surv Bonus";
 
-            case 7:
-                return "Ram Dmg * 2";
+		case 5:
+			return "    Bullet Dmg    ";
 
-            case 8:
-                return "Ram Bonus";
+		case 6:
+			return " Bullet Bonus ";
 
-            case 9:
-                return " 1sts ";
+		case 7:
+			return "Ram Dmg * 2";
 
-            case 10:
-                return " 2nds ";
+		case 8:
+			return "Ram Bonus";
 
-            case 11:
-                return " 3rds ";
+		case 9:
+			return " 1sts ";
 
-            default:
-                return "";
-        }
-    }
+		case 10:
+			return " 2nds ";
 
-    @Override
-    public Object getValueAt(int row, int col) {
+		case 11:
+			return " 3rds ";
 
-        final IScoreSnapshot statistics = scoreSnapshotList[row];
+		default:
+			return "";
+		}
+	}
 
-        switch (col) {
-            case 0:
-                return getPlacementString(row + 1);
+	public Object getValueAt(int row, int col) {
 
-            case 1:
-                return statistics.getName();
+		final IScoreSnapshot statistics = scoreSnapshotList[row];
 
-            case 2: {
-                final double current = statistics.getCurrentScore();
-                final double total = statistics.getTotalScore();
+		switch (col) {
+		case 0:
+			return getPlacementString(row + 1);
 
-                return (int) (current + 0.5) + " / " + (int) (total + current + 0.5) + "  ("
-                        + (int) (current / currentSum * 100) + " / " + (int) ((total + current) / (totalSum + currentSum) * 100)
-                        + "%)";
-            }
+		case 1:
+			return statistics.getName();
 
-            case 3: {
-                final double current = statistics.getCurrentSurvivalScore();
-                final double total = statistics.getTotalSurvivalScore();
+		case 2: {
+			final double current = statistics.getCurrentScore();
+			final double total = statistics.getTotalScore();
 
-                return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
-            }
+			return (int) (current + 0.5) + " / " + (int) (total + current + 0.5) + "  ("
+					+ (int) (current / currentSum * 100) + " / " + (int) ((total + current) / (totalSum + currentSum) * 100)
+					+ "%)";
+		}
 
-            case 4:
-                return (int) (statistics.getTotalLastSurvivorBonus() + 0.5);
+		case 3: {
+			final double current = statistics.getCurrentSurvivalScore();
+			final double total = statistics.getTotalSurvivalScore();
 
-            case 5: {
-                final double current = statistics.getCurrentBulletDamageScore();
-                final double total = statistics.getTotalBulletDamageScore();
+			return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
+		}
 
-                return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
-            }
+		case 4:
+			return (int) (statistics.getTotalLastSurvivorBonus() + 0.5);
 
-            case 6: {
-                final double current = statistics.getCurrentBulletKillBonus();
-                final double total = statistics.getTotalBulletKillBonus();
+		case 5: {
+			final double current = statistics.getCurrentBulletDamageScore();
+			final double total = statistics.getTotalBulletDamageScore();
 
-                return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
-            }
+			return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
+		}
 
-            case 7: {
-                final double current = statistics.getCurrentRammingDamageScore();
-                final double total = statistics.getTotalRammingDamageScore();
+		case 6: {
+			final double current = statistics.getCurrentBulletKillBonus();
+			final double total = statistics.getTotalBulletKillBonus();
 
-                return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
-            }
+			return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
+		}
 
-            case 8: {
-                final double current = statistics.getCurrentRammingKillBonus();
-                final double total = statistics.getTotalRammingKillBonus();
+		case 7: {
+			final double current = statistics.getCurrentRammingDamageScore();
+			final double total = statistics.getTotalRammingDamageScore();
 
-                return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
-            }
+			return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
+		}
 
-            case 9:
-                return "" + statistics.getTotalFirsts();
+		case 8: {
+			final double current = statistics.getCurrentRammingKillBonus();
+			final double total = statistics.getTotalRammingKillBonus();
 
-            case 10:
-                return "" + statistics.getTotalSeconds();
+			return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
+		}
 
-            case 11:
-                return "" + statistics.getTotalThirds();
+		case 9:
+			return "" + statistics.getTotalFirsts();
 
-            default:
-                return "";
-        }
-    }
+		case 10:
+			return "" + statistics.getTotalSeconds();
 
-    public static String getPlacementString(int i) {
-        String result = "" + i;
+		case 11:
+			return "" + statistics.getTotalThirds();
 
-        if (i > 3 && i < 20) {
-            result += "th";
-        } else if (i % 10 == 1) {
-            result += "st";
-        } else if (i % 10 == 2) {
-            result += "nd";
-        } else if (i % 10 == 3) {
-            result += "rd";
-        } else {
-            result += "th";
-        }
-        return result;
-    }
+		default:
+			return "";
+		}
+	}
+
+	public static String getPlacementString(int i) {
+		String result = "" + i;
+
+		if (i > 3 && i < 20) {
+			result += "th";
+		} else if (i % 10 == 1) {
+			result += "st";
+		} else if (i % 10 == 2) {
+			result += "nd";
+		} else if (i % 10 == 3) {
+			result += "rd";
+		} else {
+			result += "th";
+		}
+		return result;
+	}
 }

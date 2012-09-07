@@ -11,12 +11,15 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items.handlers;
 
-import java.net.URL;
+
 import net.sf.robocode.repository.Database;
 import net.sf.robocode.repository.items.IItem;
 import net.sf.robocode.repository.items.RobotItem;
 import net.sf.robocode.repository.root.ClassPathRoot;
 import net.sf.robocode.repository.root.IRepositoryRoot;
+
+import java.net.URL;
+
 
 /**
  * Handler for accepting and registering source files, e.g. .java files.
@@ -24,36 +27,34 @@ import net.sf.robocode.repository.root.IRepositoryRoot;
  * @author Flemming N. Larsen (original)
  */
 public class SourceHandler extends ItemHandler {
+	public IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db) {
+		final String name = itemURL.toString().toLowerCase();
 
-    @Override
-    public IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db) {
-        final String name = itemURL.toString().toLowerCase();
+		if (name.endsWith(".java") && !name.contains("$")) {
+			return register(itemURL, root, db);
+		}
+		return null;
+	}
 
-        if (name.endsWith(".java") && !name.contains("$")) {
-            return register(itemURL, root, db);
-        }
-        return null;
-    }
+	private IItem register(URL itemURL, IRepositoryRoot root, Database db) {
+		RobotItem item = null;
 
-    private IItem register(URL itemURL, IRepositoryRoot root, Database db) {
-        RobotItem item = null;
+		if (root instanceof ClassPathRoot) {
+			String friendly = ((ClassPathRoot) root).getFriendlyProjectURL(itemURL);
 
-        if (root instanceof ClassPathRoot) {
-            String friendly = ((ClassPathRoot) root).getFriendlyProjectURL(itemURL);
+			if (friendly != null) {
+				item = (RobotItem) db.getItem(friendly);
+			}
+		}
+		if (item == null) {
+			item = (RobotItem) db.getItem(itemURL.toString());
+		}
+		if (item == null) {
+			item = new RobotItem(itemURL, root);
+		}
+		item.addSourcePathURL(root.getURL());
 
-            if (friendly != null) {
-                item = (RobotItem) db.getItem(friendly);
-            }
-        }
-        if (item == null) {
-            item = (RobotItem) db.getItem(itemURL.toString());
-        }
-        if (item == null) {
-            item = new RobotItem(itemURL, root);
-        }
-        item.addSourcePathURL(root.getURL());
-
-        db.putItem(item);
-        return item;
-    }
+		db.putItem(item);
+		return item;
+	}
 }

@@ -11,70 +11,67 @@
  *******************************************************************************/
 package net.sf.robocode.host.io;
 
+
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class RobotFileOutputStream extends FileOutputStream {
+	RobotFileSystemManager fileSystemManager;
+	public RobotFileOutputStream(String filename, boolean append, RobotFileSystemManager fileSystemManager) throws IOException {
+		super(filename, append);
+		this.fileSystemManager = fileSystemManager;
+		fileSystemManager.addStream(this);
+	}
 
-    RobotFileSystemManager fileSystemManager;
+	@Override
+	public final void close() throws IOException {
+		fileSystemManager.removeStream(this);
+		super.close();
+	}
 
-    public RobotFileOutputStream(String filename, boolean append, RobotFileSystemManager fileSystemManager) throws IOException {
-        super(filename, append);
-        this.fileSystemManager = fileSystemManager;
-        fileSystemManager.addStream(this);
-    }
+	@Override
+	public final void write(byte[] b) throws IOException {
+		try {
+			fileSystemManager.checkQuota(b.length);
+			super.write(b);
+		} catch (IOException e) {
+			try {
+				close();
+			} catch (IOException ignored) {}
+			throw e;
+		}
+	}
 
-    @Override
-    public final void close() throws IOException {
-        fileSystemManager.removeStream(this);
-        super.close();
-    }
+	@Override
+	public final void write(byte[] b, int off, int len) throws IOException {
+		if (len < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		try {
+			fileSystemManager.checkQuota(len);
+			super.write(b, off, len);
+		} catch (IOException e) {
+			try {
+				close();
+			} catch (IOException ignored) {}
+			throw e;
+		}
+	}
 
-    @Override
-    public final void write(byte[] b) throws IOException {
-        try {
-            fileSystemManager.checkQuota(b.length);
-            super.write(b);
-        } catch (IOException e) {
-            try {
-                close();
-            } catch (IOException ignored) {
-            }
-            throw e;
-        }
-    }
-
-    @Override
-    public final void write(byte[] b, int off, int len) throws IOException {
-        if (len < 0) {
-            throw new IndexOutOfBoundsException();
-        }
-        try {
-            fileSystemManager.checkQuota(len);
-            super.write(b, off, len);
-        } catch (IOException e) {
-            try {
-                close();
-            } catch (IOException ignored) {
-            }
-            throw e;
-        }
-    }
-
-    @Override
-    public final void write(int b) throws IOException {
-        try {
-            fileSystemManager.checkQuota(1);
-            super.write(b);
-        } catch (IOException e) {
-            try {
-                close();
-            } catch (IOException ignored) {
-            }
-            throw e;
-        }
-    }
+	@Override
+	public final void write(int b) throws IOException {
+		try {
+			fileSystemManager.checkQuota(1);
+			super.write(b);
+		} catch (IOException e) {
+			try {
+				close();
+			} catch (IOException ignored) {}
+			throw e;
+		}
+	}
 }

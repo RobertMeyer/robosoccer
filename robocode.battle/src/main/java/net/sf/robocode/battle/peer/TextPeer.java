@@ -13,125 +13,130 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
+
 import java.awt.*;
+
 
 /**
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
  */
 public class TextPeer {
+	private String text;
 
-    private String text;
-    private int x;
-    private int y;
-    private long duration;
-    private long visibleTime;
-    private boolean ready = true;
+	private int x;
+	private int y;
 
-    /**
-     * Gets the text.
-     *
-     * @return Returns a String
-     */
-    public String getText() {
-        return text;
-    }
+	private long duration;
 
-    /**
-     * Sets the text.
-     *
-     * @param text The text to set
-     */
-    public void setText(String text) {
-        this.text = text;
-        ready = false;
-        visibleTime = 0;
-    }
+	private long visibleTime;
 
-    /**
-     * Gets the x.
-     *
-     * @return Returns a int
-     */
-    public int getX() {
-        return x;
-    }
+	private boolean ready = true;
 
-    /**
-     * Sets the x.
-     *
-     * @param x The x to set
-     */
-    public void setX(int x) {
-        this.x = x;
-    }
+	/**
+	 * Gets the text.
+	 *
+	 * @return Returns a String
+	 */
+	public String getText() {
+		return text;
+	}
 
-    /**
-     * Gets the y.
-     *
-     * @return Returns a int
-     */
-    public int getY() {
-        return y;
-    }
+	/**
+	 * Sets the text.
+	 *
+	 * @param text The text to set
+	 */
+	public void setText(String text) {
+		this.text = text;
+		ready = false;
+		visibleTime = 0;
+	}
 
-    /**
-     * Sets the y.
-     *
-     * @param y The y to set
-     */
-    public void setY(int y) {
-        this.y = y;
-    }
+	/**
+	 * Gets the x.
+	 *
+	 * @return Returns a int
+	 */
+	public int getX() {
+		return x;
+	}
 
-    /**
-     * Sets the duration.
-     *
-     * @param duration The new duration.
-     */
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
+	/**
+	 * Sets the x.
+	 *
+	 * @param x The x to set
+	 */
+	public void setX(int x) {
+		this.x = x;
+	}
 
-    public void tick() {
-        if (text == null) {
-            return;
-        }
+	/**
+	 * Gets the y.
+	 *
+	 * @return Returns a int
+	 */
+	public int getY() {
+		return y;
+	}
 
-        visibleTime++;
-        if (visibleTime > duration) {
-            setText(null);
-            setReady(true);
-        }
-    }
+	/**
+	 * Sets the y.
+	 *
+	 * @param y The y to set
+	 */
+	public void setY(int y) {
+		this.y = y;
+	}
 
-    public Color getColor() {
-        if (duration - visibleTime > 3) {
-            return Color.white;
-        } else if (duration - visibleTime > 2) {
-            return Color.lightGray;
-        } else if (duration - visibleTime > 1) {
-            return Color.gray;
-        } else {
-            return Color.darkGray;
-        }
-    }
+	/**
+	 * Sets the duration.
+	 *
+	 * @param duration The new duration.
+	 */
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
 
-    /**
-     * Gets the ready.
-     *
-     * @return Returns a boolean
-     */
-    public boolean isReady() {
-        return ready;
-    }
+	public void tick() {
+		if (text == null) {
+			return;
+		}
 
-    /**
-     * Sets the ready.
-     *
-     * @param ready The ready to set
-     */
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
+		visibleTime++;
+		if (visibleTime > duration) {
+			setText(null);
+			setReady(true);
+		}
+	}
+
+	public Color getColor() {
+		if (duration - visibleTime > 3) {
+			return Color.white;
+		} else if (duration - visibleTime > 2) {
+			return Color.lightGray;
+		} else if (duration - visibleTime > 1) {
+			return Color.gray;
+		} else {
+			return Color.darkGray;
+		}
+	}
+
+	/**
+	 * Gets the ready.
+	 *
+	 * @return Returns a boolean
+	 */
+	public boolean isReady() {
+		return ready;
+	}
+
+	/**
+	 * Sets the ready.
+	 *
+	 * @param ready The ready to set
+	 */
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
 }

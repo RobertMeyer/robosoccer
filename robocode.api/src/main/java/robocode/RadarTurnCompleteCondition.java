@@ -16,6 +16,7 @@
  *******************************************************************************/
 package robocode;
 
+
 /**
  * A prebuilt condition you can use that indicates your radar has finished
  * turning.
@@ -26,53 +27,52 @@ package robocode;
  * @see Condition
  */
 public class RadarTurnCompleteCondition extends Condition {
+	private AdvancedRobot robot;
 
-    private AdvancedRobot robot;
+	/**
+	 * Creates a new RadarTurnCompleteCondition with default priority.
+	 * The default priority is 80.
+	 *
+	 * @param robot your robot, which must be a {@link AdvancedRobot}
+	 */
+	public RadarTurnCompleteCondition(AdvancedRobot robot) {
+		super();
+		this.robot = robot;
+	}
 
-    /**
-     * Creates a new RadarTurnCompleteCondition with default priority.
-     * The default priority is 80.
-     *
-     * @param robot your robot, which must be a {@link AdvancedRobot}
-     */
-    public RadarTurnCompleteCondition(AdvancedRobot robot) {
-        super();
-        this.robot = robot;
-    }
+	/**
+	 * Creates a new RadarTurnCompleteCondition with the specified priority.
+	 * A condition priority is a value from 0 - 99. The higher value, the
+	 * higher priority. The default priority is 80.
+	 *
+	 * @param robot	your robot, which must be a {@link AdvancedRobot}
+	 * @param priority the priority of this condition
+	 * @see Condition#setPriority(int)
+	 */
+	public RadarTurnCompleteCondition(AdvancedRobot robot, int priority) {
+		super();
+		this.robot = robot;
+		this.priority = priority;
+	}
 
-    /**
-     * Creates a new RadarTurnCompleteCondition with the specified priority.
-     * A condition priority is a value from 0 - 99. The higher value, the
-     * higher priority. The default priority is 80.
-     *
-     * @param robot	your robot, which must be a {@link AdvancedRobot}
-     * @param priority the priority of this condition
-     * @see Condition#setPriority(int)
-     */
-    public RadarTurnCompleteCondition(AdvancedRobot robot, int priority) {
-        super();
-        this.robot = robot;
-        this.priority = priority;
-    }
+	/**
+	 * Tests if the radar has stopped turning.
+	 *
+	 * @return {@code true} if the radar has stopped turning; {@code false}
+	 *         otherwise
+	 */
+	@Override
+	public boolean test() {
+		return (robot.getRadarTurnRemaining() == 0);
+	}
 
-    /**
-     * Tests if the radar has stopped turning.
-     *
-     * @return {@code true} if the radar has stopped turning; {@code false}
-     *         otherwise
-     */
-    @Override
-    public boolean test() {
-        return (robot.getRadarTurnRemaining() == 0);
-    }
-
-    /**
-     * Called by the system in order to clean up references to internal objects.
-     *
-     * @since 1.4.3
-     */
-    @Override
-    public void cleanup() {
-        robot = null;
-    }
+	/**
+	 * Called by the system in order to clean up references to internal objects.
+	 *
+	 * @since 1.4.3
+	 */
+	@Override
+	public void cleanup() {
+		robot = null;
+	}
 }

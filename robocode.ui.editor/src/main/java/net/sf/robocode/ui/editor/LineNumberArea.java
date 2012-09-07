@@ -11,9 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
+
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.Rectangle;
+
 import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -21,6 +23,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+
 
 /**
  * A text area containing line numbers for the editor pane and editor panel.
@@ -30,84 +33,78 @@ import javax.swing.text.JTextComponent;
 @SuppressWarnings("serial")
 public class LineNumberArea extends JTextArea {
 
-    private final DocumentListener documentListener = new TextDocumentListener();
+	private final DocumentListener documentListener = new TextDocumentListener();
+	
+	public LineNumberArea(JTextComponent textComponent) {
+		super("1");
+ 
+		setEditable(false);
+		setLineWrap(false);
+		setBackground(new Color(0xDD, 0xDD, 0xDD, 0xFF));
+		setSelectionColor(new Color(0xDD, 0xDD, 0xDD, 0xFF));
 
-    public LineNumberArea(JTextComponent textComponent) {
-        super("1");
+		Insets insets = textComponent.getMargin();
 
-        setEditable(false);
-        setLineWrap(false);
-        setBackground(new Color(0xDD, 0xDD, 0xDD, 0xFF));
-        setSelectionColor(new Color(0xDD, 0xDD, 0xDD, 0xFF));
+		setBorder(BorderFactory.createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right));		
+		
+		textComponent.getDocument().addDocumentListener(documentListener);
+	}
 
-        Insets insets = textComponent.getMargin();
+	private class TextDocumentListener implements DocumentListener {
+		int lastNumLines = 1;
 
-        setBorder(BorderFactory.createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right));
+		public void insertUpdate(DocumentEvent e) {
+			updateText(e.getDocument());
+		}
 
-        textComponent.getDocument().addDocumentListener(documentListener);
-    }
+		public void removeUpdate(DocumentEvent e) {
+			updateText(e.getDocument());
+		}
 
-    private class TextDocumentListener implements DocumentListener {
+		public void changedUpdate(DocumentEvent e) {
+			updateText(e.getDocument());
+		}		
 
-        int lastNumLines = 1;
+		private void updateText(final Document doc) {
+			
+			final int numLines = getNumLines(doc);
 
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            updateText(e.getDocument());
-        }
+			if (numLines == lastNumLines) {
+				return;
+			}
+			lastNumLines = numLines;
 
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            updateText(e.getDocument());
-        }
+			SwingUtilities.invokeLater(new Runnable() {			
+				public void run() {
+					final Rectangle visibleRect = getVisibleRect();
+					
+					setIgnoreRepaint(true); // avoid flickering
+					setText(generateLinesText(numLines));
 
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            updateText(e.getDocument());
-        }
+					// Must be done this way to keep aligned with scroll bar!
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							scrollRectToVisible(visibleRect);							
+							setIgnoreRepaint(false); // avoid flickering
+						}
+					});
+				}
+			});
+		}
 
-        private void updateText(final Document doc) {
+		private String generateLinesText(int numLines) {
+			StringBuilder lines = new StringBuilder();
+			int i = 1;
 
-            final int numLines = getNumLines(doc);
-
-            if (numLines == lastNumLines) {
-                return;
-            }
-            lastNumLines = numLines;
-
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    final Rectangle visibleRect = getVisibleRect();
-
-                    setIgnoreRepaint(true); // avoid flickering
-                    setText(generateLinesText(numLines));
-
-                    // Must be done this way to keep aligned with scroll bar!
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            scrollRectToVisible(visibleRect);
-                            setIgnoreRepaint(false); // avoid flickering
-                        }
-                    });
-                }
-            });
-        }
-
-        private String generateLinesText(int numLines) {
-            StringBuilder lines = new StringBuilder();
-            int i = 1;
-
-            while (i <= numLines) {
-                lines.append(i++).append('\n');
-            }
-            lines.append(i);
-            return lines.toString();
-        }
-
-        private int getNumLines(Document doc) {
-            return doc.getDefaultRootElement().getElementIndex(doc.getLength());
-        }
-    }
+			while (i <= numLines) {
+				lines.append(i++).append('\n');
+			}
+			lines.append(i);
+			return lines.toString();
+		}
+		
+		private int getNumLines(Document doc) {
+			return doc.getDefaultRootElement().getElementIndex(doc.getLength());
+		}
+	}
 }

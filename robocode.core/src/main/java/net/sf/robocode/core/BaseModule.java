@@ -11,14 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.core;
 
+
 import java.util.List;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class BaseModule implements IModule {
-
-    @Override
-    public void afterLoaded(List<IModule> allModules) {
-    }
+	public void afterLoaded(List<IModule> allModules) {}
 }

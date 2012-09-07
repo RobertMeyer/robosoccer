@@ -11,65 +11,64 @@
  *******************************************************************************/
 package tested.robots;
 
+
 /**
  * @author Flemming N. Larsen (original)
  */
 public class GunTurnRate extends robocode.AdvancedRobot {
+	public void run() {
+		setMaxTurnRate(5);
 
-    @Override
-    public void run() {
-        setMaxTurnRate(5);
+		setTurnGunLeft(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
 
-        setTurnGunLeft(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
+		setTurnGunRight(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
 
-        setTurnGunRight(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
+		setTurnLeft(Double.POSITIVE_INFINITY);
+		setTurnGunLeft(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
 
-        setTurnLeft(Double.POSITIVE_INFINITY);
-        setTurnGunLeft(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
+		setTurnRight(Double.POSITIVE_INFINITY);
+		setTurnGunRight(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
+		
+		setMaxTurnRate(20);
 
-        setTurnRight(Double.POSITIVE_INFINITY);
-        setTurnGunRight(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
+		setTurnLeft(Double.POSITIVE_INFINITY);
+		setTurnGunLeft(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
 
-        setMaxTurnRate(20);
+		setTurnRight(Double.POSITIVE_INFINITY);
+		setTurnGunRight(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
+		
+		setAdjustGunForRobotTurn(false);
 
-        setTurnLeft(Double.POSITIVE_INFINITY);
-        setTurnGunLeft(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
+		setTurnRight(Double.POSITIVE_INFINITY);
+		setTurnGunLeft(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
 
-        setTurnRight(Double.POSITIVE_INFINITY);
-        setTurnGunRight(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
+		setTurnLeft(Double.POSITIVE_INFINITY);
+		setTurnGunRight(Double.POSITIVE_INFINITY);
+		executeAndDumpTurnRate();
+		executeAndDumpTurnRate();
+	}
 
-        setAdjustGunForRobotTurn(false);
+	private void executeAndDumpTurnRate() {
+		double lastHeading = getGunHeading();
 
-        setTurnRight(Double.POSITIVE_INFINITY);
-        setTurnGunLeft(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
+		execute();
 
-        setTurnLeft(Double.POSITIVE_INFINITY);
-        setTurnGunRight(Double.POSITIVE_INFINITY);
-        executeAndDumpTurnRate();
-        executeAndDumpTurnRate();
-    }
+		double turnRate = robocode.util.Utils.normalRelativeAngleDegrees(getGunHeading() - lastHeading);
 
-    private void executeAndDumpTurnRate() {
-        double lastHeading = getGunHeading();
-
-        execute();
-
-        double turnRate = robocode.util.Utils.normalRelativeAngleDegrees(getGunHeading() - lastHeading);
-
-        out.println(getTime() + ": " + turnRate);
-    }
+		out.println(getTime() + ": " + turnRate);
+	}
 }

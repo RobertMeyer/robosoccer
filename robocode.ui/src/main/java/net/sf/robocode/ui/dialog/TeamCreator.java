@@ -17,6 +17,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.ui.IWindowManager;
+import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,11 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.swing.*;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.ui.IWindowManager;
-import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -39,145 +42,145 @@ import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
 @SuppressWarnings("serial")
 public class TeamCreator extends JDialog implements WizardListener {
 
-    private JPanel teamCreatorContentPane;
-    private WizardCardPanel wizardPanel;
-    private WizardController wizardController;
-    private RobotSelectionPanel robotSelectionPanel;
-    private TeamCreatorOptionsPanel teamCreatorOptionsPanel;
-    private final int minRobots = 2;
-    private final int maxRobots = 10;
-    private final EventHandler eventHandler = new EventHandler();
+	private JPanel teamCreatorContentPane;
 
-    class EventHandler implements ActionListener {
+	private WizardCardPanel wizardPanel;
+	private WizardController wizardController;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("Refresh")) {
-                getRobotSelectionPanel().refreshRobotList(true);
-            }
-        }
-    }
-    private final IRepositoryManager repositoryManager;
+	private RobotSelectionPanel robotSelectionPanel;
+	private TeamCreatorOptionsPanel teamCreatorOptionsPanel;
 
-    public TeamCreator(IWindowManager windowManager, IRepositoryManager repositoryManager) {
-        super(windowManager.getRobocodeFrame());
-        this.repositoryManager = repositoryManager;
-        initialize();
-    }
+	private final int minRobots = 2;
+	private final int maxRobots = 10;
 
-    protected TeamCreatorOptionsPanel getTeamCreatorOptionsPanel() {
-        if (teamCreatorOptionsPanel == null) {
-            teamCreatorOptionsPanel = new TeamCreatorOptionsPanel(this);
-        }
-        return teamCreatorOptionsPanel;
-    }
+	private final EventHandler eventHandler = new EventHandler();
 
-    private JPanel getTeamCreatorContentPane() {
-        if (teamCreatorContentPane == null) {
-            teamCreatorContentPane = new JPanel();
-            teamCreatorContentPane.setLayout(new BorderLayout());
-            teamCreatorContentPane.add(getWizardController(), BorderLayout.SOUTH);
-            teamCreatorContentPane.add(getWizardPanel(), BorderLayout.CENTER);
-            getWizardPanel().getWizardController().setFinishButtonTextAndMnemonic("Create Team!", 'C', 0);
-            teamCreatorContentPane.registerKeyboardAction(eventHandler, "Refresh",
-                                                          KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK),
-                                                          JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-            teamCreatorContentPane.registerKeyboardAction(eventHandler, "Refresh",
-                                                          KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK), JComponent.WHEN_FOCUSED);
-        }
-        return teamCreatorContentPane;
-    }
+	class EventHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if (e.getActionCommand().equals("Refresh")) {
+				getRobotSelectionPanel().refreshRobotList(true);
+			}
+		}
+	}
 
-    protected RobotSelectionPanel getRobotSelectionPanel() {
-        if (robotSelectionPanel == null) {
-            robotSelectionPanel = net.sf.robocode.core.Container.createComponent(RobotSelectionPanel.class);
-            robotSelectionPanel.setup(minRobots, maxRobots, false, "Select the robots for this team.", false, true, true,
-                                      false, false, false, null);
-        }
-        return robotSelectionPanel;
-    }
+	private final IRepositoryManager repositoryManager;
 
-    private WizardCardPanel getWizardPanel() {
-        if (wizardPanel == null) {
-            wizardPanel = new WizardCardPanel(this);
-            wizardPanel.add(getRobotSelectionPanel(), "Select robots");
-            wizardPanel.add(getTeamCreatorOptionsPanel(), "Select options");
-        }
-        return wizardPanel;
-    }
+	public TeamCreator(IWindowManager windowManager, IRepositoryManager repositoryManager) {
+		super(windowManager.getRobocodeFrame());
+		this.repositoryManager = repositoryManager;
+		initialize();
+	}
 
-    public void initialize() {
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Create a team");
-        setContentPane(getTeamCreatorContentPane());
-    }
+	protected TeamCreatorOptionsPanel getTeamCreatorOptionsPanel() {
+		if (teamCreatorOptionsPanel == null) {
+			teamCreatorOptionsPanel = new TeamCreatorOptionsPanel(this);
+		}
+		return teamCreatorOptionsPanel;
+	}
 
-    private WizardController getWizardController() {
-        if (wizardController == null) {
-            wizardController = getWizardPanel().getWizardController();
-        }
-        return wizardController;
-    }
+	private JPanel getTeamCreatorContentPane() {
+		if (teamCreatorContentPane == null) {
+			teamCreatorContentPane = new JPanel();
+			teamCreatorContentPane.setLayout(new BorderLayout());
+			teamCreatorContentPane.add(getWizardController(), BorderLayout.SOUTH);
+			teamCreatorContentPane.add(getWizardPanel(), BorderLayout.CENTER);
+			getWizardPanel().getWizardController().setFinishButtonTextAndMnemonic("Create Team!", 'C', 0);
+			teamCreatorContentPane.registerKeyboardAction(eventHandler, "Refresh",
+					KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK),
+					JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+			teamCreatorContentPane.registerKeyboardAction(eventHandler, "Refresh",
+					KeyStroke.getKeyStroke(KeyEvent.VK_R, MENU_SHORTCUT_KEY_MASK), JComponent.WHEN_FOCUSED);
+		}
+		return teamCreatorContentPane;
+	}
 
-    @Override
-    public void cancelButtonActionPerformed() {
-        dispose();
-    }
+	protected RobotSelectionPanel getRobotSelectionPanel() {
+		if (robotSelectionPanel == null) {
+			robotSelectionPanel = net.sf.robocode.core.Container.createComponent(RobotSelectionPanel.class);
+			robotSelectionPanel.setup(minRobots, maxRobots, false, "Select the robots for this team.", false, true, true,
+					false, false, false, null);
+		}
+		return robotSelectionPanel;
+	}
 
-    @Override
-    public void finishButtonActionPerformed() {
-        try {
-            int rc = createTeam();
+	private WizardCardPanel getWizardPanel() {
+		if (wizardPanel == null) {
+			wizardPanel = new WizardCardPanel(this);
+			wizardPanel.add(getRobotSelectionPanel(), "Select robots");
+			wizardPanel.add(getTeamCreatorOptionsPanel(), "Select options");
+		}
+		return wizardPanel;
+	}
 
-            if (rc == 0) {
-                JOptionPane.showMessageDialog(this, "Team created successfully.", "Success",
-                                              JOptionPane.INFORMATION_MESSAGE, null);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Team creation cancelled", "Cancelled",
-                                              JOptionPane.INFORMATION_MESSAGE, null);
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, e.toString(), "Team Creation Failed", JOptionPane.ERROR_MESSAGE, null);
-        }
-    }
+	public void initialize() {
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setTitle("Create a team");
+		setContentPane(getTeamCreatorContentPane());
+	}
 
-    public int createTeam() throws IOException {
-        File f = new File(repositoryManager.getRobotsDirectory(),
-                          teamCreatorOptionsPanel.getTeamPackage().replace('.', File.separatorChar)
-                + teamCreatorOptionsPanel.getTeamNameField().getText() + ".team");
+	private WizardController getWizardController() {
+		if (wizardController == null) {
+			wizardController = getWizardPanel().getWizardController();
+		}
+		return wizardController;
+	}
 
-        if (f.exists()) {
-            int ok = JOptionPane.showConfirmDialog(this, f + " already exists.  Are you sure you want to replace it?",
-                                                   "Warning", JOptionPane.YES_NO_CANCEL_OPTION);
+	public void cancelButtonActionPerformed() {
+		dispose();
+	}
 
-            if (ok == JOptionPane.NO_OPTION || ok == JOptionPane.CANCEL_OPTION) {
-                return -1;
-            }
-        }
-        if (!f.getParentFile().exists()) {
-            if (!f.getParentFile().mkdirs()) {
-                Logger.logError("Can't create " + f.getParentFile().toString());
-            }
-        }
+	public void finishButtonActionPerformed() {
+		try {
+			int rc = createTeam();
 
-        URL u = null;
-        String w = teamCreatorOptionsPanel.getWebpageField().getText();
+			if (rc == 0) {
+				JOptionPane.showMessageDialog(this, "Team created successfully.", "Success",
+						JOptionPane.INFORMATION_MESSAGE, null);
+				this.dispose();
+			} else {
+				JOptionPane.showMessageDialog(this, "Team creation cancelled", "Cancelled",
+						JOptionPane.INFORMATION_MESSAGE, null);
+			}
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, e.toString(), "Team Creation Failed", JOptionPane.ERROR_MESSAGE, null);
+		}
+	}
 
-        if (w != null && w.length() > 0) {
-            try {
-                u = new URL(w);
-            } catch (MalformedURLException e) {
-                try {
-                    u = new URL("http://" + w);
-                    teamCreatorOptionsPanel.getWebpageField().setText(u.toString());
-                } catch (MalformedURLException ignored) {
-                }
-            }
-        }
+	public int createTeam() throws IOException {
+		File f = new File(repositoryManager.getRobotsDirectory(),
+				teamCreatorOptionsPanel.getTeamPackage().replace('.', File.separatorChar)
+				+ teamCreatorOptionsPanel.getTeamNameField().getText() + ".team");
 
-        repositoryManager.createTeam(f, u, teamCreatorOptionsPanel.getDescriptionArea().getText(),
-                                     teamCreatorOptionsPanel.getAuthorField().getText(), robotSelectionPanel.getSelectedRobotsAsString(), null);
-        return 0;
-    }
+		if (f.exists()) {
+			int ok = JOptionPane.showConfirmDialog(this, f + " already exists.  Are you sure you want to replace it?",
+					"Warning", JOptionPane.YES_NO_CANCEL_OPTION);
+
+			if (ok == JOptionPane.NO_OPTION || ok == JOptionPane.CANCEL_OPTION) {
+				return -1;
+			}
+		}
+		if (!f.getParentFile().exists()) {
+			if (!f.getParentFile().mkdirs()) {
+				Logger.logError("Can't create " + f.getParentFile().toString());
+			}
+		}
+
+		URL u = null;
+		String w = teamCreatorOptionsPanel.getWebpageField().getText();
+
+		if (w != null && w.length() > 0) {
+			try {
+				u = new URL(w);
+			} catch (MalformedURLException e) {
+				try {
+					u = new URL("http://" + w);
+					teamCreatorOptionsPanel.getWebpageField().setText(u.toString());
+				} catch (MalformedURLException ignored) {}
+			}
+		}
+
+		repositoryManager.createTeam(f, u, teamCreatorOptionsPanel.getDescriptionArea().getText(),
+				teamCreatorOptionsPanel.getAuthorField().getText(), robotSelectionPanel.getSelectedRobotsAsString(), null);
+		return 0;
+	}
 }

@@ -11,36 +11,35 @@
  *******************************************************************************/
 package tested.robots;
 
+
 /**
  * @author Flemming N. Larsen (original)
  */
 public class MaxTurnRate extends robocode.AdvancedRobot {
+	public void run() {
 
-    @Override
-    public void run() {
+		setTurnLeft(Double.POSITIVE_INFINITY);
+		
+		for (int i = 0; i < 13; i++) {		
+			setMaxTurnRate(i);
+			executeAndDumpTurnRate();
+		}
 
-        setTurnLeft(Double.POSITIVE_INFINITY);
+		setTurnRight(Double.POSITIVE_INFINITY);
+		
+		for (int i = 0; i < 13; i++) {		
+			setMaxTurnRate(i);
+			executeAndDumpTurnRate();
+		}
+	}
 
-        for (int i = 0; i < 13; i++) {
-            setMaxTurnRate(i);
-            executeAndDumpTurnRate();
-        }
+	private void executeAndDumpTurnRate() {
+		double lastHeading = getHeading();
 
-        setTurnRight(Double.POSITIVE_INFINITY);
+		execute();
 
-        for (int i = 0; i < 13; i++) {
-            setMaxTurnRate(i);
-            executeAndDumpTurnRate();
-        }
-    }
+		double turnRate = robocode.util.Utils.normalRelativeAngleDegrees(getHeading() - lastHeading);
 
-    private void executeAndDumpTurnRate() {
-        double lastHeading = getHeading();
-
-        execute();
-
-        double turnRate = robocode.util.Utils.normalRelativeAngleDegrees(getHeading() - lastHeading);
-
-        out.println(getTime() + ": " + getVelocity() + ", " + turnRate);
-    }
+		out.println(getTime() + ": " + getVelocity() + ", " + turnRate);
+	}
 }

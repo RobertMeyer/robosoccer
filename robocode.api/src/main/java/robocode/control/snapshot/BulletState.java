@@ -11,6 +11,7 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
+
 /**
  * Defines a bullet state, which can be: just fired, moving somewhere, hitting a victim,
  * hitting another bullet, hitting the wall, exploded, or inactive.
@@ -20,77 +21,84 @@ package robocode.control.snapshot;
  */
 public enum BulletState {
 
-    /** The bullet has just been fired this turn and hence just been created. This state only last one turn. */
-    FIRED(0),
-    /** The bullet is now moving across the battlefield, but has not hit anything yet. */
-    MOVING(1),
-    /** The bullet has hit a robot victim. */
-    HIT_VICTIM(2),
-    /** The bullet has hit another bullet. */
-    HIT_BULLET(3),
-    /** The bullet has hit the wall, i.e. one of the four borders of the battlefield. */
-    HIT_WALL(4),
-    /** The bullet currently represents a robot explosion, i.e. a robot death. */
-    EXPLODED(5),
-    /** The bullet is currently inactive. Hence, it is not active or visible on the battlefield. */
-    INACTIVE(6);
-    private final int value;
+	/** The bullet has just been fired this turn and hence just been created. This state only last one turn. */
+	FIRED(0),
 
-    private BulletState(int value) {
-        this.value = value;
-    }
+	/** The bullet is now moving across the battlefield, but has not hit anything yet. */
+	MOVING(1),
 
-    /**
-     * Returns the state as an integer value.
-     *
-     * @return an integer value representing this state.
-     *
-     * @see #toState(int)
-     */
-    public int getValue() {
-        return value;
-    }
+	/** The bullet has hit a robot victim. */
+	HIT_VICTIM(2),
 
-    /**
-     * Returns a BulletState based on an integer value that represents a BulletState.
-     *
-     * @param value the integer value that represents a specific BulletState.
-     * @return a BulletState that corresponds to the specific integer value.
-     *
-     * @see #getValue()
-     *
-     * @throws IllegalArgumentException if the specified value does not correspond
-     *                                  to a BulletState and hence is invalid.
-     */
-    public static BulletState toState(int value) {
-        switch (value) {
-            case 0:
-                return FIRED;
+	/** The bullet has hit another bullet. */
+	HIT_BULLET(3),
 
-            case 1:
-                return MOVING;
+	/** The bullet has hit the wall, i.e. one of the four borders of the battlefield. */
+	HIT_WALL(4),
 
-            case 2:
-                return HIT_VICTIM;
+	/** The bullet currently represents a robot explosion, i.e. a robot death. */
+	EXPLODED(5),
 
-            case 3:
-                return HIT_BULLET;
+	/** The bullet is currently inactive. Hence, it is not active or visible on the battlefield. */
+	INACTIVE(6);
 
-            case 4:
-                return HIT_WALL;
+	private final int value;
 
-            case 5:
-                return EXPLODED;
+	private BulletState(int value) {
+		this.value = value;
+	}
 
-            case 6:
-                return INACTIVE;
+	/**
+	 * Returns the state as an integer value.
+	 *
+	 * @return an integer value representing this state.
+	 *
+	 * @see #toState(int)
+	 */
+	public int getValue() {
+		return value;
+	}
 
-            default:
-                throw new IllegalArgumentException("unknown value");
-        }
-    }
+	/**
+	 * Returns a BulletState based on an integer value that represents a BulletState.
+	 *
+	 * @param value the integer value that represents a specific BulletState.
+	 * @return a BulletState that corresponds to the specific integer value.
+	 *
+	 * @see #getValue()
+	 *
+	 * @throws IllegalArgumentException if the specified value does not correspond
+	 *                                  to a BulletState and hence is invalid.
+	 */
+	public static BulletState toState(int value) {
+		switch (value) {
+		case 0:
+			return FIRED;
 
-    public boolean isActive() {
-        return this == FIRED || this == MOVING;
-    }
+		case 1:
+			return MOVING;
+
+		case 2:
+			return HIT_VICTIM;
+
+		case 3:
+			return HIT_BULLET;
+
+		case 4:
+			return HIT_WALL;
+
+		case 5:
+			return EXPLODED;
+
+		case 6:
+			return INACTIVE;
+
+		default:
+			throw new IllegalArgumentException("unknown value");
+		}
+	}
+	
+	public boolean isActive() {
+		return this == FIRED || this == MOVING;
+	}
 }

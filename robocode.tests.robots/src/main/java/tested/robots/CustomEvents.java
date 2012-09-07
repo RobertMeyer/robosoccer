@@ -11,54 +11,50 @@
  *******************************************************************************/
 package tested.robots;
 
+
 import robocode.AdvancedRobot;
 import robocode.Condition;
 import robocode.CustomEvent;
 import robocode.ScannedRobotEvent;
 
+
 /**
  * @author Pavel Savara (original)
  */
 public class CustomEvents extends AdvancedRobot {
+	@Override
+	public void run() {
 
-    @Override
-    public void run() {
+		addCustomEvent(new Condition("onTick99", 99) {
+			public boolean test() {
+				return true;
+			}
+		});
 
-        addCustomEvent(new Condition("onTick99", 99) {
-            @Override
-            public boolean test() {
-                return true;
-            }
-        });
+		addCustomEvent(new Condition("onTick30", 30) {
+			public boolean test() {
+				return true;
+			}
+		});
 
-        addCustomEvent(new Condition("onTick30", 30) {
-            @Override
-            public boolean test() {
-                return true;
-            }
-        });
+		addCustomEvent(new Condition("onLowEnergy98", 98) {
+			public boolean test() {
+				return getEnergy() < 20;
+			}
+		});
+		while (true) {
+			ahead(100); // Move ahead 100
+			turnGunRight(360); // Spin gun around
+			back(100); // Move back 100
+			turnGunRight(360); // Spin gun around
+		}
+	}
 
-        addCustomEvent(new Condition("onLowEnergy98", 98) {
-            @Override
-            public boolean test() {
-                return getEnergy() < 20;
-            }
-        });
-        while (true) {
-            ahead(100); // Move ahead 100
-            turnGunRight(360); // Spin gun around
-            back(100); // Move back 100
-            turnGunRight(360); // Spin gun around
-        }
-    }
+	public void onCustomEvent(CustomEvent e) {
+		out.println(getTime() + " " + e.getCondition().getName());
+	}
 
-    @Override
-    public void onCustomEvent(CustomEvent e) {
-        out.println(getTime() + " " + e.getCondition().getName());
-    }
-
-    @Override
-    public void onScannedRobot(ScannedRobotEvent e) {
-        out.println(getTime() + " onScannedRobot10");
-    }
+	public void onScannedRobot(ScannedRobotEvent e) {
+		out.println(getTime() + " onScannedRobot10");
+	}
 }

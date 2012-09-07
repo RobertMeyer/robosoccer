@@ -11,20 +11,21 @@
  *******************************************************************************/
 package tested.robots;
 
+
 import robocode.Robot;
+
 
 /**
  * @author Pavel Savara (original)
  */
 public class TooLongNameThisIsReallyTooLongName extends Robot {
-
-    @Override
-    public void run() {
-        while (true) {
-            ahead(1); // Move ahead 100
-            turnGunRight(360); // Spin gun around
-            back(1); // Move back 100
-            turnGunRight(360); // Spin gun around
-        }
-    }
+	@Override
+	public void run() {
+		while (true) {
+			ahead(1); // Move ahead 100
+			turnGunRight(360); // Spin gun around
+			back(1); // Move back 100
+			turnGunRight(360); // Spin gun around
+		}
+	}
 }

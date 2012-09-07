@@ -13,12 +13,15 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items.handlers;
 
-import java.net.URL;
-import java.util.List;
+
 import net.sf.robocode.core.Container;
 import net.sf.robocode.repository.Database;
 import net.sf.robocode.repository.items.IItem;
 import net.sf.robocode.repository.root.IRepositoryRoot;
+
+import java.net.URL;
+import java.util.List;
+
 
 /**
  * Abstract class for handlers for accepting and registering a specific item type.
@@ -27,20 +30,19 @@ import net.sf.robocode.repository.root.IRepositoryRoot;
  * @author Flemming N. Larsen (contributor)
  */
 public abstract class ItemHandler {
+	public abstract IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db);
 
-    public abstract IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db);
+	public static IItem registerItems(URL itemURL, IRepositoryRoot root, Database db) {
+		// walk thru all plugins, give them chance to accept a file
+		final List<ItemHandler> itemHandlerList = Container.getComponents(ItemHandler.class);
 
-    public static IItem registerItems(URL itemURL, IRepositoryRoot root, Database db) {
-        // walk thru all plugins, give them chance to accept a file
-        final List<ItemHandler> itemHandlerList = Container.getComponents(ItemHandler.class);
+		for (ItemHandler handler : itemHandlerList) {
+			final IItem item = handler.acceptItem(itemURL, root, db);
 
-        for (ItemHandler handler : itemHandlerList) {
-            final IItem item = handler.acceptItem(itemURL, root, db);
-
-            if (item != null) {
-                return item;
-            }
-        }
-        return null;
-    }
+			if (item != null) {
+				return item;
+			}
+		}
+		return null;
+	}
 }

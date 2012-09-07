@@ -11,11 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items.handlers;
 
-import java.net.URL;
+
 import net.sf.robocode.repository.Database;
 import net.sf.robocode.repository.items.IItem;
 import net.sf.robocode.repository.items.TeamItem;
 import net.sf.robocode.repository.root.IRepositoryRoot;
+
+import java.net.URL;
+
 
 /**
  * Handler for accepting and registering .team files.
@@ -23,24 +26,22 @@ import net.sf.robocode.repository.root.IRepositoryRoot;
  * @author Pavel Savara (original)
  */
 public class TeamHandler extends ItemHandler {
+	public IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db) {
+		if (itemURL.toString().toLowerCase().endsWith(".team")) {
+			return register(itemURL, root, db);
+		}
+		return null;
+	}
 
-    @Override
-    public IItem acceptItem(URL itemURL, IRepositoryRoot root, Database db) {
-        if (itemURL.toString().toLowerCase().endsWith(".team")) {
-            return register(itemURL, root, db);
-        }
-        return null;
-    }
+	private IItem register(URL itemURL, IRepositoryRoot root, Database db) {
+		final String itemKey = itemURL.getPath();
 
-    private IItem register(URL itemURL, IRepositoryRoot root, Database db) {
-        final String itemKey = itemURL.getPath();
+		TeamItem item = (TeamItem) db.getItem(itemKey);
 
-        TeamItem item = (TeamItem) db.getItem(itemKey);
-
-        if (item == null) {
-            item = new TeamItem(itemURL, root);
-        }
-        db.putItem(item);
-        return item;
-    }
+		if (item == null) {
+			item = new TeamItem(itemURL, root);
+		}
+		db.putItem(item);
+		return item;
+	}
 }
