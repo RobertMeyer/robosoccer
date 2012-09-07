@@ -330,6 +330,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     public boolean isTeamRobot() {
         return statics.isTeamRobot();
     }
+    
+    public boolean isBotzilla() {
+    	return statics.isBotzilla();
+    }
 
     @Override
     public String getName() {
@@ -1131,7 +1135,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
                     //Use a factor of the armor if it has been changed
                     //This Robot
-                    if (getRobotArmor() - 1.0 < 0.00001) {
+                    if (otherRobot.isBotzilla()) {
+                    	this.updateEnergy(-(this.energy));
+                	} else if (getRobotArmor() - 1.0 < 0.00001) {
                         this.updateEnergy(-(this.getRamDamage()));
                     } else {
                         this.updateEnergy(-(this.getRamDamage()
@@ -1139,7 +1145,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     }
 
                     // Other Robot
-                    if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
+                    if (otherRobot.isBotzilla()) {
+                    	//do nothing to Botzilla
+                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
                         otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
                     } else {
                         otherRobot.updateEnergy(-(otherRobot.getRamDamage()
