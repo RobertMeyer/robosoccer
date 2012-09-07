@@ -11,12 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
+import java.io.PrintStream;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.repository.RobotType;
 import robocode.control.RobotSpecification;
-
-import java.io.PrintStream;
 
 /**
  * @author Pavel Savara (original)

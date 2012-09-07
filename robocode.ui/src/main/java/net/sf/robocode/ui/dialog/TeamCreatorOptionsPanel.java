@@ -19,18 +19,17 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.ui.util.LimitedClassnameDocument;
-import net.sf.robocode.ui.util.LimitedDocument;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.net.URL;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.ui.util.LimitedClassnameDocument;
+import net.sf.robocode.ui.util.LimitedDocument;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -57,24 +56,30 @@ public class TeamCreatorOptionsPanel extends WizardPanel {
 
     class EventHandler implements ComponentListener, DocumentListener {
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void changedUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
             fireStateChanged();
         }
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
 
+        @Override
         public void componentHidden(ComponentEvent e) {
         }
 
+        @Override
         public void componentShown(ComponentEvent e) {
             List<IRepositoryItem> selectedRobots;
 
@@ -125,6 +130,7 @@ public class TeamCreatorOptionsPanel extends WizardPanel {
             }
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
         }
     }

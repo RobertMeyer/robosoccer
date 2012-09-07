@@ -11,15 +11,16 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Event;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicEvents3;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
 
 /**
  * A RoundEndedEvent is sent to {@link Robot#onRoundEnded(RoundEndedEvent)
@@ -130,10 +131,12 @@ public final class RoundEndedEvent extends Event {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             return RbSerializer.SIZEOF_TYPEINFO + 3 * RbSerializer.SIZEOF_INT;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             RoundEndedEvent event = (RoundEndedEvent) object;
 
@@ -142,6 +145,7 @@ public final class RoundEndedEvent extends Event {
             serializer.serialize(buffer, event.totalTurns);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             int round = serializer.deserializeInt(buffer);
             int turns = serializer.deserializeInt(buffer);

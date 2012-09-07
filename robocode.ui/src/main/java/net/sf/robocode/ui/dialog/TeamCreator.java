@@ -17,12 +17,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.ui.IWindowManager;
-import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,6 +25,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.swing.*;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.ui.IWindowManager;
+import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -51,6 +50,7 @@ public class TeamCreator extends JDialog implements WizardListener {
 
     class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Refresh")) {
                 getRobotSelectionPanel().refreshRobotList(true);
@@ -119,10 +119,12 @@ public class TeamCreator extends JDialog implements WizardListener {
         return wizardController;
     }
 
+    @Override
     public void cancelButtonActionPerformed() {
         dispose();
     }
 
+    @Override
     public void finishButtonActionPerformed() {
         try {
             int rc = createTeam();

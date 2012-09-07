@@ -14,10 +14,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
 
 /**
  * @author Mathew A. Nelson (original)

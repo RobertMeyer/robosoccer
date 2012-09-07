@@ -13,8 +13,8 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 /**
  * @author Mathew A. Nelson (original)

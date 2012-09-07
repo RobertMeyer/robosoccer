@@ -1,7 +1,5 @@
 package au.edu.uq.itee.csse2003.weapons;
 
-import au.edu.uq.itee.csse2003.weapons.Weapon;
-
 /**
  * Represents a type of weapon that a robot can use.
  */

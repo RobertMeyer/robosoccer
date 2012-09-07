@@ -13,17 +13,16 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
+import java.io.*;
+import javax.swing.*;
 import net.sf.robocode.core.ContainerBase;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
-import net.sf.robocode.manager.IVersionManagerBase;
 import static net.sf.robocode.io.Logger.logError;
 import static net.sf.robocode.io.Logger.logMessage;
+import net.sf.robocode.manager.IVersionManagerBase;
 import net.sf.robocode.ui.dialog.ConsoleDialog;
 import net.sf.robocode.ui.dialog.WindowUtil;
-
-import javax.swing.*;
-import java.io.*;
 
 /**
  * @author Mathew A. Nelson (original)

@@ -22,14 +22,13 @@
  *******************************************************************************/
 package net.sf.robocode.roborumble.battlesengine;
 
-import net.sf.robocode.io.Logger;
-import static net.sf.robocode.roborumble.util.ExcludesUtil.*;
-import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
-
 import java.io.*;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Vector;
+import java.util.ArrayList;
+import net.sf.robocode.io.Logger;
+import static net.sf.robocode.roborumble.util.ExcludesUtil.*;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 
 /**
  * PrepareBattles is used for preparing battles.
@@ -80,7 +79,7 @@ public class PrepareBattles {
     }
 
     public boolean createBattlesList() {
-        Vector<String> names = new Vector<String>();
+        ArrayList<String> names = new ArrayList<String>();
 
         // Read participants
 
@@ -93,8 +92,8 @@ public class PrepareBattles {
             String participant;
 
             while ((participant = br.readLine()) != null) {
-                if (participant.indexOf(",") != -1) {
-                    String name = participant.substring(0, participant.indexOf(","));
+                if (participant.indexOf(',') != -1) {
+                    String name = participant.substring(0, participant.indexOf(','));
 
                     if (isExcluded(name)) {
                         continue; // ignore excluded participant
@@ -152,16 +151,16 @@ public class PrepareBattles {
     }
 
     public boolean createSmartBattlesList() {
-        Vector<String> namesall = new Vector<String>();
-        Vector<String> namesmini = new Vector<String>();
-        Vector<String> namesmicro = new Vector<String>();
-        Vector<String> namesnano = new Vector<String>();
-        Vector<String> priorityall = new Vector<String>();
-        Vector<String> prioritymini = new Vector<String>();
-        Vector<String> prioritymicro = new Vector<String>();
-        Vector<String> prioritynano = new Vector<String>();
+        ArrayList<String> namesall = new ArrayList<String>();
+        ArrayList<String> namesmini = new ArrayList<String>();
+        ArrayList<String> namesmicro = new ArrayList<String>();
+        ArrayList<String> namesnano = new ArrayList<String>();
+        ArrayList<String> priorityall = new ArrayList<String>();
+        ArrayList<String> prioritymini = new ArrayList<String>();
+        ArrayList<String> prioritymicro = new ArrayList<String>();
+        ArrayList<String> prioritynano = new ArrayList<String>();
 
-        Vector<String> prioritarybattles = new Vector<String>();
+        ArrayList<String> prioritarybattles = new ArrayList<String>();
 
         // Read participants
 
@@ -174,8 +173,8 @@ public class PrepareBattles {
             String participant;
 
             while ((participant = br.readLine()) != null) {
-                if (participant.indexOf(",") != -1) {
-                    String name = participant.substring(0, participant.indexOf(","));
+                if (participant.indexOf(',') != -1) {
+                    String name = participant.substring(0, participant.indexOf(','));
 
                     if (isExcluded(name)) {
                         continue; // ignore excluded participant
@@ -313,7 +312,7 @@ public class PrepareBattles {
         return true;
     }
 
-    private String[] getbots(Vector<String> list1, Vector<String> list2, Random rand) {
+    private String[] getbots(ArrayList<String> list1, ArrayList<String> list2, Random rand) {
         int bot1 = rand.nextInt(list1.size());
         int bot2 = rand.nextInt(list2.size());
 
@@ -345,15 +344,15 @@ public class PrepareBattles {
     }
 
     public boolean createMeleeBattlesList() {
-        Vector<String> namesall = new Vector<String>();
-        Vector<String> namesmini = new Vector<String>();
-        Vector<String> namesmicro = new Vector<String>();
-        Vector<String> namesnano = new Vector<String>();
-        Vector<String> priorityall = new Vector<String>();
-        Vector<String> prioritymini = new Vector<String>();
-        Vector<String> prioritymicro = new Vector<String>();
-        Vector<String> prioritynano = new Vector<String>();
-        Vector<String[]> prioritypairs = new Vector<String[]>();
+        ArrayList<String> namesall = new ArrayList<String>();
+        ArrayList<String> namesmini = new ArrayList<String>();
+        ArrayList<String> namesmicro = new ArrayList<String>();
+        ArrayList<String> namesnano = new ArrayList<String>();
+        ArrayList<String> priorityall = new ArrayList<String>();
+        ArrayList<String> prioritymini = new ArrayList<String>();
+        ArrayList<String> prioritymicro = new ArrayList<String>();
+        ArrayList<String> prioritynano = new ArrayList<String>();
+        ArrayList<String[]> prioritypairs = new ArrayList<String[]>();
 
         // Read participants
 
@@ -366,8 +365,8 @@ public class PrepareBattles {
             String participant;
 
             while ((participant = br.readLine()) != null) {
-                if (participant.indexOf(",") != -1) {
-                    String name = participant.substring(0, participant.indexOf(","));
+                if (participant.indexOf(',') != -1) {
+                    String name = participant.substring(0, participant.indexOf(','));
 
                     if (isExcluded(name)) {
                         continue; // ignore excluded participant
@@ -508,7 +507,7 @@ public class PrepareBattles {
         return true;
     }
 
-    private String[] getmeleebots(Vector<String> list1, Vector<String> list2, Random rand) {
+    private String[] getmeleebots(ArrayList<String> list1, ArrayList<String> list2, Random rand) {
         String[] bots = new String[meleebots];
 
         bots[0] = list1.get(rand.nextInt(list1.size()));
@@ -530,7 +529,7 @@ public class PrepareBattles {
         return bots;
     }
 
-    private String[] getMeleeBots(String bot1, String bot2, Vector<String> list2, Random rand) {
+    private String[] getMeleeBots(String bot1, String bot2, ArrayList<String> list2, Random rand) {
         String[] bots = new String[meleebots];
 
         bots[0] = bot1;

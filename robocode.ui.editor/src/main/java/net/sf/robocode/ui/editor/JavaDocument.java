@@ -19,14 +19,14 @@ import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
+import net.sf.robocode.ui.editor.StyledDocument;
 
 // FIXME: Column in status bar does not take tab size into account
 // TODO: Make it configurable to extend the Java keywords.
@@ -123,16 +123,19 @@ public class JavaDocument extends StyledDocument {
         JViewport viewport = textPane.getViewport();
 
         viewport.addChangeListener(new ChangeListener() {
+            @Override
             public void stateChanged(ChangeEvent e) {
                 updateSyntaxHighlighting();
             }
         });
 
         viewport.addFocusListener(new FocusListener() {
+            @Override
             public void focusGained(FocusEvent e) {
                 updateSyntaxHighlighting();
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
             }
         });
@@ -553,6 +556,7 @@ public class JavaDocument extends StyledDocument {
     private void updateSyntaxHighlighting() {
         // Apply syntax highlighting from the current offset
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     performSyntaxHighlighting();
@@ -886,6 +890,7 @@ public class JavaDocument extends StyledDocument {
         // Caret position updater
         final CaretPositionUpdater caretPositionUpdater = new CaretPositionUpdater();
 
+        @Override
         public void insertUpdate(final DocumentEvent e) {
             int newCaretPosition;
 
@@ -906,6 +911,7 @@ public class JavaDocument extends StyledDocument {
             updateSyntaxHighlighting();
         }
 
+        @Override
         public void removeUpdate(final DocumentEvent e) {
             // Set the caret position where the text was removed.
             caretPositionUpdater.updateCaretPosition(e.getOffset());
@@ -914,6 +920,7 @@ public class JavaDocument extends StyledDocument {
             updateSyntaxHighlighting();
         }
 
+        @Override
         public void changedUpdate(DocumentEvent e) {
         }
 
@@ -931,6 +938,7 @@ public class JavaDocument extends StyledDocument {
             private int updatedCaretPos;
             // The caret updater, which is called by the EDT later to update the caret position
             final Runnable caretUpdater = new Runnable() {
+                @Override
                 public void run() {
                     // Set the caret position, and take care that it is not out of range
                     textPane.setCaretPosition(Math.min(updatedCaretPos, getLength()));

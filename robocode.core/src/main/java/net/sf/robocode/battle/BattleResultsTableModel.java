@@ -27,15 +27,14 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-import net.sf.robocode.io.Logger;
-import robocode.BattleResults;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
+import net.sf.robocode.io.Logger;
+import robocode.BattleResults;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -75,6 +74,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
         return totalScore;
     }
 
+    @Override
     public int getColumnCount() {
         return 12;
     }
@@ -123,6 +123,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
         }
     }
 
+    @Override
     public int getRowCount() {
         return results.length;
     }
@@ -139,6 +140,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
         return title;
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
 
         BattleResults statistics = results[row];

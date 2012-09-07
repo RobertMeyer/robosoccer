@@ -18,10 +18,12 @@ import robocode.*;
  */
 public class FairPlay extends AdvancedRobot {
 
+    @Override
     public void run() {
         setTurnRadarRightRadians(1d / 0d);
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         setTurnRadarLeft(getRadarTurnRemaining());
         setTurnGunRightRadians(

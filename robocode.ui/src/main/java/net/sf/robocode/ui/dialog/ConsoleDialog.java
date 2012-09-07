@@ -13,12 +13,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.swing.*;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -38,6 +38,7 @@ public class ConsoleDialog extends JDialog {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == ConsoleDialog.this.getOkButton() || e.getSource() == getConsoleDialogContentPane()) {
                 okButtonActionPerformed();

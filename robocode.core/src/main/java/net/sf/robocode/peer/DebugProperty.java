@@ -11,12 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-import net.sf.robocode.serialization.*;
-import robocode.control.snapshot.IDebugProperty;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import net.sf.robocode.serialization.*;
+import robocode.control.snapshot.IDebugProperty;
 
 /**
  * @author Pavel Savara (original)
@@ -36,6 +35,7 @@ public class DebugProperty implements Serializable, IXmlSerializable,
     private String key;
     private String value;
 
+    @Override
     public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
         writer.startElement("debug");
         {
@@ -45,18 +45,22 @@ public class DebugProperty implements Serializable, IXmlSerializable,
         writer.endElement();
     }
 
+    @Override
     public XmlReader.Element readXml(XmlReader reader) {
         return reader.expect("debug", new XmlReader.Element() {
+            @Override
             public IXmlSerializable read(XmlReader reader) {
                 final DebugProperty snapshot = new DebugProperty();
 
                 reader.expect("key", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.setKey(value);
                     }
                 });
 
                 reader.expect("value", new XmlReader.Attribute() {
+                    @Override
                     public void read(String value) {
                         snapshot.setValue(value);
                     }
@@ -67,6 +71,7 @@ public class DebugProperty implements Serializable, IXmlSerializable,
         });
     }
 
+    @Override
     public String getKey() {
         return key;
     }
@@ -75,6 +80,7 @@ public class DebugProperty implements Serializable, IXmlSerializable,
         this.key = key;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
@@ -89,12 +95,14 @@ public class DebugProperty implements Serializable, IXmlSerializable,
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             DebugProperty obj = (DebugProperty) object;
 
             return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.key) + serializer.sizeOf(obj.value);
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             DebugProperty obj = (DebugProperty) object;
 
@@ -102,6 +110,7 @@ public class DebugProperty implements Serializable, IXmlSerializable,
             serializer.serialize(buffer, obj.value);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String key = serializer.deserializeString(buffer);
             String value = serializer.deserializeString(buffer);

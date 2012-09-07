@@ -20,14 +20,13 @@
  *******************************************************************************/
 package net.sf.robocode.roborumble.netengine;
 
-import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
-import static net.sf.robocode.roborumble.util.PropertiesUtil.storeProperties;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.ArrayList;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.storeProperties;
 
 /**
  * Class used for updating the local rating files.
@@ -53,10 +52,10 @@ public class UpdateRatingFiles {
         Properties parameters = getProperties(propertiesfile);
 
         game = propertiesfile;
-        while (game.indexOf("/") != -1) {
-            game = game.substring(game.indexOf("/") + 1);
+        while (game.indexOf('/') != -1) {
+            game = game.substring(game.indexOf('/') + 1);
         }
-        game = game.substring(0, game.indexOf("."));
+        game = game.substring(0, game.indexOf('.'));
         minibots = parameters.getProperty("MINIBOTS", "");
         microbots = parameters.getProperty("MICROBOTS", "");
         nanobots = parameters.getProperty("NANOBOTS", "");
@@ -72,7 +71,7 @@ public class UpdateRatingFiles {
     public boolean updateRatings() {
 
         // read all the records to be updated
-        Vector<String> battles = new Vector<String>();
+        ArrayList<String> battles = new ArrayList<String>();
         BufferedReader br = null;
 
         try {

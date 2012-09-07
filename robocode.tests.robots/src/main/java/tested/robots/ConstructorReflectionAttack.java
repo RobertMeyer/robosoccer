@@ -44,6 +44,7 @@ public class ConstructorReflectionAttack extends robocode.AdvancedRobot {
         }
     }
 
+    @Override
     public void run() {
         // Write out the buffered output
         out.append(baos.toString());

@@ -11,13 +11,12 @@
  *******************************************************************************/
 package tested.robots;
 
-import robocode.AdvancedRobot;
-import robocode.ScannedRobotEvent;
-
-import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.swing.*;
+import robocode.AdvancedRobot;
+import robocode.ScannedRobotEvent;
 
 /**
  * @author Pavel Savara (original)
@@ -43,6 +42,7 @@ public class AwtAttack extends AdvancedRobot {
     private void awtAttack() {
         try {
             Runnable doHack = new Runnable() {
+                @Override
                 public void run() {
                     writeAttack();
 

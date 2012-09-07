@@ -13,12 +13,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -157,6 +157,7 @@ public class NewBattleBattleFieldTab extends JPanel {
 
     private class EventHandler implements ActionListener, ChangeListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() instanceof SizeButton) {
                 SizeButton button = (SizeButton) e.getSource();
@@ -167,6 +168,7 @@ public class NewBattleBattleFieldTab extends JPanel {
             }
         }
 
+        @Override
         public void stateChanged(ChangeEvent e) {
             if ((e.getSource() == battleFieldWidthSlider) || (e.getSource() == battleFieldHeightSlider)) {
                 battleFieldSliderValuesChanged();

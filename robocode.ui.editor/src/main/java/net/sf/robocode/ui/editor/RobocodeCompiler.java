@@ -17,13 +17,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
+import java.io.File;
+import java.io.IOException;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.ui.dialog.ConsoleDialog;
 import net.sf.robocode.ui.dialog.WindowUtil;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author Mathew A. Nelson (original)

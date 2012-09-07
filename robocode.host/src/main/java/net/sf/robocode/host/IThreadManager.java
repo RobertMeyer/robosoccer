@@ -11,9 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
-import net.sf.robocode.security.IThreadManagerBase;
-
 import java.io.PrintStream;
+import net.sf.robocode.security.IThreadManagerBase;
 
 /**
  * @author Pavel Savara (original)

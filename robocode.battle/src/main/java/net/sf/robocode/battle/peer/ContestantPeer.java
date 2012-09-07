@@ -29,5 +29,6 @@ public interface ContestantPeer extends Comparable<ContestantPeer> {
 
     ContestantStatistics getStatistics();
 
+    @Override
     String toString();
 }

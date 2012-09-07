@@ -11,12 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -31,9 +31,11 @@ public class WizardTabbedPane extends JTabbedPane implements Wizard {
 
     public class EventHandler implements ContainerListener, ChangeListener {
 
+        @Override
         public void componentRemoved(ContainerEvent e) {
         }
 
+        @Override
         public void componentAdded(ContainerEvent e) {
             if (e.getChild() instanceof WizardPanel) {
                 setWizardControllerOnPanel((WizardPanel) e.getChild());
@@ -41,6 +43,7 @@ public class WizardTabbedPane extends JTabbedPane implements Wizard {
             }
         }
 
+        @Override
         public void stateChanged(javax.swing.event.ChangeEvent e) {
             currentIndex = getSelectedIndex();
             getWizardController().stateChanged(e);
@@ -52,14 +55,17 @@ public class WizardTabbedPane extends JTabbedPane implements Wizard {
         initialize();
     }
 
+    @Override
     public void back() {
         setSelectedIndex(currentIndex - 1);
     }
 
+    @Override
     public Component getCurrentPanel() {
         return getSelectedComponent();
     }
 
+    @Override
     public WizardController getWizardController() {
         if (wizardController == null) {
             wizardController = new WizardController(this);
@@ -67,6 +73,7 @@ public class WizardTabbedPane extends JTabbedPane implements Wizard {
         return wizardController;
     }
 
+    @Override
     public WizardListener getWizardListener() {
         return listener;
     }
@@ -76,6 +83,7 @@ public class WizardTabbedPane extends JTabbedPane implements Wizard {
         addContainerListener(eventHandler);
     }
 
+    @Override
     public boolean isBackAvailable() {
         return (currentIndex > 0);
     }
@@ -86,10 +94,12 @@ public class WizardTabbedPane extends JTabbedPane implements Wizard {
         return (!(c instanceof WizardPanel)) || ((WizardPanel) c).isReady();
     }
 
+    @Override
     public boolean isNextAvailable() {
         return ((currentIndex < getComponentCount() - 1) && isCurrentPanelReady());
     }
 
+    @Override
     public boolean isReady() {
         for (Component c : getComponents()) {
             if (c instanceof WizardPanel) {
@@ -101,10 +111,12 @@ public class WizardTabbedPane extends JTabbedPane implements Wizard {
         return true;
     }
 
+    @Override
     public void next() {
         setSelectedIndex(currentIndex + 1);
     }
 
+    @Override
     public void setWizardControllerOnPanel(WizardPanel panel) {
         panel.setWizardController(getWizardController());
     }

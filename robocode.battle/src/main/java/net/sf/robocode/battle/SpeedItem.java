@@ -1,7 +1,5 @@
 package net.sf.robocode.battle;
 
-import net.sf.robocode.battle.peer.RobotPeer;
-
 /**
  * A speed item. Extends item drop
  * @author s4238358
@@ -14,6 +12,7 @@ public class SpeedItem extends ItemDrop {
         System.out.println("Speed Item");
     }
 
+    @Override
     public void doItemEffect() {
         return;
     }

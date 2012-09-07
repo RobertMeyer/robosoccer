@@ -15,14 +15,13 @@
  *******************************************************************************/
 package sample;
 
-import robocode.AdvancedRobot;
-import robocode.RobocodeFileOutputStream;
-
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import robocode.AdvancedRobot;
+import robocode.RobocodeFileOutputStream;
 
 /**
  * SittingDuck - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -33,6 +32,7 @@ public class SittingDuck extends AdvancedRobot {
 
     static boolean incrementedBattles = false;
 
+    @Override
     public void run() {
         setBodyColor(Color.yellow);
         setGunColor(Color.yellow);

@@ -146,6 +146,7 @@ public class Version implements Comparable<Object> {
         return version;
     }
 
+    @Override
     public int compareTo(Object o) {
         if (o == null) {
             throw new IllegalArgumentException("The input object cannot be null");

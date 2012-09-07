@@ -11,13 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.core;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
-import java.io.File;
 
 /**
  * @author Pavel Savara (original)
@@ -60,10 +60,12 @@ public class EngineClassLoader extends URLClassLoader {
         super(urls, parent);
     }
 
+    @Override
     public synchronized void addURL(URL url) {
         super.addURL(url);
     }
 
+    @Override
     public synchronized Class<?> loadClass(String name, boolean resolve)
             throws ClassNotFoundException {
         if (name.startsWith("java.lang")) {
@@ -104,6 +106,7 @@ public class EngineClassLoader extends URLClassLoader {
             final String path = name.replace('.', '/').concat(".class");
 
             return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
                 public Boolean run() {
                     return findResource(path) != null;
                 }

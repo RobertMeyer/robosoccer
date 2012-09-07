@@ -27,14 +27,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.packager;
 
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.ui.IWindowManager;
-import net.sf.robocode.ui.dialog.*;
-import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +34,13 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.swing.*;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.ui.IWindowManager;
+import net.sf.robocode.ui.dialog.*;
+import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -67,6 +66,7 @@ public class RobotPackager extends JDialog implements WizardListener {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Refresh")) {
                 getRobotSelectionPanel().refreshRobotList(true);
@@ -81,6 +81,7 @@ public class RobotPackager extends JDialog implements WizardListener {
         initialize();
     }
 
+    @Override
     public void cancelButtonActionPerformed() {
         dispose();
     }
@@ -191,6 +192,7 @@ public class RobotPackager extends JDialog implements WizardListener {
         setContentPane(getRobotPackagerContentPane());
     }
 
+    @Override
     public void finishButtonActionPerformed() {
         String jarFilename = getFilenamePanel().getFilenameField().getText();
         File f = new File(jarFilename);

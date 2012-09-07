@@ -14,13 +14,12 @@
  *******************************************************************************/
 package net.sf.robocode.cachecleaner;
 
+import java.io.File;
+import java.io.IOException;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.repository.IRepositoryManager;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Cache cleaner used for cleaning the /robot directory of Robocode, especially

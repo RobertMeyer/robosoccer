@@ -15,11 +15,19 @@
  *******************************************************************************/
 package net.sf.robocode.ui.battleview;
 
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.geom.*;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import static java.lang.Math.*;
+import java.util.Random;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
-import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.settings.ISettingsListener;
+import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IImageManager;
 import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.ui.IWindowManagerExt;
@@ -33,15 +41,6 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.geom.*;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import static java.lang.Math.*;
-import java.util.Random;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -95,6 +94,7 @@ public class BattleView extends Canvas {
         new BattleObserver(windowManager);
 
         properties.addPropertyListener(new ISettingsListener() {
+            @Override
             public void settingChanged(String property) {
                 loadDisplayOptions();
                 if (property.startsWith("robocode.options.rendering")) {
@@ -105,6 +105,7 @@ public class BattleView extends Canvas {
         });
 
         addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentResized(ComponentEvent e) {
                 initialized = false;
                 reinitialize();
@@ -665,6 +666,7 @@ public class BattleView extends Canvas {
             robotGraphics = null;
         }
 
+        @Override
         public void onTurnEnded(final TurnEndedEvent event) {
             if (event.getTurnSnapshot() == null) {
                 repaint();

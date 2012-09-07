@@ -16,6 +16,7 @@ package tested.robots;
  */
 public class BodyTurnRate extends robocode.AdvancedRobot {
 
+    @Override
     public void run() {
         // Test turn rate at all speed moving ahead and turning left
 

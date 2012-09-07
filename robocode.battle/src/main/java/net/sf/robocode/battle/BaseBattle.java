@@ -11,21 +11,19 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-
 import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
 import static net.sf.robocode.io.Logger.logError;
 import static net.sf.robocode.io.Logger.logMessage;
+import net.sf.robocode.io.URLJarCollector;
+import net.sf.robocode.mode.IMode;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.BattleRules;
 import robocode.control.events.BattlePausedEvent;
 import robocode.control.events.BattleResumedEvent;
-import net.sf.robocode.mode.IMode;
-
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Pavel Savara (refactoring)
@@ -136,6 +134,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
      *
      * @return true if the battle is running, false otherwise
      */
+    @Override
     public boolean isRunning() {
         return isRunning.get();
     }
@@ -149,6 +148,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
         return isAborted;
     }
 
+    @Override
     public void cleanup() {
         battleRules = null;
         if (pendingCommands != null) {
@@ -159,6 +159,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
         URLJarCollector.gc();
     }
 
+    @Override
     public void waitTillStarted() {
         synchronized (isRunning) {
             while (!isRunning.get()) {
@@ -174,6 +175,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
         }
     }
 
+    @Override
     public void waitTillOver() {
         synchronized (isRunning) {
             while (isRunning.get()) {
@@ -200,6 +202,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
      *
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
         try {
             initializeBattle();
@@ -399,6 +402,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
         }
     }
 
+    @Override
     public void stop(boolean waitTillEnd) {
         sendCommand(new AbortCommand());
 
@@ -407,14 +411,17 @@ public abstract class BaseBattle implements IBattle, Runnable {
         }
     }
 
+    @Override
     public void pause() {
         sendCommand(new PauseCommand());
     }
 
+    @Override
     public void resume() {
         sendCommand(new ResumeCommand());
     }
 
+    @Override
     public void step() {
         sendCommand(new StepCommand());
     }
@@ -425,6 +432,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
     private class PauseCommand extends Command {
 
+        @Override
         public void execute() {
             pauseImpl();
         }
@@ -438,6 +446,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
     private class ResumeCommand extends Command {
 
+        @Override
         public void execute() {
             isPaused = false;
             stepCount = 0;
@@ -447,6 +456,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
     private class StepCommand extends Command {
 
+        @Override
         public void execute() {
             runBackward = false;
             if (isPaused) {
@@ -457,6 +467,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
     public class StepBackCommand extends Command {
 
+        @Override
         public void execute() {
             runBackward = true;
             if (isPaused) {
@@ -467,6 +478,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
     private class AbortCommand extends Command {
 
+        @Override
         public void execute() {
             isAborted = true;
         }

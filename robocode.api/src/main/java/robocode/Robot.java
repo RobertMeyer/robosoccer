@@ -31,10 +31,10 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import robocode.Robot;
 import robocode.robotinterfaces.*;
 import robocode.robotinterfaces.peer.IStandardRobotPeer;
-
-import java.awt.*;
 
 /**
  * The basic robot class that you will extend to create your own robots.
@@ -81,6 +81,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     /**
      * {@inheritDoc}}
      */
+    @Override
     public final Runnable getRobotRunnable() {
         return this;
     }
@@ -88,6 +89,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     /**
      * {@inheritDoc}}
      */
+    @Override
     public final IBasicEvents getBasicEventListener() {
         return this;
     }
@@ -95,6 +97,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     /**
      * {@inheritDoc}}
      */
+    @Override
     public final IInteractiveEvents getInteractiveEventListener() {
         return this;
     }
@@ -102,6 +105,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     /**
      * {@inheritDoc}}
      */
+    @Override
     public final IPaintEvents getPaintEventListener() {
         return this;
     }
@@ -318,6 +322,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      *   }
      * </pre>
      */
+    @Override
     public void run() {
     }
 
@@ -707,72 +712,84 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBulletHit(BulletHitEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBulletHitBullet(BulletHitBulletEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBulletMissed(BulletMissedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onDeath(DeathEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onHitByBullet(HitByBulletEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onHitRobot(HitRobotEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onHitWall(HitWallEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onRobotDeath(RobotDeathEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onWin(WinEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onRoundEnded(RoundEndedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattleEnded(BattleEndedEvent event) {
     }
 
@@ -1524,78 +1541,91 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onPaint(Graphics2D g) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onKeyPressed(java.awt.event.KeyEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onKeyReleased(java.awt.event.KeyEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onKeyTyped(java.awt.event.KeyEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMouseClicked(java.awt.event.MouseEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMouseEntered(java.awt.event.MouseEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMouseExited(java.awt.event.MouseEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMousePressed(java.awt.event.MouseEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMouseReleased(java.awt.event.MouseEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMouseMoved(java.awt.event.MouseEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMouseDragged(java.awt.event.MouseEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMouseWheelMoved(java.awt.event.MouseWheelEvent e) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onStatus(StatusEvent e) {
     }
 }

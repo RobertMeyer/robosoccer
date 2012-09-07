@@ -16,6 +16,7 @@ package tested.robots;
  */
 public class MaxVelocity extends robocode.AdvancedRobot {
 
+    @Override
     public void run() {
         for (;;) {
             int time = (int) getTime();

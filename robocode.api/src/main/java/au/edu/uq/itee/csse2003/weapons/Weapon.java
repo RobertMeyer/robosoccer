@@ -8,10 +8,6 @@
  */
 package au.edu.uq.itee.csse2003.weapons;
 
-import au.edu.uq.itee.csse2003.weapons.WeaponType;
-import au.edu.uq.itee.csse2003.weapons.types.*;
-import robocode.Robot;
-
 /**
  * Represents a weapon.
  *

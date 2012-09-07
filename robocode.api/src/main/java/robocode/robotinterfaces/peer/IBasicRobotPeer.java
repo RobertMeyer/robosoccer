@@ -17,10 +17,9 @@
  *******************************************************************************/
 package robocode.robotinterfaces.peer;
 
+import java.awt.*;
 import robocode.*;
 import robocode.robotinterfaces.IBasicEvents;
-
-import java.awt.*;
 
 /**
  * The basic robot peer for all robot types.

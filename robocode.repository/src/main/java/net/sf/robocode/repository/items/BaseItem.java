@@ -11,10 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.repository.items;
 
-import net.sf.robocode.repository.root.IRepositoryRoot;
-
 import java.io.Serializable;
 import java.net.URL;
+import net.sf.robocode.repository.root.IRepositoryRoot;
 
 /**
  * @author Pavel Savara (original)
@@ -33,10 +32,12 @@ public abstract class BaseItem implements IItem, Serializable {
         this.lastModified = 0;
     }
 
+    @Override
     public URL getItemURL() {
         return itemURL;
     }
 
+    @Override
     public IRepositoryRoot getRoot() {
         return root;
     }
@@ -45,10 +46,12 @@ public abstract class BaseItem implements IItem, Serializable {
         return root.isJAR();
     }
 
+    @Override
     public long getLastModified() {
         return lastModified;
     }
 
+    @Override
     public boolean isValid() {
         return isValid;
     }

@@ -26,14 +26,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import net.sf.robocode.ui.dialog.WindowUtil;
-import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.swing.*;
+import net.sf.robocode.ui.dialog.WindowUtil;
+import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
 
 /**
  * Menu bar for the Robocode source code editor.
@@ -54,6 +53,7 @@ public class RobocodeEditorMenuBar extends JMenuBar {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             final Object source = e.getSource();
 
@@ -171,6 +171,7 @@ public class RobocodeEditorMenuBar extends JMenuBar {
         }
 
         new Thread(new Runnable() {
+            @Override
             public void run() {
                 editor.resetCompilerProperties();
             }

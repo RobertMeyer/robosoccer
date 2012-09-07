@@ -18,13 +18,12 @@
  *******************************************************************************/
 package robocode;
 
-import robocode.robotinterfaces.ITeamEvents;
-import robocode.robotinterfaces.ITeamRobot;
-import robocode.robotinterfaces.peer.ITeamRobotPeer;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Vector;
+import robocode.robotinterfaces.ITeamEvents;
+import robocode.robotinterfaces.ITeamRobot;
+import robocode.robotinterfaces.peer.ITeamRobotPeer;
 
 /**
  * An advanced type of robot that supports sending messages between team
@@ -98,6 +97,7 @@ public class TeamRobot extends AdvancedRobot implements ITeamRobot, ITeamEvents 
      * <p/>
      * {@inheritDoc}
      */
+    @Override
     public final ITeamEvents getTeamEventListener() {
         return this; // this robot is listening
     }
@@ -165,6 +165,7 @@ public class TeamRobot extends AdvancedRobot implements ITeamRobot, ITeamEvents 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onMessageReceived(MessageEvent event) {
     }
 

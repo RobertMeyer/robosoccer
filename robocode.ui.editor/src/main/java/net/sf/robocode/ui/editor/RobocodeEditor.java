@@ -23,6 +23,11 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
@@ -31,12 +36,6 @@ import net.sf.robocode.ui.BrowserManager;
 import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.ui.IWindowManagerExt;
 import net.sf.robocode.ui.gfx.ImageUtil;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
 
 /**
  * The source code editor window containing all components.
@@ -67,16 +66,20 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
 
     class EventHandler implements ComponentListener {
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
 
+        @Override
         public void componentHidden(ComponentEvent e) {
         }
 
+        @Override
         public void componentShown(ComponentEvent e) {
             new Thread(RobocodeEditor.this).start();
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
         }
     }
@@ -91,6 +94,7 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
      */
     class ReplaceAction extends AbstractAction {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             replaceDialog();
         }
@@ -137,6 +141,7 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
         }
     }
 
+    @Override
     public boolean close() {
         JInternalFrame[] frames = getDesktopPane().getAllFrames();
 
@@ -199,7 +204,7 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
 
         String name = "MyClass";
 
-        int index = template.indexOf("$");
+        int index = template.indexOf('$');
 
         while (index >= 0) {
             if (template.substring(index, index + 10).equals("$CLASSNAME")) {
@@ -211,7 +216,7 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
             } else {
                 index++;
             }
-            index = template.indexOf("$", index);
+            index = template.indexOf('$', index);
         }
 
         EditorPane editorPane = editWindow.getEditorPane();
@@ -408,7 +413,7 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
             FileUtil.cleanupStream(dis);
         }
 
-        int index = template.indexOf("$");
+        int index = template.indexOf('$');
 
         while (index >= 0) {
             if (template.substring(index, index + 10).equals("$CLASSNAME")) {
@@ -420,7 +425,7 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
             } else {
                 index++;
             }
-            index = template.indexOf("$", index);
+            index = template.indexOf('$', index);
         }
 
         EditorPane editorPane = editWindow.getEditorPane();
@@ -657,6 +662,7 @@ public class RobocodeEditor extends JFrame implements Runnable, IRobocodeEditor 
         windowManager.showRobotExtractor(this);
     }
 
+    @Override
     public void run() {
         getCompiler();
     }

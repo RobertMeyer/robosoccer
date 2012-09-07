@@ -20,6 +20,7 @@ import org.junit.Test;
 public class TestIncludeNamespaceAttack extends RobocodeTestBed {
 
     @Test
+    @Override
     public void run() {
         super.run();
     }

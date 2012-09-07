@@ -11,13 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
+import java.util.List;
 import net.sf.robocode.ui.dialog.BattleButton;
 import net.sf.robocode.ui.dialog.BattleDialog;
 import net.sf.robocode.ui.dialog.RobotButton;
 import net.sf.robocode.ui.dialog.RobotDialog;
 import robocode.control.snapshot.IRobotSnapshot;
-
-import java.util.List;
 
 /**
  * @author Pavel Savara (original)

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package sampleex;
 
+import java.io.PrintStream;
 import robocode.AdvancedRobot;
 import robocode.HitByBulletEvent;
 import robocode.ScannedRobotEvent;
@@ -19,8 +20,6 @@ import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IInteractiveEvents;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
-
-import java.io.PrintStream;
 
 /**
  * @author Pavel Savara (original)
@@ -31,6 +30,7 @@ public class MasterAndSlave extends MasterBase implements IAdvancedRobot {
      * This is not showing any aditional qualities over normal MyFirst robot.
      * But it could, because architecture is no more tied by inheritance from Robot base class.
      */
+    @Override
     public void run() {
         while (true) {
             ahead(100); // Move ahead 100
@@ -40,10 +40,12 @@ public class MasterAndSlave extends MasterBase implements IAdvancedRobot {
         }
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
     }
 
+    @Override
     public void onHitByBullet(HitByBulletEvent e) {
         turnLeft(90 - e.getBearing());
     }

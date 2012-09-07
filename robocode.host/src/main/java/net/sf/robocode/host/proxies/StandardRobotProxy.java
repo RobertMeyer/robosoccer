@@ -11,8 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
@@ -42,16 +42,19 @@ public class StandardRobotProxy extends BasicRobotProxy implements
     }
 
     // blocking actions
+    @Override
     public void stop(boolean overwrite) {
         setStopImpl(overwrite);
         execute();
     }
 
+    @Override
     public void resume() {
         setResumeImpl();
         execute();
     }
 
+    @Override
     public void turnRadar(double radians) {
         setTurnRadarImpl(radians);
         do {
@@ -60,11 +63,13 @@ public class StandardRobotProxy extends BasicRobotProxy implements
     }
 
     // fast setters
+    @Override
     public void setAdjustGunForBodyTurn(boolean newAdjustGunForBodyTurn) {
         setCall();
         commands.setAdjustGunForBodyTurn(newAdjustGunForBodyTurn);
     }
 
+    @Override
     public void setAdjustRadarForGunTurn(boolean newAdjustRadarForGunTurn) {
         setCall();
         commands.setAdjustRadarForGunTurn(newAdjustRadarForGunTurn);
@@ -73,6 +78,7 @@ public class StandardRobotProxy extends BasicRobotProxy implements
         }
     }
 
+    @Override
     public void setAdjustRadarForBodyTurn(boolean newAdjustRadarForBodyTurn) {
         setCall();
         commands.setAdjustRadarForBodyTurn(newAdjustRadarForBodyTurn);

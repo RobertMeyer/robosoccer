@@ -32,6 +32,7 @@ public class ThreadGroupAttack extends Robot {
 
     private Thread[] threads = new Thread[100];
 
+    @Override
     public void run() {
         runAttack();
 
@@ -43,6 +44,7 @@ public class ThreadGroupAttack extends Robot {
     private void runAttack() {
         try {
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     ThreadGroup parentGroup = Thread.currentThread().getThreadGroup().getParent();
 
@@ -60,6 +62,7 @@ public class ThreadGroupAttack extends Robot {
         }
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         attackRobotThread(e.getName());
     }

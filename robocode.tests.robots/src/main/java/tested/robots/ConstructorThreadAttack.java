@@ -50,6 +50,7 @@ public class ConstructorThreadAttack extends robocode.AdvancedRobot {
 
     private class Attacker implements Runnable {
 
+        @Override
         public synchronized void run() {
             if (Thread.currentThread().getPriority() > 4) {
                 out.println("Priority attack");

@@ -11,17 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
-import net.sf.robocode.core.ContainerBase;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.peer.IRobotStatics;
-import robocode.BattleRules;
-import robocode.Bullet;
-import robocode.Event;
-import robocode.RobotStatus;
-import robocode.control.RobotSpecification;
-import robocode.control.events.IBattleListener;
-import robocode.robotinterfaces.IBasicRobot;
-
 import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -34,6 +23,17 @@ import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import net.sf.robocode.core.ContainerBase;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.peer.IRobotStatics;
+import robocode.BattleRules;
+import robocode.Bullet;
+import robocode.Event;
+import robocode.RobotStatus;
+import robocode.control.RobotSpecification;
+import robocode.control.events.IBattleListener;
+import robocode.robotinterfaces.IBasicRobot;
 
 /**
  * Helpers for accessing hidden methods on events
@@ -150,6 +150,7 @@ public class HiddenAccess {
         ArrayList<URL> urls = new ArrayList<URL>();
 
         final File[] files = dirf.listFiles(new FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 final String test = name.toLowerCase();
 

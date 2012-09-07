@@ -13,16 +13,15 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.battle.BattleResultsTableModel;
-import net.sf.robocode.ui.IWindowManager;
-import robocode.BattleResults;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import net.sf.robocode.battle.BattleResultsTableModel;
+import net.sf.robocode.ui.IWindowManager;
+import robocode.BattleResults;
 
 /**
  * Dialog to display results (scores) of a battle.
@@ -122,6 +121,7 @@ public class ResultsDialog extends BaseScoreDialog {
 
         inputMap.put(escapeKey, CANCEL_ACTION_KEY);
         AbstractAction cancelAction = new AbstractAction() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 okButtonActionPerformed();
             }
@@ -132,6 +132,7 @@ public class ResultsDialog extends BaseScoreDialog {
 
     private class ButtonEventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 

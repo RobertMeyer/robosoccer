@@ -14,13 +14,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Vector;
+import java.util.ArrayList;
+import javax.swing.*;
 
 /**
  * @author Matthew Reeder (original)
@@ -34,11 +34,11 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
     private JButton cancelButton;
     private JButton closeButton;
     private JList windowList;
-    private final Vector<WindowMenuItem> windowListItems;
+    private final ArrayList<WindowMenuItem> windowListItems;
 
     public MoreWindowsDialog(RobocodeEditor window) {
         super(window, "More Windows...", false);
-        windowListItems = new Vector<WindowMenuItem>();
+        windowListItems = new ArrayList<WindowMenuItem>();
         JPanel listPanel = new JPanel(new GridLayout(1, 1));
 
         listPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Open Windows"));
@@ -57,12 +57,12 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
 
     public void addWindowItem(WindowMenuItem item) {
         windowListItems.add(item);
-        getWindowList().setListData(windowListItems);
+        getWindowList().setListData(windowListItems.toArray());
     }
 
     public void removeWindowItem(WindowMenuItem item) {
         windowListItems.remove(item);
-        getWindowList().setListData(windowListItems);
+        getWindowList().setListData(windowListItems.toArray());
     }
 
     public JButton getActivateButton() {
@@ -106,6 +106,7 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
         return windowList;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == closeButton) {
             WindowMenuItem item = (WindowMenuItem) windowList.getSelectedValue();
@@ -125,6 +126,7 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
         }
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == getWindowList() && e.getClickCount() == 2) {
             WindowMenuItem item = windowListItems.get(windowList.locationToIndex(e.getPoint()));
@@ -135,15 +137,19 @@ public class MoreWindowsDialog extends JDialog implements ActionListener,
         }
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 }

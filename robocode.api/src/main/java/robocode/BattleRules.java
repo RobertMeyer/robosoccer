@@ -129,6 +129,7 @@ public final class BattleRules implements java.io.Serializable {
 
     private static class HiddenHelper implements IHiddenRulesHelper {
 
+        @Override
         public BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames, Hashtable<String, Object> modeRules) {
             return new BattleRules(battlefieldWidth, battlefieldHeight, numRounds, gunCoolingRate, inactivityTime,
                                    hideEnemyNames, modeRules);

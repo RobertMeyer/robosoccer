@@ -11,9 +11,9 @@
  *******************************************************************************/
 package tested.robots;
 
+import robocode.AdvancedRobot;
 import robocode.DeathEvent;
 import robocode.RobotDeathEvent;
-import robocode.AdvancedRobot;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -23,6 +23,7 @@ public class RobotDeathEvents extends AdvancedRobot {
     private boolean dead;
     private long enemyCount;
 
+    @Override
     public void run() {
         enemyCount = getOthers();
         while (!dead) {
@@ -33,10 +34,12 @@ public class RobotDeathEvents extends AdvancedRobot {
         }
     }
 
+    @Override
     public void onRobotDeath(RobotDeathEvent e) {
         enemyCount--;
     }
 
+    @Override
     public void onDeath(DeathEvent e) {
         dead = true;
     }

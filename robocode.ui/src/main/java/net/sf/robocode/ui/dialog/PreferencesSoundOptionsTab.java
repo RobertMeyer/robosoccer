@@ -11,14 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.settings.ISettingsManager;
-
-import javax.sound.sampled.*;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.ArrayList;
+import javax.sound.sampled.*;
+import javax.swing.*;
+import net.sf.robocode.settings.ISettingsManager;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -218,7 +217,7 @@ public class PreferencesSoundOptionsTab extends WizardPanel {
 
             Line.Info clipLineInfo = new Line.Info(Clip.class);
 
-            Vector<Mixer.Info> mixers = new Vector<Mixer.Info>();
+            ArrayList<Mixer.Info> mixers = new ArrayList<Mixer.Info>();
 
             for (Mixer.Info mi : mixerInfo) {
                 if (AudioSystem.getMixer(mi).getSourceLineInfo(clipLineInfo).length > 0) {
@@ -226,7 +225,7 @@ public class PreferencesSoundOptionsTab extends WizardPanel {
                 }
             }
 
-            mixerComboBox = new JComboBox(mixers);
+            mixerComboBox = new JComboBox(mixers.toArray());
             mixerComboBox.setRenderer(new MixerInfoCellRenderer());
             mixerComboBox.addActionListener(eventHandler);
         }
@@ -319,6 +318,7 @@ public class PreferencesSoundOptionsTab extends WizardPanel {
 
     private class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
 

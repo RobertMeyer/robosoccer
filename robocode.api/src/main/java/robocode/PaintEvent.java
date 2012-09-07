@@ -11,12 +11,13 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
 import net.sf.robocode.peer.IRobotStatics;
+import robocode.Event;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.IPaintEvents;
 import robocode.robotinterfaces.IPaintRobot;
-
-import java.awt.*;
 
 /**
  * This event occurs when your robot should paint, where the {@link

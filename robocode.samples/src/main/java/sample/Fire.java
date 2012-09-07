@@ -13,13 +13,12 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.HitByBulletEvent;
 import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
-
-import java.awt.*;
 
 /**
  * Fire - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -33,6 +32,7 @@ public class Fire extends Robot {
     /**
      * run:  Fire's main run function
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(Color.orange);
@@ -50,6 +50,7 @@ public class Fire extends Robot {
     /**
      * onScannedRobot:  Fire!
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         // If the other robot is close by, and we have plenty of life,
         // fire hard!
@@ -66,6 +67,7 @@ public class Fire extends Robot {
     /**
      * onHitByBullet:  Turn perpendicular to the bullet, and move a bit.
      */
+    @Override
     public void onHitByBullet(HitByBulletEvent e) {
         turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
 
@@ -77,6 +79,7 @@ public class Fire extends Robot {
     /**
      * onHitRobot:  Aim at it.  Fire Hard!
      */
+    @Override
     public void onHitRobot(HitRobotEvent e) {
         double turnGunAmt = normalRelativeAngleDegrees(e.getBearing() + getHeading() - getGunHeading());
 

@@ -19,6 +19,7 @@ import robocode.exception.RobotException;
  */
 public class DieFast extends Robot {
 
+    @Override
     public void run() {
         throw new RobotException();
     }

@@ -15,9 +15,7 @@ import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.Rules;
 
-import java.awt.peer.RobotPeer;
 import java.io.Serializable;
-import static java.lang.Math.abs;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -301,6 +299,7 @@ public final class ExecCommands implements Serializable {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             ExecCommands obj = (ExecCommands) object;
             int size = RbSerializer.SIZEOF_TYPEINFO + 4 * RbSerializer.SIZEOF_DOUBLE;
@@ -332,6 +331,7 @@ public final class ExecCommands implements Serializable {
             return size;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             ExecCommands obj = (ExecCommands) object;
 
@@ -377,6 +377,7 @@ public final class ExecCommands implements Serializable {
             buffer.put(RbSerializer.TERMINATOR_TYPE);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             ExecCommands res = new ExecCommands();
 

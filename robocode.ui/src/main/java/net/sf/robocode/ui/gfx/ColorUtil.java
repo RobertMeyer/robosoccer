@@ -11,9 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.ui.gfx;
 
-import static robocode.util.Utils.isNear;
-
 import java.awt.*;
+import static robocode.util.Utils.isNear;
 
 /**
  * Class used for utilizing colors.

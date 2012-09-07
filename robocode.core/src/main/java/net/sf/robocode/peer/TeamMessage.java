@@ -11,11 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-import net.sf.robocode.serialization.ISerializableHelper;
-import net.sf.robocode.serialization.RbSerializer;
-
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import net.sf.robocode.serialization.ISerializableHelper;
+import net.sf.robocode.serialization.RbSerializer;
 
 /**
  * @author Pavel Savara (original)
@@ -40,6 +39,7 @@ public class TeamMessage implements Serializable {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             TeamMessage obj = (TeamMessage) object;
             final int s = serializer.sizeOf(obj.sender);
@@ -49,6 +49,7 @@ public class TeamMessage implements Serializable {
             return RbSerializer.SIZEOF_TYPEINFO + s + r + m;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             TeamMessage obj = (TeamMessage) object;
 
@@ -57,6 +58,7 @@ public class TeamMessage implements Serializable {
             serializer.serialize(buffer, obj.message);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String sender = serializer.deserializeString(buffer);
             String recipient = serializer.deserializeString(buffer);

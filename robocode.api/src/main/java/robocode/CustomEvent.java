@@ -13,12 +13,12 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
 import net.sf.robocode.peer.IRobotStatics;
+import robocode.Event;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
 
 /**
  * This event is sent to {@link AdvancedRobot#onCustomEvent(CustomEvent)

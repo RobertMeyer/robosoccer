@@ -11,6 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.recording;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
@@ -18,12 +23,6 @@ import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.BattleResults;
 import robocode.control.events.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * @author Pavel Savara (original)

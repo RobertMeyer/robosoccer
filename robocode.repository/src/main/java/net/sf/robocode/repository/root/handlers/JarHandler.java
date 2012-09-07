@@ -11,26 +11,27 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root.handlers;
 
-import net.sf.robocode.repository.Database;
-import net.sf.robocode.repository.root.IRepositoryRoot;
-import net.sf.robocode.repository.root.JarRoot;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
 import java.util.Map;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
+import net.sf.robocode.repository.Database;
+import net.sf.robocode.repository.root.IRepositoryRoot;
+import net.sf.robocode.repository.root.JarRoot;
 
 /**
  * @author Pavel Savara (original)
  */
 public class JarHandler extends RootHandler {
 
+    @Override
     public void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
         if (!isDevel) {
             // find jar files
             final File[] jars = dir.listFiles(new FileFilter() {
+                @Override
                 public boolean accept(File pathname) {
                     final String low = pathname.toString().toLowerCase();
 

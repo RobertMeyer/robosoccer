@@ -11,16 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-import static robocode.util.Utils.normalRelativeAngle;
+import net.sf.robocode.test.helpers.Assert;
+import net.sf.robocode.test.helpers.RobocodeTestBed;
 
 import org.junit.Test;
-
 import robocode.control.events.RoundStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
-
-import net.sf.robocode.test.helpers.Assert;
-import net.sf.robocode.test.helpers.RobocodeTestBed;
+import static robocode.util.Utils.normalRelativeAngle;
 
 /**
  * @author Joshua Galecki (original)
@@ -34,6 +32,7 @@ public class TestRateControl extends RobocodeTestBed {
     double originalRadarHeading;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }

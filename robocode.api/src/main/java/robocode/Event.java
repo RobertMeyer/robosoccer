@@ -21,13 +21,13 @@
  *******************************************************************************/
 package robocode;
 
-import net.sf.robocode.peer.IRobotStatics;
-import net.sf.robocode.security.IHiddenEventHelper;
-import net.sf.robocode.io.Logger;
-import robocode.robotinterfaces.IBasicRobot;
-
 import java.awt.*;
 import java.io.Serializable;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.peer.IRobotStatics;
+import net.sf.robocode.security.IHiddenEventHelper;
+import robocode.Event;
+import robocode.robotinterfaces.IBasicRobot;
 
 /**
  * The superclass of all Robocode events.
@@ -71,6 +71,7 @@ public abstract class Event implements Comparable<Event>, Serializable {
      *         has a lower precedence, i.e. must be listed after the specified event.
      *         0 means that the precedence of the two events are equal.
      */
+    @Override
     public int compareTo(Event event) {
         // Compare the time difference which has precedence over priority.
         int timeDiff = (int) (time - event.time);
@@ -222,26 +223,32 @@ public abstract class Event implements Comparable<Event>, Serializable {
     // this class is invisible on RobotAPI
     private static class HiddenEventHelper implements IHiddenEventHelper {
 
+        @Override
         public void setTime(Event event, long newTime) {
             event.setTimeHidden(newTime);
         }
 
+        @Override
         public void setDefaultPriority(Event event) {
             event.setPriority(event.getDefaultPriority());
         }
 
+        @Override
         public void setPriority(Event event, int newPriority) {
             event.setPriority(newPriority);
         }
 
+        @Override
         public boolean isCriticalEvent(Event event) {
             return event.isCriticalEvent();
         }
 
+        @Override
         public void dispatch(Event event, IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
             event.dispatch(robot, statics, graphics);
         }
 
+        @Override
         public byte getSerializationType(Event event) {
             return event.getSerializationType();
         }

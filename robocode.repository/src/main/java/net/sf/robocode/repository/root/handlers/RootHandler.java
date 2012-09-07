@@ -11,13 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root.handlers;
 
-import net.sf.robocode.core.Container;
-import net.sf.robocode.repository.Database;
-import net.sf.robocode.repository.root.IRepositoryRoot;
-
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.repository.Database;
+import net.sf.robocode.repository.root.IRepositoryRoot;
 
 /**
  * @author Pavel Savara (original)

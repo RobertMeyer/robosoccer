@@ -15,11 +15,11 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -38,6 +38,7 @@ public class WizardController extends JPanel implements ChangeListener {
 
     class EventHandler implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == WizardController.this.getFinishButton()) {
                 finishButtonActionPerformed();
@@ -174,6 +175,7 @@ public class WizardController extends JPanel implements ChangeListener {
         stateChanged(null);
     }
 
+    @Override
     public void stateChanged(ChangeEvent e) {
         setBackButtonEnabled(wizard.isBackAvailable());
         setNextButtonEnabled(wizard.isNextAvailable());

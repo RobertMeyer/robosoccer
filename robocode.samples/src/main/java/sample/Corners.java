@@ -13,12 +13,11 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.DeathEvent;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
-
-import java.awt.*;
 
 /**
  * Corners - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -36,6 +35,7 @@ public class Corners extends Robot {
     /**
      * run:  Corners' main run function.
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(Color.red);
@@ -85,6 +85,7 @@ public class Corners extends Robot {
     /**
      * onScannedRobot:  Stop and fire!
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         // Should we stop, or just fire?
         if (stopWhenSeeRobot) {
@@ -122,6 +123,7 @@ public class Corners extends Robot {
     /**
      * onDeath:  We died.  Decide whether to try a different corner next game.
      */
+    @Override
     public void onDeath(DeathEvent e) {
         // Well, others should never be 0, but better safe than sorry.
         if (others == 0) {

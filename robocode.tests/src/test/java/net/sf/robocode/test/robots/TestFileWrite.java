@@ -11,12 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
+import java.io.File;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.File;
 
 /**
  * @author Pavel Savara (original)
@@ -24,10 +23,12 @@ import java.io.File;
 public class TestFileWrite extends RobocodeTestBed {
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public String getRobotNames() {
         return "sample.Walls,sample.SittingDuck";
     }

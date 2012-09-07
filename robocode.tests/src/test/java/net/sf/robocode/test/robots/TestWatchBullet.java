@@ -23,14 +23,17 @@ import robocode.control.snapshot.IRobotSnapshot;
 public class TestWatchBullet extends RobocodeTestBed {
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public String getRobotNames() {
         return "tested.robots.WatchBullets,sample.SittingDuck";
     }
 
+    @Override
     public void onTurnEnded(TurnEndedEvent event) {
         super.onTurnEnded(event);
         final IRobotSnapshot robot = event.getTurnSnapshot().getRobots()[0];

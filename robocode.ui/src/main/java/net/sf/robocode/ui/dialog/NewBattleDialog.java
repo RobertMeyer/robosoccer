@@ -21,6 +21,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.util.List;
+import javax.swing.*;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.mode.*;
@@ -28,14 +35,6 @@ import net.sf.robocode.repository.IRepositoryItem;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
 import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.util.List;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -74,10 +73,12 @@ public class NewBattleDialog extends JDialog implements WizardListener {
         initialize();
     }
 
+    @Override
     public void cancelButtonActionPerformed() {
         dispose();
     }
 
+    @Override
     public void finishButtonActionPerformed() {
         if (robotSelectionPanel.getSelectedRobotsCount() > 24) {
             if (JOptionPane.showConfirmDialog(this,
@@ -187,6 +188,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
         inputMap.put(escapeKey, CANCEL_ACTION_KEY);
         AbstractAction cancelAction = new AbstractAction() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 cancelButtonActionPerformed();
             }
@@ -291,6 +293,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
     private class EventHandler extends WindowAdapter implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Refresh")) {
                 getRobotSelectionPanel().refreshRobotList(true);

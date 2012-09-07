@@ -18,13 +18,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.gfx.ImageUtil;
-import net.sf.robocode.ui.gfx.RenderImage;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.gfx.ImageUtil;
+import net.sf.robocode.ui.gfx.RenderImage;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -50,6 +49,7 @@ public class ImageManager implements IImageManager {
         this.properties = properties;
     }
 
+    @Override
     public void initialize() {
         // Note that initialize could be called in order to reset all images (image buffering)
 
@@ -74,6 +74,7 @@ public class ImageManager implements IImageManager {
         getHealthImage();
     }
 
+    @Override
     public Image getGroundTileImage(int index) {
         if (groundImages[index] == null) {
             groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
@@ -81,6 +82,7 @@ public class ImageManager implements IImageManager {
         return groundImages[index];
     }
 
+    @Override
     public RenderImage getExplosionRenderImage(int which, int frame) {
         if (explosionRenderImages == null) {
             int numExplosion, numFrame;
@@ -119,6 +121,7 @@ public class ImageManager implements IImageManager {
         return explosionRenderImages[which][frame];
     }
 
+    @Override
     public RenderImage getExplosionDebriseRenderImage() {
         if (debriseRenderImage == null) {
             debriseRenderImage = new RenderImage(getImage("/net/sf/robocode/ui/images/ground/explode_debris.png"));
@@ -181,6 +184,7 @@ public class ImageManager implements IImageManager {
         return healthImage;
     }
 
+    @Override
     public RenderImage getColoredBodyRenderImage(Integer color) {
         RenderImage img = robotBodyImageCache.get(color);
 
@@ -191,6 +195,7 @@ public class ImageManager implements IImageManager {
         return img;
     }
 
+    @Override
     public RenderImage getColoredGunRenderImage(Integer color) {
         RenderImage img = robotGunImageCache.get(color);
 
@@ -201,6 +206,7 @@ public class ImageManager implements IImageManager {
         return img;
     }
 
+    @Override
     public RenderImage getColoredRadarRenderImage(Integer color) {
         RenderImage img = robotRadarImageCache.get(color);
 

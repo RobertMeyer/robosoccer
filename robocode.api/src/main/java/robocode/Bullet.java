@@ -13,12 +13,11 @@
  *******************************************************************************/
 package robocode;
 
+import java.io.Serializable;
+import java.nio.ByteBuffer;
 import net.sf.robocode.security.IHiddenBulletHelper;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
-
-import java.io.Serializable;
-import java.nio.ByteBuffer;
 
 /**
  * Represents a bullet. This is returned from {@link Robot#fireBullet(double)}
@@ -224,10 +223,12 @@ public class Bullet implements Serializable {
     private static class HiddenBulletHelper implements IHiddenBulletHelper,
                                                        ISerializableHelper {
 
+        @Override
         public void update(Bullet bullet, double x, double y, String victimName, boolean isActive) {
             bullet.update(x, y, victimName, isActive);
         }
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             Bullet obj = (Bullet) object;
 
@@ -235,6 +236,7 @@ public class Bullet implements Serializable {
                     + serializer.sizeOf(obj.victimName) + RbSerializer.SIZEOF_BOOL + RbSerializer.SIZEOF_INT;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             Bullet obj = (Bullet) object;
 
@@ -248,6 +250,7 @@ public class Bullet implements Serializable {
             serializer.serialize(buffer, obj.bulletId);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             double headingRadians = buffer.getDouble();
             double x = buffer.getDouble();

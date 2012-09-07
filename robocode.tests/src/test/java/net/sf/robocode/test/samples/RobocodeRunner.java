@@ -60,10 +60,12 @@ public class RobocodeRunner {
      */
     static class BattleObserver extends BattleAdaptor {
 
+        @Override
         public void onBattleStarted(BattleStartedEvent e) {
             System.out.println("-- Battle was started --");
         }
 
+        @Override
         public void onBattleFinished(BattleFinishedEvent e) {
             if (e.isAborted()) {
                 System.out.println("-- Battle was aborted --");
@@ -72,6 +74,7 @@ public class RobocodeRunner {
             }
         }
 
+        @Override
         public void onBattleCompleted(BattleCompletedEvent e) {
             System.out.println("-- Battle has completed --");
 
@@ -82,10 +85,12 @@ public class RobocodeRunner {
             }
         }
 
+        @Override
         public void onBattleMessage(BattleMessageEvent e) {
             System.out.println("Msg> " + e.getMessage());
         }
 
+        @Override
         public void onBattleError(BattleErrorEvent e) {
             System.out.println("Err> " + e.getError());
         }

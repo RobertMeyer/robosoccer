@@ -26,10 +26,12 @@ public class TestInteruptibleEvent extends RobocodeTestBed {
     boolean messagedScanned;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public void onTurnEnded(TurnEndedEvent event) {
         super.onTurnEnded(event);
         final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();

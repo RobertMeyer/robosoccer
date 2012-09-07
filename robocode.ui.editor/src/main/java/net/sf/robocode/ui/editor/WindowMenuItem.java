@@ -11,12 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import javax.swing.*;
 
 /**
  * Customized JMenuItem where each item is bound to a specific JInternalFrame,
@@ -72,6 +72,7 @@ public class WindowMenuItem extends JCheckBoxMenuItem implements ActionListener 
      * Note that e can be null, and this menu item might not be showing (if this
      * is called from the "More Windows" dialog).
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (window.isIcon()) {
             try {

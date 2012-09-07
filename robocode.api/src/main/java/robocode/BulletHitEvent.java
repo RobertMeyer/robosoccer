@@ -13,14 +13,15 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Event;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
 
 /**
  * This event is sent to {@link Robot#onBulletHit(BulletHitEvent) onBulletHit}
@@ -139,6 +140,7 @@ public final class BulletHitEvent extends Event {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             BulletHitEvent obj = (BulletHitEvent) object;
 
@@ -146,6 +148,7 @@ public final class BulletHitEvent extends Event {
                     + RbSerializer.SIZEOF_DOUBLE;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             BulletHitEvent obj = (BulletHitEvent) object;
 
@@ -154,6 +157,7 @@ public final class BulletHitEvent extends Event {
             serializer.serialize(buffer, obj.energy);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             Bullet bullet = new Bullet(0, 0, 0, 0, null, null, false, buffer.getInt());
             String name = serializer.deserializeString(buffer);

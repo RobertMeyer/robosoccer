@@ -34,10 +34,12 @@ public class TeamStatistics implements ContestantStatistics {
         this.teamPeer = teamPeer;
     }
 
+    @Override
     public void setRank(int rank) {
         this.rank = rank;
     }
 
+    @Override
     public double getTotalScore() {
         double d = 0;
 
@@ -47,6 +49,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getTotalSurvivalScore() {
         double d = 0;
 
@@ -56,6 +59,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getTotalLastSurvivorBonus() {
         double d = 0;
 
@@ -65,6 +69,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getTotalBulletDamageScore() {
         double d = 0;
 
@@ -74,6 +79,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getTotalBulletKillBonus() {
         double d = 0;
 
@@ -83,6 +89,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getTotalRammingDamageScore() {
         double d = 0;
 
@@ -92,6 +99,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getTotalRammingKillBonus() {
         double d = 0;
 
@@ -115,6 +123,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public int getTotalFirsts() {
         int d = 0;
 
@@ -124,6 +133,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public int getTotalSeconds() {
         int d = 0;
 
@@ -133,6 +143,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public int getTotalThirds() {
         int d = 0;
 
@@ -142,6 +153,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentScore() {
         double d = 0;
 
@@ -151,6 +163,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentSurvivalScore() {
         double d = 0;
 
@@ -160,6 +173,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentSurvivalBonus() {
         double d = 0;
 
@@ -169,6 +183,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentBulletDamageScore() {
         double d = 0;
 
@@ -178,6 +193,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentBulletKillBonus() {
         double d = 0;
 
@@ -187,6 +203,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentRammingDamageScore() {
         double d = 0;
 
@@ -196,6 +213,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentRammingKillBonus() {
         double d = 0;
 
@@ -205,6 +223,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public BattleResults getFinalResults() {
         return new BattleResults(teamPeer.getName(), rank, getTotalScore(), getTotalSurvivalScore(),
                                  getTotalLastSurvivorBonus(), getTotalBulletDamageScore(), getTotalBulletKillBonus(),

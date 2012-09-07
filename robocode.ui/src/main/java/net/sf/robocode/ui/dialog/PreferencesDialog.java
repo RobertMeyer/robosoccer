@@ -18,13 +18,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import javax.swing.*;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IImageManager;
 import net.sf.robocode.ui.IWindowManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -58,6 +57,7 @@ public class PreferencesDialog extends JDialog implements WizardListener {
         setContentPane(getPreferencesDialogContentPane());
     }
 
+    @Override
     public void cancelButtonActionPerformed() {
         dispose();
     }
@@ -144,6 +144,7 @@ public class PreferencesDialog extends JDialog implements WizardListener {
         return soundOptionsTab;
     }
 
+    @Override
     public void finishButtonActionPerformed() {
         commonOptionsTab.storePreferences();
         developmentOptionsTab.storePreferences();

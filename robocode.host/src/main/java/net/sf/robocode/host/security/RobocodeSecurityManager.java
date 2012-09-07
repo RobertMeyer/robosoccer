@@ -27,10 +27,9 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
+import java.security.AccessControlException;
 import net.sf.robocode.host.IHostedThread;
 import net.sf.robocode.host.IThreadManager;
-
-import java.security.AccessControlException;
 
 /**
  * @author Mathew A. Nelson (original)

@@ -15,10 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -54,6 +52,7 @@ public class ClasspathFileParser {
         String outputPath = null;
         List<String> sourcePaths = new ArrayList<String>();
 
+        @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             if ("classpathentry".equals(qName)) {
                 String kind = attributes.getValue("kind");

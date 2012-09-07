@@ -13,16 +13,16 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.security.SafeComponent;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.IInteractiveEvents;
 import robocode.robotinterfaces.IInteractiveRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
 
 /**
  * A KeyPressedEvent is sent to {@link Robot#onKeyPressed(java.awt.event.KeyEvent)
@@ -83,11 +83,13 @@ public final class KeyPressedEvent extends KeyEvent {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             return RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_CHAR + RbSerializer.SIZEOF_INT
                     + RbSerializer.SIZEOF_INT + RbSerializer.SIZEOF_LONG + RbSerializer.SIZEOF_INT + RbSerializer.SIZEOF_INT;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             KeyPressedEvent obj = (KeyPressedEvent) object;
             java.awt.event.KeyEvent src = obj.getSourceEvent();
@@ -100,6 +102,7 @@ public final class KeyPressedEvent extends KeyEvent {
             serializer.serialize(buffer, src.getWhen());
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             char keyChar = buffer.getChar();
             int keyCode = buffer.getInt();

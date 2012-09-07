@@ -46,7 +46,6 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
@@ -119,6 +118,7 @@ public class RobocodeFrame extends JFrame {
         initialize();
     }
 
+    @Override
     protected void finalize() throws Throwable {
         try {
             windowManager.removeBattleListener(battleObserver);
@@ -444,6 +444,7 @@ public class RobocodeFrame extends JFrame {
                     .getOptionsCommonEnableReplayRecording());
 
             props.addPropertyListener(new ISettingsListener() {
+                @Override
                 public void settingChanged(String property) {
                     if (property
                             .equals(ISettingsManager.OPTIONS_COMMON_ENABLE_REPLAY_RECORDING)) {
@@ -500,6 +501,7 @@ public class RobocodeFrame extends JFrame {
                     (MAX_TPS_SLIDER_VALUE + 1) * 6, 40));
 
             props.addPropertyListener(new ISettingsListener() {
+                @Override
                 public void settingChanged(String property) {
                     if (property
                             .equals(ISettingsManager.OPTIONS_BATTLE_DESIREDTPS)) {
@@ -713,6 +715,7 @@ public class RobocodeFrame extends JFrame {
                                           ContainerListener, WindowListener,
                                           ChangeListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             final Object source = e.getSource();
 
@@ -729,36 +732,45 @@ public class RobocodeFrame extends JFrame {
             }
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
             if (e.getSource() == getBattleViewPanel()) {
                 battleViewPanelResized();
             }
         }
 
+        @Override
         public void componentShown(ComponentEvent e) {
         }
 
+        @Override
         public void componentHidden(ComponentEvent e) {
         }
 
+        @Override
         public void componentRemoved(ContainerEvent e) {
         }
 
+        @Override
         public void componentAdded(ContainerEvent e) {
         }
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
 
+        @Override
         public void windowActivated(WindowEvent e) {
         }
 
+        @Override
         public void windowClosed(WindowEvent e) {
             if (exitOnClose) {
                 System.exit(0);
             }
         }
 
+        @Override
         public void windowClosing(WindowEvent e) {
             exitOnClose = true;
             if (windowManager.isSlave()) {
@@ -775,24 +787,29 @@ public class RobocodeFrame extends JFrame {
             properties.saveProperties();
         }
 
+        @Override
         public void windowDeactivated(WindowEvent e) {
         }
 
+        @Override
         public void windowDeiconified(WindowEvent e) {
             setIconified(false);
             battleManager.setManagedTPS(true);
         }
 
+        @Override
         public void windowIconified(WindowEvent e) {
             setIconified(true);
             battleManager.setManagedTPS(properties
                     .getOptionsViewPreventSpeedupWhenMinimized());
         }
 
+        @Override
         public void windowOpened(WindowEvent e) {
             battleManager.setManagedTPS(true);
         }
 
+        @Override
         public void stateChanged(ChangeEvent e) {
             if (e.getSource() == getTpsSlider()) {
                 int tps = getTpsFromSlider();
@@ -829,6 +846,7 @@ public class RobocodeFrame extends JFrame {
             windowManager.addBattleListener(this);
         }
 
+        @Override
         protected void finalize() throws Throwable {
             try {
                 windowManager.removeBattleListener(this);
@@ -867,6 +885,7 @@ public class RobocodeFrame extends JFrame {
             updateTitle();
         }
 
+        @Override
         public void onRoundStarted(final RoundStartedEvent event) {
             if (event.getRound() == 0) {
                 getRobotButtonsPanel().removeAll();
@@ -952,6 +971,7 @@ public class RobocodeFrame extends JFrame {
             updateTitle();
         }
 
+        @Override
         public void onTurnEnded(TurnEndedEvent event) {
             if (event == null) {
                 return;
@@ -973,7 +993,7 @@ public class RobocodeFrame extends JFrame {
         }
 
         private void updateTitle() {
-            StringBuffer title = new StringBuffer("Robocode");
+            StringBuilder title = new StringBuilder("Robocode");
 
             if (isBattleRunning) {
                 title.append(": ");
@@ -1054,6 +1074,7 @@ public class RobocodeFrame extends JFrame {
                 this.event = event;
             }
 
+            @Override
             public void run() {
                 windowManager.showResultsDialog(event);
             }

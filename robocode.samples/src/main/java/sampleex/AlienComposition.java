@@ -11,13 +11,12 @@
  *******************************************************************************/
 package sampleex;
 
+import java.io.PrintStream;
 import robocode.*;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 import robocode.robotinterfaces.peer.IStandardRobotPeer;
-
-import java.io.PrintStream;
 
 /**
  * A sample robot.
@@ -39,24 +38,29 @@ public class AlienComposition implements IBasicRobot {
         handler = new AlienEventHandler();
     }
 
+    @Override
     public void setPeer(IBasicRobotPeer iRobotPeer) {
         peer = (IStandardRobotPeer) iRobotPeer;
     }
 
+    @Override
     public void setOut(PrintStream printStream) {
         out = printStream;
     }
 
+    @Override
     public Runnable getRobotRunnable() {
         return main;
     }
 
+    @Override
     public IBasicEvents getBasicEventListener() {
         return handler;
     }
 
     class AlienMain implements Runnable {
 
+        @Override
         public void run() {
             while (true) {
                 peer.move(100); // Move ahead 100
@@ -69,38 +73,49 @@ public class AlienComposition implements IBasicRobot {
 
     class AlienEventHandler implements IBasicEvents {
 
+        @Override
         public void onScannedRobot(ScannedRobotEvent e) {
             peer.setFire(1);
         }
 
+        @Override
         public void onHitByBullet(HitByBulletEvent e) {
             peer.turnBody(Math.PI / 2 + e.getBearingRadians());
         }
 
+        @Override
         public void onStatus(StatusEvent e) {
         }
 
+        @Override
         public void onBulletHit(BulletHitEvent e) {
         }
 
+        @Override
         public void onBulletHitBullet(BulletHitBulletEvent e) {
         }
 
+        @Override
         public void onBulletMissed(BulletMissedEvent e) {
         }
 
+        @Override
         public void onDeath(DeathEvent e) {
         }
 
+        @Override
         public void onHitRobot(HitRobotEvent e) {
         }
 
+        @Override
         public void onHitWall(HitWallEvent e) {
         }
 
+        @Override
         public void onRobotDeath(RobotDeathEvent e) {
         }
 
+        @Override
         public void onWin(WinEvent e) {
         }
     }

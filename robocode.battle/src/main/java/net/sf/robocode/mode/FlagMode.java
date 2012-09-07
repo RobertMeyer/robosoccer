@@ -23,6 +23,7 @@ public class FlagMode extends ClassicMode {
     /**
      *
      */
+    @Override
     public String getDescription() {
         return "Robots score points per turn they are holding the flag.";
     }
@@ -80,6 +81,7 @@ public class FlagMode extends ClassicMode {
         return 0;
     }
 
+    @Override
     public String toString() {
         return "Capture the Flag";
     }
@@ -88,6 +90,7 @@ public class FlagMode extends ClassicMode {
      * Get the items needed for the items
      * @return the items needed
      */
+    @Override
     public List<String> getItems() {
         return items;
     }
@@ -95,6 +98,7 @@ public class FlagMode extends ClassicMode {
     /**
      * Add Flag as an item to be used for this Mode
      */
+    @Override
     public void setItems() {
         items.add("Flag");
     }
@@ -102,6 +106,7 @@ public class FlagMode extends ClassicMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void scorePoints() {
         // TODO
         flagScore++;

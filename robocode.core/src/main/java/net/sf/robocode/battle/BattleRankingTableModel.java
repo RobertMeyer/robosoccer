@@ -26,10 +26,9 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import javax.swing.table.AbstractTableModel;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.table.AbstractTableModel;
 
 /**
  * This table model extracts the robot ranking from the current battle,
@@ -71,10 +70,12 @@ public class BattleRankingTableModel extends AbstractTableModel {
         }
     }
 
+    @Override
     public int getColumnCount() {
         return 12;
     }
 
+    @Override
     public int getRowCount() {
         return scoreSnapshotList == null ? 0 : scoreSnapshotList.length;
     }
@@ -123,6 +124,7 @@ public class BattleRankingTableModel extends AbstractTableModel {
         }
     }
 
+    @Override
     public Object getValueAt(int row, int col) {
 
         final IScoreSnapshot statistics = scoreSnapshotList[row];

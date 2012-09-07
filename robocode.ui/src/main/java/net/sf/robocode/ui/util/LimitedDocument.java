@@ -11,11 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.ui.util;
 
+import java.awt.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.PlainDocument;
-import java.awt.*;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -39,12 +39,12 @@ public class LimitedDocument extends PlainDocument {
     @Override
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         Element rootElement = getDefaultRootElement();
-        int i = str.indexOf("\n");
+        int i = str.indexOf('\n');
         int newlines = 0;
 
         while (i < str.length() && i >= 0) {
             newlines++;
-            i = str.indexOf("\n", i + 1);
+            i = str.indexOf('\n', i + 1);
         }
 
         int currentLines = rootElement.getElementCount();
@@ -61,7 +61,7 @@ public class LimitedDocument extends PlainDocument {
         int lineStart = 0;
 
         while (!done) {
-            int lineEnd = str.indexOf("\n", lineStart);
+            int lineEnd = str.indexOf('\n', lineStart);
 
             if (lineEnd == -1 || lineEnd == str.length()) {
                 if (lineStart == 0) {

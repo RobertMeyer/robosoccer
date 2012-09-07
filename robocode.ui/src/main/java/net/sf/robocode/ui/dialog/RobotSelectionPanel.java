@@ -29,11 +29,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.core.Container;
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.IWindowManager;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -41,10 +40,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
-import java.util.ArrayList;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.IWindowManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -115,6 +115,7 @@ public class RobotSelectionPanel extends WizardPanel {
 
     private class EventHandler implements ActionListener, ListSelectionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == getAddAllButton()) {
                 addAllButtonActionPerformed();
@@ -127,6 +128,7 @@ public class RobotSelectionPanel extends WizardPanel {
             }
         }
 
+        @Override
         public void valueChanged(ListSelectionEvent e) {
             if (e.getValueIsAdjusting()) {
                 return;
@@ -254,7 +256,7 @@ public class RobotSelectionPanel extends WizardPanel {
     }
 
     public String getSelectedRobotsAsString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < selectedRobots.size(); i++) {
             if (i != 0) {
@@ -366,10 +368,12 @@ public class RobotSelectionPanel extends WizardPanel {
             fireContentsChanged(this, 0, getSize());
         }
 
+        @Override
         public int getSize() {
             return selectedRobots.size();
         }
 
+        @Override
         public Object getElementAt(int which) {
             return selectedRobots.get(which);
         }
@@ -482,13 +486,16 @@ public class RobotSelectionPanel extends WizardPanel {
 
             // Add document listener
             numRoundsTextField.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
                 public void changedUpdate(DocumentEvent e) {
                 }
 
+                @Override
                 public void insertUpdate(DocumentEvent e) {
                     handleChange();
                 }
 
+                @Override
                 public void removeUpdate(DocumentEvent e) {
                     handleChange();
                 }
@@ -525,6 +532,7 @@ public class RobotSelectionPanel extends WizardPanel {
     public void refreshRobotList(final boolean withClear) {
 
         final Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 final IWindowManager windowManager = Container.getComponent(IWindowManager.class);
 

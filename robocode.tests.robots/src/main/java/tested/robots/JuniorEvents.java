@@ -11,17 +11,16 @@
  *******************************************************************************/
 package tested.robots;
 
+import java.awt.*;
+import java.io.PrintStream;
+import java.util.Hashtable;
+import java.util.Map;
 import robocode.*;
 import robocode.Event;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IJuniorRobot;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 import robocode.util.Utils;
-
-import java.awt.*;
-import java.io.PrintStream;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * @author Pavel Savara (original)
@@ -33,6 +32,7 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
     final Hashtable<String, Integer> counts = new Hashtable<String, Integer>();
     Bullet bullet;
 
+    @Override
     public void run() {
         // noinspection InfiniteLoopStatement
         while (true) {
@@ -43,22 +43,27 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
         }
     }
 
+    @Override
     public Runnable getRobotRunnable() {
         return this;
     }
 
+    @Override
     public IBasicEvents getBasicEventListener() {
         return this;
     }
 
+    @Override
     public void setPeer(IBasicRobotPeer peer) {
         this.peer = peer;
     }
 
+    @Override
     public void setOut(PrintStream out) {
         this.out = out;
     }
 
+    @Override
     public void onStatus(StatusEvent event) {
         count(event);
         final Graphics2D g = peer.getGraphics();
@@ -67,38 +72,47 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
         g.drawOval((int) (peer.getX() - 55), (int) (peer.getY() - 55), 110, 110);
     }
 
+    @Override
     public void onBulletHit(BulletHitEvent event) {
         count(event);
     }
 
+    @Override
     public void onBulletHitBullet(BulletHitBulletEvent event) {
         count(event);
     }
 
+    @Override
     public void onBulletMissed(BulletMissedEvent event) {
         count(event);
     }
 
+    @Override
     public void onDeath(DeathEvent event) {
         count(event);
     }
 
+    @Override
     public void onHitByBullet(HitByBulletEvent event) {
         count(event);
     }
 
+    @Override
     public void onHitRobot(HitRobotEvent event) {
         count(event);
     }
 
+    @Override
     public void onHitWall(HitWallEvent event) {
         count(event);
     }
 
+    @Override
     public void onRobotDeath(RobotDeathEvent event) {
         count(event);
     }
 
+    @Override
     public void onWin(WinEvent event) {
         count(event);
 
@@ -109,6 +123,7 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
         out.println("last bullet heading " + bullet.getHeadingRadians());
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent event) {
         count(event);
 

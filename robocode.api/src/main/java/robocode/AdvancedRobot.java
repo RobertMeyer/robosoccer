@@ -24,12 +24,11 @@
  *******************************************************************************/
 package robocode;
 
+import java.io.File;
+import java.util.ArrayList;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
-
-import java.io.File;
-import java.util.Vector;
 
 /**
  * A more advanced type of robot than Robot that allows non-blocking calls,
@@ -592,9 +591,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #getBulletHitBulletEvents()
      * @see #getRobotDeathEvents()
      */
-    public Vector<Event> getAllEvents() {
+    public ArrayList<Event> getAllEvents() {
         if (peer != null) {
-            return new Vector<Event>(((IAdvancedRobotPeer) peer).getAllEvents());
+            return new ArrayList<Event>(((IAdvancedRobotPeer) peer).getAllEvents());
         }
         uninitializedException();
         return null; // never called
@@ -618,9 +617,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see BulletHitBulletEvent
      * @see #getAllEvents()
      */
-    public Vector<BulletHitBulletEvent> getBulletHitBulletEvents() {
+    public ArrayList<BulletHitBulletEvent> getBulletHitBulletEvents() {
         if (peer != null) {
-            return new Vector<BulletHitBulletEvent>(((IAdvancedRobotPeer) peer).getBulletHitBulletEvents());
+            return new ArrayList<BulletHitBulletEvent>(((IAdvancedRobotPeer) peer).getBulletHitBulletEvents());
         }
         uninitializedException();
         return null; // never called
@@ -643,9 +642,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see BulletHitEvent
      * @see #getAllEvents()
      */
-    public Vector<BulletHitEvent> getBulletHitEvents() {
+    public ArrayList<BulletHitEvent> getBulletHitEvents() {
         if (peer != null) {
-            return new Vector<BulletHitEvent>(((IAdvancedRobotPeer) peer).getBulletHitEvents());
+            return new ArrayList<BulletHitEvent>(((IAdvancedRobotPeer) peer).getBulletHitEvents());
         }
         uninitializedException();
         return null; // never called
@@ -669,9 +668,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see BulletMissedEvent
      * @see #getAllEvents()
      */
-    public Vector<BulletMissedEvent> getBulletMissedEvents() {
+    public ArrayList<BulletMissedEvent> getBulletMissedEvents() {
         if (peer != null) {
-            return new Vector<BulletMissedEvent>(((IAdvancedRobotPeer) peer).getBulletMissedEvents());
+            return new ArrayList<BulletMissedEvent>(((IAdvancedRobotPeer) peer).getBulletMissedEvents());
         }
         uninitializedException();
         return null; // never called
@@ -803,9 +802,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see HitByBulletEvent
      * @see #getAllEvents()
      */
-    public Vector<HitByBulletEvent> getHitByBulletEvents() {
+    public ArrayList<HitByBulletEvent> getHitByBulletEvents() {
         if (peer != null) {
-            return new Vector<HitByBulletEvent>(((IAdvancedRobotPeer) peer).getHitByBulletEvents());
+            return new ArrayList<HitByBulletEvent>(((IAdvancedRobotPeer) peer).getHitByBulletEvents());
         }
         uninitializedException();
         return null; // never called
@@ -828,9 +827,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see HitRobotEvent
      * @see #getAllEvents()
      */
-    public Vector<HitRobotEvent> getHitRobotEvents() {
+    public ArrayList<HitRobotEvent> getHitRobotEvents() {
         if (peer != null) {
-            return new Vector<HitRobotEvent>(((IAdvancedRobotPeer) peer).getHitRobotEvents());
+            return new ArrayList<HitRobotEvent>(((IAdvancedRobotPeer) peer).getHitRobotEvents());
         }
         uninitializedException();
         return null; // never called
@@ -853,9 +852,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see HitWallEvent
      * @see #getAllEvents()
      */
-    public Vector<HitWallEvent> getHitWallEvents() {
+    public ArrayList<HitWallEvent> getHitWallEvents() {
         if (peer != null) {
-            return new Vector<HitWallEvent>(((IAdvancedRobotPeer) peer).getHitWallEvents());
+            return new ArrayList<HitWallEvent>(((IAdvancedRobotPeer) peer).getHitWallEvents());
         }
         uninitializedException();
         return null; // never called
@@ -878,9 +877,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see RobotDeathEvent
      * @see #getAllEvents()
      */
-    public Vector<RobotDeathEvent> getRobotDeathEvents() {
+    public ArrayList<RobotDeathEvent> getRobotDeathEvents() {
         if (peer != null) {
-            return new Vector<RobotDeathEvent>(((IAdvancedRobotPeer) peer).getRobotDeathEvents());
+            return new ArrayList<RobotDeathEvent>(((IAdvancedRobotPeer) peer).getRobotDeathEvents());
         }
         uninitializedException();
         return null; // never called
@@ -904,9 +903,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see ScannedRobotEvent
      * @see #getAllEvents()
      */
-    public Vector<ScannedRobotEvent> getScannedRobotEvents() {
+    public ArrayList<ScannedRobotEvent> getScannedRobotEvents() {
         if (peer != null) {
-            return new Vector<ScannedRobotEvent>(((IAdvancedRobotPeer) peer).getScannedRobotEvents());
+            return new ArrayList<ScannedRobotEvent>(((IAdvancedRobotPeer) peer).getScannedRobotEvents());
         }
         uninitializedException();
         return null; // never called
@@ -929,9 +928,9 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #getAllEvents()
      * @since 1.6.1
      */
-    public Vector<StatusEvent> getStatusEvents() {
+    public ArrayList<StatusEvent> getStatusEvents() {
         if (peer != null) {
-            return new Vector<StatusEvent>(((IAdvancedRobotPeer) peer).getStatusEvents());
+            return new ArrayList<StatusEvent>(((IAdvancedRobotPeer) peer).getStatusEvents());
         }
         uninitializedException();
         return null; // never called
@@ -1009,6 +1008,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onCustomEvent(CustomEvent event) {
     }
 
@@ -1434,6 +1434,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onSkippedTurn(SkippedTurnEvent event) {
     }
 
@@ -1449,6 +1450,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #getGunHeadingRadians()
      * @see #getRadarHeadingRadians()
      */
+    @Override
     public double getHeadingRadians() {
         return super.getHeadingRadians();
     }
@@ -1490,6 +1492,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see AdvancedRobot#setTurnRight(double) setTurnRight(double)
      * @see AdvancedRobot#setTurnRightRadians(double) setTurnRightRadians(double)
      */
+    @Override
     public void setTurnLeftRadians(double radians) {
         super.setTurnLeftRadians(radians);
     }
@@ -1531,6 +1534,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see AdvancedRobot#setTurnLeft(double) setTurnLeft(double)
      * @see AdvancedRobot#setTurnLeftRadians(double) setTurnLeftRadians(double)
      */
+    @Override
     public void setTurnRightRadians(double radians) {
         super.setTurnRightRadians(radians);
     }
@@ -1571,6 +1575,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #turnRadarRightRadians(double)
      * @see #setAdjustGunForRobotTurn(boolean)
      */
+    @Override
     public void turnLeftRadians(double radians) {
         super.turnLeftRadians(radians);
     }
@@ -1610,6 +1615,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #turnRadarRightRadians(double)
      * @see #setAdjustGunForRobotTurn(boolean)
      */
+    @Override
     public void turnRightRadians(double radians) {
         super.turnRightRadians(radians);
     }
@@ -1626,6 +1632,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #getHeadingRadians()
      * @see #getRadarHeadingRadians()
      */
+    @Override
     public double getGunHeadingRadians() {
         return super.getGunHeadingRadians();
     }
@@ -1642,6 +1649,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #getHeadingRadians()
      * @see #getGunHeadingRadians()
      */
+    @Override
     public double getRadarHeadingRadians() {
         return super.getRadarHeadingRadians();
     }
@@ -1684,6 +1692,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see AdvancedRobot#setTurnGunRightRadians(double) setTurnGunRightRadians(double)
      * @see #setAdjustGunForRobotTurn(boolean)
      */
+    @Override
     public void setTurnGunLeftRadians(double radians) {
         super.setTurnGunLeftRadians(radians);
     }
@@ -1726,6 +1735,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see AdvancedRobot#setTurnGunLeftRadians(double) setTurnGunLeftRadians(double)
      * @see #setAdjustGunForRobotTurn(boolean)
      */
+    @Override
     public void setTurnGunRightRadians(double radians) {
         super.setTurnGunRightRadians(radians);
     }
@@ -1769,6 +1779,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #setAdjustRadarForRobotTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
      */
+    @Override
     public void setTurnRadarLeftRadians(double radians) {
         super.setTurnRadarLeftRadians(radians);
     }
@@ -1812,6 +1823,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #setAdjustRadarForRobotTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
      */
+    @Override
     public void setTurnRadarRightRadians(double radians) {
         super.setTurnRadarRightRadians(radians);
     }
@@ -1852,6 +1864,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #turnRadarRightRadians(double)
      * @see #setAdjustGunForRobotTurn(boolean)
      */
+    @Override
     public void turnGunLeftRadians(double radians) {
         super.turnGunLeftRadians(radians);
     }
@@ -1891,6 +1904,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #turnRadarRightRadians(double)
      * @see #setAdjustGunForRobotTurn(boolean)
      */
+    @Override
     public void turnGunRightRadians(double radians) {
         super.turnGunRightRadians(radians);
     }
@@ -1932,6 +1946,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #setAdjustRadarForRobotTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
      */
+    @Override
     public void turnRadarLeftRadians(double radians) {
         super.turnRadarLeftRadians(radians);
     }
@@ -1972,6 +1987,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see #setAdjustRadarForRobotTurn(boolean)
      * @see #setAdjustRadarForGunTurn(boolean)
      */
+    @Override
     public void turnRadarRightRadians(double radians) {
         super.turnRadarRightRadians(radians);
     }
@@ -1990,6 +2006,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see AdvancedRobot#getRadarTurnRemaining() getRadarTurnRemaining()
      * @see #getRadarTurnRemainingRadians()
      */
+    @Override
     public double getGunTurnRemainingRadians() {
         return super.getGunTurnRemainingRadians();
     }
@@ -2008,6 +2025,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see AdvancedRobot#getGunTurnRemaining() getGunTurnRemaining()
      * @see #getGunTurnRemainingRadians()
      */
+    @Override
     public double getRadarTurnRemainingRadians() {
         return super.getRadarTurnRemainingRadians();
     }
@@ -2026,6 +2044,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * @see AdvancedRobot#getRadarTurnRemaining() getRadarTurnRemaining()
      * @see #getRadarTurnRemainingRadians()
      */
+    @Override
     public double getTurnRemainingRadians() {
         return super.getTurnRemainingRadians();
     }
@@ -2048,6 +2067,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * <p/>
      * {@inheritDoc}
      */
+    @Override
     public final IAdvancedEvents getAdvancedEventListener() {
         return this; // this robot is listening
     }

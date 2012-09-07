@@ -22,6 +22,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Locale;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IBattleManager;
@@ -32,19 +38,12 @@ import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.battle.AwtBattleAdaptor;
 import net.sf.robocode.ui.dialog.*;
-import net.sf.robocode.ui.packager.RobotPackager;
 import net.sf.robocode.ui.editor.IRobocodeEditor;
+import net.sf.robocode.ui.packager.RobotPackager;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.events.BattleCompletedEvent;
 import robocode.control.events.IBattleListener;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.Locale;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -82,6 +81,7 @@ public class WindowManager implements IWindowManagerExt {
 
         // we will set UI better priority than robots and battle have
         EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 2);
@@ -91,22 +91,27 @@ public class WindowManager implements IWindowManagerExt {
         });
     }
 
+    @Override
     public void setBusyPointer(boolean enabled) {
         robocodeFrame.setBusyPointer(enabled);
     }
 
+    @Override
     public synchronized void addBattleListener(IBattleListener listener) {
         awtAdaptor.addListener(listener);
     }
 
+    @Override
     public synchronized void removeBattleListener(IBattleListener listener) {
         awtAdaptor.removeListener(listener);
     }
 
+    @Override
     public boolean isGUIEnabled() {
         return isGUIEnabled;
     }
 
+    @Override
     public void setEnableGUI(boolean enable) {
         isGUIEnabled = enable;
 
@@ -116,30 +121,37 @@ public class WindowManager implements IWindowManagerExt {
         System.setProperty("java.awt.headless", "" + !enable);
     }
 
+    @Override
     public void setSlave(boolean value) {
         isSlave = value;
     }
 
+    @Override
     public boolean isSlave() {
         return isSlave;
     }
 
+    @Override
     public boolean isShowResultsEnabled() {
         return properties.getOptionsCommonShowResults() && showResults;
     }
 
+    @Override
     public void setEnableShowResults(boolean enable) {
         showResults = enable;
     }
 
+    @Override
     public ITurnSnapshot getLastSnapshot() {
         return awtAdaptor.getLastSnapshot();
     }
 
+    @Override
     public int getFPS() {
         return awtAdaptor.getFPS();
     }
 
+    @Override
     public RobocodeFrame getRobocodeFrame() {
         if (robocodeFrame == null) {
             this.robocodeFrame = Container.getComponent(RobocodeFrame.class);
@@ -147,6 +159,7 @@ public class WindowManager implements IWindowManagerExt {
         return robocodeFrame;
     }
 
+    @Override
     public void showRobocodeFrame(boolean visible, boolean iconified) {
         RobocodeFrame frame = getRobocodeFrame();
 
@@ -167,10 +180,12 @@ public class WindowManager implements IWindowManagerExt {
         }
     }
 
+    @Override
     public void showAboutBox() {
         packCenterShow(Container.getComponent(AboutBox.class), true);
     }
 
+    @Override
     public String showBattleOpenDialog(final String defExt, final String name) {
         JFileChooser chooser = new JFileChooser(battleManager.getBattlePath());
 
@@ -195,6 +210,7 @@ public class WindowManager implements IWindowManagerExt {
         return null;
     }
 
+    @Override
     public String saveBattleDialog(String path, final String defExt, final String name) {
         File f = new File(path);
 
@@ -235,48 +251,59 @@ public class WindowManager implements IWindowManagerExt {
         return result;
     }
 
+    @Override
     public void showVersionsTxt() {
         showInBrowser("file://" + new File(FileUtil.getCwd(), "").getAbsoluteFile() + File.separator + "versions.txt");
     }
 
+    @Override
     public void showHelpApi() {
         showInBrowser(
                 "file://" + new File(FileUtil.getCwd(), "").getAbsoluteFile() + File.separator + "javadoc" + File.separator
                 + "index.html");
     }
 
+    @Override
     public void showReadMe() {
         showInBrowser("file://" + new File(FileUtil.getCwd(), "ReadMe.html").getAbsoluteFile());
     }
 
+    @Override
     public void showFaq() {
         showInBrowser("http://robowiki.net/w/index.php?title=Robocode/FAQ");
     }
 
+    @Override
     public void showOnlineHelp() {
         showInBrowser("http://robowiki.net/w/index.php?title=Robocode/Getting_Started");
     }
 
+    @Override
     public void showJavaDocumentation() {
         showInBrowser("http://java.sun.com/j2se/1.5.0/docs");
     }
 
+    @Override
     public void showRobocodeHome() {
         showInBrowser("http://robocode.sourceforge.net");
     }
 
+    @Override
     public void showRoboWiki() {
         showInBrowser("http://robowiki.net");
     }
 
+    @Override
     public void showYahooGroupRobocode() {
         showInBrowser("http://groups.yahoo.com/group/robocode");
     }
 
+    @Override
     public void showRobocodeRepository() {
         showInBrowser("http://robocoderepository.com");
     }
 
+    @Override
     public void showOptionsPreferences() {
         try {
             battleManager.pauseBattle();
@@ -287,6 +314,7 @@ public class WindowManager implements IWindowManagerExt {
         }
     }
 
+    @Override
     public void showResultsDialog(BattleCompletedEvent event) {
         final ResultsDialog dialog = Container.getComponent(ResultsDialog.class);
 
@@ -294,6 +322,7 @@ public class WindowManager implements IWindowManagerExt {
         packCenterShow(dialog, true);
     }
 
+    @Override
     public void showRankingDialog(boolean visible) {
         boolean currentRankingHideState = properties.getOptionsCommonDontHideRankings();
 
@@ -323,6 +352,7 @@ public class WindowManager implements IWindowManagerExt {
         oldRankingHideState = currentRankingHideState;
     }
 
+    @Override
     public void showRobocodeEditor() {
         JFrame editor = (JFrame) net.sf.robocode.core.Container.getComponent(IRobocodeEditor.class);
 
@@ -333,6 +363,7 @@ public class WindowManager implements IWindowManagerExt {
         }
     }
 
+    @Override
     public void showRobotPackager() {
         if (robotPackager != null) {
             robotPackager.dispose();
@@ -343,6 +374,7 @@ public class WindowManager implements IWindowManagerExt {
         WindowUtil.packCenterShow(robotPackager);
     }
 
+    @Override
     public void showRobotExtractor(JFrame owner) {
         if (robotExtractor != null) {
             robotExtractor.dispose();
@@ -353,6 +385,7 @@ public class WindowManager implements IWindowManagerExt {
         WindowUtil.packCenterShow(robotExtractor);
     }
 
+    @Override
     public void showSplashScreen() {
         RcSplashScreen splashScreen = Container.getComponent(RcSplashScreen.class);
 
@@ -371,6 +404,7 @@ public class WindowManager implements IWindowManagerExt {
         splashScreen.dispose();
     }
 
+    @Override
     public void showNewBattleDialog(BattleProperties battleProperties, boolean openBattle) {
         try {
             battleManager.pauseBattle();
@@ -383,18 +417,21 @@ public class WindowManager implements IWindowManagerExt {
         }
     }
 
+    @Override
     public boolean closeRobocodeEditor() {
         IRobocodeEditor editor = net.sf.robocode.core.Container.getComponent(IRobocodeEditor.class);
 
         return editor == null || !((JFrame) editor).isVisible() || editor.close();
     }
 
+    @Override
     public void showCreateTeamDialog() {
         TeamCreator teamCreator = Container.getComponent(TeamCreator.class);
 
         WindowUtil.packCenterShow(teamCreator);
     }
 
+    @Override
     public void showImportRobotDialog() {
         JFileChooser chooser = new JFileChooser();
 
@@ -486,6 +523,7 @@ public class WindowManager implements IWindowManagerExt {
         }
     }
 
+    @Override
     public void showSaveResultsDialog(BattleResultsTableModel tableModel) {
         JFileChooser chooser = new JFileChooser();
 
@@ -546,16 +584,19 @@ public class WindowManager implements IWindowManagerExt {
         window.setVisible(true);
     }
 
+    @Override
     public void cleanup() {
         if (isGUIEnabled()) {
             getRobocodeFrame().dispose();
         }
     }
 
+    @Override
     public void setStatus(String s) {
         WindowUtil.setStatus(s);
     }
 
+    @Override
     public void messageWarning(String s) {
         WindowUtil.messageWarning(s);
     }
@@ -567,6 +608,7 @@ public class WindowManager implements IWindowManagerExt {
         return robotDialogManager;
     }
 
+    @Override
     public void init() {
         setLookAndFeel();
         imageManager.initialize(); // Make sure this one is initialized so all images are available
@@ -603,6 +645,7 @@ public class WindowManager implements IWindowManagerExt {
         }
     }
 
+    @Override
     public void runIntroBattle() {
         final File intro = new File(FileUtil.getCwd(), "battles/intro.battle");
 
@@ -623,6 +666,7 @@ public class WindowManager implements IWindowManagerExt {
         }
     }
 
+    @Override
     public void setVisibleForRobotEngine(boolean visible) {
         if (visible && !isGUIEnabled()) {
             // The GUI must be enabled in order to show the window

@@ -11,6 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.battle;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.swing.*;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
@@ -18,14 +25,6 @@ import net.sf.robocode.io.Logger;
 import robocode.control.events.*;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Pavel Savara (original)
@@ -59,6 +58,7 @@ public final class AwtBattleAdaptor {
         observer = new BattleObserver();
     }
 
+    @Override
     protected void finalize() throws Throwable {
         try {
             timerTask.stop();
@@ -165,6 +165,7 @@ public final class AwtBattleAdaptor {
 
     private class TimerTask implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             awtOnTurnEnded(false, true);
         }
@@ -191,6 +192,7 @@ public final class AwtBattleAdaptor {
                 if (text != null && text.length() != 0) {
                     robot.setOutputStreamSnapshot(null);
                     EventQueue.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             synchronized (snapshot) {
                                 outCache[r].append(text);
@@ -201,6 +203,7 @@ public final class AwtBattleAdaptor {
             }
             if (isPaused.get()) {
                 EventQueue.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         awtOnTurnEnded(false, true);
                     }
@@ -215,6 +218,7 @@ public final class AwtBattleAdaptor {
             }
             majorEvent.incrementAndGet();
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     awtOnTurnEnded(true, false);
                     battleEventDispatcher.onRoundStarted(event);
@@ -227,6 +231,7 @@ public final class AwtBattleAdaptor {
         public void onBattleStarted(final BattleStartedEvent event) {
             majorEvent.incrementAndGet();
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     isRunning.set(true);
                     isPaused.set(false);
@@ -249,6 +254,7 @@ public final class AwtBattleAdaptor {
         public void onBattleFinished(final BattleFinishedEvent event) {
             majorEvent.incrementAndGet();
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     isRunning.set(false);
                     isPaused.set(false);
@@ -270,6 +276,7 @@ public final class AwtBattleAdaptor {
         public void onBattleCompleted(final BattleCompletedEvent event) {
             majorEvent.incrementAndGet();
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     battleEventDispatcher.onBattleCompleted(event);
                     lastMajorEvent.incrementAndGet();
@@ -282,6 +289,7 @@ public final class AwtBattleAdaptor {
         public void onRoundEnded(final RoundEndedEvent event) {
             majorEvent.incrementAndGet();
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     battleEventDispatcher.onRoundEnded(event);
                     lastMajorEvent.incrementAndGet();
@@ -293,6 +301,7 @@ public final class AwtBattleAdaptor {
         @Override
         public void onBattlePaused(final BattlePausedEvent event) {
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     timerTask.stop();
                     battleEventDispatcher.onBattlePaused(event);
@@ -305,6 +314,7 @@ public final class AwtBattleAdaptor {
         @Override
         public void onBattleResumed(final BattleResumedEvent event) {
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     battleEventDispatcher.onBattleResumed(event);
                     if (isRunning.get()) {
@@ -318,6 +328,7 @@ public final class AwtBattleAdaptor {
         @Override
         public void onBattleMessage(final BattleMessageEvent event) {
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     battleEventDispatcher.onBattleMessage(event);
                 }
@@ -327,6 +338,7 @@ public final class AwtBattleAdaptor {
         @Override
         public void onBattleError(final BattleErrorEvent event) {
             EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     battleEventDispatcher.onBattleError(event);
                 }

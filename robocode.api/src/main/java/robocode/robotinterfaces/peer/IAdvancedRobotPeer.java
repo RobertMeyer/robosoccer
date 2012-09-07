@@ -13,10 +13,9 @@
  *******************************************************************************/
 package robocode.robotinterfaces.peer;
 
-import robocode.*;
-
 import java.io.File;
 import java.util.List;
+import robocode.*;
 
 /**
  * The advanced robot peer for advanced robot types like

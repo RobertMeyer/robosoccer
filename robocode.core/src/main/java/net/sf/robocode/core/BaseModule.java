@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class BaseModule implements IModule {
 
+    @Override
     public void afterLoaded(List<IModule> allModules) {
     }
 }

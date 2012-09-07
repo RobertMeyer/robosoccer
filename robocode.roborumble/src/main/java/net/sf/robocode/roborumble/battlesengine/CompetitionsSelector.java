@@ -18,11 +18,10 @@ package net.sf.robocode.roborumble.battlesengine;
 
 import codesize.Codesize;
 import codesize.Codesize.Item;
-import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
-import static net.sf.robocode.roborumble.util.PropertiesUtil.storeProperties;
-
 import java.io.File;
 import java.util.Properties;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.storeProperties;
 
 /**
  * This class is used to control which competitions a robot is allowed to

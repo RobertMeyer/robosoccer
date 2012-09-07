@@ -13,13 +13,12 @@
  *******************************************************************************/
 package robocode.control.events;
 
-import robocode.BattleResults;
-import robocode.BattleRules;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import robocode.BattleResults;
+import robocode.BattleRules;
 
 /**
  * A BattleCompletedEvent is sent to {@link IBattleListener#onBattleCompleted(BattleCompletedEvent)

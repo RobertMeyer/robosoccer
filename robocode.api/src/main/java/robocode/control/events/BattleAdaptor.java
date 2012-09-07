@@ -50,66 +50,77 @@ public abstract class BattleAdaptor implements IBattleListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattleStarted(final BattleStartedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattleFinished(final BattleFinishedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattleCompleted(final BattleCompletedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattlePaused(final BattlePausedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattleResumed(final BattleResumedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onRoundStarted(final RoundStartedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onRoundEnded(final RoundEndedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onTurnStarted(final TurnStartedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onTurnEnded(final TurnEndedEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattleMessage(final BattleMessageEvent event) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onBattleError(final BattleErrorEvent event) {
     }
 }

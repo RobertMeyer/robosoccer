@@ -11,14 +11,20 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.io.URLJarCollector;
+import net.sf.robocode.repository.items.BaseItem;
 import net.sf.robocode.repository.items.IItem;
 import net.sf.robocode.repository.items.RobotItem;
 import net.sf.robocode.repository.items.TeamItem;
-import net.sf.robocode.repository.items.BaseItem;
 import net.sf.robocode.repository.packager.JarCreator;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsListener;
@@ -26,13 +32,6 @@ import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.RobotSpecification;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Pavel Savara (original)
@@ -50,10 +49,12 @@ public class RepositoryManager implements IRepositoryManager {
     // ------------------------------------------
     // interfaces
     // ------------------------------------------
+    @Override
     public File getRobotsDirectory() {
         return FileUtil.getRobotsDir();
     }
 
+    @Override
     public List<File> getDevelDirectories() {
         List<File> develDirectories = new ArrayList<File>();
 
@@ -67,6 +68,7 @@ public class RepositoryManager implements IRepositoryManager {
         return develDirectories;
     }
 
+    @Override
     public void refresh(String file) {
         if (!db.update(file, true)) {
             refresh(true);
@@ -74,10 +76,12 @@ public class RepositoryManager implements IRepositoryManager {
         URLJarCollector.gc();
     }
 
+    @Override
     public boolean refresh() {
         return refresh(false);
     }
 
+    @Override
     public boolean refresh(boolean force) {
         boolean refreshed = db.update(getRobotsDirectory(), getDevelDirectories(), force);
 
@@ -92,6 +96,7 @@ public class RepositoryManager implements IRepositoryManager {
         return refreshed;
     }
 
+    @Override
     public void reload(boolean forced) {
         // Bug fix [2867326] - Lockup on start if too many bots in robots dir (cont'd).
         URLJarCollector.enableGc(true);
@@ -112,6 +117,7 @@ public class RepositoryManager implements IRepositoryManager {
         setStatus("");
     }
 
+    @Override
     public RobotSpecification[] getSpecifications() {
         checkDbExists();
         final Collection<IRepositoryItem> list = db.getAllSpecifications();
@@ -128,6 +134,7 @@ public class RepositoryManager implements IRepositoryManager {
      * @param selectedRobots, names of robots and teams, comma separated
      * @return robots in teams
      */
+    @Override
     public RobotSpecification[] loadSelectedRobots(RobotSpecification[] selectedRobots) {
         checkDbExists();
         Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
@@ -150,6 +157,7 @@ public class RepositoryManager implements IRepositoryManager {
      * @param selectedRobots, names of robots and teams, comma separated
      * @return robots in teams
      */
+    @Override
     public RobotSpecification[] loadSelectedRobots(String selectedRobots) {
         checkDbExists();
         Collection<RobotSpecification> battlingRobotsList = new ArrayList<RobotSpecification>();
@@ -217,21 +225,25 @@ public class RepositoryManager implements IRepositoryManager {
         return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
     }
 
+    @Override
     public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
         checkDbExists();
         return db.getSelectedSpecifications(selectedRobots);
     }
 
+    @Override
     public List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar) {
         checkDbExists();
         return db.filterSpecifications(onlyWithSource, onlyWithPackage, onlyRobots, onlyDevelopment, onlyNotDevelopment,
                                        onlyInJar);
     }
 
+    @Override
     public boolean verifyRobotName(String robotName, String shortClassName) {
         return RobotItem.verifyRobotName(robotName, shortClassName, true);
     }
 
+    @Override
     public int extractJar(IRepositoryItem item) {
         if (!item.isInJAR()) {
             return -2;
@@ -240,6 +252,7 @@ public class RepositoryManager implements IRepositoryManager {
         return 0;
     }
 
+    @Override
     public void createTeam(File target, URL web, String desc, String author, String members, String teamVersion) throws IOException {
         checkDbExists();
         final String ver = Container.getComponent(IVersionManager.class).getVersion();
@@ -248,6 +261,7 @@ public class RepositoryManager implements IRepositoryManager {
         refresh(target.toURI().toString());
     }
 
+    @Override
     public String createPackage(File target, URL web, String desc, String author, String version, boolean source, List<IRepositoryItem> selectedRobots) {
         checkDbExists();
         final List<RobotItem> robots = db.expandTeams(selectedRobots);
@@ -292,6 +306,7 @@ public class RepositoryManager implements IRepositoryManager {
 
         private Collection<String> lastEnabledDevelPaths;
 
+        @Override
         public void settingChanged(String property) {
             if (property.equals(ISettingsManager.OPTIONS_DEVELOPMENT_PATH)
                     || property.equals(ISettingsManager.OPTIONS_DEVELOPMENT_PATH_EXCLUDED)) {

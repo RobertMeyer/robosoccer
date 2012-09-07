@@ -53,15 +53,17 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import java.io.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
-import net.sf.robocode.mode.ClassicMode;
 import static net.sf.robocode.io.Logger.logError;
 import static net.sf.robocode.io.Logger.logMessage;
+import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.recording.BattlePlayer;
 import net.sf.robocode.recording.IRecordManager;
 import net.sf.robocode.repository.IRepositoryManager;
@@ -73,9 +75,6 @@ import robocode.control.RobotSpecification;
 import robocode.control.events.BattlePausedEvent;
 import robocode.control.events.BattleResumedEvent;
 import robocode.control.events.IBattleListener;
-
-import java.io.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -110,6 +109,7 @@ public class BattleManager implements IBattleManager {
         Logger.setLogListener(battleEventDispatcher);
     }
 
+    @Override
     public synchronized void cleanup() {
         if (battle != null) {
             battle.waitTillOver();
@@ -119,6 +119,7 @@ public class BattleManager implements IBattleManager {
     }
 
     // Called when starting a new battle from GUI
+    @Override
     public void startNewBattle(BattleProperties battleProperties, boolean waitTillOver, boolean enableCLIRecording) {
         this.battleProperties = battleProperties;
         final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(battleProperties.getSelectedRobots());
@@ -127,6 +128,7 @@ public class BattleManager implements IBattleManager {
     }
 
     // Called from the RobocodeEngine
+    @Override
     public void startNewBattle(BattleSpecification spec, String initialPositions, boolean waitTillOver, boolean enableCLIRecording) {
         battleProperties = new BattleProperties();
         battleProperties.setBattlefieldWidth(spec.getBattlefield().getWidth());
@@ -197,6 +199,7 @@ public class BattleManager implements IBattleManager {
         }
     }
 
+    @Override
     public void waitTillOver() {
         if (battle != null) {
             battle.waitTillOver();
@@ -227,10 +230,12 @@ public class BattleManager implements IBattleManager {
         battleThread.start();
     }
 
+    @Override
     public String getBattleFilename() {
         return battleFilename;
     }
 
+    @Override
     public void setBattleFilename(String newBattleFilename) {
         if (newBattleFilename != null) {
             battleFilename = newBattleFilename.replace((File.separatorChar == '/') ? '\\' : '/', File.separatorChar);
@@ -247,6 +252,7 @@ public class BattleManager implements IBattleManager {
         }
     }
 
+    @Override
     public String getBattlePath() {
         if (battlePath == null) {
             battlePath = System.getProperty("BATTLEPATH");
@@ -258,6 +264,7 @@ public class BattleManager implements IBattleManager {
         return battlePath;
     }
 
+    @Override
     public void saveBattleProperties() {
         if (battleProperties == null) {
             logError("Cannot save null battle properties");
@@ -280,6 +287,7 @@ public class BattleManager implements IBattleManager {
         }
     }
 
+    @Override
     public BattleProperties loadBattleProperties() {
         BattleProperties res = new BattleProperties();
         FileInputStream in = null;
@@ -297,6 +305,7 @@ public class BattleManager implements IBattleManager {
         return res;
     }
 
+    @Override
     public BattleProperties getBattleProperties() {
         if (battleProperties == null) {
             battleProperties = new BattleProperties();
@@ -304,37 +313,45 @@ public class BattleManager implements IBattleManager {
         return battleProperties;
     }
 
+    @Override
     public void setDefaultBattleProperties() {
         battleProperties = new BattleProperties();
     }
 
+    @Override
     public boolean isManagedTPS() {
         return isManagedTPS.get();
     }
 
+    @Override
     public void setManagedTPS(boolean value) {
         isManagedTPS.set(value);
     }
 
+    @Override
     public synchronized void addListener(IBattleListener listener) {
         battleEventDispatcher.addListener(listener);
     }
 
+    @Override
     public synchronized void removeListener(IBattleListener listener) {
         battleEventDispatcher.removeListener(listener);
     }
 
+    @Override
     public synchronized void stop(boolean waitTillEnd) {
         if (battle != null && battle.isRunning()) {
             battle.stop(waitTillEnd);
         }
     }
 
+    @Override
     public synchronized void restart() {
         // Start new battle. The old battle is automatically stopped
         startNewBattle(battleProperties, false, false);
     }
 
+    @Override
     public synchronized void replay() {
         replayBattle();
     }
@@ -343,6 +360,7 @@ public class BattleManager implements IBattleManager {
         return (pauseCount != 0);
     }
 
+    @Override
     public synchronized void togglePauseResumeBattle() {
         if (isPaused()) {
             resumeBattle();
@@ -351,6 +369,7 @@ public class BattleManager implements IBattleManager {
         }
     }
 
+    @Override
     public synchronized void pauseBattle() {
         if (++pauseCount == 1) {
             if (battle != null && battle.isRunning()) {
@@ -361,6 +380,7 @@ public class BattleManager implements IBattleManager {
         }
     }
 
+    @Override
     public synchronized void pauseIfResumedBattle() {
         if (pauseCount == 0) {
             pauseCount++;
@@ -372,6 +392,7 @@ public class BattleManager implements IBattleManager {
         }
     }
 
+    @Override
     public synchronized void resumeIfPausedBattle() {
         if (pauseCount == 1) {
             pauseCount--;
@@ -383,6 +404,7 @@ public class BattleManager implements IBattleManager {
         }
     }
 
+    @Override
     public synchronized void resumeBattle() {
         if (--pauseCount < 0) {
             pauseCount = 0;
@@ -399,36 +421,42 @@ public class BattleManager implements IBattleManager {
     /**
      * Steps for a single turn, then goes back to paused
      */
+    @Override
     public synchronized void nextTurn() {
         if (battle != null && battle.isRunning()) {
             battle.step();
         }
     }
 
+    @Override
     public synchronized void prevTurn() {
         if (battle != null && battle.isRunning() && battle instanceof BattlePlayer) {
             ((BattlePlayer) battle).stepBack();
         }
     }
 
+    @Override
     public synchronized void killRobot(int robotIndex) {
         if (battle != null && battle.isRunning() && battle instanceof Battle) {
             ((Battle) battle).killRobot(robotIndex);
         }
     }
 
+    @Override
     public synchronized void setPaintEnabled(int robotIndex, boolean enable) {
         if (battle != null && battle.isRunning()) {
             battle.setPaintEnabled(robotIndex, enable);
         }
     }
 
+    @Override
     public synchronized void setSGPaintEnabled(int robotIndex, boolean enable) {
         if (battle != null && battle.isRunning() && battle instanceof Battle) {
             ((Battle) battle).setSGPaintEnabled(robotIndex, enable);
         }
     }
 
+    @Override
     public synchronized void sendInteractiveEvent(Event event) {
         if (battle != null && battle.isRunning() && !isPaused() && battle instanceof Battle) {
             ((Battle) battle).sendInteractiveEvent(event);

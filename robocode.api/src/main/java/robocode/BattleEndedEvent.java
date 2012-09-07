@@ -13,15 +13,16 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Event;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicEvents2;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
 
 /**
  * A BattleEndedEvent is sent to {@link Robot#onBattleEnded(BattleEndedEvent)
@@ -122,6 +123,7 @@ public final class BattleEndedEvent extends Event {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             BattleEndedEvent obj = (BattleEndedEvent) object;
 
@@ -129,6 +131,7 @@ public final class BattleEndedEvent extends Event {
                     + serializer.sizeOf(RbSerializer.BattleResults_TYPE, obj.results);
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             BattleEndedEvent obj = (BattleEndedEvent) object;
 
@@ -136,6 +139,7 @@ public final class BattleEndedEvent extends Event {
             serializer.serialize(buffer, RbSerializer.BattleResults_TYPE, obj.results);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             boolean aborted = serializer.deserializeBoolean(buffer);
             BattleResults results = (BattleResults) serializer.deserializeAny(buffer);

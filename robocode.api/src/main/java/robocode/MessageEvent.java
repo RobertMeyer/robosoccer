@@ -13,13 +13,13 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import java.io.Serializable;
 import net.sf.robocode.peer.IRobotStatics;
+import robocode.Event;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.ITeamEvents;
 import robocode.robotinterfaces.ITeamRobot;
-
-import java.awt.*;
-import java.io.Serializable;
 
 /**
  * A MessageEvent is sent to {@link TeamRobot#onMessageReceived(MessageEvent)

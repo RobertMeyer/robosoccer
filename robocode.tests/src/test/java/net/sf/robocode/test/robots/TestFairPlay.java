@@ -13,8 +13,8 @@ package net.sf.robocode.test.robots;
 
 import junit.framework.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IScoreSnapshot;
@@ -30,10 +30,12 @@ public class TestFairPlay extends RobocodeTestBed {
     ITurnSnapshot lastTurnSnapshot;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
 
+    @Override
     public String getRobotNames() {
         return "tested.robots.FairPlay,tested.robots.FairPlay";
     }

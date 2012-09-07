@@ -24,6 +24,11 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
+import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.HashMap;
+import java.util.Map;
 import net.sf.robocode.host.IHostedThread;
 import net.sf.robocode.host.IThreadManager;
 import net.sf.robocode.io.Logger;
@@ -31,12 +36,6 @@ import static net.sf.robocode.io.Logger.logError;
 import static net.sf.robocode.io.Logger.logMessage;
 import static net.sf.robocode.io.Logger.logWarning;
 import robocode.exception.RobotException;
-
-import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -72,6 +71,7 @@ public class RobotThreadManager {
     public void initAWT() {
         if (awtForThreadGroup == null) {
             awtForThreadGroup = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
                 public Object run() {
                     return createNewAppContext();
                 }
@@ -314,6 +314,7 @@ public class RobotThreadManager {
             // seconds, and thus causes the cleanup of a battle to hang, which is annoying when trying to restart
             // a battle.
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     Disposal disposal = disposeAppContextThreadMap.get(Thread.currentThread());
 

@@ -11,6 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.test.host.security;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.core.EngineClassLoader;
 import net.sf.robocode.host.security.RobotClassLoader;
@@ -18,10 +21,6 @@ import net.sf.robocode.security.HiddenAccess;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * @author Pavel Savara (original)

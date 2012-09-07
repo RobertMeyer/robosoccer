@@ -11,13 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.core;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import robocode.control.events.IBattleListener;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import robocode.control.events.IBattleListener;
 
 /**
  * There are entrypoints called with reflection from HiddenAccess in robocode.api module,
@@ -44,6 +43,7 @@ public abstract class RobocodeMainBase implements Runnable {
 
         // Make sure ALL uncaught exceptions are logged
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override
             public void uncaughtException(Thread t, Throwable e) {
                 Logger.logError("UncaughtException on thread " + t.getClass(), e);
             }

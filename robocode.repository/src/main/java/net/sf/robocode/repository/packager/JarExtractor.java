@@ -11,20 +11,19 @@
  *******************************************************************************/
 package net.sf.robocode.repository.packager;
 
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.FileOutputStream;
-import java.util.jar.JarInputStream;
-import java.util.jar.JarEntry;
-import java.net.URLConnection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
 
 /**
  * @author Pavel Savara (original)

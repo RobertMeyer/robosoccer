@@ -11,12 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
+import javax.swing.*;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
-
-import javax.swing.*;
 
 /**
  * @author Pavel Savara (original)
@@ -27,6 +26,7 @@ public class TestAwtAttack extends RobocodeTestBed {
     boolean messagedBreakthru;
 
     @Test
+    @Override
     public void run() {
         super.run();
     }
@@ -69,6 +69,7 @@ public class TestAwtAttack extends RobocodeTestBed {
     protected void runTeardown() {
 
         Runnable doCheck = new Runnable() {
+            @Override
             public void run() {
                 Logger.logMessage("works still!!!");
             }

@@ -13,11 +13,10 @@
  *******************************************************************************/
 package robocode.robotinterfaces.peer;
 
-import robocode.MessageEvent;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import robocode.MessageEvent;
 
 /**
  * The team robot peer for team robots like {@link robocode.TeamRobot}.

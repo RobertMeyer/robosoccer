@@ -17,14 +17,13 @@
  *******************************************************************************/
 package net.sf.robocode.ui.packager;
 
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.ui.dialog.WizardPanel;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.List;
+import javax.swing.*;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.ui.dialog.WizardPanel;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -41,17 +40,21 @@ public class ConfirmPanel extends WizardPanel {
 
     private class EventHandler implements ComponentListener {
 
+        @Override
         public void componentMoved(ComponentEvent e) {
         }
 
+        @Override
         public void componentResized(ComponentEvent e) {
         }
 
+        @Override
         public void componentHidden(ComponentEvent e) {
             visible = false;
             fireStateChanged();
         }
 
+        @Override
         public void componentShown(ComponentEvent e) {
             if (robotPackager == null) {
                 return;
@@ -94,7 +97,7 @@ public class ConfirmPanel extends WizardPanel {
     public void setSelectedRobots(List<IRepositoryItem> selectedRobots) {
         getRobotListPanel().removeAll();
 
-        if (selectedRobots == null || selectedRobots.size() == 0) {
+        if (selectedRobots == null || selectedRobots.isEmpty()) {
             getRobotListPanel().add(new JLabel("You have not yet selected any robots."));
         } else if (selectedRobots.size() == 1) {
             String robotName = (selectedRobots.get(0)).getFullClassName();

@@ -36,6 +36,7 @@
  *******************************************************************************/
 package robocode.control;
 
+import java.io.File;
 import net.sf.robocode.battle.IBattleManagerBase;
 import net.sf.robocode.core.ContainerBase;
 import net.sf.robocode.gui.IWindowManagerBase;
@@ -45,8 +46,6 @@ import net.sf.robocode.manager.IVersionManagerBase;
 import net.sf.robocode.repository.IRepositoryManagerBase;
 import net.sf.robocode.security.HiddenAccess;
 import robocode.control.events.*;
-
-import java.io.File;
 
 /**
  * The RobocodeEngine is the interface provided for external applications
@@ -165,6 +164,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addBattleListener(IBattleListener listener) {
         ContainerBase.getComponent(IBattleManagerBase.class).addListener(listener);
     }
@@ -172,6 +172,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeBattleListener(IBattleListener listener) {
         ContainerBase.getComponent(IBattleManagerBase.class).removeListener(listener);
     }
@@ -179,6 +180,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void close() {
         setVisible(false);
         if (battleObserver != null) {
@@ -190,6 +192,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getVersion() {
         return ContainerBase.getComponent(IVersionManagerBase.class).getVersion();
     }
@@ -219,6 +222,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setVisible(boolean visible) {
         ContainerBase.getComponent(IWindowManagerBase.class).setVisibleForRobotEngine(visible);
     }
@@ -226,6 +230,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public RobotSpecification[] getLocalRepository() {
         final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
 
@@ -236,6 +241,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public RobotSpecification[] getLocalRepository(String selectedRobots) {
         final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
 
@@ -246,6 +252,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void runBattle(BattleSpecification battleSpecification) {
         runBattle(battleSpecification, null, false);
     }
@@ -253,6 +260,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void runBattle(BattleSpecification battleSpecification, boolean waitTillOver) {
         runBattle(battleSpecification, null, waitTillOver);
     }
@@ -260,6 +268,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void runBattle(BattleSpecification battleSpecification, String initialPositions, boolean waitTillOver) {
         this.battleSpecification = battleSpecification;
         ContainerBase.getComponent(IBattleManagerBase.class).startNewBattle(battleSpecification, initialPositions,
@@ -269,6 +278,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void waitTillBattleOver() {
         ContainerBase.getComponent(IBattleManagerBase.class).waitTillOver();
     }
@@ -276,6 +286,7 @@ public class RobocodeEngine implements IRobocodeEngine {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void abortCurrentBattle() {
         ContainerBase.getComponent(IBattleManagerBase.class).stop(true);
     }

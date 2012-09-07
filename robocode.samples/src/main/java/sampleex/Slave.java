@@ -27,14 +27,17 @@ class Slave extends AdvancedRobot {
         this.parent = parent;
     }
 
+    @Override
     public void run() {
         parent.run();
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         parent.onScannedRobot(e);
     }
 
+    @Override
     public void onHitByBullet(HitByBulletEvent e) {
         parent.onHitByBullet(e);
     }

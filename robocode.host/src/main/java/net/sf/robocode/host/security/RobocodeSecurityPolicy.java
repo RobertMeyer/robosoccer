@@ -20,19 +20,18 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
-import net.sf.robocode.core.Container;
-import net.sf.robocode.host.IHostedThread;
-import net.sf.robocode.host.IThreadManager;
-import net.sf.robocode.host.io.RobotFileSystemManager;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.repository.IRepositoryManager;
-
 import java.io.File;
 import java.io.FilePermission;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.*;
 import java.util.*;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.host.IHostedThread;
+import net.sf.robocode.host.IThreadManager;
+import net.sf.robocode.host.io.RobotFileSystemManager;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.IRepositoryManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -90,6 +89,7 @@ public class RobocodeSecurityPolicy extends Policy {
         }
 
         return AccessController.doPrivileged(new PrivilegedAction<PermissionCollection>() {
+            @Override
             public PermissionCollection run() {
                 return parentPolicy.getPermissions(codeSource);
             }
@@ -108,6 +108,7 @@ public class RobocodeSecurityPolicy extends Policy {
         }
 
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
             public Boolean run() {
                 return impliesRobot(permission);
             }

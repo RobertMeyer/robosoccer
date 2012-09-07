@@ -11,17 +11,16 @@
  *******************************************************************************/
 package net.sf.robocode.version;
 
-import net.sf.robocode.io.FileUtil;
-import static net.sf.robocode.io.Logger.logError;
-import static net.sf.robocode.io.Logger.logMessage;
-import static net.sf.robocode.io.Logger.logWarning;
-import net.sf.robocode.settings.ISettingsManager;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import net.sf.robocode.io.FileUtil;
+import static net.sf.robocode.io.Logger.logError;
+import static net.sf.robocode.io.Logger.logMessage;
+import static net.sf.robocode.io.Logger.logWarning;
+import net.sf.robocode.settings.ISettingsManager;
 
 /**
  * @author Pavel Savara (original)
@@ -48,6 +47,7 @@ public final class VersionManager implements IVersionManager {
         }
     }
 
+    @Override
     public String checkForNewVersion() {
         String newVersLine = null;
         InputStream inputStream = null;
@@ -89,6 +89,7 @@ public final class VersionManager implements IVersionManager {
         return newVersLine;
     }
 
+    @Override
     public String getVersion() {
         return getVersionInstance().toString();
     }
@@ -100,16 +101,19 @@ public final class VersionManager implements IVersionManager {
         return version;
     }
 
+    @Override
     public boolean isLastRunVersionChanged() {
         return versionChanged;
     }
 
+    @Override
     public String getVersionN() {
         Version v = getVersionInstance();
 
         return v.getMajor() + "." + v.getMinor() + "." + v.getRevision() + "." + v.getBuild();
     }
 
+    @Override
     public int getVersionAsInt() {
         Version v = getVersionInstance();
 

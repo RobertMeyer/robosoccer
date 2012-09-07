@@ -16,6 +16,7 @@ package tested.robots;
  */
 public class ReverseDirection extends robocode.AdvancedRobot {
 
+    @Override
     public void run() {
         setAhead(Double.POSITIVE_INFINITY);
         setMaxVelocity(1.0);

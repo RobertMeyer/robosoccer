@@ -13,12 +13,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-import java.awt.Window;
 import net.sf.robocode.io.FileUtil;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -71,7 +69,7 @@ public class BrowserManager {
 
             // Build a command string which looks like
             // "browser1 "url" || browser2 "url" || ..."
-            StringBuffer cmd = new StringBuffer();
+            StringBuilder cmd = new StringBuilder();
 
             for (int i = 0; i < browsers.length; i++) {
                 cmd.append((i == 0 ? "" : " || ") + browsers[i] + " \"" + url + "\" ");

@@ -13,11 +13,10 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;
-
-import java.awt.*;
 
 /**
  * SpinBot - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -29,6 +28,7 @@ public class SpinBot extends AdvancedRobot {
     /**
      * SpinBot's run method - Circle
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(Color.blue);
@@ -52,6 +52,7 @@ public class SpinBot extends AdvancedRobot {
     /**
      * onScannedRobot: Fire hard!
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(3);
     }
@@ -60,6 +61,7 @@ public class SpinBot extends AdvancedRobot {
      * onHitRobot:  If it's our fault, we'll stop turning and moving,
      * so we need to turn again to keep spinning.
      */
+    @Override
     public void onHitRobot(HitRobotEvent e) {
         if (e.getBearing() > -10 && e.getBearing() < 10) {
             fire(3);

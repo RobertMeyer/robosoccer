@@ -19,8 +19,6 @@
  *******************************************************************************/
 package net.sf.robocode.installer;
 
-import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +27,7 @@ import java.net.URL;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import javax.swing.*;
 
 /**
  * Installer for Robocode.
@@ -50,10 +49,10 @@ public class AutoExtract implements ActionListener {
     private static double doubleValue(String s) {
         s = s.replaceAll("[^.0-9]", ""); // Remove invalid characters, e.g. "3.0-ARCH" become "3.0"
 
-        int p = s.indexOf(".");
+        int p = s.indexOf('.');
 
         if (p >= 0) {
-            p = s.indexOf(".", p + 1);
+            p = s.indexOf('.', p + 1);
         }
         if (p >= 0) {
             s = s.substring(0, p);
@@ -71,7 +70,7 @@ public class AutoExtract implements ActionListener {
     }
 
     private boolean acceptLicense() {
-        StringBuffer licenseText = new StringBuffer();
+        StringBuilder licenseText = new StringBuilder();
 
         InputStream is;
 
@@ -163,6 +162,7 @@ public class AutoExtract implements ActionListener {
         return accepted;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         accepted = e.getActionCommand().equals("Accept");
         licenseDialog.dispose();
@@ -435,6 +435,7 @@ public class AutoExtract implements ActionListener {
 
         if (libs.exists()) {
             final File[] del = libs.listFiles(new FilenameFilter() {
+                @Override
                 public boolean accept(File dir, String name) {
                     String test = name.toLowerCase();
 
@@ -642,7 +643,7 @@ public class AutoExtract implements ActionListener {
     }
 
     private static String createWindowsRegistryFileAssociation(String installDir, String fileExt, String progId, String description, String robocodeCmdParam) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         final String HKCR = "[HKEY_CLASSES_ROOT\\";
 
@@ -661,7 +662,7 @@ public class AutoExtract implements ActionListener {
     }
 
     private static String escaped(String s) {
-        StringBuffer eascaped = new StringBuffer();
+        StringBuilder eascaped = new StringBuilder();
 
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == '\\') {

@@ -18,6 +18,7 @@ import java.lang.reflect.*;
  */
 public class ReflectionAttack extends robocode.AdvancedRobot {
 
+    @Override
     public void run() {
         try {
             Field field = System.class.getField("out");

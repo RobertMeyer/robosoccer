@@ -11,8 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.battleview;
 
-import net.sf.robocode.ui.gfx.GraphicsState;
-
 import java.awt.*;
 import java.awt.RenderingHints.Key;
 import java.awt.font.FontRenderContext;
@@ -25,6 +23,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
+import net.sf.robocode.ui.gfx.GraphicsState;
 
 /**
  * This class is a Graphics2D wrapper class used for mirroring graphics on

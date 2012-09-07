@@ -26,10 +26,9 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
+import java.util.List;
 import robocode.BattleRules;
 import robocode.control.snapshot.BulletState;
-
-import java.util.List;
 
 /**
  * @author Mathew A. Nelson (original)

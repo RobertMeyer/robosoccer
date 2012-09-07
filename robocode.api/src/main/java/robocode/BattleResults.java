@@ -13,10 +13,9 @@
  *******************************************************************************/
 package robocode;
 
+import java.nio.ByteBuffer;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
-
-import java.nio.ByteBuffer;
 
 /**
  * Contains the battle results returned by {@link BattleEndedEvent#getResults()}
@@ -214,6 +213,7 @@ public class BattleResults implements java.io.Serializable,
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(BattleResults o) {
         return ((Double) score).compareTo(o.score);
     }
@@ -254,6 +254,7 @@ public class BattleResults implements java.io.Serializable,
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             BattleResults obj = (BattleResults) object;
 
@@ -261,6 +262,7 @@ public class BattleResults implements java.io.Serializable,
                     + 7 * RbSerializer.SIZEOF_DOUBLE;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             BattleResults obj = (BattleResults) object;
 
@@ -280,6 +282,7 @@ public class BattleResults implements java.io.Serializable,
             serializer.serialize(buffer, obj.thirds);
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String teamLeaderName = serializer.deserializeString(buffer);
             int rank = buffer.getInt();

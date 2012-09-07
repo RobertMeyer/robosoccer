@@ -13,8 +13,8 @@
  *******************************************************************************/
 package robocode;
 
-import static java.lang.Math.toRadians;
 import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
 
 /**
  * This advanced robot type allows you to set a rate for each of the robot's movements.

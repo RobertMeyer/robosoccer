@@ -40,14 +40,13 @@
  *******************************************************************************/
 package net.sf.robocode.host.events;
 
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.host.proxies.BasicRobotProxy;
 import net.sf.robocode.security.HiddenAccess;
 import robocode.*;
 import robocode.exception.EventInterruptedException;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -106,10 +105,12 @@ public class EventManager implements IEventManager {
         }
     }
 
+    @Override
     public void addCustomEvent(Condition condition) {
         customEvents.add(condition);
     }
 
+    @Override
     public void clearAllEvents(boolean includingSystemEvents) {
         eventQueue.clear(includingSystemEvents);
         // customEvents.clear(); // Custom event should not be cleared here
@@ -147,6 +148,7 @@ public class EventManager implements IEventManager {
      * @see Event
      * @see List
      */
+    @Override
     public List<Event> getAllEvents() {
         List<Event> events = Collections.synchronizedList(new ArrayList<Event>());
 
@@ -172,6 +174,7 @@ public class EventManager implements IEventManager {
      * @see BulletHitBulletEvent
      * @see List
      */
+    @Override
     public List<BulletHitBulletEvent> getBulletHitBulletEvents() {
         List<BulletHitBulletEvent> events = Collections.synchronizedList(new ArrayList<BulletHitBulletEvent>());
 
@@ -199,6 +202,7 @@ public class EventManager implements IEventManager {
      * @see BulletHitEvent
      * @see List
      */
+    @Override
     public List<BulletHitEvent> getBulletHitEvents() {
         List<BulletHitEvent> events = Collections.synchronizedList(new ArrayList<BulletHitEvent>());
 
@@ -226,6 +230,7 @@ public class EventManager implements IEventManager {
      * @see BulletMissedEvent
      * @see List
      */
+    @Override
     public List<BulletMissedEvent> getBulletMissedEvents() {
         List<BulletMissedEvent> events = Collections.synchronizedList(new ArrayList<BulletMissedEvent>());
 
@@ -261,6 +266,7 @@ public class EventManager implements IEventManager {
      * @see HitByBulletEvent
      * @see List
      */
+    @Override
     public List<HitByBulletEvent> getHitByBulletEvents() {
         List<HitByBulletEvent> events = Collections.synchronizedList(new ArrayList<HitByBulletEvent>());
 
@@ -288,6 +294,7 @@ public class EventManager implements IEventManager {
      * @see HitRobotEvent
      * @see List
      */
+    @Override
     public List<HitRobotEvent> getHitRobotEvents() {
         List<HitRobotEvent> events = Collections.synchronizedList(new ArrayList<HitRobotEvent>());
 
@@ -315,6 +322,7 @@ public class EventManager implements IEventManager {
      * @see HitWallEvent
      * @see List
      */
+    @Override
     public List<HitWallEvent> getHitWallEvents() {
         List<HitWallEvent> events = Collections.synchronizedList(new ArrayList<HitWallEvent>());
 
@@ -354,6 +362,7 @@ public class EventManager implements IEventManager {
      * @see RobotDeathEvent
      * @see List
      */
+    @Override
     public List<RobotDeathEvent> getRobotDeathEvents() {
         List<RobotDeathEvent> events = Collections.synchronizedList(new ArrayList<RobotDeathEvent>());
 
@@ -385,6 +394,7 @@ public class EventManager implements IEventManager {
      * @see ScannedRobotEvent
      * @see List
      */
+    @Override
     public List<ScannedRobotEvent> getScannedRobotEvents() {
         List<ScannedRobotEvent> events = Collections.synchronizedList(new ArrayList<ScannedRobotEvent>());
 
@@ -487,6 +497,7 @@ public class EventManager implements IEventManager {
         }
     }
 
+    @Override
     public void removeCustomEvent(Condition condition) {
         customEvents.remove(condition);
     }
@@ -523,6 +534,7 @@ public class EventManager implements IEventManager {
      * @see MessageEvent
      * @since 1.2.6
      */
+    @Override
     public List<MessageEvent> getMessageEvents() {
         List<MessageEvent> events = Collections.synchronizedList(new ArrayList<MessageEvent>());
 
@@ -565,6 +577,7 @@ public class EventManager implements IEventManager {
         return events;
     }
 
+    @Override
     public int getEventPriority(String eventClass) {
         if (eventClass == null) {
             return -1;
@@ -577,6 +590,7 @@ public class EventManager implements IEventManager {
         return event.getPriority();
     }
 
+    @Override
     public void setEventPriority(String eventClass, int priority) {
         if (eventClass == null) {
             return;

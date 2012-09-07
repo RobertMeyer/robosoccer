@@ -19,6 +19,7 @@ import robocode.AdvancedRobot;
  */
 public class GunHeat extends AdvancedRobot {
 
+    @Override
     public void run() {
         while (true) {
             setFireBullet(3.0);

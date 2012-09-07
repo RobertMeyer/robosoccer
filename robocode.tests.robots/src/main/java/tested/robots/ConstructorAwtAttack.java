@@ -11,10 +11,10 @@
  *******************************************************************************/
 package tested.robots;
 
-import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.swing.*;
 
 /**
  * @author Flemming N. Larsen (original)
@@ -28,6 +28,7 @@ public class ConstructorAwtAttack extends robocode.AdvancedRobot {
     private void awtAttack() {
         try {
             Runnable doHack = new Runnable() {
+                @Override
                 public void run() {
                     writeAttack();
 

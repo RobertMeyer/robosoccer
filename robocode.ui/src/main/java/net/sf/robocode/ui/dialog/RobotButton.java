@@ -18,6 +18,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.ui.IRobotDialogManager;
 import net.sf.robocode.ui.IWindowManager;
@@ -30,11 +34,6 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -80,6 +79,7 @@ public class RobotButton extends JButton implements ActionListener {
         }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (robotDialog == null) {
             attach();
@@ -214,6 +214,7 @@ public class RobotButton extends JButton implements ActionListener {
             }
         }
 
+        @Override
         public void onBattleCompleted(final BattleCompletedEvent event) {
             maxScore = 0;
             for (BattleResults team : event.getIndexedResults()) {
@@ -228,6 +229,7 @@ public class RobotButton extends JButton implements ActionListener {
             repaint();
         }
 
+        @Override
         public void onBattleFinished(final BattleFinishedEvent event) {
             lastEnergy = 0;
             repaint();

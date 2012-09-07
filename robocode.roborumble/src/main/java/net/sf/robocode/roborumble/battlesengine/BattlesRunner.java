@@ -23,15 +23,14 @@
  *******************************************************************************/
 package net.sf.robocode.roborumble.battlesengine;
 
+import java.io.*;
+import java.util.*;
 import net.sf.robocode.io.Logger;
 import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 import robocode.control.*;
 import robocode.control.events.BattleAdaptor;
 import robocode.control.events.BattleCompletedEvent;
 import robocode.control.events.BattleErrorEvent;
-
-import java.io.*;
-import java.util.*;
 
 /**
  * The BattlesRunner is running battles.
@@ -66,10 +65,10 @@ public class BattlesRunner {
         user = parameters.getProperty("USER", "");
 
         game = propertiesfile;
-        while (game.indexOf("/") != -1) {
-            game = game.substring(game.indexOf("/") + 1);
+        while (game.indexOf('/') != -1) {
+            game = game.substring(game.indexOf('/') + 1);
         }
-        game = game.substring(0, game.indexOf("."));
+        game = game.substring(0, game.indexOf('.'));
 
         initialize();
     }

@@ -12,17 +12,16 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-import net.sf.robocode.host.RobotStatics;
+import java.io.*;
+import java.util.List;
 import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.serialization.RobocodeObjectInputStream;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.peer.TeamMessage;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import robocode.MessageEvent;
 import robocode.robotinterfaces.peer.ITeamRobotPeer;
-
-import java.io.*;
-import java.util.List;
 
 /**
  * @author Pavel Savara (original)
@@ -38,11 +37,13 @@ public class TeamRobotProxy extends AdvancedRobotProxy implements ITeamRobotPeer
     }
 
     // team
+    @Override
     public String[] getTeammates() {
         getCall();
         return statics.getTeammates();
     }
 
+    @Override
     public boolean isTeammate(String name) {
         getCall();
         if (name != null) { // Bugfix [2960870]
@@ -62,10 +63,12 @@ public class TeamRobotProxy extends AdvancedRobotProxy implements ITeamRobotPeer
         return false;
     }
 
+    @Override
     public void broadcastMessage(Serializable message) throws IOException {
         sendMessage(null, message);
     }
 
+    @Override
     public void sendMessage(String name, Serializable message) throws IOException {
         setCall();
 
@@ -123,6 +126,7 @@ public class TeamRobotProxy extends AdvancedRobotProxy implements ITeamRobotPeer
     }
 
     // events
+    @Override
     public List<MessageEvent> getMessageEvents() {
         getCall();
         return eventManager.getMessageEvents();

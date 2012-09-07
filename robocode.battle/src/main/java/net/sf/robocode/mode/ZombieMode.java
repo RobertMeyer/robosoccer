@@ -16,6 +16,7 @@ public class ZombieMode extends ClassicMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
         return description;
     }

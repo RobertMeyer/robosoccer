@@ -18,8 +18,6 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
-import net.sf.robocode.io.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -27,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import net.sf.robocode.io.Logger;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -250,7 +249,7 @@ public class ClassAnalyzer {
         for (Integer classNameIndex : classNameIndexes) {
             String className = strings[classNameIndex].replace('\\', '.').replace('/', '.');
 
-            if (className.indexOf("[") != 0 && !collection.contains(className)) {
+            if (className.indexOf('[') != 0 && !collection.contains(className)) {
                 collection.add(className);
             }
         }

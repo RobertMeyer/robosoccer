@@ -19,7 +19,6 @@
 package robocode.control;
 
 import java.io.File;
-
 import net.sf.robocode.security.IHiddenSpecificationHelper;
 
 /**
@@ -166,19 +165,23 @@ public class RobotSpecification implements java.io.Serializable {
 
     private static class HiddenHelper implements IHiddenSpecificationHelper {
 
+        @Override
         public RobotSpecification createSpecification(Object fileSpecification, String name, String author, String webpage, String version, String robocodeVersion, String jarFile, String fullClassName, String description) {
             return new RobotSpecification(fileSpecification, name, author, webpage, version, robocodeVersion, jarFile,
                                           fullClassName, description);
         }
 
+        @Override
         public Object getFileSpecification(RobotSpecification specification) {
             return specification.fileSpecification;
         }
 
+        @Override
         public void setTeamName(RobotSpecification specification, String teamName) {
             specification.teamId = teamName;
         }
 
+        @Override
         public String getTeamName(RobotSpecification specification) {
             return specification.teamId;
         }

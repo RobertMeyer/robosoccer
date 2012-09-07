@@ -11,12 +11,11 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
-import robocode.control.RobotSpecification;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import robocode.control.RobotSpecification;
 
 /**
  * @author Pavel Savara (original)

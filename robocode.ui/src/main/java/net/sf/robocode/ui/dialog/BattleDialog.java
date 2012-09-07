@@ -11,6 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.StringWriter;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
@@ -18,15 +26,6 @@ import net.sf.robocode.serialization.XmlWriter;
 import net.sf.robocode.ui.IWindowManager;
 import robocode.control.events.*;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.StringWriter;
 
 /**
  * @author Pavel Savara (original)
@@ -131,6 +130,7 @@ public class BattleDialog extends JFrame {
         return button;
     }
     private final transient ActionListener eventHandler = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
 
@@ -151,6 +151,7 @@ public class BattleDialog extends JFrame {
             tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
             tabbedPane.addChangeListener(new ChangeListener() {
+                @Override
                 public void stateChanged(ChangeEvent e) {
                     paintSnapshot = (tabbedPane.getSelectedIndex() == 1);
                     paintSnapshot();
@@ -230,6 +231,7 @@ public class BattleDialog extends JFrame {
             paintSnapshot();
         }
 
+        @Override
         public void onBattleStarted(final BattleStartedEvent event) {
             reset();
         }

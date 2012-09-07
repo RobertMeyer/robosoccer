@@ -13,12 +13,11 @@
  *******************************************************************************/
 package sample;
 
+import java.awt.*;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 import robocode.WinEvent;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
-
-import java.awt.*;
 
 /**
  * TrackFire - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -30,6 +29,7 @@ public class TrackFire extends Robot {
     /**
      * TrackFire's run method
      */
+    @Override
     public void run() {
         // Set colors
         setBodyColor(Color.pink);
@@ -47,6 +47,7 @@ public class TrackFire extends Robot {
     /**
      * onScannedRobot:  We have a target.  Go get it.
      */
+    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         // Calculate exact location of the robot
         double absoluteBearing = getHeading() + e.getBearing();
@@ -74,6 +75,7 @@ public class TrackFire extends Robot {
         }
     }
 
+    @Override
     public void onWin(WinEvent e) {
         // Victory dance
         turnRight(36000);

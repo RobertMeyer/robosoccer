@@ -14,7 +14,6 @@ package net.sf.robocode.ui.editor;
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.Rectangle;
-
 import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -52,14 +51,17 @@ public class LineNumberArea extends JTextArea {
 
         int lastNumLines = 1;
 
+        @Override
         public void insertUpdate(DocumentEvent e) {
             updateText(e.getDocument());
         }
 
+        @Override
         public void removeUpdate(DocumentEvent e) {
             updateText(e.getDocument());
         }
 
+        @Override
         public void changedUpdate(DocumentEvent e) {
             updateText(e.getDocument());
         }
@@ -74,6 +76,7 @@ public class LineNumberArea extends JTextArea {
             lastNumLines = numLines;
 
             SwingUtilities.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     final Rectangle visibleRect = getVisibleRect();
 
@@ -82,6 +85,7 @@ public class LineNumberArea extends JTextArea {
 
                     // Must be done this way to keep aligned with scroll bar!
                     SwingUtilities.invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             scrollRectToVisible(visibleRect);
                             setIgnoreRepaint(false); // avoid flickering

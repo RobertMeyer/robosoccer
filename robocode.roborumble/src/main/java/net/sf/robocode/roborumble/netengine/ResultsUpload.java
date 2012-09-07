@@ -20,14 +20,13 @@
  *******************************************************************************/
 package net.sf.robocode.roborumble.netengine;
 
-import net.sf.robocode.roborumble.battlesengine.CompetitionsSelector;
-import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
-
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.ArrayList;
+import net.sf.robocode.roborumble.battlesengine.CompetitionsSelector;
+import static net.sf.robocode.roborumble.util.PropertiesUtil.getProperties;
 
 /**
  * Class used for uploading results to a server.
@@ -65,10 +64,10 @@ public class ResultsUpload {
         game = propertiesfile;
         String botsrepository = parameters.getProperty("BOTSREP", "");
 
-        while (game.indexOf("/") != -1) {
-            game = game.substring(game.indexOf("/") + 1);
+        while (game.indexOf('/') != -1) {
+            game = game.substring(game.indexOf('/') + 1);
         }
-        game = game.substring(0, game.indexOf("."));
+        game = game.substring(0, game.indexOf('.'));
         sizesfile = parameters.getProperty("CODESIZEFILE", "");
         minibots = parameters.getProperty("MINIBOTS", "");
         microbots = parameters.getProperty("MICROBOTS", "");
@@ -89,7 +88,7 @@ public class ResultsUpload {
 
         // Read the results file
 
-        Vector<String> results = new Vector<String>();
+        ArrayList<String> results = new ArrayList<String>();
         String match = "";
         String bot1 = "";
         String bot2;
@@ -244,7 +243,7 @@ public class ResultsUpload {
         System.out.println("Unable to upload results " + match + " " + bot1 + " " + bot2);
     }
 
-    private boolean senddata(String game, String data, PrintStream outtxt, boolean saveonerror, Vector<String> results, int i, PrintStream battlesnum, PrintStream prioritybattles) {
+    private boolean senddata(String game, String data, PrintStream outtxt, boolean saveonerror, ArrayList<String> results, int i, PrintStream battlesnum, PrintStream prioritybattles) {
         boolean errorsfound = false;
         PrintWriter wr = null;
         BufferedReader rd = null;
@@ -267,15 +266,15 @@ public class ResultsUpload {
                 if (line.indexOf("OK") != -1) {
                     ok = true;
                     System.out.println(line);
-                } else if (line.indexOf("<") != -1 && line.indexOf(">") != -1) {
+                } else if (line.indexOf('<') != -1 && line.indexOf('>') != -1) {
                     // System.out.println(line);
                     // Save the number of battles for the bots into battlesnum !!!!!!!!!!!!!
                     String bot1 = results.get(i * 3 + 1);
 
-                    bot1 = bot1.substring(0, bot1.indexOf(","));
+                    bot1 = bot1.substring(0, bot1.indexOf(','));
                     String bot2 = results.get(i * 3 + 2);
 
-                    bot2 = bot2.substring(0, bot2.indexOf(","));
+                    bot2 = bot2.substring(0, bot2.indexOf(','));
                     line = line.replaceAll("<", "");
                     line = line.replaceAll(">", "");
                     String[] b = line.split(" ");
@@ -284,14 +283,14 @@ public class ResultsUpload {
                         battlesnum.println(game + "," + bot1 + "," + b[0]);
                         battlesnum.println(game + "," + bot2 + "," + b[1]);
                     }
-                } else if (line.indexOf("[") != -1 && line.indexOf("]") != -1) {
+                } else if (line.indexOf('[') != -1 && line.indexOf(']') != -1) {
                     line = line.substring(1);
                     line = line.substring(0, line.length() - 1);
                     String[] items = line.split(",");
-                    String bot1 = items[0].substring(0, items[0].lastIndexOf("_")) + " "
-                            + items[0].substring(items[0].lastIndexOf("_") + 1);
-                    String bot2 = items[1].substring(0, items[1].lastIndexOf("_")) + " "
-                            + items[1].substring(items[1].lastIndexOf("_") + 1);
+                    String bot1 = items[0].substring(0, items[0].lastIndexOf('_')) + " "
+                            + items[0].substring(items[0].lastIndexOf('_') + 1);
+                    String bot2 = items[1].substring(0, items[1].lastIndexOf('_')) + " "
+                            + items[1].substring(items[1].lastIndexOf('_') + 1);
                     String battle = bot1 + "," + bot2 + "," + "SERVER";
 
                     if (prioritybattles != null) {

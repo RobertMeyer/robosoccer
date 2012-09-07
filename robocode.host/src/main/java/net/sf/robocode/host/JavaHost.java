@@ -11,26 +11,25 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
-import net.sf.robocode.host.security.RobotClassLoader;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.lang.reflect.Method;
+import java.security.AccessControlException;
 import net.sf.robocode.host.proxies.*;
+import net.sf.robocode.host.security.RobotClassLoader;
+import net.sf.robocode.io.Logger;
+import static net.sf.robocode.io.Logger.logError;
+import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.repository.RobotType;
-import static net.sf.robocode.io.Logger.logError;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.security.HiddenAccess;
 import robocode.Droid;
 import robocode.Robot;
 import robocode.control.RobotSpecification;
 import robocode.robotinterfaces.*;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.*;
-import java.security.AccessControlException;
-import java.lang.reflect.Method;
 
 /**
  * @author Pavel Savara (original)
@@ -41,6 +40,7 @@ public class JavaHost implements IHost {
         return new RobotClassLoader(robotRepositoryItem.getClassPathURL(), robotRepositoryItem.getFullClassName());
     }
 
+    @Override
     public IHostingRobotProxy createRobotProxy(IHostManager hostManager, RobotSpecification robotSpecification, IRobotStatics statics, IRobotPeer peer) {
         IHostingRobotProxy robotProxy;
         final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
@@ -60,6 +60,7 @@ public class JavaHost implements IHost {
         return robotProxy;
     }
 
+    @Override
     public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
         IRobotClassLoader loader = null;
 
@@ -78,6 +79,7 @@ public class JavaHost implements IHost {
         }
     }
 
+    @Override
     public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
         IRobotClassLoader loader = null;
 

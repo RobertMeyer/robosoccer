@@ -13,16 +13,16 @@
  *******************************************************************************/
 package robocode;
 
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.security.SafeComponent;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.IInteractiveEvents;
 import robocode.robotinterfaces.IInteractiveRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
 
 /**
  * A MouseWheelMovedEvent is sent to {@link Robot#onMouseWheelMoved(java.awt.event.MouseWheelEvent e)
@@ -88,10 +88,12 @@ public final class MouseWheelMovedEvent extends MouseEvent {
 
     private static class SerializableHelper implements ISerializableHelper {
 
+        @Override
         public int sizeOf(RbSerializer serializer, Object object) {
             return RbSerializer.SIZEOF_TYPEINFO + 8 * RbSerializer.SIZEOF_INT + RbSerializer.SIZEOF_LONG;
         }
 
+        @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             MouseWheelMovedEvent obj = (MouseWheelMovedEvent) object;
             java.awt.event.MouseWheelEvent src = (java.awt.event.MouseWheelEvent) obj.getSourceEvent();
@@ -107,6 +109,7 @@ public final class MouseWheelMovedEvent extends MouseEvent {
             serializer.serialize(buffer, src.getWhen());
         }
 
+        @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             int clickCount = buffer.getInt();
             int x = buffer.getInt();

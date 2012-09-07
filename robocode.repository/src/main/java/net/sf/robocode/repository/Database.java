@@ -11,6 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.*;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.repository.items.IItem;
@@ -19,10 +22,6 @@ import net.sf.robocode.repository.items.TeamItem;
 import net.sf.robocode.repository.root.BaseRoot;
 import net.sf.robocode.repository.root.IRepositoryRoot;
 import net.sf.robocode.repository.root.handlers.RootHandler;
-
-import java.io.*;
-import java.net.URLDecoder;
-import java.util.*;
 
 /**
  * @author Pavel Savara (original)

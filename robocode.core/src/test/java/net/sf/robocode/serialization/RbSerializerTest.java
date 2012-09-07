@@ -11,6 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.serialization;
 
+import java.awt.*;
+import java.awt.geom.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.swing.*;
 import net.sf.robocode.peer.BulletCommand;
 import net.sf.robocode.peer.DebugProperty;
 import net.sf.robocode.peer.ExecCommands;
@@ -21,13 +27,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import robocode.util.Utils;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * @author Pavel Savara (original)

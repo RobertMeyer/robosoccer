@@ -37,12 +37,11 @@
  */
 package net.sf.robocode.host.jarjar;
 
-import net.sf.robocode.io.URLJarCollector;
-import net.sf.robocode.io.JarJar;
-
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.*;
+import net.sf.robocode.io.JarJar;
+import net.sf.robocode.io.URLJarCollector;
 
 /**
  * @author Pavel Savara
@@ -67,6 +66,7 @@ public class JarJarURLConnection extends URLConnection {
         connection = URLJarCollector.openConnection(inner);
     }
 
+    @Override
     public void connect() throws IOException {
         if (!connected) {
             connection.connect();
@@ -74,6 +74,7 @@ public class JarJarURLConnection extends URLConnection {
         }
     }
 
+    @Override
     public InputStream getInputStream() throws IOException {
         connect();
         return connection.getInputStream();
@@ -89,6 +90,7 @@ public class JarJarURLConnection extends URLConnection {
     public static class JarJarURLStreamHandlerFactory implements
             URLStreamHandlerFactory {
 
+        @Override
         public URLStreamHandler createURLStreamHandler(String protocol) {
             if (protocol.equals("jarjar")) {
                 return new JarJarURLStreamHandler();
@@ -99,6 +101,7 @@ public class JarJarURLConnection extends URLConnection {
 
     public static class JarJarURLStreamHandler extends URLStreamHandler {
 
+        @Override
         protected URLConnection openConnection(URL u) throws IOException {
             return new JarJarURLConnection(u);
         }
@@ -117,6 +120,7 @@ public class JarJarURLConnection extends URLConnection {
         }
 
         @SuppressWarnings({"deprecation"})
+        @Override
         protected void parseURL(URL url, String spec,
                                 int start, int limit) {
             String file = null;

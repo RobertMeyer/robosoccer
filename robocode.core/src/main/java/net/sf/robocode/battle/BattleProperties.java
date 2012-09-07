@@ -15,17 +15,16 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-import robocode.AdvancedRobot;
-import robocode.Robot;
-import robocode.control.RobotSpecification;
-import net.sf.robocode.mode.*;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Properties;
+import net.sf.robocode.mode.*;
+import robocode.AdvancedRobot;
+import robocode.Robot;
+import robocode.control.RobotSpecification;
 
 /**
  * @author Mathew A. Nelson (original)

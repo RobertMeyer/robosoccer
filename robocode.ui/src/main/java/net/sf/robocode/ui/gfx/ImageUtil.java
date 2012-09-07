@@ -11,15 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.gfx;
 
-import net.sf.robocode.io.Logger;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.RGBImageFilter;
 import java.io.IOException;
 import java.net.URL;
+import javax.imageio.ImageIO;
+import net.sf.robocode.io.Logger;
 
 /**
  * Class used for utilizing images.
