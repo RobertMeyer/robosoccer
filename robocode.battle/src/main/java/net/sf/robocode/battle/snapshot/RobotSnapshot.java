@@ -16,8 +16,12 @@ package net.sf.robocode.battle.snapshot;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.peer.DebugProperty;
 import net.sf.robocode.peer.ExecCommands;
@@ -25,6 +29,8 @@ import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
+import robocode.EquipmentPart;
+import robocode.EquipmentSlot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.RobotState;
@@ -97,6 +103,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private String outputStreamSnapshot;
     /** Snapshot of score of the robot */
     private IScoreSnapshot robotScoreSnapshot;
+    
+    private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
 
     /**
      * Creates a snapshot of a robot that must be filled out with data later.
@@ -127,6 +135,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
         velocity = robot.getVelocity();
         gunHeat = robot.getGunHeat();
 
+        equipment = robot.getEquipment();
+        
         bodyHeading = robot.getBodyHeading();
         gunHeading = robot.getGunHeading();
         radarHeading = robot.getRadarHeading();
@@ -182,7 +192,15 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     public String getShortName() {
         return shortName;
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+		return equipment;
+	}
+    
     /**
      * {@inheritDoc}
      */
