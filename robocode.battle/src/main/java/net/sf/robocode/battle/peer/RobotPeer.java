@@ -1837,8 +1837,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     /**
      * @return a collection of all equipment parts equipped to the robot
      */
-    public Collection<EquipmentPart> getEquipment() {
-        return equipment.get().values();
+    public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+        return equipment;
     }
 
     /**
