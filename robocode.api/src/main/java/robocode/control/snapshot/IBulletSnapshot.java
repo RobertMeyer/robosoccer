@@ -13,6 +13,7 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
+
 /**
  * Interface of a bullet snapshot at a specific time in a battle.
  *
@@ -29,6 +30,14 @@ public interface IBulletSnapshot {
      * @return the bullet state.
      */
     BulletState getState();
+    
+    /**
+     * Returns the path to the bullets sound file, and null if there is none,
+     * as it would be with normal robots
+     *
+     * @return the path to bullet sound file.
+     */
+    String getBulletSound();
 
     /**
      * Returns the bullet power.

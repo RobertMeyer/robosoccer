@@ -22,6 +22,7 @@ import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
+import robocode.EquipmentSlot;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.IBulletSnapshot;
 
@@ -61,6 +62,8 @@ public final class BulletSnapshot implements java.io.Serializable,
     private int victimIndex = -1;
     private int ownerIndex;
     private double heading;
+    private String bulletPath;
+    private RobotPeer owner;
 
     /**
      * Creates a snapshot of a bullet that must be filled out with data later.
@@ -81,6 +84,8 @@ public final class BulletSnapshot implements java.io.Serializable,
      */
     public BulletSnapshot(BulletPeer bullet) {
         state = bullet.getState();
+        
+        owner = bullet.getOwner(); //Returns the robotpeer of the robot who fired the bullet
 
         power = bullet.getPower();
 
@@ -108,6 +113,13 @@ public final class BulletSnapshot implements java.io.Serializable,
         ownerIndex = bullet.getOwner().getRobotIndex();
 
         heading = bullet.getHeading();
+        
+        try{
+        	bulletPath = owner.getEquipment().get().get(EquipmentSlot.WEAPON).getSoundPath();
+        	}
+        catch(NullPointerException e){
+        	bulletPath = null;
+        }
     }
 
     @Override
@@ -227,6 +239,14 @@ public final class BulletSnapshot implements java.io.Serializable,
     public int getOwnerIndex() {
         return ownerIndex;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public String getBulletSound() {
+		return bulletPath;
+	}
 
     /**
      * {@inheritDoc}
