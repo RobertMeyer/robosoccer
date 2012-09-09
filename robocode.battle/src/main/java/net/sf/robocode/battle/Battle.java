@@ -181,7 +181,7 @@ public final class Battle extends BaseBattle {
                                                battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
         robotsCount = battlingRobotsList.length;
 
-        battleMode = battleProperties.getBattleMode();
+        battleMode = (ClassicMode) battleProperties.getBattleMode();
         
         computeInitialPositions(battleProperties.getInitialPositions());
         createPeers(battlingRobotsList);
