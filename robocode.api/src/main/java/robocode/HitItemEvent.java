@@ -13,7 +13,7 @@ import robocode.robotinterfaces.IBasicRobot;
  * when your robot collides with an item.
  * You can use the information contained in this event to determine what to do.
  * 
- * TODO create onHitItem() method in Robot
+ * TODO serializables, addition of tracked variables that may have been missed
  * 
  * @author Ameer Sabri
  *
