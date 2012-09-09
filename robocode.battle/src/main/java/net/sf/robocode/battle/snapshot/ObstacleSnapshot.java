@@ -15,15 +15,13 @@ package net.sf.robocode.battle.snapshot;
 
 
 import net.sf.robocode.battle.peer.BulletPeer;
-import net.sf.robocode.battle.peer.ExplosionPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlWriter;
-import robocode.control.snapshot.BulletState;
-import robocode.control.snapshot.IBulletSnapshot;
+import robocode.control.snapshot.IObstacleSnapshot;
 
 import java.io.IOException;
 
@@ -35,21 +33,21 @@ import java.io.IOException;
  * @author Michael Tsai
  * 
  */
-public final class ObstacleSnapshot implements java.io.Serializable, IXmlSerializable, IBulletSnapshot {
+public final class ObstacleSnapshot implements java.io.Serializable, IXmlSerializable, IObstacleSnapshot {
 
 	private static final long serialVersionUID = 2L;
-
-	/** The bullet state */
-	private BulletState state;
-
-	/** The bullet power */
-	private double power;
 
 	/** The x position */
 	private double x;
 
 	/** The y position */
 	private double y;
+	
+	/** Obstacle Width */
+	private double width;
+	
+	/** Obstacle Height */
+	private double height;
 
 	/** The x painting position (due to offset on robot when bullet hits a robot) */
 	private double paintX;
@@ -60,33 +58,15 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	/** The ARGB color of the bullet */
 	private int color = ExecCommands.defaultBulletColor;
 
-	/** The current frame number to display, i.e. when the bullet explodes */
-	private int frame;
-
-	/** Flag specifying if this bullet has turned into an explosion */
-	private boolean isExplosion;
-
-	/** Index to which explosion image that must be rendered */
-	private int explosionImageIndex;
-
-	private int bulletId;
+	private int obstacleId;
 
 	private int victimIndex = -1;
-    
-	private int ownerIndex;
-
-	private double heading;
 
 	/**
 	 * Creates a snapshot of a bullet that must be filled out with data later.
 	 */
 	public ObstacleSnapshot() {
-		state = BulletState.INACTIVE;
-		ownerIndex = -1;
 		victimIndex = -1;
-		explosionImageIndex = -1;
-		heading = Double.NaN;
-		power = Double.NaN;
 	}
 
 	/**
@@ -95,10 +75,6 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	 * @param bullet the bullet to make a snapshot of.
 	 */
 	public ObstacleSnapshot(BulletPeer bullet) {
-		state = bullet.getState();
-
-		power = bullet.getPower();
-
 		x = bullet.getX();
 		y = bullet.getY();
 
@@ -107,49 +83,18 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 
 		color = bullet.getColor();
 
-		frame = bullet.getFrame();
-
-		isExplosion = (bullet instanceof ExplosionPeer);
-		explosionImageIndex = bullet.getExplosionImageIndex();
-
-		bulletId = bullet.getBulletId();
+		obstacleId = bullet.getBulletId();
 
 		final RobotPeer victim = bullet.getVictim();
 
 		if (victim != null) {
 			victimIndex = victim.getRobotIndex();
 		}
-
-		ownerIndex = bullet.getOwner().getRobotIndex();
-
-		heading = bullet.getHeading();
 	}
 
 	@Override
 	public String toString() {
-		return ownerIndex + "-" + bulletId + " (" + (int) power + ") X" + (int) x + " Y" + (int) y + " "
-				+ state.toString();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getBulletId() {
-		return bulletId;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public BulletState getState() {
-		return state;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getPower() {
-		return power;
+		return "";
 	}
 
 	/**
@@ -187,34 +132,7 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 		return color;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getFrame() {
-		return frame;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isExplosion() {
-		return isExplosion;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getExplosionImageIndex() {
-		return explosionImageIndex;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getHeading() {
-		return heading;
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -225,15 +143,8 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getOwnerIndex() {
-		return ownerIndex;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
-		writer.startElement(options.shortAttributes ? "b" : "bullet"); {
+		/*writer.startElement(options.shortAttributes ? "b" : "bullet"); {
 			writer.writeAttribute("id", ownerIndex + "-" + bulletId);
 			if (!options.skipExploded || state != BulletState.MOVING) {
 				writer.writeAttribute(options.shortAttributes ? "s" : "state", state.toString());
@@ -267,14 +178,15 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 				writer.writeAttribute("ver", serialVersionUID);
 			}
 		}
-		writer.endElement();
+		writer.endElement();*/
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public XmlReader.Element readXml(XmlReader reader) {
-		return reader.expect("bullet", "b", new XmlReader.Element() {
+		return null;
+		/*return reader.expect("bullet", "b", new XmlReader.Element() {
 			public IXmlSerializable read(XmlReader reader) {
 				final ObstacleSnapshot snapshot = new ObstacleSnapshot();
 
@@ -359,6 +271,21 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 				});
 				return snapshot;
 			}
-		});
+		});*/
+	}
+
+	@Override
+	public double getHeight() {
+		return 0;
+	}
+
+	@Override
+	public double getWidth() {
+		return 0;
+	}
+
+	@Override
+	public int getObstacleId() {
+		return obstacleId;
 	}
 }
