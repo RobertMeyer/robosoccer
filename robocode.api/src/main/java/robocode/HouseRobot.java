@@ -13,6 +13,7 @@
  *******************************************************************************/
 package robocode;
 
+import robocode.exception.BoundaryException;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IHouseRobot;
 
@@ -32,21 +33,23 @@ import robocode.robotinterfaces.IHouseRobot;
 public class HouseRobot extends AdvancedRobot implements IHouseRobot,
                                                          IAdvancedEvents {
 	private HouseRobotBoundary boundaries;
+	private boolean boundariesSet;
 	
 	/**
 	 * Constructs a new House Robot
 	 * @see HouseRobotBoundary
-	 * @deprecated Use {@link HouseRobot#HouseRobot(HouseRobotBoundary boundaries)}
 	 */
 	public HouseRobot() {
 		HouseRobotBoundary boundaries = new HouseRobotBoundary(0,0,0,100,0,100);
 		this.boundaries = boundaries;
+		boundariesSet = false;
 	}
 	
 	/**
 	 * Constructs a new House Robot
 	 * @param boundaries Boundaries for this House Robot, defined in {@link HouseRobotBoundary}
 	 * @see HouseRobotBoundary
+	 * @deprecated Use {@link HouseRobot#HouseRobot()} and {@link HouseRobot#setBoundaries(HouseRobotBoundary boundaries}
 	 */
 	public HouseRobot(HouseRobotBoundary boundaries) {
 		this.boundaries = boundaries;
@@ -58,6 +61,19 @@ public class HouseRobot extends AdvancedRobot implements IHouseRobot,
 	 */
 	public HouseRobotBoundary getBoundaries() {
 		return this.boundaries;
+	}
+	
+	/**
+	 * 
+	 * @param boundaries
+	 */
+	protected void setBoundaries(HouseRobotBoundary boundaries) {
+		if(boundariesSet) {
+			throw new BoundaryException("Cannot set boundaries a second time.");
+		} else {
+			boundariesSet = true;
+			this.boundaries = boundaries;
+		}
 	}
 	
 }
