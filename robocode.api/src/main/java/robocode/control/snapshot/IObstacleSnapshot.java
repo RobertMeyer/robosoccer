@@ -1,33 +1,30 @@
 package robocode.control.snapshot;
 
 /**
- * Interface of a bullet snapshot at a specific time in a battle.
- * 
- * @author Pavel Savara (original)
- * @author Flemming N. Larsen (contributor)
+ * Interface of an obstacle snapshot at a specific time in a battle.
  *
  * @since 1.6.2
  */
 public interface IObstacleSnapshot {
 
 	/**
-	 * Returns the bullet state.
+	 * Returns the obstacle state.
 	 *
-	 * @return the bullet state.
+	 * @return the obstacle state.
 	 */
-	BulletState getState();
+	//BulletState getState();
 
 	/**
 	 * Returns the bullet power.
 	 *
 	 * @return the bullet power.
 	 */
-	double getPower();
+	//double getPower();
 
 	/**
-	 * Returns the X position of the bullet.
+	 * Returns the X position of the obstacle.
 	 *
-	 * @return the X position of the bullet.
+	 * @return the X position of the obstacle.
 	 */
 	double getX();
 
@@ -37,6 +34,20 @@ public interface IObstacleSnapshot {
 	 * @return the Y position of the bullet.
 	 */
 	double getY();
+	
+	/**
+	 * Returns the height of the obstacle.
+	 *
+	 * @return the height of the obstacle.
+	 */
+	double getHeight();
+	
+	/**
+	 * Returns the width of the bullet.
+	 *
+	 * @return the width of the bullet.
+	 */
+	double getWidth();
 
 	/**
 	 * Returns the X painting position of the bullet.
@@ -68,56 +79,20 @@ public interface IObstacleSnapshot {
 	int getColor();
 
 	/**
-	 * Returns the current frame number to display, i.e. when the bullet explodes.
+	 * Returns the ID of the obstacle used for identifying the obstacle in a collection of obstacles.
 	 *
-	 * @return the current frame number.
-	 * 
-	 * @see #isExplosion()
-	 * @see #getExplosionImageIndex()
+	 * @return the ID of the obstacle.
 	 */
-	int getFrame();
-
-	/**
-	 * Checks if the bullet has become an explosion, i.e. when it a robot or bullet has been hit.
-	 *
-	 * @return {@code true} if the bullet is an explosion; {@code false} otherwise.
-	 * 
-	 * @see #getFrame()
-	 * @see #getExplosionImageIndex()
-	 */
-	boolean isExplosion();
-
-	/**
-	 * Returns the explosion image index, which is different depending on the type of explosion.
-	 * E.g. if it is a small explosion on a robot that has been hit by this bullet,
-	 * or a big explosion when a robot dies.
-	 *
-	 * @return the explosion image index.
-	 * 
-	 * @see #isExplosion()
-	 * @see #getExplosionImageIndex()
-	 */
-	int getExplosionImageIndex();
-
-	/**
-	 * Returns the ID of the bullet used for identifying the bullet in a collection of bullets.
-	 *
-	 * @return the ID of the bullet.
-	 */
-	int getBulletId();
+	int getObstacleId();
 
 	/**
 	 * @return heading of the bullet
 	 */
-	double getHeading();
+	//double getHeading();
 
 	/**
-	 * @return contestantIndex of the victim, or -1 if still in air
+	 * @return contestantIndex of the victim, or -1 if no one hit the obstacle
 	 */
+	//might need this for obstacles that deals damage (i.e. spiked walls)
 	int getVictimIndex();
-
-	/**
-	 * @return contestantIndex of the owner
-	 */
-	int getOwnerIndex();
 }
