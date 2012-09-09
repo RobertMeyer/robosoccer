@@ -9,13 +9,6 @@ package robocode.control.snapshot;
 public interface IObstacleSnapshot {
 
 	/**
-	 * Returns the bullet power.
-	 *
-	 * @return the bullet power.
-	 */
-	//double getPower();
-
-	/**
 	 * Returns the X position of the obstacle.
 	 *
 	 * @return the X position of the obstacle.
@@ -23,9 +16,9 @@ public interface IObstacleSnapshot {
 	double getX();
 
 	/**
-	 * Returns the Y position of the bullet.
+	 * Returns the Y position of the obstacle.
 	 *
-	 * @return the Y position of the bullet.
+	 * @return the Y position of the obstacle.
 	 */
 	double getY();
 	
@@ -37,34 +30,14 @@ public interface IObstacleSnapshot {
 	double getHeight();
 	
 	/**
-	 * Returns the width of the bullet.
+	 * Returns the width of the obstacle.
 	 *
-	 * @return the width of the bullet.
+	 * @return the width of the obstacle.
 	 */
 	double getWidth();
 
 	/**
-	 * Returns the X painting position of the bullet.
-	 * Note that this is not necessarily equal to the X position of the bullet, even though
-	 * it will be in most cases. The painting position of the bullet is needed as the bullet
-	 * will "stick" to its victim when it has been hit, but only visually. 
-	 *
-	 * @return the X painting position of the bullet.
-	 */
-	double getPaintX();
-
-	/**
-	 * Returns the Y painting position of the bullet.
-	 * Note that this is not necessarily equal to the Y position of the bullet, even though
-	 * it will be in most cases. The painting position of the bullet is needed as the bullet
-	 * will "stick" to its victim when it has been hit, but only visually. 
-	 *
-	 * @return the Y painting position of the bullet.
-	 */
-	double getPaintY();
-
-	/**
-	 * Returns the color of the bullet.
+	 * Returns the color of the obstacle.
 	 *
 	 * @return an ARGB color value. (Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue)
 	 * 

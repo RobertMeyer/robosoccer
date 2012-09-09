@@ -100,6 +100,7 @@ import net.sf.robocode.battle.events.BattleEventDispatcher;
 
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
@@ -160,7 +161,8 @@ public final class Battle extends BaseBattle {
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private int activeRobots;
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
-
+	private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+	
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
 

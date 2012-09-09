@@ -14,8 +14,7 @@
 package net.sf.robocode.battle.snapshot;
 
 
-import net.sf.robocode.battle.peer.BulletPeer;
-import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
@@ -27,10 +26,11 @@ import java.io.IOException;
 
 
 /**
- * A snapshot of a bullet at a specific time instant in a battle.
- * The snapshot contains a snapshot of the bullet data at that specific time.
+ * A snapshot of an obstacle at a specific time instant in a battle.
+ * The snapshot contains a snapshot of the obstacle data at that specific time.
  *
  * @author Michael Tsai
+ * @author Joel Addison
  * 
  */
 public final class ObstacleSnapshot implements java.io.Serializable, IXmlSerializable, IObstacleSnapshot {
@@ -49,12 +49,6 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	/** Obstacle Height */
 	private double height;
 
-	/** The x painting position (due to offset on robot when bullet hits a robot) */
-	private double paintX;
-
-	/** The y painting position (due to offset on robot when bullet hits a robot) */
-	private double paintY;
-
 	/** The ARGB color of the bullet */
 	private int color = ExecCommands.defaultBulletColor;
 
@@ -70,26 +64,19 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	}
 
 	/**
-	 * Creates a snapshot of a bullet.
+	 * Creates a snapshot of an obstacle.
 	 *
 	 * @param bullet the bullet to make a snapshot of.
 	 */
-	public ObstacleSnapshot(BulletPeer bullet) {
-		x = bullet.getX();
-		y = bullet.getY();
+	public ObstacleSnapshot(ObstaclePeer obstacle) {
+		//x = obstacle.getX();
+		//y = obstacle.getY();
 
-		paintX = bullet.getPaintX();
-		paintY = bullet.getPaintY();
+		//color = bullet.getColor();
 
-		color = bullet.getColor();
+		//obstacleId = bullet.getBulletId();
 
-		obstacleId = bullet.getBulletId();
-
-		final RobotPeer victim = bullet.getVictim();
-
-		if (victim != null) {
-			victimIndex = victim.getRobotIndex();
-		}
+		//final RobotPeer victim = bullet.getVictim();
 	}
 
 	@Override
@@ -109,20 +96,6 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	 */
 	public double getY() {
 		return y;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getPaintX() {
-		return paintX;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getPaintY() {
-		return paintY;
 	}
 
 	/**
