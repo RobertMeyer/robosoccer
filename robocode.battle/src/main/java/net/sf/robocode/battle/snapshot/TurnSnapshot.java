@@ -45,6 +45,9 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	/** List of snapshots for the bullets that are currently on the battlefield */
 	private List<IBulletSnapshot> bullets;
 	
+	/** List of snapshots for the obstacles that are currently on the battlefield */
+	private List<IObstacleSnapshot> obstacles;
+	
 	/** List of snapshots for the items that are currently on the battlefield */
 	//TODO expand this use
 	private List<IItemSnapshot> items;
@@ -76,6 +79,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		robots = new ArrayList<IRobotSnapshot>();
 		bullets = new ArrayList<IBulletSnapshot>();
 		items = new ArrayList<IItemSnapshot>();
+		obstacles = new ArrayList<IObstacleSnapshot>();
 
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
@@ -107,6 +111,13 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	 */
 	public IBulletSnapshot[] getBullets() {
 		return bullets.toArray(new IBulletSnapshot[bullets.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IObstacleSnapshot[] getObstacles() {
+		return obstacles.toArray(new IObstacleSnapshot[obstacles.size()]);
 	}
 
 	/**
