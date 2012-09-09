@@ -53,6 +53,7 @@ public class HouseRobot extends AdvancedRobot implements IHouseRobot,
 	 */
 	public HouseRobot(HouseRobotBoundary boundaries) {
 		this.boundaries = boundaries;
+		boundariesSet = true;
 	}
 	
 	/**
@@ -64,8 +65,10 @@ public class HouseRobot extends AdvancedRobot implements IHouseRobot,
 	}
 	
 	/**
-	 * 
+	 * Sets the {@link HouseRobotBoundary} object associated with this HouseRobot.
+	 * Can <b>only</b> be called once. If called a second time, will throw a BoundaryException.
 	 * @param boundaries
+	 * @throws BoundaryException
 	 */
 	protected void setBoundaries(HouseRobotBoundary boundaries) {
 		if(boundariesSet) {
