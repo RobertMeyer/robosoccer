@@ -175,6 +175,7 @@ public class RobotSelectionPanel extends WizardPanel {
         selectedModel.changed();
         fireStateChanged();
         selectedRobotsSize += 1;
+        
         if (selectedModel.getSize() >= minRobots && selectedModel.getSize() <= maxRobots) {
             showInstructions();
         } else if (selectedModel.getSize() > maxRobots) {
@@ -325,35 +326,36 @@ public class RobotSelectionPanel extends WizardPanel {
         return selectedRobotsScrollPane;
     }
     
-    private JPanel getSetRobotsList(int rows) {
-    	if (setRobotsList == null) {
-    		setRobotsList = new JPanel();
-    		setRobotsList.setPreferredSize(new Dimension(125,350));
-    		FlowLayout flow = new FlowLayout();
-    		setRobotsList.setLayout(flow);	
-    		flow.setHgap(5);
-    		flow.setVgap(1);
-    		Border noBorder = BorderFactory.createEmptyBorder();
-    		JTextField[] inputX = new JTextField[rows];
-			JTextField[] inputY = new JTextField[rows];
-    		for (int i= 0; i < rows; i++){
-    			inputX[i] = new JTextField();
-    			inputY[i] = new JTextField();
+    private JPanel getSetRobotsList() {
+    	int rows = selectedRobotsSize;
+    	setRobotsList = new JPanel();
+    	setRobotsList.setPreferredSize(new Dimension(125,350));
+    	FlowLayout flow = new FlowLayout();
+    	setRobotsList.setLayout(flow);	
+    	setRobotsList.repaint();
+    	flow.setHgap(5);
+    	flow.setVgap(1);
+    	Border noBorder = BorderFactory.createEmptyBorder();
+    	JTextField[] inputX = new JTextField[rows];
+		JTextField[] inputY = new JTextField[rows];
+    	for (int i= 0; i < rows; i++){
+    		inputX[i] = new JTextField();
+    		inputY[i] = new JTextField();
     			
-    			inputX[i].setPreferredSize(new Dimension(63,16));
-    			inputY[i].setPreferredSize(new Dimension(63,16));
+    		inputX[i].setPreferredSize(new Dimension(63,16));
+    		inputY[i].setPreferredSize(new Dimension(63,16));
     			
-    			inputX[i].setBorder(noBorder);
-    			inputY[i].setBorder(noBorder);
+    		inputX[i].setBorder(noBorder);
+    		inputY[i].setBorder(noBorder);
  
-    			setRobotsList.add(inputX[i]);
-    			setRobotsList.add(inputY[i]);
-    		}
+    		setRobotsList.add(inputX[i]);
+    		setRobotsList.add(inputY[i]);
     	}
+    	System.out.println("Case 1");
     	return setRobotsList;
     }
    
-    private JPanel getSetRobotsPositionPanel(int rows) {
+    private JPanel getSetRobotsPositionPanel() {
         if (setRobotsPositionPanel == null) {
         	setRobotsPositionPanel = new JPanel();
         	setRobotsPositionPanel.revalidate();
@@ -361,18 +363,19 @@ public class RobotSelectionPanel extends WizardPanel {
         	setRobotsPositionPanel.setPreferredSize(new Dimension(120, 100));
         	setRobotsPositionPanel.setBorder(
                     BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Set Position (X,Y)"));
-        	setRobotsPositionPanel.add(getSetRobotsScrollPane(rows), BorderLayout.CENTER);
+        	setRobotsPositionPanel.add(getSetRobotsList(), BorderLayout.CENTER);
         }
+        System.out.println("Case 2");
         return setRobotsPositionPanel;
     }
     
-    private JScrollPane getSetRobotsScrollPane(int rows) {
-        if (setRobotsScrollPane == null) {
-        	setRobotsScrollPane = new JScrollPane();
-        	setRobotsScrollPane.setViewportView(getSetRobotsList(rows));
-        }
-        return setRobotsScrollPane;
-    }
+    //private JScrollPane getSetRobotsScrollPane(int rows) {
+       // if (setRobotsScrollPane == null) {
+        	//setRobotsScrollPane = new JScrollPane();
+        	//setRobotsScrollPane.setViewportView(getSetRobotsList(rows));
+        //}
+       // return setRobotsScrollPane;
+   // }
 
     private void initialize() {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -493,8 +496,9 @@ public class RobotSelectionPanel extends WizardPanel {
             constraints.weightx = 1;
             constraints.weighty = 1;
             constraints.anchor = GridBagConstraints.NORTHWEST;
-            layout.setConstraints(getSetRobotsPositionPanel(0), constraints);
-            mainPanel.add(getSetRobotsPositionPanel(0));
+            layout.setConstraints(getSetRobotsPositionPanel(), constraints);
+            mainPanel.add(getSetRobotsPositionPanel());
+            System.out.println("Case 3");
         }
         return mainPanel;
     }
