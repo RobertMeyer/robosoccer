@@ -24,7 +24,7 @@ public final class HitItemEvent extends Event {
 	
 	private final String robotName;
 	private final double energy;
-	private final boolean isDestructible;
+	private final boolean isDestroyable;
 	private final boolean isEquippable;
 	
 	/**
@@ -37,25 +37,45 @@ public final class HitItemEvent extends Event {
 	 * @param isEquippable {@code true} if the item hit is equippable;
 	 * 				{@code false} otherwise
 	 */
-	private HitItemEvent(String name, double energy, boolean isDestructible, boolean isEquippable) {
+	private HitItemEvent(String name, double energy, boolean isDestroyable, boolean isEquippable) {
 		this.robotName = name;
 		this.energy = energy;
-		this.isDestructible = isDestructible;
+		this.isDestroyable = isDestroyable;
 		this.isEquippable = isEquippable;
 	}
 	
-	public double getEnergy() {
-		return energy;
-	}
-	
+	/**
+	 * Returns the name of the robot that hit the item.
+	 * 
+	 * @return the name of the robot that hit the item
+	 */
 	public String getName() {
 		return robotName;
 	}
 	
-	public boolean isDestructible() {
-		return isDestructible;
+	/**
+	 * Returns the amount of energy of the robot that hit the item.
+	 * 
+	 * @return the amount of energy of the robot that hit the item
+	 */
+	public double getEnergy() {
+		return energy;
 	}
 	
+	/**
+	 * Checks if the item hit is destroyable.
+	 * 
+	 * @return {@code true} if the item is destroyable; {@code false} otherwise
+	 */
+	public boolean isDestroyable() {
+		return isDestroyable;
+	}
+	
+	/**
+	 * Checks if the item hit is equippable.
+	 * 
+	 * @return {@code true} if the item is equippable; {@code false} otherwise
+	 */
 	public boolean isEquippable() {
 		return isEquippable;
 	}
