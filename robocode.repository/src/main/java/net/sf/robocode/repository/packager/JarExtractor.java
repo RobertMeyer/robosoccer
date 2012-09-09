@@ -11,86 +11,84 @@
  *******************************************************************************/
 package net.sf.robocode.repository.packager;
 
-
-import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.io.Logger;
-import net.sf.robocode.io.URLJarCollector;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.FileOutputStream;
-import java.util.jar.JarInputStream;
-import java.util.jar.JarEntry;
-import java.net.URLConnection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-
+import java.net.URLConnection;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.io.URLJarCollector;
 
 /**
  * @author Pavel Savara (original)
  */
 public class JarExtractor {
-	public static void extractJar(URL url) {
-		File dest = FileUtil.getRobotsDir();
-		InputStream is = null;
-		BufferedInputStream bis = null;
-		JarInputStream jarIS = null;
 
-		try {
-			final URLConnection con = URLJarCollector.openConnection(url);
+    public static void extractJar(URL url) {
+        File dest = FileUtil.getRobotsDir();
+        InputStream is = null;
+        BufferedInputStream bis = null;
+        JarInputStream jarIS = null;
 
-			is = con.getInputStream();
-			bis = new BufferedInputStream(is);
-			jarIS = new JarInputStream(bis);
+        try {
+            final URLConnection con = URLJarCollector.openConnection(url);
 
-			JarEntry entry = jarIS.getNextJarEntry();
+            is = con.getInputStream();
+            bis = new BufferedInputStream(is);
+            jarIS = new JarInputStream(bis);
 
-			while (entry != null) {
-				if (entry.isDirectory()) {
-					File dir = new File(dest, entry.getName());
+            JarEntry entry = jarIS.getNextJarEntry();
 
-					if (!dir.exists() && !dir.mkdirs()) {
-						Logger.logError("Cannot create dir: " + dir);
-					}
-				} else {
-					extractFile(dest, jarIS, entry);
-				}
-				entry = jarIS.getNextJarEntry();
-			}
-		} catch (IOException e) {
-			Logger.logError(e);
-		} finally {
-			FileUtil.cleanupStream(jarIS);
-			FileUtil.cleanupStream(bis);
-			FileUtil.cleanupStream(is);
-		}
-	}
+            while (entry != null) {
+                if (entry.isDirectory()) {
+                    File dir = new File(dest, entry.getName());
 
-	public static void extractFile(File dest, JarInputStream jarIS, JarEntry entry) throws IOException {
-		File out = new File(dest, entry.getName());
-		File parentDirectory = new File(out.getParent());
+                    if (!dir.exists() && !dir.mkdirs()) {
+                        Logger.logError("Cannot create dir: " + dir);
+                    }
+                } else {
+                    extractFile(dest, jarIS, entry);
+                }
+                entry = jarIS.getNextJarEntry();
+            }
+        } catch (IOException e) {
+            Logger.logError(e);
+        } finally {
+            FileUtil.cleanupStream(jarIS);
+            FileUtil.cleanupStream(bis);
+            FileUtil.cleanupStream(is);
+        }
+    }
 
-		if (!parentDirectory.exists() && !parentDirectory.mkdirs()) {
-			Logger.logError("Cannot create dir: " + parentDirectory);
-		}
-		FileOutputStream fos = null;
-		BufferedOutputStream bos = null;
-		byte buf[] = new byte[2048];
+    public static void extractFile(File dest, JarInputStream jarIS, JarEntry entry) throws IOException {
+        File out = new File(dest, entry.getName());
+        File parentDirectory = new File(out.getParent());
 
-		try {
-			fos = new FileOutputStream(out);
-			bos = new BufferedOutputStream(fos);
+        if (!parentDirectory.exists() && !parentDirectory.mkdirs()) {
+            Logger.logError("Cannot create dir: " + parentDirectory);
+        }
+        FileOutputStream fos = null;
+        BufferedOutputStream bos = null;
+        byte buf[] = new byte[2048];
 
-			int num;
+        try {
+            fos = new FileOutputStream(out);
+            bos = new BufferedOutputStream(fos);
 
-			while ((num = jarIS.read(buf, 0, 2048)) != -1) {
-				bos.write(buf, 0, num);
-			}
-		} finally {
-			FileUtil.cleanupStream(bos);
-			FileUtil.cleanupStream(fos);
-		}
-	}
+            int num;
+
+            while ((num = jarIS.read(buf, 0, 2048)) != -1) {
+                bos.write(buf, 0, num);
+            }
+        } finally {
+            FileUtil.cleanupStream(bos);
+            FileUtil.cleanupStream(fos);
+        }
+    }
 }

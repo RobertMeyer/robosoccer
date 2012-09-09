@@ -11,26 +11,26 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface IBattle extends Runnable {
-	void cleanup();
 
-	boolean isRunning();
+    void cleanup();
 
-	void stop(boolean waitTillEnd);
+    boolean isRunning();
 
-	void pause();
+    void stop(boolean waitTillEnd);
 
-	void resume();
+    void pause();
 
-	void step();
+    void resume();
 
-	void waitTillStarted();
+    void step();
 
-	void waitTillOver();
+    void waitTillStarted();
 
-	void setPaintEnabled(int robotIndex, boolean enable);
+    void waitTillOver();
+
+    void setPaintEnabled(int robotIndex, boolean enable);
 }

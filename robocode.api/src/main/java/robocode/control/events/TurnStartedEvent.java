@@ -13,10 +13,9 @@
  *******************************************************************************/
 package robocode.control.events;
 
-
 /**
  * A TurnStartedEvent is sent to {@link IBattleListener#onTurnStarted(TurnStartedEvent)
- * onTurnStarted()} when a new turn in a battle round is started. 
+ * onTurnStarted()} when a new turn in a battle round is started.
  *
  * @see IBattleListener
  * @see TurnEndedEvent
@@ -28,11 +27,11 @@ package robocode.control.events;
  */
 public class TurnStartedEvent extends BattleEvent {
 
-	/**
-	 * Called by the game to create a new TurnStartedEvent.
-	 * Please don't use this constructor as it might change.
-	 */
-	public TurnStartedEvent() {
-		super();		
-	}	
+    /**
+     * Called by the game to create a new TurnStartedEvent.
+     * Please don't use this constructor as it might change.
+     */
+    public TurnStartedEvent() {
+        super();
+    }
 }

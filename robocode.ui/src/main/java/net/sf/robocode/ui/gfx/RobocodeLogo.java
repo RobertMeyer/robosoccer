@@ -11,10 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.ui.gfx;
 
-
 import java.awt.*;
 import java.awt.geom.*;
-
 
 /**
  * This class is used for rendering the Robocode logo.
@@ -23,427 +21,417 @@ import java.awt.geom.*;
  */
 public class RobocodeLogo {
 
-	public final static int WIDTH = 570;
-	public final static int HEIGHT = 213;
+    public final static int WIDTH = 570;
+    public final static int HEIGHT = 213;
+    private final static Color WHITE_ALPHA_7F = new Color(0xff, 0xff, 0xff, 0x7f);
+    private final static Color GLOW_GREEN = new Color(0x0A, 0xff, 0x0A, 0x66);
+    private final static Color DARK_GREEN_ALPHA_80 = new Color(0x00, 0x70, 0x00, 0x80);
+    private final static Color GREEN_ALPHA_08 = new Color(0x00, 0xff, 0x00, 0x08);
+    private final static Color GREEN_ALPHA_20 = new Color(0x00, 0xff, 0x00, 0x20);
+    private final static Color GREEN_ALPHA_40 = new Color(0x00, 0xff, 0x00, 0x40);
+    private final static Color GREEN_ALPHA_48 = new Color(0x00, 0xff, 0x00, 0x48);
+    private final static Color GREEN_ALPHA_80 = new Color(0x00, 0xff, 0x00, 0x80);
+    private final static Shape I_SHAPE = new Rectangle2D.Float(0, 0, 13, 46);
+    private final static Stroke THIN_STROKE = new BasicStroke(1.5f);
 
-	private final static Color WHITE_ALPHA_7F = new Color(0xff, 0xff, 0xff, 0x7f);
+    public void paintLogoWithTanks(Graphics graphics) {
+        Graphics2D g = (Graphics2D) graphics;
+        AffineTransform origTransform = g.getTransform();
 
-	private final static Color GLOW_GREEN = new Color(0x0A, 0xff, 0x0A, 0x66);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
 
-	private final static Color DARK_GREEN_ALPHA_80 = new Color(0x00, 0x70, 0x00, 0x80);
-	private final static Color GREEN_ALPHA_08 = new Color(0x00, 0xff, 0x00, 0x08);
-	private final static Color GREEN_ALPHA_20 = new Color(0x00, 0xff, 0x00, 0x20);
-	private final static Color GREEN_ALPHA_40 = new Color(0x00, 0xff, 0x00, 0x40);
-	private final static Color GREEN_ALPHA_48 = new Color(0x00, 0xff, 0x00, 0x48);
-	private final static Color GREEN_ALPHA_80 = new Color(0x00, 0xff, 0x00, 0x80);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-	private final static Shape I_SHAPE = new Rectangle2D.Float(0, 0, 13, 46);
+        drawTanks(g);
+        drawOuterDecoration(g);
+        drawMiddleEllipse(g);
+        drawMiddleDecoration(g);
+        drawInnerDecoration(g);
+        drawInnerSubDecoration(g);
+        drawRobocodeText(g);
 
-	private final static Stroke THIN_STROKE = new BasicStroke(1.5f);
+        g.setTransform(origTransform);
+    }
 
-	public void paintLogoWithTanks(Graphics graphics) {
-		Graphics2D g = (Graphics2D) graphics;
-		AffineTransform origTransform = g.getTransform();
+    private void transform(Graphics2D g, AffineTransform tx) {
+        AffineTransform at = new AffineTransform();
 
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
+        if (tx != null) {
+            at.concatenate(tx);
+        }
+        g.setTransform(at);
+    }
 
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    private void drawTanks(Graphics2D g) {
+        AffineTransform origTransform = g.getTransform();
 
-		drawTanks(g);
-		drawOuterDecoration(g);
-		drawMiddleEllipse(g);
-		drawMiddleDecoration(g);
-		drawInnerDecoration(g);
-		drawInnerSubDecoration(g);
-		drawRobocodeText(g);
+        drawRobot(g, 22, 192, (float) Math.PI / 2, -0.2f, -0.2f, new Color(0x30, 0x00, 0x10, 0xff));
+        drawRobot(g, 22, 92, (float) Math.PI / 2, (float) Math.PI, (float) Math.PI, new Color(0x16, 0x00, 0x2c, 0xff));
 
-		g.setTransform(origTransform);
-	}
+        drawRobot(g, 212, 173, 0.75f, 0.75f, 0.75f, new Color(0x02, 0x01, 0x00, 0xff));
 
-	private void transform(Graphics2D g, AffineTransform tx) {
-		AffineTransform at = new AffineTransform();
+        drawRobot(g, 455, 50, 2.4f, 2f, 2f, new Color(0x02, 0x00, 0x01, 0xff));
+        drawRobot(g, 492, 82, -0.3f, -0.27f, -0.27f, new Color(0x00, 0x00, 0x01, 0xff));
 
-		if (tx != null) {
-			at.concatenate(tx);
-		}
-		g.setTransform(at);
-	}
+        transform(g, AffineTransform.getTranslateInstance(270, -25));
+        RenderImage explRenderImage1 = new RenderImage(
+                ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion2-24.png"));
 
-	private void drawTanks(Graphics2D g) {
-		AffineTransform origTransform = g.getTransform();
+        explRenderImage1.paint(g);
 
-		drawRobot(g, 22, 192, (float) Math.PI / 2, -0.2f, -0.2f, new Color(0x30, 0x00, 0x10, 0xff));
-		drawRobot(g, 22, 92, (float) Math.PI / 2, (float) Math.PI, (float) Math.PI, new Color(0x16, 0x00, 0x2c, 0xff));
+        transform(g, AffineTransform.getTranslateInstance(23, 102));
+        RenderImage explRenderImage2 = new RenderImage(
+                ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion1-8.png"));
 
-		drawRobot(g, 212, 173, 0.75f, 0.75f, 0.75f, new Color(0x02, 0x01, 0x00, 0xff));
+        explRenderImage2.setTransform(AffineTransform.getScaleInstance(0.3, 0.3));
+        explRenderImage2.paint(g);
 
-		drawRobot(g, 455, 50, 2.4f, 2f, 2f, new Color(0x02, 0x00, 0x01, 0xff));
-		drawRobot(g, 492, 82, -0.3f, -0.27f, -0.27f, new Color(0x00, 0x00, 0x01, 0xff));
+        transform(g, AffineTransform.getTranslateInstance(464, 55));
+        RenderImage explRenderImage3 = new RenderImage(
+                ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion1-1.png"));
 
-		transform(g, AffineTransform.getTranslateInstance(270, -25));
-		RenderImage explRenderImage1 = new RenderImage(
-				ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion2-24.png"));
+        explRenderImage3.setTransform(AffineTransform.getScaleInstance(0.5, 0.5));
+        explRenderImage3.paint(g);
 
-		explRenderImage1.paint(g);
+        transform(g, AffineTransform.getTranslateInstance(488, 72));
+        RenderImage explRenderImage4 = new RenderImage(
+                ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion1-6.png"));
 
-		transform(g, AffineTransform.getTranslateInstance(23, 102));
-		RenderImage explRenderImage2 = new RenderImage(
-				ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion1-8.png"));
+        explRenderImage4.setTransform(AffineTransform.getScaleInstance(0.4, 0.4));
+        explRenderImage4.paint(g);
 
-		explRenderImage2.setTransform(AffineTransform.getScaleInstance(0.3, 0.3));
-		explRenderImage2.paint(g);
+        transform(g, origTransform);
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillOval(20, 154, 3, 3);
+    }
 
-		transform(g, AffineTransform.getTranslateInstance(464, 55));
-		RenderImage explRenderImage3 = new RenderImage(
-				ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion1-1.png"));
+    private void drawRobot(Graphics2D g, int x, int y, float bodyAngle, float gunAngle, float radarAngle, Color color) {
+        transform(g, AffineTransform.getTranslateInstance(x, y));
 
-		explRenderImage3.setTransform(AffineTransform.getScaleInstance(0.5, 0.5));
-		explRenderImage3.paint(g);
+        RenderImage bodyRenderImage = new RenderImage(
+                ImageUtil.createColouredRobotImage(ImageUtil.getImage("/net/sf/robocode/ui/images/body.png"), color));
 
-		transform(g, AffineTransform.getTranslateInstance(488, 72));
-		RenderImage explRenderImage4 = new RenderImage(
-				ImageUtil.getImage("/net/sf/robocode/ui/images/explosion/explosion1-6.png"));
+        bodyRenderImage.setTransform(AffineTransform.getRotateInstance(bodyAngle));
+        bodyRenderImage.paint(g);
 
-		explRenderImage4.setTransform(AffineTransform.getScaleInstance(0.4, 0.4));
-		explRenderImage4.paint(g);
+        RenderImage gunRenderImage = new RenderImage(
+                ImageUtil.createColouredRobotImage(ImageUtil.getImage("/net/sf/robocode/ui/images/turret.png"), color));
 
-		transform(g, origTransform);
-		g.setColor(Color.LIGHT_GRAY);
-		g.fillOval(20, 154, 3, 3);
-	}
+        gunRenderImage.setTransform(AffineTransform.getRotateInstance(gunAngle));
+        gunRenderImage.paint(g);
 
-	private void drawRobot(Graphics2D g, int x, int y, float bodyAngle, float gunAngle, float radarAngle, Color color) {
-		transform(g, AffineTransform.getTranslateInstance(x, y));
+        RenderImage radarRenderImage = new RenderImage(
+                ImageUtil.createColouredRobotImage(ImageUtil.getImage("/net/sf/robocode/ui/images/radar.png"), color));
 
-		RenderImage bodyRenderImage = new RenderImage(
-				ImageUtil.createColouredRobotImage(ImageUtil.getImage("/net/sf/robocode/ui/images/body.png"), color));
+        radarRenderImage.setTransform(AffineTransform.getRotateInstance(radarAngle));
+        radarRenderImage.paint(g);
+    }
 
-		bodyRenderImage.setTransform(AffineTransform.getRotateInstance(bodyAngle));
-		bodyRenderImage.paint(g);
+    private void drawOuterDecoration(Graphics2D g) {
+        Shape shape = getOuterDecoration();
 
-		RenderImage gunRenderImage = new RenderImage(
-				ImageUtil.createColouredRobotImage(ImageUtil.getImage("/net/sf/robocode/ui/images/turret.png"), color));
+        transform(g, AffineTransform.getTranslateInstance(26, 24));
 
-		gunRenderImage.setTransform(AffineTransform.getRotateInstance(gunAngle));
-		gunRenderImage.paint(g);
+        g.setColor(WHITE_ALPHA_7F);
+        g.fill(shape);
 
-		RenderImage radarRenderImage = new RenderImage(
-				ImageUtil.createColouredRobotImage(ImageUtil.getImage("/net/sf/robocode/ui/images/radar.png"), color));
+        g.setStroke(THIN_STROKE);
+        g.drawOval(16, 5, 490, 163);
+    }
 
-		radarRenderImage.setTransform(AffineTransform.getRotateInstance(radarAngle));
-		radarRenderImage.paint(g);
-	}
+    private void drawMiddleEllipse(Graphics2D g) {
+        transform(g, null);
 
-	private void drawOuterDecoration(Graphics2D g) {
-		Shape shape = getOuterDecoration();
+        Shape ellipse = new Ellipse2D.Float(68, 38, 440, 146);
 
-		transform(g, AffineTransform.getTranslateInstance(26, 24));
+        g.setColor(DARK_GREEN_ALPHA_80);
+        g.fill(ellipse);
 
-		g.setColor(WHITE_ALPHA_7F);
-		g.fill(shape);
+        g.setColor(GREEN_ALPHA_40);
+        g.setStroke(THIN_STROKE);
+        g.draw(ellipse);
+    }
 
-		g.setStroke(THIN_STROKE);
-		g.drawOval(16, 5, 490, 163);
-	}
+    private void drawMiddleDecoration(Graphics2D g) {
+        Shape shape = getMiddleDecoration();
 
-	private void drawMiddleEllipse(Graphics2D g) {
-		transform(g, null);
+        transform(g, AffineTransform.getTranslateInstance(77, 41));
 
-		Shape ellipse = new Ellipse2D.Float(68, 38, 440, 146);
+        g.setColor(GREEN_ALPHA_20);
+        g.fill(shape);
 
-		g.setColor(DARK_GREEN_ALPHA_80);
-		g.fill(ellipse);
+        g.setStroke(THIN_STROKE);
+        g.setColor(GREEN_ALPHA_48);
+        g.draw(shape);
+    }
 
-		g.setColor(GREEN_ALPHA_40);
-		g.setStroke(THIN_STROKE);
-		g.draw(ellipse);
-	}
+    private void drawInnerDecoration(Graphics2D g) {
+        Shape shape = getInnerDecoration();
 
-	private void drawMiddleDecoration(Graphics2D g) {
-		Shape shape = getMiddleDecoration();
+        transform(g, AffineTransform.getTranslateInstance(103, 52));
 
-		transform(g, AffineTransform.getTranslateInstance(77, 41));
+        g.setColor(DARK_GREEN_ALPHA_80);
+        g.fill(shape);
+
+        g.setStroke(THIN_STROKE);
+        g.setColor(GLOW_GREEN);
+        g.draw(shape);
+    }
 
-		g.setColor(GREEN_ALPHA_20);
-		g.fill(shape);
+    private void drawInnerSubDecoration(Graphics2D g) {
+        Shape shape = getInnerSubDecoration();
 
-		g.setStroke(THIN_STROKE);
-		g.setColor(GREEN_ALPHA_48);
-		g.draw(shape);
-	}
+        transform(g, AffineTransform.getTranslateInstance(110, 54));
 
-	private void drawInnerDecoration(Graphics2D g) {
-		Shape shape = getInnerDecoration();
+        g.setColor(GREEN_ALPHA_08);
+        g.fill(shape);
 
-		transform(g, AffineTransform.getTranslateInstance(103, 52));
+        g.setStroke(THIN_STROKE);
+        g.setColor(GREEN_ALPHA_48);
+        g.draw(shape);
+    }
 
-		g.setColor(DARK_GREEN_ALPHA_80);
-		g.fill(shape);
+    private void drawRobocodeText(Graphics2D g) {
+        Shape shape = getRobocodeText();
 
-		g.setStroke(THIN_STROKE);
-		g.setColor(GLOW_GREEN);
-		g.draw(shape);
-	}
+        transform(g, AffineTransform.getTranslateInstance(121, 88));
 
-	private void drawInnerSubDecoration(Graphics2D g) {
-		Shape shape = getInnerSubDecoration();
+        g.setColor(GREEN_ALPHA_40);
+        g.fill(shape);
 
-		transform(g, AffineTransform.getTranslateInstance(110, 54));
+        g.setStroke(THIN_STROKE);
+        g.setColor(GREEN_ALPHA_80);
+        g.draw(shape);
+    }
+    private Area outerDecoration;
 
-		g.setColor(GREEN_ALPHA_08);
-		g.fill(shape);
+    private Shape getOuterDecoration() {
+        if (outerDecoration == null) {
+            float W = 523;
+            float H = 174;
 
-		g.setStroke(THIN_STROKE);
-		g.setColor(GREEN_ALPHA_48);
-		g.draw(shape);
-	}
+            outerDecoration = new Area(new Ellipse2D.Float(0, 0, W, H));
+            outerDecoration.subtract(new Area(new Ellipse2D.Float(16, 5, W - 2 * 16, H - 2 * 5)));
 
-	private void drawRobocodeText(Graphics2D g) {
-		Shape shape = getRobocodeText();
+            outerDecoration.subtract(new Area(new Rectangle2D.Float(W / 2, 0, W / 2, H / 2)));
+            outerDecoration.subtract(new Area(new Rectangle2D.Float(0, H / 2, W / 2, H / 2)));
+        }
+        return outerDecoration;
+    }
+    private Area middleDecoration;
 
-		transform(g, AffineTransform.getTranslateInstance(121, 88));
+    private Shape getMiddleDecoration() {
+        if (middleDecoration == null) {
+            middleDecoration = new Area(new Ellipse2D.Float(0, 0, 420, 140));
 
-		g.setColor(GREEN_ALPHA_40);
-		g.fill(shape);
+            Rectangle2D.Float rect = new Rectangle2D.Float(180, 69, 500, 3);
 
-		g.setStroke(THIN_STROKE);
-		g.setColor(GREEN_ALPHA_80);
-		g.draw(shape);
-	}
+            for (float deg = 120; deg <= 335; deg += 4.8f) {
+                Area rectArea = new Area(rect);
 
-	private Area outerDecoration;
+                rectArea.transform(AffineTransform.getRotateInstance(Math.toRadians(deg), 151, 72));
+                middleDecoration.subtract(rectArea);
+            }
 
-	private Shape getOuterDecoration() {
-		if (outerDecoration == null) {
-			float W = 523;
-			float H = 174;
+            middleDecoration.subtract(new Area(new Ellipse2D.Float(18, 2, 408, 144)));
+        }
+        return middleDecoration;
+    }
+    private Area innerSubDecoration;
 
-			outerDecoration = new Area(new Ellipse2D.Float(0, 0, W, H));
-			outerDecoration.subtract(new Area(new Ellipse2D.Float(16, 5, W - 2 * 16, H - 2 * 5)));
+    private Shape getInnerSubDecoration() {
+        if (innerSubDecoration == null) {
+            innerSubDecoration = new Area(new Ellipse2D.Float(0, 0, 356, 114));
+            innerSubDecoration.subtract(
+                    new Area(new Rectangle2D.Float(Float.MIN_VALUE, Float.MIN_VALUE, Float.MAX_VALUE, 88)));
+            innerSubDecoration.subtract(
+                    new Area(new Rectangle2D.Float(Float.MIN_VALUE, Float.MIN_VALUE, 184, Float.MAX_VALUE)));
+            innerSubDecoration.subtract(new Area(new Rectangle2D.Float(209, Float.MIN_VALUE, 3, Float.MAX_VALUE)));
+        }
+        return innerSubDecoration;
+    }
+    private Area innerDecoration;
 
-			outerDecoration.subtract(new Area(new Rectangle2D.Float(W / 2, 0, W / 2, H / 2)));
-			outerDecoration.subtract(new Area(new Rectangle2D.Float(0, H / 2, W / 2, H / 2)));
-		}
-		return outerDecoration;
-	}
+    private Shape getInnerDecoration() {
+        if (innerDecoration == null) {
+            innerDecoration = new Area(new Ellipse2D.Float(0, 0, 368, 120));
+            innerDecoration.subtract(new Area(new Rectangle2D.Float(Float.MIN_VALUE, 30, Float.MAX_VALUE, 56)));
+            innerDecoration.subtract(new Area(new Rectangle2D.Float(181, Float.MIN_VALUE, 7, Float.MAX_VALUE)));
+        }
+        return innerDecoration;
+    }
+    private GeneralPath robocodeTextPath;
 
-	private Area middleDecoration;
+    public GeneralPath getRobocodeText() {
+        if (robocodeTextPath == null) {
+            robocodeTextPath = new GeneralPath();
 
-	private Shape getMiddleDecoration() {
-		if (middleDecoration == null) {
-			middleDecoration = new Area(new Ellipse2D.Float(0, 0, 420, 140));
+            GeneralPath R = getPathR();
+            GeneralPath o = getPathO();
+            GeneralPath b = getPathB();
+            GeneralPath c = getPathC();
+            GeneralPath d = getPathD();
+            GeneralPath e = getPathE();
 
-			Rectangle2D.Float rect = new Rectangle2D.Float(180, 69, 500, 3);
+            robocodeTextPath.append(R, false);
 
-			for (float deg = 120; deg <= 335; deg += 4.8f) {
-				Area rectArea = new Area(rect);
+            o.transform(AffineTransform.getTranslateInstance(42, 16));
+            robocodeTextPath.append(o, false);
 
-				rectArea.transform(AffineTransform.getRotateInstance(Math.toRadians(deg), 151, 72));
-				middleDecoration.subtract(rectArea);
-			}
+            b.transform(AffineTransform.getTranslateInstance(84, 0));
+            robocodeTextPath.append(b, false);
 
-			middleDecoration.subtract(new Area(new Ellipse2D.Float(18, 2, 408, 144)));
-		}
-		return middleDecoration;
-	}
+            o.transform(AffineTransform.getTranslateInstance(127 - 42, 0));
+            robocodeTextPath.append(o, false);
 
-	private Area innerSubDecoration;
+            c.transform(AffineTransform.getTranslateInstance(170, 16));
+            robocodeTextPath.append(c, false);
 
-	private Shape getInnerSubDecoration() {
-		if (innerSubDecoration == null) {
-			innerSubDecoration = new Area(new Ellipse2D.Float(0, 0, 356, 114));
-			innerSubDecoration.subtract(
-					new Area(new Rectangle2D.Float(Float.MIN_VALUE, Float.MIN_VALUE, Float.MAX_VALUE, 88)));
-			innerSubDecoration.subtract(
-					new Area(new Rectangle2D.Float(Float.MIN_VALUE, Float.MIN_VALUE, 184, Float.MAX_VALUE)));
-			innerSubDecoration.subtract(new Area(new Rectangle2D.Float(209, Float.MIN_VALUE, 3, Float.MAX_VALUE)));
-		}
-		return innerSubDecoration;
-	}
+            o.transform(AffineTransform.getTranslateInstance(204 - 127, 0));
+            robocodeTextPath.append(o, false);
 
-	private Area innerDecoration;
+            d.transform(AffineTransform.getTranslateInstance(246, 0));
+            robocodeTextPath.append(d, false);
 
-	private Shape getInnerDecoration() {
-		if (innerDecoration == null) {
-			innerDecoration = new Area(new Ellipse2D.Float(0, 0, 368, 120));
-			innerDecoration.subtract(new Area(new Rectangle2D.Float(Float.MIN_VALUE, 30, Float.MAX_VALUE, 56)));
-			innerDecoration.subtract(new Area(new Rectangle2D.Float(181, Float.MIN_VALUE, 7, Float.MAX_VALUE)));
-		}
-		return innerDecoration;
-	}
+            e.transform(AffineTransform.getTranslateInstance(290, 16));
+            robocodeTextPath.append(e, false);
+        }
+        return robocodeTextPath;
+    }
 
-	private GeneralPath robocodeTextPath;
+    private GeneralPath getPathR() {
+        GeneralPath path = new GeneralPath(I_SHAPE);
 
-	public GeneralPath getRobocodeText() {
-		if (robocodeTextPath == null) {
-			robocodeTextPath = new GeneralPath();
+        GeneralPath bow = getPathPBow();
 
-			GeneralPath R = getPathR();
-			GeneralPath o = getPathO();
-			GeneralPath b = getPathB();
-			GeneralPath c = getPathC();
-			GeneralPath d = getPathD();
-			GeneralPath e = getPathE();
+        bow.transform(AffineTransform.getTranslateInstance(15, 0));
+        path.append(bow, false);
 
-			robocodeTextPath.append(R, false);
+        path.moveTo(21, 29);
+        path.lineTo(31, 46);
+        path.lineTo(44.5f, 46);
+        path.lineTo(33.5f, 27);
+        path.curveTo(33.5f, 27, 31, 29, 21, 29);
+        path.closePath();
 
-			o.transform(AffineTransform.getTranslateInstance(42, 16));
-			robocodeTextPath.append(o, false);
+        return path;
+    }
 
-			b.transform(AffineTransform.getTranslateInstance(84, 0));
-			robocodeTextPath.append(b, false);
+    private GeneralPath getPathO() {
+        GeneralPath path = getPathOBow();
 
-			o.transform(AffineTransform.getTranslateInstance(127 - 42, 0));
-			robocodeTextPath.append(o, false);
+        path.transform(AffineTransform.getTranslateInstance(20, 0));
 
-			c.transform(AffineTransform.getTranslateInstance(170, 16));
-			robocodeTextPath.append(c, false);
+        GeneralPath bow2 = getPathOBow();
 
-			o.transform(AffineTransform.getTranslateInstance(204 - 127, 0));
-			robocodeTextPath.append(o, false);
+        bow2.transform(AffineTransform.getScaleInstance(-1, 1));
+        bow2.transform(AffineTransform.getTranslateInstance(18, 0));
+        path.append(bow2, false);
 
-			d.transform(AffineTransform.getTranslateInstance(246, 0));
-			robocodeTextPath.append(d, false);
+        return path;
+    }
 
-			e.transform(AffineTransform.getTranslateInstance(290, 16));
-			robocodeTextPath.append(e, false);
-		}
-		return robocodeTextPath;
-	}
+    private GeneralPath getPathB() {
+        GeneralPath path = new GeneralPath(I_SHAPE);
 
-	private GeneralPath getPathR() {
-		GeneralPath path = new GeneralPath(I_SHAPE);
+        GeneralPath bow = getPathPBow();
 
-		GeneralPath bow = getPathPBow();
+        bow.transform(AffineTransform.getTranslateInstance(15, 20));
+        path.append(bow, false);
 
-		bow.transform(AffineTransform.getTranslateInstance(15, 0));
-		path.append(bow, false);
+        return path;
+    }
 
-		path.moveTo(21, 29);
-		path.lineTo(31, 46);
-		path.lineTo(44.5f, 46);
-		path.lineTo(33.5f, 27);
-		path.curveTo(33.5f, 27, 31, 29, 21, 29);
-		path.closePath();
+    private GeneralPath getPathC() {
+        GeneralPath path = getPathCBow();
 
-		return path;
-	}
+        GeneralPath bow2 = getPathCBow();
 
-	private GeneralPath getPathO() {
-		GeneralPath path = getPathOBow();
+        bow2.transform(AffineTransform.getScaleInstance(1, -1));
+        bow2.transform(AffineTransform.getTranslateInstance(0, 31));
+        path.append(bow2, false);
 
-		path.transform(AffineTransform.getTranslateInstance(20, 0));
+        return path;
+    }
 
-		GeneralPath bow2 = getPathOBow();
+    private GeneralPath getPathD() {
+        GeneralPath path = new GeneralPath(I_SHAPE);
 
-		bow2.transform(AffineTransform.getScaleInstance(-1, 1));
-		bow2.transform(AffineTransform.getTranslateInstance(18, 0));
-		path.append(bow2, false);
+        path.transform(AffineTransform.getTranslateInstance(27, 0));
 
-		return path;
-	}
+        GeneralPath bow = getPathPBow();
 
-	private GeneralPath getPathB() {
-		GeneralPath path = new GeneralPath(I_SHAPE);
+        bow.transform(AffineTransform.getScaleInstance(-1, 1));
+        bow.transform(AffineTransform.getTranslateInstance(25, 20));
+        path.append(bow, false);
 
-		GeneralPath bow = getPathPBow();
+        return path;
+    }
 
-		bow.transform(AffineTransform.getTranslateInstance(15, 20));
-		path.append(bow, false);
+    private GeneralPath getPathE() {
+        GeneralPath path = new GeneralPath();
 
-		return path;
-	}
+        path.moveTo(0, 14.5f);
+        path.lineTo(31, 14.5f);
+        path.curveTo(31, -4.5f, 0, -4.5f, 0, 14.5f);
+        path.closePath();
 
-	private GeneralPath getPathC() {
-		GeneralPath path = getPathCBow();
+        path.moveTo(12, 11);
+        path.lineTo(20, 11);
+        path.curveTo(20, 8, 12, 8, 12, 11);
+        path.closePath();
 
-		GeneralPath bow2 = getPathCBow();
+        GeneralPath bow2 = getPathCBow();
 
-		bow2.transform(AffineTransform.getScaleInstance(1, -1));
-		bow2.transform(AffineTransform.getTranslateInstance(0, 31));
-		path.append(bow2, false);
+        bow2.transform(AffineTransform.getScaleInstance(1, -1));
+        bow2.transform(AffineTransform.getTranslateInstance(0, 31));
+        path.append(bow2, false);
 
-		return path;
-	}
+        return path;
+    }
 
-	private GeneralPath getPathD() {
-		GeneralPath path = new GeneralPath(I_SHAPE);
+    private GeneralPath getPathPBow() {
+        GeneralPath path = new GeneralPath();
 
-		path.transform(AffineTransform.getTranslateInstance(27, 0));
+        path.moveTo(0, 0);
+        path.lineTo(10, 0);
+        path.curveTo(30, 0, 30, 26, 10, 26);
+        path.lineTo(0, 26);
+        path.lineTo(0, 17);
+        path.lineTo(8, 17);
+        path.curveTo(14, 18, 14, 9, 8, 9);
+        path.lineTo(0, 9);
+        path.lineTo(0, 0);
+        path.closePath();
 
-		GeneralPath bow = getPathPBow();
+        return path;
+    }
 
-		bow.transform(AffineTransform.getScaleInstance(-1, 1));
-		bow.transform(AffineTransform.getTranslateInstance(25, 20));
-		path.append(bow, false);
+    private GeneralPath getPathOBow() {
+        GeneralPath path = new GeneralPath();
 
-		return path;
-	}
+        path.moveTo(0, 0);
+        path.curveTo(23, 0, 23, 31, 0, 31);
+        path.lineTo(0, 20);
+        path.curveTo(8, 20, 8, 11, 0, 11);
+        path.lineTo(0, 0);
+        path.closePath();
 
-	private GeneralPath getPathE() {
-		GeneralPath path = new GeneralPath();
+        return path;
+    }
 
-		path.moveTo(0, 14.5f);
-		path.lineTo(31, 14.5f);
-		path.curveTo(31, -4.5f, 0, -4.5f, 0, 14.5f);
-		path.closePath();
+    private GeneralPath getPathCBow() {
+        GeneralPath path = new GeneralPath();
 
-		path.moveTo(12, 11);
-		path.lineTo(20, 11);
-		path.curveTo(20, 8, 12, 8, 12, 11);
-		path.closePath();
+        path.moveTo(31, 12);
+        path.curveTo(29, -3.5f, 2, -5.5f, 0, 14.5f);
+        path.lineTo(11, 14.5f);
+        path.curveTo(11, 8.5f, 18, 9, 18, 12);
+        path.lineTo(31, 12);
+        path.closePath();
 
-		GeneralPath bow2 = getPathCBow();
-
-		bow2.transform(AffineTransform.getScaleInstance(1, -1));
-		bow2.transform(AffineTransform.getTranslateInstance(0, 31));
-		path.append(bow2, false);
-
-		return path;
-	}
-
-	private GeneralPath getPathPBow() {
-		GeneralPath path = new GeneralPath();
-
-		path.moveTo(0, 0);
-		path.lineTo(10, 0);
-		path.curveTo(30, 0, 30, 26, 10, 26);
-		path.lineTo(0, 26);
-		path.lineTo(0, 17);
-		path.lineTo(8, 17);
-		path.curveTo(14, 18, 14, 9, 8, 9);
-		path.lineTo(0, 9);
-		path.lineTo(0, 0);
-		path.closePath();
-
-		return path;
-	}
-
-	private GeneralPath getPathOBow() {
-		GeneralPath path = new GeneralPath();
-
-		path.moveTo(0, 0);
-		path.curveTo(23, 0, 23, 31, 0, 31);
-		path.lineTo(0, 20);
-		path.curveTo(8, 20, 8, 11, 0, 11);
-		path.lineTo(0, 0);
-		path.closePath();
-
-		return path;
-	}
-
-	private GeneralPath getPathCBow() {
-		GeneralPath path = new GeneralPath();
-
-		path.moveTo(31, 12);
-		path.curveTo(29, -3.5f, 2, -5.5f, 0, 14.5f);
-		path.lineTo(11, 14.5f);
-		path.curveTo(11, 8.5f, 18, 9, 18, 12);
-		path.lineTo(31, 12);
-		path.closePath();
-
-		return path;
-	}
+        return path;
+    }
 }

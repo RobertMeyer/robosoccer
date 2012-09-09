@@ -18,15 +18,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import javax.swing.*;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IImageManager;
 import net.sf.robocode.ui.IWindowManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -36,125 +33,125 @@ import java.awt.event.KeyEvent;
 @SuppressWarnings("serial")
 public class PreferencesDialog extends JDialog implements WizardListener {
 
-	private JPanel preferencesDialogContentPane;
-	private WizardTabbedPane tabbedPane;
-	private WizardController buttonsPanel;
+    private JPanel preferencesDialogContentPane;
+    private WizardTabbedPane tabbedPane;
+    private WizardController buttonsPanel;
+    private PreferencesCommonOptionsTab commonOptionsTab;
+    private PreferencesDevelopmentOptionsTab developmentOptionsTab;
+    private PreferencesViewOptionsTab viewOptionsTab;
+    private PreferencesRenderingOptionsTab renderingOptionsTab;
+    private PreferencesSoundOptionsTab soundOptionsTab;
+    private final ISettingsManager properties;
+    private final IImageManager imageManager;
 
-	private PreferencesCommonOptionsTab commonOptionsTab;
-	private PreferencesDevelopmentOptionsTab developmentOptionsTab;
-	private PreferencesViewOptionsTab viewOptionsTab;
-	private PreferencesRenderingOptionsTab renderingOptionsTab;
-	private PreferencesSoundOptionsTab soundOptionsTab;
+    public PreferencesDialog(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
+        super(windowManager.getRobocodeFrame(), true);
+        this.properties = properties;
+        this.imageManager = imageManager;
+        initialize();
+    }
 
-	private final ISettingsManager properties;
-	private final IImageManager imageManager;
+    private void initialize() {
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Preferences");
+        setContentPane(getPreferencesDialogContentPane());
+    }
 
-	public PreferencesDialog(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
-		super(windowManager.getRobocodeFrame(), true);
-		this.properties = properties;
-		this.imageManager = imageManager;
-		initialize();
-	}
+    @Override
+    public void cancelButtonActionPerformed() {
+        dispose();
+    }
 
-	private void initialize() {
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Preferences");
-		setContentPane(getPreferencesDialogContentPane());
-	}
+    private WizardController getButtonsPanel() {
+        if (buttonsPanel == null) {
+            buttonsPanel = getTabbedPane().getWizardController();
+        }
+        return buttonsPanel;
+    }
 
-	public void cancelButtonActionPerformed() {
-		dispose();
-	}
+    private JPanel getPreferencesDialogContentPane() {
+        getButtonsPanel();
+        if (preferencesDialogContentPane == null) {
+            preferencesDialogContentPane = new JPanel();
+            preferencesDialogContentPane.setLayout(new BorderLayout());
+            preferencesDialogContentPane.add(getTabbedPane(), BorderLayout.CENTER);
+            preferencesDialogContentPane.add(getButtonsPanel(), BorderLayout.SOUTH);
+        }
+        return preferencesDialogContentPane;
+    }
 
-	private WizardController getButtonsPanel() {
-		if (buttonsPanel == null) {
-			buttonsPanel = getTabbedPane().getWizardController();
-		}
-		return buttonsPanel;
-	}
+    private WizardTabbedPane getTabbedPane() {
+        if (tabbedPane == null) {
+            tabbedPane = new WizardTabbedPane(this);
 
-	private JPanel getPreferencesDialogContentPane() {
-		getButtonsPanel();
-		if (preferencesDialogContentPane == null) {
-			preferencesDialogContentPane = new JPanel();
-			preferencesDialogContentPane.setLayout(new BorderLayout());
-			preferencesDialogContentPane.add(getTabbedPane(), BorderLayout.CENTER);
-			preferencesDialogContentPane.add(getButtonsPanel(), BorderLayout.SOUTH);
-		}
-		return preferencesDialogContentPane;
-	}
+            int tabIndex = 0;
 
-	private WizardTabbedPane getTabbedPane() {
-		if (tabbedPane == null) {
-			tabbedPane = new WizardTabbedPane(this);
+            tabbedPane.insertTab("Common Options", null, getCommonOptionsTab(), null, tabIndex);
+            tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_O);
+            tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 1);
 
-			int tabIndex = 0;
+            tabbedPane.insertTab("Development Options", null, getDevelopmentOptionsTab(), null, tabIndex);
+            tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_D);
+            tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 0);
 
-			tabbedPane.insertTab("Common Options", null, getCommonOptionsTab(), null, tabIndex);
-			tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_O);
-			tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 1);
+            tabbedPane.insertTab("View Options", null, getViewOptionsTab(), null, tabIndex);
+            tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_W);
+            tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 3);
 
-			tabbedPane.insertTab("Development Options", null, getDevelopmentOptionsTab(), null, tabIndex);
-			tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_D);
-			tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 0);
+            tabbedPane.insertTab("Rendering Options", null, getRenderingOptionsTab(), null, tabIndex);
+            tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_R);
+            tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 0);
 
-			tabbedPane.insertTab("View Options", null, getViewOptionsTab(), null, tabIndex);
-			tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_W);
-			tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 3);
+            tabbedPane.insertTab("Sound Options", null, getSoundOptionsTab(), null, tabIndex);
+            tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_S);
+            tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 0);
+        }
+        return tabbedPane;
+    }
 
-			tabbedPane.insertTab("Rendering Options", null, getRenderingOptionsTab(), null, tabIndex);
-			tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_R);
-			tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 0);
+    private JPanel getCommonOptionsTab() {
+        if (commonOptionsTab == null) {
+            commonOptionsTab = new PreferencesCommonOptionsTab(properties);
+        }
+        return commonOptionsTab;
+    }
 
-			tabbedPane.insertTab("Sound Options", null, getSoundOptionsTab(), null, tabIndex);
-			tabbedPane.setMnemonicAt(tabIndex, KeyEvent.VK_S);
-			tabbedPane.setDisplayedMnemonicIndexAt(tabIndex++, 0);
-		}
-		return tabbedPane;
-	}
+    private JPanel getDevelopmentOptionsTab() {
+        if (developmentOptionsTab == null) {
+            developmentOptionsTab = new PreferencesDevelopmentOptionsTab(properties);
+        }
+        return developmentOptionsTab;
+    }
 
-	private JPanel getCommonOptionsTab() {
-		if (commonOptionsTab == null) {
-			commonOptionsTab = new PreferencesCommonOptionsTab(properties);
-		}
-		return commonOptionsTab;
-	}
+    private JPanel getViewOptionsTab() {
+        if (viewOptionsTab == null) {
+            viewOptionsTab = new PreferencesViewOptionsTab(properties);
+        }
+        return viewOptionsTab;
+    }
 
-	private JPanel getDevelopmentOptionsTab() {
-		if (developmentOptionsTab == null) {
-			developmentOptionsTab = new PreferencesDevelopmentOptionsTab(properties);
-		}
-		return developmentOptionsTab;
-	}
+    private JPanel getRenderingOptionsTab() {
+        if (renderingOptionsTab == null) {
+            renderingOptionsTab = new PreferencesRenderingOptionsTab(properties, imageManager);
+        }
+        return renderingOptionsTab;
+    }
 
-	private JPanel getViewOptionsTab() {
-		if (viewOptionsTab == null) {
-			viewOptionsTab = new PreferencesViewOptionsTab(properties);
-		}
-		return viewOptionsTab;
-	}
+    private JPanel getSoundOptionsTab() {
+        if (soundOptionsTab == null) {
+            soundOptionsTab = new PreferencesSoundOptionsTab(properties);
+        }
+        return soundOptionsTab;
+    }
 
-	private JPanel getRenderingOptionsTab() {
-		if (renderingOptionsTab == null) {
-			renderingOptionsTab = new PreferencesRenderingOptionsTab(properties, imageManager);
-		}
-		return renderingOptionsTab;
-	}
+    @Override
+    public void finishButtonActionPerformed() {
+        commonOptionsTab.storePreferences();
+        developmentOptionsTab.storePreferences();
+        viewOptionsTab.storePreferences();
+        renderingOptionsTab.storePreferences();
+        soundOptionsTab.storePreferences();
 
-	private JPanel getSoundOptionsTab() {
-		if (soundOptionsTab == null) {
-			soundOptionsTab = new PreferencesSoundOptionsTab(properties);
-		}
-		return soundOptionsTab;
-	}
-
-	public void finishButtonActionPerformed() {
-		commonOptionsTab.storePreferences();
-		developmentOptionsTab.storePreferences();
-		viewOptionsTab.storePreferences();
-		renderingOptionsTab.storePreferences();
-		soundOptionsTab.storePreferences();
-
-		dispose();
-	}
+        dispose();
+    }
 }

@@ -11,14 +11,13 @@
  *******************************************************************************/
 package robocode;
 
-
+import java.awt.*;
 import net.sf.robocode.peer.IRobotStatics;
+import robocode.Event;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.IPaintEvents;
 import robocode.robotinterfaces.IPaintRobot;
-
-import java.awt.*;
-
 
 /**
  * This event occurs when your robot should paint, where the {@link
@@ -31,43 +30,44 @@ import java.awt.*;
  * @author Flemming N. Larsen (original)
  */
 public final class PaintEvent extends Event {
-	private static final long serialVersionUID = 1L;
-	private final static int DEFAULT_PRIORITY = 5;
 
-	/**
-	 * Called by the game to create a new PaintEvent.
-	 */
-	public PaintEvent() {
-		super();
-	}
+    private static final long serialVersionUID = 1L;
+    private final static int DEFAULT_PRIORITY = 5;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final int getDefaultPriority() {
-		return DEFAULT_PRIORITY;
-	}
+    /**
+     * Called by the game to create a new PaintEvent.
+     */
+    public PaintEvent() {
+        super();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		if (statics.isPaintRobot()) {
-			IPaintEvents listener = ((IPaintRobot) robot).getPaintEventListener();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final int getDefaultPriority() {
+        return DEFAULT_PRIORITY;
+    }
 
-			if (listener != null) {
-				listener.onPaint(graphics);
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+        if (statics.isPaintRobot()) {
+            IPaintEvents listener = ((IPaintRobot) robot).getPaintEventListener();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	byte getSerializationType() {
-		throw new Error("Serialization of this type is not supported");
-	}
+            if (listener != null) {
+                listener.onPaint(graphics);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    byte getSerializationType() {
+        throw new Error("Serialization of this type is not supported");
+    }
 }
