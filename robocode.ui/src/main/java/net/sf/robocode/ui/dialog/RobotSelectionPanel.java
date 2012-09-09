@@ -175,7 +175,8 @@ public class RobotSelectionPanel extends WizardPanel {
         selectedModel.changed();
         fireStateChanged();
         selectedRobotsSize += 1;
-        
+        setRobotsPositionPanel.add(getSetRobotsList(selectedRobotsSize), BorderLayout.CENTER);
+        setRobotsPositionPanel.revalidate();
         if (selectedModel.getSize() >= minRobots && selectedModel.getSize() <= maxRobots) {
             showInstructions();
         } else if (selectedModel.getSize() > maxRobots) {
@@ -326,8 +327,7 @@ public class RobotSelectionPanel extends WizardPanel {
         return selectedRobotsScrollPane;
     }
     
-    private JPanel getSetRobotsList() {
-    	int rows = selectedRobotsSize;
+    private JPanel getSetRobotsList(int rows) {
     	setRobotsList = new JPanel();
     	setRobotsList.setPreferredSize(new Dimension(125,350));
     	FlowLayout flow = new FlowLayout();
@@ -351,21 +351,18 @@ public class RobotSelectionPanel extends WizardPanel {
     		setRobotsList.add(inputX[i]);
     		setRobotsList.add(inputY[i]);
     	}
-    	System.out.println("Case 1");
     	return setRobotsList;
     }
    
     private JPanel getSetRobotsPositionPanel() {
         if (setRobotsPositionPanel == null) {
         	setRobotsPositionPanel = new JPanel();
-        	setRobotsPositionPanel.revalidate();
         	setRobotsPositionPanel.setLayout(new BorderLayout());
         	setRobotsPositionPanel.setPreferredSize(new Dimension(120, 100));
         	setRobotsPositionPanel.setBorder(
                     BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Set Position (X,Y)"));
-        	setRobotsPositionPanel.add(getSetRobotsList(), BorderLayout.CENTER);
+        	
         }
-        System.out.println("Case 2");
         return setRobotsPositionPanel;
     }
     
@@ -498,7 +495,6 @@ public class RobotSelectionPanel extends WizardPanel {
             constraints.anchor = GridBagConstraints.NORTHWEST;
             layout.setConstraints(getSetRobotsPositionPanel(), constraints);
             mainPanel.add(getSetRobotsPositionPanel());
-            System.out.println("Case 3");
         }
         return mainPanel;
     }
