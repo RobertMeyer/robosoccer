@@ -26,7 +26,7 @@ public abstract	class ItemDrop {
 	private final static double width = 40; //Same width and height as robots
 	private final static double height = 40;
 
-	protected boolean isDestroyable;
+	protected boolean isDestructible;
 	protected int lifespan;
 	protected double health;
 	protected boolean isEquippable;
@@ -34,8 +34,8 @@ public abstract	class ItemDrop {
 	protected Battle battle;
 	protected final BoundingRectangle boundingBox;
 		
-	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
-		this.isDestroyable = isDestroyable;
+	ItemDrop(boolean isDestructible, int lifespan, double health, boolean isEquippable, Battle battle){
+		this.isDestructible = isDestructible;
 		this.lifespan = lifespan;
 		this.health = health;
 		this.isEquippable = isEquippable;
@@ -109,20 +109,20 @@ public abstract	class ItemDrop {
 	}
 	
 	/**
-	 * Returns whether the item is destroyable or not.
+	 * Returns whether the item is destructible or not.
 	 * This will allow the itemDrop class to expand to things like extra walls, traps, etc
-	 * @return a boolean representing whether the item is destroyable or not
+	 * @return a boolean representing whether the item is destructible or not
 	 */
-	public boolean getIsDestroyable(){
-		return isDestroyable;
+	public boolean getisDestructible(){
+		return isDestructible;
 	}
 	
 	/**
 	 * Sets if the item isDestroyable or not.
-	 * @param a boolean representing whether the item is destroyable or not
+	 * @param a boolean representing whether the item is destructible or not
 	 */
-	public void setIsDestroyable(boolean isDestroyable){
-		this.isDestroyable = isDestroyable;
+	public void setIsisDestructible(boolean isDestructible){
+		this.isDestructible = isDestructible;
 	}
 	
 	/**
