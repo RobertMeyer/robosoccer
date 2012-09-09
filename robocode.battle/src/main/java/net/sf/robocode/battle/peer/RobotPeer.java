@@ -310,6 +310,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     public boolean isHouseRobot() {
         return statics.isHouseRobot();
     }
+    
+    public boolean isBall() {
+    	return statics.isBall();
+    }
 
     public boolean isJuniorRobot() {
         return statics.isJuniorRobot();

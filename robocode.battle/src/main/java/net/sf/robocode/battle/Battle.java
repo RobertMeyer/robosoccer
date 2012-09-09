@@ -101,6 +101,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -299,7 +300,7 @@ public final class Battle extends BaseBattle {
             Integer duplicate = robotDuplicates.get(i);
             // TODO Follow back from here to RobotPeer etc, to
             RobotPeer robotPeer = new RobotPeer(this, hostManager, specification, duplicate, team, robotIndex);
-
+            
             robots.add(robotPeer);
             if (team == null) {
                 contestants.add(robotPeer);

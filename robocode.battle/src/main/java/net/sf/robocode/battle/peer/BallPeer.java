@@ -48,75 +48,46 @@ public final class BallPeer extends RobotPeer {
                                currentCommands.getMaxVelocity() * 4);
         }
 
-        if (velocity >= 0) {
-            return Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
-        }
-        // else
-        return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
-    }
+		if (velocity >= 0) {
+			return Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
+		}
+		// else
+		return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
+	}
+	
+	protected void updateHeading() {
+		boolean normalizeHeading = true;
+		
+		if (currentCommands.getBodyTurnRemaining() > 0) {	
+			bodyHeading += currentCommands.getBodyTurnRemaining();
+			gunHeading += currentCommands.getBodyTurnRemaining();
+			radarHeading += currentCommands.getBodyTurnRemaining();
+			if (currentCommands.isAdjustGunForBodyTurn()) {
+				currentCommands.setGunTurnRemaining(
+						currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
+			}
+			if (currentCommands.isAdjustRadarForBodyTurn()) {
+				currentCommands.setRadarTurnRemaining(
+						currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
+			}
+			currentCommands.setBodyTurnRemaining(0);
+		} else if (currentCommands.getBodyTurnRemaining() < 0) {
+			bodyHeading += currentCommands.getBodyTurnRemaining();
+			gunHeading += currentCommands.getBodyTurnRemaining();
+			radarHeading += currentCommands.getBodyTurnRemaining();
+			if (currentCommands.isAdjustGunForBodyTurn()) {
+				currentCommands.setGunTurnRemaining(
+						currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
+			}
+			if (currentCommands.isAdjustRadarForBodyTurn()) {
+				currentCommands.setRadarTurnRemaining(
+						currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
+			}
+			currentCommands.setBodyTurnRemaining(0);
+		} else {
+			normalizeHeading = false;
+		}
 
-    @Override
-    protected void updateHeading() {
-        boolean normalizeHeading = true;
-
-        double turnRate = min(currentCommands.getMaxTurnRate() * 5,
-                              (.4 + .6 * (1 - (abs(velocity) / Rules.MAX_VELOCITY))) * Rules.MAX_TURN_RATE_RADIANS * 5);
-
-        if (currentCommands.getBodyTurnRemaining() > 0) {
-            if (currentCommands.getBodyTurnRemaining() < turnRate) {
-                bodyHeading += currentCommands.getBodyTurnRemaining();
-                gunHeading += currentCommands.getBodyTurnRemaining();
-                radarHeading += currentCommands.getBodyTurnRemaining();
-                if (currentCommands.isAdjustGunForBodyTurn()) {
-                    currentCommands.setGunTurnRemaining(
-                            currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
-                }
-                if (currentCommands.isAdjustRadarForBodyTurn()) {
-                    currentCommands.setRadarTurnRemaining(
-                            currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
-                }
-                currentCommands.setBodyTurnRemaining(0);
-            } else {
-                bodyHeading += turnRate;
-                gunHeading += turnRate;
-                radarHeading += turnRate;
-                currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() - turnRate);
-                if (currentCommands.isAdjustGunForBodyTurn()) {
-                    currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() - turnRate);
-                }
-                if (currentCommands.isAdjustRadarForBodyTurn()) {
-                    currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() - turnRate);
-                }
-            }
-        } else if (currentCommands.getBodyTurnRemaining() < 0) {
-            if (currentCommands.getBodyTurnRemaining() > -turnRate) {
-                bodyHeading += currentCommands.getBodyTurnRemaining();
-                gunHeading += currentCommands.getBodyTurnRemaining();
-                radarHeading += currentCommands.getBodyTurnRemaining();
-                if (currentCommands.isAdjustGunForBodyTurn()) {
-                    currentCommands.setGunTurnRemaining(
-                            currentCommands.getGunTurnRemaining() - currentCommands.getBodyTurnRemaining());
-                }
-                if (currentCommands.isAdjustRadarForBodyTurn()) {
-                    currentCommands.setRadarTurnRemaining(
-                            currentCommands.getRadarTurnRemaining() - currentCommands.getBodyTurnRemaining());
-                }
-                currentCommands.setBodyTurnRemaining(0);
-            } else {
-                bodyHeading -= turnRate;
-                gunHeading -= turnRate;
-                radarHeading -= turnRate;
-                currentCommands.setBodyTurnRemaining(currentCommands.getBodyTurnRemaining() + turnRate);
-                if (currentCommands.isAdjustGunForBodyTurn()) {
-                    currentCommands.setGunTurnRemaining(currentCommands.getGunTurnRemaining() + turnRate);
-                }
-                if (currentCommands.isAdjustRadarForBodyTurn()) {
-                    currentCommands.setRadarTurnRemaining(currentCommands.getRadarTurnRemaining() + turnRate);
-                }
-            }
-        } else {
-            normalizeHeading = false;
-        }
 
         if (normalizeHeading) {
             if (currentCommands.getBodyTurnRemaining() == 0) {
