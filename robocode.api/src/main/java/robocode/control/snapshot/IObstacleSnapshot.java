@@ -3,16 +3,10 @@ package robocode.control.snapshot;
 /**
  * Interface of an obstacle snapshot at a specific time in a battle.
  *
- * @since 1.6.2
+ * @author Michael Tsai
+ * 
  */
 public interface IObstacleSnapshot {
-
-	/**
-	 * Returns the obstacle state.
-	 *
-	 * @return the obstacle state.
-	 */
-	//BulletState getState();
 
 	/**
 	 * Returns the bullet power.
@@ -84,11 +78,6 @@ public interface IObstacleSnapshot {
 	 * @return the ID of the obstacle.
 	 */
 	int getObstacleId();
-
-	/**
-	 * @return heading of the bullet
-	 */
-	//double getHeading();
 
 	/**
 	 * @return contestantIndex of the victim, or -1 if no one hit the obstacle
