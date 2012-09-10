@@ -170,8 +170,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double x;
 	protected double y;
 	protected int skippedTurns;
-	protected boolean collidedWithBlackHole = false;
-	
+
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
 
@@ -1250,7 +1249,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
 		BoundingRectangle bound = getBoundingBox();
 		double newHeading = getBodyHeading()+PI;
-		
 		double[] xy;
 		double[] fail = {-1.0, -1.0};
 		double[] death = {-2.0, -2.0};
