@@ -11,13 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
-
 import robocode.Bullet;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IHiddenBulletHelper {
-	void update(Bullet bullet, double x, double y, String victimName, boolean isActive);
+
+    void update(Bullet bullet, double x, double y, String victimName, boolean isActive);
 }

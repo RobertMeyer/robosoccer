@@ -11,22 +11,21 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
-
 import java.awt.*;
-
 
 /**
  * @author Pavel Savara (original)
  */
 @SuppressWarnings("serial")
 public class SafeComponent extends Component {
-	// Dummy component used to preventing robots in accessing the real source component
-	private static Component safeEventComponent;
+    // Dummy component used to preventing robots in accessing the real source component
 
-	public static Component getSafeEventComponent() {
-		if (safeEventComponent == null) {
-			safeEventComponent = new SafeComponent();
-		}
-		return safeEventComponent;
-	}
+    private static Component safeEventComponent;
+
+    public static Component getSafeEventComponent() {
+        if (safeEventComponent == null) {
+            safeEventComponent = new SafeComponent();
+        }
+        return safeEventComponent;
+    }
 }

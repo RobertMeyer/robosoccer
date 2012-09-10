@@ -11,18 +11,18 @@
  *******************************************************************************/
 package robocode.exception;
 
-
 /**
  * @author Mathew A. Nelson (original)
  */
 public class DisabledException extends Error { // Must be error!
-	private static final long serialVersionUID = 1L;
 
-	public DisabledException() {
-		super();
-	}
+    private static final long serialVersionUID = 1L;
 
-	public DisabledException(String s) {
-		super(s);
-	}
+    public DisabledException() {
+        super();
+    }
+
+    public DisabledException(String s) {
+        super(s);
+    }
 }

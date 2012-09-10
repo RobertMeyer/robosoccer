@@ -13,17 +13,15 @@
  *******************************************************************************/
 package robocode;
 
-
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Event;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
-
 
 /**
  * A SkippedTurnEvent is sent to {@link AdvancedRobot#onSkippedTurn(SkippedTurnEvent)
@@ -58,97 +56,101 @@ import java.nio.ByteBuffer;
  * @see SkippedTurnEvent
  */
 public final class SkippedTurnEvent extends Event {
-	private static final long serialVersionUID = 1L;
-	private final static int DEFAULT_PRIORITY = 100; // System event -> cannot be changed!;
 
-	private final long skippedTurn;
+    private static final long serialVersionUID = 1L;
+    private final static int DEFAULT_PRIORITY = 100; // System event -> cannot be changed!;
+    private final long skippedTurn;
 
-	/**
-	 * Called by the game to create a new SkippedTurnEvent.
-	 *
-	 * @param skippedTurn the skipped turn
-	 */
-	public SkippedTurnEvent(long skippedTurn) {
-		super();
-		this.skippedTurn = skippedTurn;
-	}
+    /**
+     * Called by the game to create a new SkippedTurnEvent.
+     *
+     * @param skippedTurn the skipped turn
+     */
+    public SkippedTurnEvent(long skippedTurn) {
+        super();
+        this.skippedTurn = skippedTurn;
+    }
 
-	/**
-	 * Returns the turn that was skipped.
-	 *
-	 * @return the turn that was skipped.
-	 *
-	 * @since 1.7.2.0
-	 */
-	public long getSkippedTurn() {
-		return skippedTurn;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final int getPriority() {
-		return DEFAULT_PRIORITY;
-	}
+    /**
+     * Returns the turn that was skipped.
+     *
+     * @return the turn that was skipped.
+     *
+     * @since 1.7.2.0
+     */
+    public long getSkippedTurn() {
+        return skippedTurn;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final int getDefaultPriority() {
-		return DEFAULT_PRIORITY;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int getPriority() {
+        return DEFAULT_PRIORITY;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		if (statics.isAdvancedRobot()) {
-			IAdvancedEvents listener = ((IAdvancedRobot) robot).getAdvancedEventListener();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final int getDefaultPriority() {
+        return DEFAULT_PRIORITY;
+    }
 
-			if (listener != null) {
-				listener.onSkippedTurn(this);
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+        if (statics.isAdvancedRobot()) {
+            IAdvancedEvents listener = ((IAdvancedRobot) robot).getAdvancedEventListener();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final boolean isCriticalEvent() {
-		return true;
-	}
+            if (listener != null) {
+                listener.onSkippedTurn(this);
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	byte getSerializationType() {
-		return RbSerializer.SkippedTurnEvent_TYPE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final boolean isCriticalEvent() {
+        return true;
+    }
 
-	static ISerializableHelper createHiddenSerializer() {
-		return new SerializableHelper();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    byte getSerializationType() {
+        return RbSerializer.SkippedTurnEvent_TYPE;
+    }
 
-	private static class SerializableHelper implements ISerializableHelper {
-		public int sizeOf(RbSerializer serializer, Object object) {
-			return RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_LONG;
-		}
+    static ISerializableHelper createHiddenSerializer() {
+        return new SerializableHelper();
+    }
 
-		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-			SkippedTurnEvent obj = (SkippedTurnEvent) object;
+    private static class SerializableHelper implements ISerializableHelper {
 
-			serializer.serialize(buffer, obj.skippedTurn);
-		}
+        @Override
+        public int sizeOf(RbSerializer serializer, Object object) {
+            return RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_LONG;
+        }
 
-		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-			long skippedTurn = buffer.getLong();
+        @Override
+        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+            SkippedTurnEvent obj = (SkippedTurnEvent) object;
 
-			return new SkippedTurnEvent(skippedTurn);
-		}
-	}
+            serializer.serialize(buffer, obj.skippedTurn);
+        }
+
+        @Override
+        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+            long skippedTurn = buffer.getLong();
+
+            return new SkippedTurnEvent(skippedTurn);
+        }
+    }
 }

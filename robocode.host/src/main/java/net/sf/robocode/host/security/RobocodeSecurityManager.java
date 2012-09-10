@@ -27,12 +27,9 @@
  *******************************************************************************/
 package net.sf.robocode.host.security;
 
-
+import java.security.AccessControlException;
 import net.sf.robocode.host.IHostedThread;
 import net.sf.robocode.host.IThreadManager;
-
-import java.security.AccessControlException;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -41,108 +38,108 @@ import java.security.AccessControlException;
  * @author Pavel Savara (contributor)
  */
 public class RobocodeSecurityManager extends SecurityManager {
-	public static final boolean isSecutityOn = !System.getProperty("NOSECURITY", "false").equals("true");
 
-	private final IThreadManager threadManager;
+    public static final boolean isSecutityOn = !System.getProperty("NOSECURITY", "false").equals("true");
+    private final IThreadManager threadManager;
 
-	public RobocodeSecurityManager(IThreadManager threadManager) {
-		super();
-		this.threadManager = threadManager;
+    public RobocodeSecurityManager(IThreadManager threadManager) {
+        super();
+        this.threadManager = threadManager;
 
-		ThreadGroup tg = Thread.currentThread().getThreadGroup();
+        ThreadGroup tg = Thread.currentThread().getThreadGroup();
 
-		while (tg != null) {
-			threadManager.addSafeThreadGroup(tg);
-			tg = tg.getParent();
-		}
-		// We need to exercise it in order to load all used classes on this thread
-		isSafeThread(Thread.currentThread());
-		if (isSecutityOn) {
-			System.setSecurityManager(this);
-		}
-	}
+        while (tg != null) {
+            threadManager.addSafeThreadGroup(tg);
+            tg = tg.getParent();
+        }
+        // We need to exercise it in order to load all used classes on this thread
+        isSafeThread(Thread.currentThread());
+        if (isSecutityOn) {
+            System.setSecurityManager(this);
+        }
+    }
 
-	@Override
-	public void checkAccess(Thread t) {
-		if (!isSecutityOn) {
-			return;
-		}
+    @Override
+    public void checkAccess(Thread t) {
+        if (!isSecutityOn) {
+            return;
+        }
 
-		Thread c = Thread.currentThread();
+        Thread c = Thread.currentThread();
 
-		if (isSafeThread(c)) {
-			return;
-		}
-		super.checkAccess(t);
+        if (isSafeThread(c)) {
+            return;
+        }
+        super.checkAccess(t);
 
-		// Threads belonging to other thread groups is not allowed to access threads belonging to other thread groups
-		// Bug fix [3021140] Possible for robot to kill other robot threads.
-		// In the following the thread group of the current thread must be in the thread group hierarchy of the
-		// attacker thread; otherwise an AccessControlException must be thrown.
+        // Threads belonging to other thread groups is not allowed to access threads belonging to other thread groups
+        // Bug fix [3021140] Possible for robot to kill other robot threads.
+        // In the following the thread group of the current thread must be in the thread group hierarchy of the
+        // attacker thread; otherwise an AccessControlException must be thrown.
 
-		boolean found = false;
-		
-		ThreadGroup cg = c.getThreadGroup();
-		ThreadGroup tg = t.getThreadGroup();
+        boolean found = false;
 
-		while (tg != null) {
-			if (tg == cg) {
-				found = true;
-				break;
-			}
-			try {
-				tg = tg.getParent();
-			} catch (AccessControlException e) {
-				// We expect an AccessControlException due to missing RuntimePermission modifyThreadGroup
-				break;
-			}
-		}
-		if (!found) {
-			String message = "Preventing " + c.getName() + " from access to " + t.getName();
-			IHostedThread robotProxy = threadManager.getLoadedOrLoadingRobotProxy(c);
+        ThreadGroup cg = c.getThreadGroup();
+        ThreadGroup tg = t.getThreadGroup();
 
-			if (robotProxy != null) {
-				robotProxy.punishSecurityViolation(message);
-			}
-			throw new AccessControlException(message);
-		}
-	}
+        while (tg != null) {
+            if (tg == cg) {
+                found = true;
+                break;
+            }
+            try {
+                tg = tg.getParent();
+            } catch (AccessControlException e) {
+                // We expect an AccessControlException due to missing RuntimePermission modifyThreadGroup
+                break;
+            }
+        }
+        if (!found) {
+            String message = "Preventing " + c.getName() + " from access to " + t.getName();
+            IHostedThread robotProxy = threadManager.getLoadedOrLoadingRobotProxy(c);
 
-	@Override
-	public void checkAccess(ThreadGroup g) {
-		if (!isSecutityOn) {
-			return;
-		}
-		Thread c = Thread.currentThread();
+            if (robotProxy != null) {
+                robotProxy.punishSecurityViolation(message);
+            }
+            throw new AccessControlException(message);
+        }
+    }
 
-		if (isSafeThread(c)) {
-			return;
-		}
-		super.checkAccess(g);
+    @Override
+    public void checkAccess(ThreadGroup g) {
+        if (!isSecutityOn) {
+            return;
+        }
+        Thread c = Thread.currentThread();
 
-		final ThreadGroup cg = c.getThreadGroup();
+        if (isSafeThread(c)) {
+            return;
+        }
+        super.checkAccess(g);
 
-		if (cg == null) {
-			// What the heck is going on here?  JDK 1.3 is sending me a dead thread.
-			// This crashes the entire jvm if I don't return here.
-			return;
-		}
+        final ThreadGroup cg = c.getThreadGroup();
 
-		IHostedThread robotProxy = threadManager.getLoadedOrLoadingRobotProxy(c);
+        if (cg == null) {
+            // What the heck is going on here?  JDK 1.3 is sending me a dead thread.
+            // This crashes the entire jvm if I don't return here.
+            return;
+        }
 
-		if (robotProxy == null) {
-			throw new AccessControlException("Preventing " + c.getName() + " from access to " + g.getName());			
-		}
+        IHostedThread robotProxy = threadManager.getLoadedOrLoadingRobotProxy(c);
 
-		if (cg.activeCount() > 5) {
-			String message = "Robots are only allowed to create up to 5 threads!";
+        if (robotProxy == null) {
+            throw new AccessControlException("Preventing " + c.getName() + " from access to " + g.getName());
+        }
 
-			robotProxy.punishSecurityViolation(message);
-			throw new AccessControlException(message);
-		}
-	}
+        if (cg.activeCount() > 5) {
+            String message = "Robots are only allowed to create up to 5 threads!";
 
-	private boolean isSafeThread(Thread c) {
-		return threadManager.isSafeThread(c);
-	}
+            robotProxy.punishSecurityViolation(message);
+            throw new AccessControlException(message);
+        }
+    }
+
+    private boolean isSafeThread(Thread c) {
+        return threadManager.isSafeThread(c);
+    }
 }

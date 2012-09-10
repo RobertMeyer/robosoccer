@@ -11,10 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.recording;
 
-
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.serialization.SerializableOptions;
-
 
 /**
  * @author Pavel Savara (original)
@@ -22,12 +20,13 @@ import net.sf.robocode.serialization.SerializableOptions;
  */
 public interface IRecordManager {
 
-	void attachRecorder(BattleEventDispatcher battleEventDispatcher);
-	void detachRecorder();
+    void attachRecorder(BattleEventDispatcher battleEventDispatcher);
 
-	void saveRecord(String fileName, BattleRecordFormat format, SerializableOptions options);
+    void detachRecorder();
 
-	void loadRecord(String fileName, BattleRecordFormat format);
+    void saveRecord(String fileName, BattleRecordFormat format, SerializableOptions options);
 
-	boolean hasRecord();
+    void loadRecord(String fileName, BattleRecordFormat format);
+
+    boolean hasRecord();
 }

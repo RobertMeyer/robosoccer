@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.settings;
 
-
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,268 +18,254 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface ISettingsManager {
-	void saveProperties();
 
-	boolean getOptionsViewRobotNames();
+    void saveProperties();
 
-	void setOptionsViewRobotNames(boolean optionsViewRobotNames);
+    boolean getOptionsViewRobotNames();
 
-	boolean getOptionsViewScanArcs();
+    void setOptionsViewRobotNames(boolean optionsViewRobotNames);
 
-	void setOptionsViewScanArcs(boolean optionsViewScanArcs);
+    boolean getOptionsViewScanArcs();
 
-	boolean getOptionsViewRobotEnergy();
+    void setOptionsViewScanArcs(boolean optionsViewScanArcs);
 
-	void setOptionsViewRobotEnergy(boolean optionsViewRobotEnergy);
+    boolean getOptionsViewRobotEnergy();
 
-	boolean getOptionsViewGround();
+    void setOptionsViewRobotEnergy(boolean optionsViewRobotEnergy);
 
-	void setOptionsViewGround(boolean optionsViewGround);
+    boolean getOptionsViewGround();
 
-	boolean getOptionsViewTPS();
+    void setOptionsViewGround(boolean optionsViewGround);
 
-	void setOptionsViewTPS(boolean optionsViewTPS);
+    boolean getOptionsViewTPS();
 
-	boolean getOptionsViewFPS();
+    void setOptionsViewTPS(boolean optionsViewTPS);
 
-	void setOptionsViewFPS(boolean optionsViewFPS);
+    boolean getOptionsViewFPS();
 
-	boolean getOptionsViewExplosions();
+    void setOptionsViewFPS(boolean optionsViewFPS);
 
-	void setOptionsViewExplosions(boolean optionsViewExplosions);
+    boolean getOptionsViewExplosions();
 
-	boolean getOptionsViewExplosionDebris();
+    void setOptionsViewExplosions(boolean optionsViewExplosions);
 
-	void setOptionsViewExplosionDebris(boolean optionsViewExplosionDebris);
+    boolean getOptionsViewExplosionDebris();
 
-	boolean getOptionsViewPreventSpeedupWhenMinimized();
+    void setOptionsViewExplosionDebris(boolean optionsViewExplosionDebris);
 
-	void setOptionsViewPreventSpeedupWhenMinimized(boolean preventSpeedupWhenMinimized);
+    boolean getOptionsViewPreventSpeedupWhenMinimized();
 
-	int getOptionsRenderingAntialiasing();
+    void setOptionsViewPreventSpeedupWhenMinimized(boolean preventSpeedupWhenMinimized);
 
-	void setOptionsRenderingAntialiasing(int optionsRenderingAntialiasing);
+    int getOptionsRenderingAntialiasing();
 
-	int getOptionsRenderingTextAntialiasing();
+    void setOptionsRenderingAntialiasing(int optionsRenderingAntialiasing);
 
-	void setOptionsRenderingTextAntialiasing(int optionsRenderingTextAntialiasing);
+    int getOptionsRenderingTextAntialiasing();
 
-	int getOptionsRenderingMethod();
+    void setOptionsRenderingTextAntialiasing(int optionsRenderingTextAntialiasing);
 
-	void setOptionsRenderingMethod(int optionsRenderingMethod);
+    int getOptionsRenderingMethod();
 
-	RenderingHints getRenderingHints();
+    void setOptionsRenderingMethod(int optionsRenderingMethod);
 
-	int getOptionsRenderingNoBuffers();
+    RenderingHints getRenderingHints();
 
-	void setOptionsRenderingNoBuffers(int optionsRenderingNoBuffers);
+    int getOptionsRenderingNoBuffers();
 
-	boolean getOptionsRenderingBufferImages();
+    void setOptionsRenderingNoBuffers(int optionsRenderingNoBuffers);
 
-	void setOptionsRenderingBufferImages(boolean optionsRenderingBufferImages);
+    boolean getOptionsRenderingBufferImages();
 
-	boolean getOptionsRenderingForceBulletColor();
+    void setOptionsRenderingBufferImages(boolean optionsRenderingBufferImages);
 
-	void setOptionsRenderingForceBulletColor(boolean optionsRenderingForceBulletColor);
+    boolean getOptionsRenderingForceBulletColor();
 
-	int getOptionsBattleDesiredTPS();
+    void setOptionsRenderingForceBulletColor(boolean optionsRenderingForceBulletColor);
 
-	void setOptionsBattleDesiredTPS(int optionsBattleDesiredTPS);
+    int getOptionsBattleDesiredTPS();
 
-	boolean getOptionsSoundEnableSound();
+    void setOptionsBattleDesiredTPS(int optionsBattleDesiredTPS);
 
-	void setOptionsSoundEnableSound(boolean optionsSoundEnableSound);
+    boolean getOptionsSoundEnableSound();
 
-	boolean getOptionsSoundEnableGunshot();
+    void setOptionsSoundEnableSound(boolean optionsSoundEnableSound);
 
-	void setOptionsSoundEnableGunshot(boolean optionsSoundEnableGunshot);
+    boolean getOptionsSoundEnableGunshot();
 
-	boolean getOptionsSoundEnableBulletHit();
+    void setOptionsSoundEnableGunshot(boolean optionsSoundEnableGunshot);
 
-	void setOptionsSoundEnableBulletHit(boolean optionsSoundEnableBulletHit);
+    boolean getOptionsSoundEnableBulletHit();
 
-	boolean getOptionsSoundEnableRobotDeath();
+    void setOptionsSoundEnableBulletHit(boolean optionsSoundEnableBulletHit);
 
-	void setOptionsSoundEnableRobotDeath(boolean optionsSoundEnableRobotDeath);
+    boolean getOptionsSoundEnableRobotDeath();
 
-	boolean getOptionsSoundEnableWallCollision();
+    void setOptionsSoundEnableRobotDeath(boolean optionsSoundEnableRobotDeath);
 
-	void setOptionsSoundEnableWallCollision(boolean optionsSoundEnableWallCollision);
+    boolean getOptionsSoundEnableWallCollision();
 
-	boolean getOptionsSoundEnableRobotCollision();
+    void setOptionsSoundEnableWallCollision(boolean optionsSoundEnableWallCollision);
 
-	void setOptionsSoundEnableRobotCollision(boolean optionsSoundEnableRobotCollision);
+    boolean getOptionsSoundEnableRobotCollision();
 
-	boolean getOptionsSoundEnableMixerVolume();
+    void setOptionsSoundEnableRobotCollision(boolean optionsSoundEnableRobotCollision);
 
-	void setOptionsSoundMixer(String optionsSoundMixer);
+    boolean getOptionsSoundEnableMixerVolume();
 
-	String getOptionsSoundMixer();
+    void setOptionsSoundMixer(String optionsSoundMixer);
 
-	void setOptionsSoundEnableMixerVolume(boolean optionsSoundEnableMixerVolume);
+    String getOptionsSoundMixer();
 
-	boolean getOptionsSoundEnableMixerPan();
+    void setOptionsSoundEnableMixerVolume(boolean optionsSoundEnableMixerVolume);
 
-	void setOptionsSoundEnableMixerPan(boolean optionsSoundEnableMixerPan);
+    boolean getOptionsSoundEnableMixerPan();
 
-	boolean getOptionsTeamShowTeamRobots();
+    void setOptionsSoundEnableMixerPan(boolean optionsSoundEnableMixerPan);
 
-	void setOptionsTeamShowTeamRobots(boolean optionsTeamShowTeamRobots);
+    boolean getOptionsTeamShowTeamRobots();
 
-	String getFileThemeMusic();
+    void setOptionsTeamShowTeamRobots(boolean optionsTeamShowTeamRobots);
 
-	String getFileBackgroundMusic();
+    String getFileThemeMusic();
 
-	String getFileEndOfBattleMusic();
+    String getFileBackgroundMusic();
 
-	String getFileGunshotSfx();
+    String getFileEndOfBattleMusic();
 
-	String getBulletHitsRobotSfx();
+    String getFileGunshotSfx();
 
-	String getBulletHitsBulletSfx();
+    String getBulletHitsRobotSfx();
 
-	String getRobotDeathSfx();
+    String getBulletHitsBulletSfx();
 
-	String getRobotCollisionSfx();
+    String getRobotDeathSfx();
 
-	String getWallCollisionSfx();
+    String getRobotCollisionSfx();
 
-	Date getVersionChecked();
+    String getWallCollisionSfx();
 
-	void setVersionChecked(Date versionChecked);
+    Date getVersionChecked();
 
-	long getRobotFilesystemQuota();
+    void setVersionChecked(Date versionChecked);
 
-	void setRobotFilesystemQuota(long robotFilesystemQuota);
+    long getRobotFilesystemQuota();
 
-	long getConsoleQuota();
+    void setRobotFilesystemQuota(long robotFilesystemQuota);
 
-	void setConsoleQuota(long consoleQuota);
+    long getConsoleQuota();
 
-	long getCpuConstant();
+    void setConsoleQuota(long consoleQuota);
 
-	void setCpuConstant(long cpuConstant);
+    long getCpuConstant();
 
-	Collection<String> getOptionsDevelopmentPaths();
+    void setCpuConstant(long cpuConstant);
 
-	void setOptionsDevelopmentPaths(Collection<String> paths);
+    Collection<String> getOptionsDevelopmentPaths();
 
-	Collection<String> getOptionsExcludedDevelopmentPaths();
+    void setOptionsDevelopmentPaths(Collection<String> paths);
 
-	void setOptionsExcludedDevelopmentPaths(Collection<String> excludedPaths);
+    Collection<String> getOptionsExcludedDevelopmentPaths();
 
-	Collection<String> getOptionsEnabledDevelopmentPaths();
+    void setOptionsExcludedDevelopmentPaths(Collection<String> excludedPaths);
 
-	boolean getOptionsCommonShowResults();
+    Collection<String> getOptionsEnabledDevelopmentPaths();
 
-	boolean getOptionsCommonDontHideRankings();
+    boolean getOptionsCommonShowResults();
 
-	void setOptionsCommonDontHideRankings(boolean dontHide);
+    boolean getOptionsCommonDontHideRankings();
 
-	void setOptionsCommonAppendWhenSavingResults(boolean enable);
+    void setOptionsCommonDontHideRankings(boolean dontHide);
 
-	boolean getOptionsCommonAppendWhenSavingResults();
+    void setOptionsCommonAppendWhenSavingResults(boolean enable);
 
-	void setOptionsCommonShowResults(boolean enable);
+    boolean getOptionsCommonAppendWhenSavingResults();
 
-	boolean getOptionsCommonEnableReplayRecording();
+    void setOptionsCommonShowResults(boolean enable);
 
-	boolean getOptionsCommonEnableAutoRecording();
+    boolean getOptionsCommonEnableReplayRecording();
 
-	boolean getOptionsCommonAutoRecordingXML();
+    boolean getOptionsCommonEnableAutoRecording();
 
-	void setOptionsCommonEnableReplayRecording(boolean enable);
+    boolean getOptionsCommonAutoRecordingXML();
 
-	void setOptionsCommonEnableAutoRecording(boolean enable);
+    void setOptionsCommonEnableReplayRecording(boolean enable);
 
-	void setOptionsCommonEnableAutoRecordingXML(boolean enable);
+    void setOptionsCommonEnableAutoRecording(boolean enable);
 
-	void setOptionsCommonNotifyAboutNewBetaVersions(boolean enable);
+    void setOptionsCommonEnableAutoRecordingXML(boolean enable);
 
-	boolean getOptionsCommonNotifyAboutNewBetaVersions();
+    void setOptionsCommonNotifyAboutNewBetaVersions(boolean enable);
 
-	int getNumberOfRounds();
+    boolean getOptionsCommonNotifyAboutNewBetaVersions();
 
-	void setNumberOfRounds(int numberOfRounds);
+    int getNumberOfRounds();
 
-	void store(FileOutputStream out, String desc) throws IOException;
+    void setNumberOfRounds(int numberOfRounds);
 
-	void load(FileInputStream in) throws IOException;
+    void store(FileOutputStream out, String desc) throws IOException;
 
-	String getLastRunVersion();
+    void load(FileInputStream in) throws IOException;
 
-	void setLastRunVersion(String lastRunVersion);
+    String getLastRunVersion();
 
-	void addPropertyListener(ISettingsListener listener);
+    void setLastRunVersion(String lastRunVersion);
 
-	void removePropertyListener(ISettingsListener propertyListener);
+    void addPropertyListener(ISettingsListener listener);
 
-	public final static String
-			OPTIONS_VIEW_ROBOTNAMES = "robocode.options.view.robotNames",
-			OPTIONS_VIEW_SCANARCS = "robocode.options.view.scanArcs",
-			OPTIONS_VIEW_ROBOTENERGY = "robocode.options.view.robotEnergy",
-			OPTIONS_VIEW_GROUND = "robocode.options.view.ground",
-			OPTIONS_VIEW_TPS = "robocode.options.view.TPS",
-			OPTIONS_VIEW_FPS = "robocode.options.view.FPS",
-			OPTIONS_VIEW_EXPLOSIONS = "robocode.options.view.explosions",
-			OPTIONS_VIEW_EXPLOSION_DEBRIS = "robocode.options.view.explosionDebris",
-
-			OPTIONS_BATTLE_DESIREDTPS = "robocode.options.battle.desiredTPS",
-
-			OPTIONS_VIEW_PREVENT_SPEEDUP_WHEN_MINIMIZED = "robocode.options.view.preventSpeedupWhenMinimized",
-
-			OPTIONS_RENDERING_ANTIALIASING = "robocode.options.rendering.antialiasing",
-			OPTIONS_RENDERING_TEXT_ANTIALIASING = "robocode.options.rendering.text.antialiasing",
-			OPTIONS_RENDERING_METHOD = "robocode.options.rendering.method",
-			OPTIONS_RENDERING_NO_BUFFERS = "robocode.options.rendering.noBuffers",
-			OPTIONS_RENDERING_BUFFER_IMAGES = "robocode.options.rendering.bufferImages",
-			OPTIONS_RENDERING_FORCE_BULLET_COLOR = "robocode.options.rendering.forceBulletColor",
-
-			OPTIONS_SOUND_ENABLESOUND = "robocode.options.sound.enableSound",
-			OPTIONS_SOUND_ENABLEGUNSHOT = "robocode.options.sound.enableGunshot",
-			OPTIONS_SOUND_ENABLEBULLETHIT = "robocode.options.sound.enableBulletHit",
-			OPTIONS_SOUND_ENABLEROBOTDEATH = "robocode.options.sound.enableRobotDeath",
-			OPTIONS_SOUND_ENABLEWALLCOLLISION = "robocode.options.sound.enableWallCollision",
-			OPTIONS_SOUND_ENABLEROBOTCOLLISION = "robocode.options.sound.enableRobotCollision",
-
-			OPTIONS_SOUND_MIXER = "robocode.options.sound.mixer",
-			OPTIONS_SOUND_ENABLEMIXERVOLUME = "robocode.options.sound.enableMixerVolume",
-			OPTIONS_SOUND_ENABLEMIXERPAN = "robocode.options.sound.enableMixerPan",
-	
-			OPTIONS_COMMON_NOTIFY_ABOUT_NEW_BETA_VERSIONS = "robocode.options.common.notifyAboutNewBetaVersions",
-			OPTIONS_COMMON_SHOW_RESULTS = "robocode.options.common.showResults",
-			OPTIONS_COMMON_DONT_HIDE_RANKINGS = "robocode.options.common.dontHideRankings",
-			OPTIONS_COMMON_APPEND_WHEN_SAVING_RESULTS = "robocode.options.common.appendWhenSavingResults",
-			OPTIONS_COMMON_ENABLE_REPLAY_RECORDING = "robocode.options.common.enableReplayRecording",
-			OPTIONS_COMMON_ENABLE_AUTO_RECORDING = "robocode.options.common.enableAutoRecording",
-			OPTIONS_COMMON_AUTO_RECORDING_XML = "robocode.options.common.autoRecordingXML",
-
-			OPTIONS_TEAM_SHOWTEAMROBOTS = "robocode.options.team.showTeamRobots",
-
-			OPTIONS_DEVELOPMENT_PATH = "robocode.options.development.path",
-			OPTIONS_DEVELOPMENT_PATH_EXCLUDED = "robocode.options.development.path.excluded",
-
-			FILE_THEME_MUSIC = "robocode.file.music.theme",
-			FILE_BACKGROUND_MUSIC = "robocode.file.music.background",
-			FILE_END_OF_BATTLE_MUSIC = "robocode.file.music.endOfBattle",
-
-			FILE_GUNSHOT_SFX = "robocode.file.sfx.gunshot",
-			FILE_ROBOT_COLLISION_SFX = "robocode.file.sfx.robotCollision",
-			FILE_WALL_COLLISION_SFX = "robocode.file.sfx.wallCollision",
-			FILE_ROBOT_DEATH_SFX = "robocode.file.sfx.robotDeath",
-			FILE_BULLET_HITS_ROBOT_SFX = "robocode.file.sfx.bulletHitsRobot",
-			FILE_BULLET_HITS_BULLET_SFX = "robocode.file.sfx.bulletHitsBullet",
-
-			VERSIONCHECKED = "robocode.versionchecked",
-			ROBOT_FILESYSTEM_QUOTA = "robocode.robot.filesystem.quota",
-			CONSOLE_QUOTA = "robocode.console.quota",
-			CPU_CONSTANT = "robocode.cpu.constant",
-			LAST_RUN_VERSION = "robocode.version.lastrun",
-
-			NUMBER_OF_ROUNDS = "robocode.numberOfBattles";
+    void removePropertyListener(ISettingsListener propertyListener);
+    public final static String OPTIONS_VIEW_ROBOTNAMES = "robocode.options.view.robotNames",
+            OPTIONS_VIEW_SCANARCS = "robocode.options.view.scanArcs",
+            OPTIONS_VIEW_ROBOTENERGY = "robocode.options.view.robotEnergy",
+            OPTIONS_VIEW_GROUND = "robocode.options.view.ground",
+            OPTIONS_VIEW_TPS = "robocode.options.view.TPS",
+            OPTIONS_VIEW_FPS = "robocode.options.view.FPS",
+            OPTIONS_VIEW_EXPLOSIONS = "robocode.options.view.explosions",
+            OPTIONS_VIEW_EXPLOSION_DEBRIS = "robocode.options.view.explosionDebris",
+            OPTIONS_BATTLE_DESIREDTPS = "robocode.options.battle.desiredTPS",
+            OPTIONS_VIEW_PREVENT_SPEEDUP_WHEN_MINIMIZED = "robocode.options.view.preventSpeedupWhenMinimized",
+            OPTIONS_RENDERING_ANTIALIASING = "robocode.options.rendering.antialiasing",
+            OPTIONS_RENDERING_TEXT_ANTIALIASING = "robocode.options.rendering.text.antialiasing",
+            OPTIONS_RENDERING_METHOD = "robocode.options.rendering.method",
+            OPTIONS_RENDERING_NO_BUFFERS = "robocode.options.rendering.noBuffers",
+            OPTIONS_RENDERING_BUFFER_IMAGES = "robocode.options.rendering.bufferImages",
+            OPTIONS_RENDERING_FORCE_BULLET_COLOR = "robocode.options.rendering.forceBulletColor",
+            OPTIONS_SOUND_ENABLESOUND = "robocode.options.sound.enableSound",
+            OPTIONS_SOUND_ENABLEGUNSHOT = "robocode.options.sound.enableGunshot",
+            OPTIONS_SOUND_ENABLEBULLETHIT = "robocode.options.sound.enableBulletHit",
+            OPTIONS_SOUND_ENABLEROBOTDEATH = "robocode.options.sound.enableRobotDeath",
+            OPTIONS_SOUND_ENABLEWALLCOLLISION = "robocode.options.sound.enableWallCollision",
+            OPTIONS_SOUND_ENABLEROBOTCOLLISION = "robocode.options.sound.enableRobotCollision",
+            OPTIONS_SOUND_MIXER = "robocode.options.sound.mixer",
+            OPTIONS_SOUND_ENABLEMIXERVOLUME = "robocode.options.sound.enableMixerVolume",
+            OPTIONS_SOUND_ENABLEMIXERPAN = "robocode.options.sound.enableMixerPan",
+            OPTIONS_COMMON_NOTIFY_ABOUT_NEW_BETA_VERSIONS = "robocode.options.common.notifyAboutNewBetaVersions",
+            OPTIONS_COMMON_SHOW_RESULTS = "robocode.options.common.showResults",
+            OPTIONS_COMMON_DONT_HIDE_RANKINGS = "robocode.options.common.dontHideRankings",
+            OPTIONS_COMMON_APPEND_WHEN_SAVING_RESULTS = "robocode.options.common.appendWhenSavingResults",
+            OPTIONS_COMMON_ENABLE_REPLAY_RECORDING = "robocode.options.common.enableReplayRecording",
+            OPTIONS_COMMON_ENABLE_AUTO_RECORDING = "robocode.options.common.enableAutoRecording",
+            OPTIONS_COMMON_AUTO_RECORDING_XML = "robocode.options.common.autoRecordingXML",
+            OPTIONS_TEAM_SHOWTEAMROBOTS = "robocode.options.team.showTeamRobots",
+            OPTIONS_DEVELOPMENT_PATH = "robocode.options.development.path",
+            OPTIONS_DEVELOPMENT_PATH_EXCLUDED = "robocode.options.development.path.excluded",
+            FILE_THEME_MUSIC = "robocode.file.music.theme",
+            FILE_BACKGROUND_MUSIC = "robocode.file.music.background",
+            FILE_END_OF_BATTLE_MUSIC = "robocode.file.music.endOfBattle",
+            FILE_GUNSHOT_SFX = "robocode.file.sfx.gunshot",
+            FILE_ROBOT_COLLISION_SFX = "robocode.file.sfx.robotCollision",
+            FILE_WALL_COLLISION_SFX = "robocode.file.sfx.wallCollision",
+            FILE_ROBOT_DEATH_SFX = "robocode.file.sfx.robotDeath",
+            FILE_BULLET_HITS_ROBOT_SFX = "robocode.file.sfx.bulletHitsRobot",
+            FILE_BULLET_HITS_BULLET_SFX = "robocode.file.sfx.bulletHitsBullet",
+            VERSIONCHECKED = "robocode.versionchecked",
+            ROBOT_FILESYSTEM_QUOTA = "robocode.robot.filesystem.quota",
+            CONSOLE_QUOTA = "robocode.console.quota",
+            CPU_CONSTANT = "robocode.cpu.constant",
+            LAST_RUN_VERSION = "robocode.version.lastrun",
+            NUMBER_OF_ROUNDS = "robocode.numberOfBattles";
 }

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
-
 /**
  * Defines a robot state, which can be: active on the battlefield, hitting a wall or robot this turn, or dead.
  *
@@ -20,106 +19,119 @@ package robocode.control.snapshot;
  */
 public enum RobotState {
 
-	/** The robot is active on the battlefield and has not hit the wall or a robot at this turn. */
-	ACTIVE(0),
+    /** The robot is active on the battlefield and has not hit the wall or a robot at this turn. */
+    ACTIVE(0),
+    /** The robot has hit a wall, i.e. one of the four borders, at this turn. This state only last one turn. */
+    HIT_WALL(1),
+    /** The robot has hit another robot at this turn. This state only last one turn. */
+    HIT_ROBOT(2),
+    /** The robot is dead. */
+    DEAD(3),
+    /** The robot has hit an item. */
+    HIT_ITEM(4);
+    private final int value;
 
-	/** The robot has hit a wall, i.e. one of the four borders, at this turn. This state only last one turn. */
-	HIT_WALL(1),
+    private RobotState(int value) {
+        this.value = value;
+    }
 
-	/** The robot has hit another robot at this turn. This state only last one turn. */
-	HIT_ROBOT(2),
+    /**
+     * Returns the state as an integer value.
+     *
+     * @return an integer value representing this state.
+     *
+     * @see #toState(int)
+     */
+    public int getValue() {
+        return value;
+    }
 
-	/** The robot is dead. */
-	DEAD(3);
+    /**
+     * Returns a RobotState based on an integer value that represents a RobotState.
+     *
+     * @param value the integer value that represents a specific RobotState.
+     * @return a RobotState that corresponds to the specific integer value.
+     *
+     * @see #getValue()
+     *
+     * @throws IllegalArgumentException if the specified value does not correspond
+     *                                  to a RobotState and hence is invalid.
+     */
+    public static RobotState toState(int value) {
+        switch (value) {
+            case 0:
+                return ACTIVE;
 
-	private final int value;
+            case 1:
+                return HIT_WALL;
 
-	private RobotState(int value) {
-		this.value = value;
-	}
+            case 2:
+                return HIT_ROBOT;
 
-	/**
-	 * Returns the state as an integer value.
-	 *
-	 * @return an integer value representing this state.
-	 *
-	 * @see #toState(int)
-	 */
-	public int getValue() {
-		return value;
-	}
+            case 3:
+                return DEAD;
 
-	/**
-	 * Returns a RobotState based on an integer value that represents a RobotState.
-	 *
-	 * @param value the integer value that represents a specific RobotState.
-	 * @return a RobotState that corresponds to the specific integer value.
-	 *
-	 * @see #getValue()
-	 *
-	 * @throws IllegalArgumentException if the specified value does not correspond
-	 *                                  to a RobotState and hence is invalid.
-	 */
-	public static RobotState toState(int value) {
-		switch (value) {
-		case 0:
-			return ACTIVE;
+            case 4:
+                return HIT_ITEM;
 
-		case 1:
-			return HIT_WALL;
+            default:
+                throw new IllegalArgumentException("unknown value");
+        }
+    }
 
-		case 2:
-			return HIT_ROBOT;
+    /**
+     * Checks if the robot is alive.
+     *
+     * @return {@code true} if the robot is alive; {@code false} otherwise.
+     *
+     * @see #isDead()
+     */
+    public boolean isAlive() {
+        return this != DEAD;
+    }
 
-		case 3:
-			return DEAD;
+    /**
+     * Checks if the robot is dead.
+     *
+     * @return {@code true} if the robot is dead; {@code false} otherwise.
+     *
+     * @see #isAlive()
+     */
+    public boolean isDead() {
+        return this == DEAD;
+    }
 
-		default:
-			throw new IllegalArgumentException("unknown value");
-		}
-	}
+    /**
+     * Checks if the robot has hit another robot.
+     *
+     * @return {@code true} if the robot has hit a robot; {@code false} otherwise.
+     *
+     * @see #isHitWall()
+     */
+    public boolean isHitRobot() {
+        return this == HIT_ROBOT;
+    }
 
-	/**
-	 * Checks if the robot is alive.
-	 *
-	 * @return {@code true} if the robot is alive; {@code false} otherwise.
-	 *
-	 * @see #isDead()
-	 */
-	public boolean isAlive() {
-		return this != DEAD;
-	}
+    /**
+     * Checks if the robot has hit the wall, i.e. one of the four borders.
+     *
+     * @return {@code true} if the robot has hit the wall; {@code false} otherwise.
+     *
+     * @see #isHitRobot()
+     */
+    public boolean isHitWall() {
+        return this == HIT_WALL;
+    }
 
-	/**
-	 * Checks if the robot is dead.
-	 *
-	 * @return {@code true} if the robot is dead; {@code false} otherwise.
-	 *
-	 * @see #isAlive()
-	 */
-	public boolean isDead() {
-		return this == DEAD;
-	}
-
-	/**
-	 * Checks if the robot has hit another robot.
-	 *
-	 * @return {@code true} if the robot has hit a robot; {@code false} otherwise.
-	 *
-	 * @see #isHitWall()
-	 */
-	public boolean isHitRobot() {
-		return this == HIT_ROBOT;
-	}
-
-	/**
-	 * Checks if the robot has hit the wall, i.e. one of the four borders.
-	 *
-	 * @return {@code true} if the robot has hit the wall; {@code false} otherwise.
-	 *
-	 * @see #isHitRobot()
-	 */
-	public boolean isHitWall() {
-		return this == HIT_WALL;
-	}
+    /**
+     * Checks if the robot has hit an item.
+     *
+     * @return {@code true} if the robot has hit an item; {@code false} otherwise.
+     *
+     * @see #isHitRobot()
+     * @see #isHitWall()
+     */
+    public boolean isHitItem() {
+        return this == HIT_ITEM;
+    }
 }

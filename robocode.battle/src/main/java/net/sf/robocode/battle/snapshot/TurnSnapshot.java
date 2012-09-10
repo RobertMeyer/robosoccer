@@ -13,19 +13,16 @@
  *******************************************************************************/
 package net.sf.robocode.battle.snapshot;
 
-
+import java.io.IOException;
+import java.util.*;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.serialization.IXmlSerializable;
-import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
+import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
 import robocode.control.snapshot.*;
-
-import java.io.IOException;
-import java.util.*;
-
 
 /**
  * A snapshot of a battle turn at a specific time instant in a battle.
@@ -35,268 +32,291 @@ import java.util.*;
  * @author Pavel Savara (contributor)
  * @since 1.6.1
  */
-public final class TurnSnapshot implements java.io.Serializable, IXmlSerializable, ITurnSnapshot {
+public final class TurnSnapshot implements java.io.Serializable,
+                                           IXmlSerializable, ITurnSnapshot {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    /** List of snapshots for the robots participating in the battle */
+    private List<IRobotSnapshot> robots;
+    /** List of snapshots for the bullets that are currently on the battlefield */
+    private List<IBulletSnapshot> bullets;
+    /** List of snapshots for the items that are currently on the battlefield */
+    //TODO expand this use
+    private List<IItemSnapshot> items;
+    /** Current TPS (turns per second) */
+    private int tps;
+    /** Current round in the battle */
+    private int round;
+    /** Current turn in the battle round */
+    private int turn;
 
-	/** List of snapshots for the robots participating in the battle */
-	private List<IRobotSnapshot> robots;
+    /**
+     * Creates a snapshot of a battle turn that must be filled out with data later.
+     */
+    public TurnSnapshot() {
+    }
 
-	/** List of snapshots for the bullets that are currently on the battlefield */
-	private List<IBulletSnapshot> bullets;
+    /**
+     * Creates a snapshot of a battle turn.
+     *
+     * @param battle the battle to make a snapshot of.
+     * @param battleRobots the robots participating in the battle.
+     * @param battleBullets the current bullet on the battlefield.
+     * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
+     *                    {@code false} otherwise.
+     */
+    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, boolean readoutText) {
+        robots = new ArrayList<IRobotSnapshot>();
+        bullets = new ArrayList<IBulletSnapshot>();
+        items = new ArrayList<IItemSnapshot>();
 
-	/** Current TPS (turns per second) */
-	private int tps;
+        for (RobotPeer robotPeer : battleRobots) {
+            robots.add(new RobotSnapshot(robotPeer, readoutText));
+        }
 
-	/** Current round in the battle */
-	private int round;
+        for (BulletPeer bulletPeer : battleBullets) {
+            bullets.add(new BulletSnapshot(bulletPeer));
+        }
 
-	/** Current turn in the battle round */
-	private int turn;
+        tps = battle.getTPS();
+        turn = battle.getTime();
+        round = battle.getRoundNum();
+    }
 
-	/**
-	 * Creates a snapshot of a battle turn that must be filled out with data later.
-	 */
-	public TurnSnapshot() {}
+    @Override
+    public String toString() {
+        return this.round + "/" + turn + " (" + this.robots.size() + ")";
+    }
 
-	/**
-	 * Creates a snapshot of a battle turn.
-	 *
-	 * @param battle the battle to make a snapshot of.
-	 * @param battleRobots the robots participating in the battle.
-	 * @param battleBullets the current bullet on the battlefield.
-	 * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
-	 *                    {@code false} otherwise.
-	 */
-	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, boolean readoutText) {
-		robots = new ArrayList<IRobotSnapshot>();
-		bullets = new ArrayList<IBulletSnapshot>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRobotSnapshot[] getRobots() {
+        return robots.toArray(new IRobotSnapshot[robots.size()]);
+    }
 
-		for (RobotPeer robotPeer : battleRobots) {
-			robots.add(new RobotSnapshot(robotPeer, readoutText));
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IBulletSnapshot[] getBullets() {
+        return bullets.toArray(new IBulletSnapshot[bullets.size()]);
+    }
 
-		for (BulletPeer bulletPeer : battleBullets) {
-			bullets.add(new BulletSnapshot(bulletPeer));
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTPS() {
+        return tps;
+    }
 
-		tps = battle.getTPS();
-		turn = battle.getTime();
-		round = battle.getRoundNum();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getRound() {
+        return round;
+    }
 
-	@Override
-	public String toString() {
-		return this.round + "/" + turn + " (" + this.robots.size() + ")";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTurn() {
+        return turn;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IRobotSnapshot[] getRobots() {
-		return robots.toArray(new IRobotSnapshot[robots.size()]);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IScoreSnapshot[] getSortedTeamScores() {
+        List<IScoreSnapshot> copy = new ArrayList<IScoreSnapshot>(Arrays.asList(getIndexedTeamScores()));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IBulletSnapshot[] getBullets() {
-		return bullets.toArray(new IBulletSnapshot[bullets.size()]);
-	}
+        Collections.sort(copy);
+        Collections.reverse(copy);
+        return copy.toArray(new IScoreSnapshot[copy.size()]);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getTPS() {
-		return tps;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IScoreSnapshot[] getIndexedTeamScores() {
+        // team scores are computed on demand from team scores to not duplicate data in the snapshot
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getRound() {
-		return round;
-	}
+        List<IScoreSnapshot> results = new ArrayList<IScoreSnapshot>();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getTurn() {
-		return turn;
-	}
+        // noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < robots.size(); i++) {
+            results.add(null);
+        }
+        for (IRobotSnapshot robot : robots) {
+            final int contestantIndex = robot.getContestantIndex();
+            final IScoreSnapshot snapshot = results.get(contestantIndex);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IScoreSnapshot[] getSortedTeamScores() {
-		List<IScoreSnapshot> copy = new ArrayList<IScoreSnapshot>(Arrays.asList(getIndexedTeamScores()));
+            IScoreSnapshot score = (snapshot == null)
+                    ? robot.getScoreSnapshot()
+                    : new ScoreSnapshot(robot.getTeamName(), snapshot, robot.getScoreSnapshot());
 
-		Collections.sort(copy);
-		Collections.reverse(copy);
-		return copy.toArray(new IScoreSnapshot[copy.size()]);
-	}
+            results.set(contestantIndex, score);
+        }
+        List<IScoreSnapshot> scores = new ArrayList<IScoreSnapshot>();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IScoreSnapshot[] getIndexedTeamScores() {
-		// team scores are computed on demand from team scores to not duplicate data in the snapshot
+        for (IScoreSnapshot scoreSnapshot : results) {
+            if (scoreSnapshot != null) {
+                scores.add(scoreSnapshot);
+            }
+        }
 
-		List<IScoreSnapshot> results = new ArrayList<IScoreSnapshot>();
+        return scores.toArray(new IScoreSnapshot[scores.size()]);
+    }
 
-		// noinspection ForLoopReplaceableByForEach
-		for (int i = 0; i < robots.size(); i++) {
-			results.add(null);
-		}
-		for (IRobotSnapshot robot : robots) {
-			final int contestantIndex = robot.getContestantIndex();
-			final IScoreSnapshot snapshot = results.get(contestantIndex);
+    public void stripDetails(SerializableOptions options) {
+        for (IRobotSnapshot r : getRobots()) {
+            ((RobotSnapshot) r).stripDetails(options);
+        }
+    }
 
-			IScoreSnapshot score = (snapshot == null)
-					? robot.getScoreSnapshot()
-					: new ScoreSnapshot(robot.getTeamName(), snapshot, robot.getScoreSnapshot());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
+        writer.startElement(options.shortAttributes ? "t" : "turn");
+        {
+            writer.writeAttribute(options.shortAttributes ? "ro" : "round", round);
+            writer.writeAttribute(options.shortAttributes ? "tu" : "turn", turn);
+            if (!options.skipVersion) {
+                writer.writeAttribute("ver", serialVersionUID);
+            }
 
-			results.set(contestantIndex, score);
-		}
-		List<IScoreSnapshot> scores = new ArrayList<IScoreSnapshot>();
+            writer.startElement(options.shortAttributes ? "rs" : "robots");
+            {
+                SerializableOptions op = options;
 
-		for (IScoreSnapshot scoreSnapshot : results) {
-			if (scoreSnapshot != null) {
-				scores.add(scoreSnapshot);
-			}
-		}
+                if (turn == 0) {
+                    op = new SerializableOptions(options);
+                    op.skipNames = false;
+                }
+                for (IRobotSnapshot r : robots) {
+                    final RobotSnapshot rs = (RobotSnapshot) r;
 
-		return scores.toArray(new IScoreSnapshot[scores.size()]);
-	}
+                    if (!options.skipExploded || rs.getState() != RobotState.DEAD) {
+                        rs.writeXml(writer, op);
+                    } else {
+                        boolean writeFirstExplosionFrame = false;
 
-	public void stripDetails(SerializableOptions options) {
-		for (IRobotSnapshot r : getRobots()) {
-			((RobotSnapshot) r).stripDetails(options);
-		}
-	}
+                        for (IBulletSnapshot b : bullets) {
+                            if (b.isExplosion() && b.getFrame() == 0 && b.getVictimIndex() == r.getRobotIndex()) {
+                                writeFirstExplosionFrame = true;
+                                break;
+                            }
+                        }
+                        if (writeFirstExplosionFrame) {
+                            rs.writeXml(writer, op);
+                        }
+                    }
+                }
+            }
+            writer.endElement();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
-		writer.startElement(options.shortAttributes ? "t" : "turn"); {
-			writer.writeAttribute(options.shortAttributes ? "ro" : "round", round);
-			writer.writeAttribute(options.shortAttributes ? "tu" : "turn", turn);
-			if (!options.skipVersion) {
-				writer.writeAttribute("ver", serialVersionUID);
-			}
+            writer.startElement(options.shortAttributes ? "bs" : "bullets");
+            {
+                for (IBulletSnapshot b : bullets) {
+                    final BulletSnapshot bs = (BulletSnapshot) b;
+                    final BulletState state = bs.getState();
 
-			writer.startElement(options.shortAttributes ? "rs" : "robots"); {
-				SerializableOptions op = options;
+                    if (!options.skipExploded
+                            || (state != BulletState.EXPLODED && state != BulletState.INACTIVE
+                                && (bs.getFrame() == 0 || state == BulletState.MOVING))) {
+                        bs.writeXml(writer, options);
+                    }
+                }
+            }
+            writer.endElement();
+        }
+        writer.endElement();
+    }
 
-				if (turn == 0) {
-					op = new SerializableOptions(options);
-					op.skipNames = false;
-				}
-				for (IRobotSnapshot r : robots) {
-					final RobotSnapshot rs = (RobotSnapshot) r;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public XmlReader.Element readXml(final XmlReader reader) {
+        return reader.expect("turn", "t", new XmlReader.Element() {
+            @Override
+            public IXmlSerializable read(final XmlReader reader) {
+                final TurnSnapshot snapshot = new TurnSnapshot();
 
-					if (!options.skipExploded || rs.getState() != RobotState.DEAD) {
-						rs.writeXml(writer, op);
-					} else {
-						boolean writeFirstExplosionFrame = false;
+                reader.expect("turn", "tu", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.turn = Integer.parseInt(value);
+                    }
+                });
+                reader.expect("round", "ro", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.round = Integer.parseInt(value);
+                    }
+                });
 
-						for (IBulletSnapshot b : bullets) {
-							if (b.isExplosion() && b.getFrame() == 0 && b.getVictimIndex() == r.getRobotIndex()) {
-								writeFirstExplosionFrame = true;
-								break;
-							}
-						}
-						if (writeFirstExplosionFrame) {
-							rs.writeXml(writer, op);
-						}
-					}
-				}
-			}
-			writer.endElement();
+                reader.expect("robots", "rs", new XmlReader.ListElement() {
+                    @Override
+                    public IXmlSerializable read(XmlReader reader) {
+                        snapshot.robots = new ArrayList<IRobotSnapshot>();
+                        // prototype
+                        return new RobotSnapshot();
+                    }
 
-			writer.startElement(options.shortAttributes ? "bs" : "bullets"); {
-				for (IBulletSnapshot b : bullets) {
-					final BulletSnapshot bs = (BulletSnapshot) b;
-					final BulletState state = bs.getState();
+                    @Override
+                    public void add(IXmlSerializable child) {
+                        snapshot.robots.add((RobotSnapshot) child);
+                    }
 
-					if (!options.skipExploded
-							|| (state != BulletState.EXPLODED && state != BulletState.INACTIVE
-							&& (bs.getFrame() == 0 || state == BulletState.MOVING))) {
-						bs.writeXml(writer, options);
-					}
-				}
-			}
-			writer.endElement();
-		}
-		writer.endElement();
-	}
+                    @Override
+                    public void close() {
+                        // allows loading of minimalistic XML, which skips dead robots, but GUI expects them
+                        Hashtable<String, Object> context = reader.getContext();
+                        Integer robotCount = (Integer) context.get("robots");
+                        boolean[] present = new boolean[robotCount];
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public XmlReader.Element readXml(final XmlReader reader) {
-		return reader.expect("turn", "t", new XmlReader.Element() {
-			public IXmlSerializable read(final XmlReader reader) {
-				final TurnSnapshot snapshot = new TurnSnapshot();
+                        for (IRobotSnapshot robot : snapshot.robots) {
+                            present[robot.getRobotIndex()] = true;
+                        }
+                        for (int i = 0; i < robotCount; i++) {
+                            if (!present[i]) {
+                                String name = (String) context.get(Integer.toString(i));
 
-				reader.expect("turn", "tu", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.turn = Integer.parseInt(value);
-					}
-				});
-				reader.expect("round", "ro", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.round = Integer.parseInt(value);
-					}
-				});
+                                snapshot.robots.add(new RobotSnapshot(name, i, RobotState.DEAD));
+                            }
+                        }
+                    }
+                });
 
-				reader.expect("robots", "rs", new XmlReader.ListElement() {
-					public IXmlSerializable read(XmlReader reader) {
-						snapshot.robots = new ArrayList<IRobotSnapshot>();
-						// prototype
-						return new RobotSnapshot();
-					}
+                reader.expect("bullets", "bs", new XmlReader.ListElement() {
+                    @Override
+                    public IXmlSerializable read(XmlReader reader) {
+                        snapshot.bullets = new ArrayList<IBulletSnapshot>();
+                        // prototype
+                        return new BulletSnapshot();
+                    }
 
-					public void add(IXmlSerializable child) {
-						snapshot.robots.add((RobotSnapshot) child);
-					}
+                    @Override
+                    public void add(IXmlSerializable child) {
+                        snapshot.bullets.add((BulletSnapshot) child);
+                    }
 
-					public void close() {
-						// allows loading of minimalistic XML, which skips dead robots, but GUI expects them
-						Hashtable<String, Object> context = reader.getContext();
-						Integer robotCount = (Integer) context.get("robots");
-						boolean[] present = new boolean[robotCount];
+                    @Override
+                    public void close() {
+                    }
+                });
 
-						for (IRobotSnapshot robot : snapshot.robots) {
-							present[robot.getRobotIndex()] = true;
-						}
-						for (int i = 0; i < robotCount; i++) {
-							if (!present[i]) {
-								String name = (String) context.get(Integer.toString(i));
-
-								snapshot.robots.add(new RobotSnapshot(name, i, RobotState.DEAD));
-							}
-						}
-					}
-				});
-
-				reader.expect("bullets", "bs", new XmlReader.ListElement() {
-					public IXmlSerializable read(XmlReader reader) {
-						snapshot.bullets = new ArrayList<IBulletSnapshot>();
-						// prototype
-						return new BulletSnapshot();
-					}
-
-					public void add(IXmlSerializable child) {
-						snapshot.bullets.add((BulletSnapshot) child);
-					}
-
-					public void close() {}
-				});
-
-				return snapshot;
-			}
-		});
-	}
+                return snapshot;
+            }
+        });
+    }
 }

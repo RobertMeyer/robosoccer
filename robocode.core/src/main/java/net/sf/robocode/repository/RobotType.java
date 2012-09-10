@@ -13,11 +13,10 @@
  */
 package net.sf.robocode.repository;
 
-
 import java.io.Serializable;
 
-
 public class RobotType implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	transient public static final RobotType INVALID = new RobotType(0);

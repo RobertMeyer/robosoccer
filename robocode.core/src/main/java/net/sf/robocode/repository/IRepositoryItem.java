@@ -11,71 +11,69 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
-
-import robocode.control.RobotSpecification;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-
+import robocode.control.RobotSpecification;
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRepositoryItem extends Comparable<Object> {
-	boolean isValid();
 
-	boolean isTeam();
+    boolean isValid();
 
-	boolean isInJAR();
+    boolean isTeam();
 
-	void setValid(boolean value);
+    boolean isInJAR();
 
-	String getVersion();
+    void setValid(boolean value);
 
-	String getDescription();
+    String getVersion();
 
-	String getAuthorName();
+    String getDescription();
 
-	URL getWebpage();
+    String getAuthorName();
 
-	boolean getIncludeSource();
+    URL getWebpage();
 
-	boolean isSourceIncluded();
+    boolean getIncludeSource();
 
-	String getRootPath();
+    boolean isSourceIncluded();
 
-	URL getItemURL();
+    String getRootPath();
 
-	URL getPropertiesURL();
+    URL getItemURL();
 
-	long getLastModified();
+    URL getPropertiesURL();
 
-	boolean isDevelopmentVersion();
+    long getLastModified();
 
-	String getRobocodeVersion();
+    boolean isDevelopmentVersion();
 
-	String getFullPackage();
-	
-	String getRelativePath();
+    String getRobocodeVersion();
 
-	String getRootPackage();
+    String getFullPackage();
 
-	String getFullClassNameWithVersion();
+    String getRelativePath();
 
-	String getUniqueFullClassName();
+    String getRootPackage();
 
-	String getUniqueFullClassNameWithVersion();
+    String getFullClassNameWithVersion();
 
-	String getUniqueShortClassNameWithVersion();
+    String getUniqueFullClassName();
 
-	String getUniqueVeryShortClassNameWithVersion();
+    String getUniqueFullClassNameWithVersion();
 
-	String getFullClassName();
+    String getUniqueShortClassNameWithVersion();
 
-	String getShortClassName();
+    String getUniqueVeryShortClassNameWithVersion();
 
-	RobotSpecification createRobotSpecification();
+    String getFullClassName();
 
-	void storeProperties(OutputStream os, boolean includeSources, String version, String desc, String author, URL web) throws IOException;
+    String getShortClassName();
+
+    RobotSpecification createRobotSpecification();
+
+    void storeProperties(OutputStream os, boolean includeSources, String version, String desc, String author, URL web) throws IOException;
 }
