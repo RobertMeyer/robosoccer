@@ -174,9 +174,11 @@ public class RobotSelectionPanel extends WizardPanel {
 
         selectedModel.changed();
         fireStateChanged();
+        
         selectedRobotsSize += 1;
-        setRobotsPositionPanel.add(getSetRobotsList(selectedRobotsSize), BorderLayout.CENTER);
+        setRobotsPositionPanel.add(getSetRobotsScrollPane(selectedRobotsSize), BorderLayout.CENTER);
         setRobotsPositionPanel.revalidate();
+        
         if (selectedModel.getSize() >= minRobots && selectedModel.getSize() <= maxRobots) {
             showInstructions();
         } else if (selectedModel.getSize() > maxRobots) {
@@ -332,7 +334,6 @@ public class RobotSelectionPanel extends WizardPanel {
     	setRobotsList.setPreferredSize(new Dimension(125,350));
     	FlowLayout flow = new FlowLayout();
     	setRobotsList.setLayout(flow);	
-    	setRobotsList.repaint();
     	flow.setHgap(5);
     	flow.setVgap(1);
     	Border noBorder = BorderFactory.createEmptyBorder();
@@ -361,18 +362,15 @@ public class RobotSelectionPanel extends WizardPanel {
         	setRobotsPositionPanel.setPreferredSize(new Dimension(120, 100));
         	setRobotsPositionPanel.setBorder(
                     BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Set Position (X,Y)"));
-        	
         }
         return setRobotsPositionPanel;
     }
     
-    //private JScrollPane getSetRobotsScrollPane(int rows) {
-       // if (setRobotsScrollPane == null) {
-        	//setRobotsScrollPane = new JScrollPane();
-        	//setRobotsScrollPane.setViewportView(getSetRobotsList(rows));
-        //}
-       // return setRobotsScrollPane;
-   // }
+    private JScrollPane getSetRobotsScrollPane(int rows) {
+        setRobotsScrollPane = new JScrollPane();
+        setRobotsScrollPane.setViewportView(getSetRobotsList(rows));
+        return setRobotsScrollPane;
+    }
 
     private void initialize() {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
