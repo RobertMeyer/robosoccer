@@ -98,10 +98,7 @@ package net.sf.robocode.battle;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -164,7 +161,7 @@ public final class Battle extends BaseBattle {
     // Flag specifying if debugging is enabled thru the debug command line option
     private final boolean isDebugging;
     // Initial robot start positions (if any)
-    private double[][] initialRobotPositions;
+    protected double[][] initialRobotPositions;
    
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
@@ -188,141 +185,10 @@ public final class Battle extends BaseBattle {
 
         battleMode = (ClassicMode) battleProperties.getBattleMode();
         
-        // Start positions for the soccer mode. Default behaviour for other modes.
-     	if(battleMode instanceof SoccerMode) {
-     		robotsCount = ((battlingRobotsList.length % 2 == 0) ? battlingRobotsList.length : (battlingRobotsList.length - 1));
-     		computeSoccerPositions(robotsCount);
-     	} else {
-     		computeInitialPositions(battleProperties.getInitialPositions());
-     	}
-     	createPeers(battlingRobotsList);
-    }
-
-    private void createPeers(RobotSpecification[] battlingRobotsList) {
-        // create teams
-        Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
-        List<String> teams = new ArrayList<String>();
-        List<String> teamDuplicates = new ArrayList<String>();
-        List<Integer> robotDuplicates = new ArrayList<Integer>();
-
-        // count duplicate robots, enumerate teams, enumerate team members
-        for (RobotSpecification specification : battlingRobotsList) {
-            final String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
-
-            if (countedNames.containsKey(name)) {
-                int value = countedNames.get(name);
-
-                countedNames.put(name, value == 1 ? 3 : value + 1);
-            } else {
-                countedNames.put(name, 1);
-            }
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            if (teamFullName != null) {
-                if (!teams.contains(teamFullName)) {
-                    teams.add(teamFullName);
-                    String teamName = teamFullName.substring(0, teamFullName.length() - 6);
-
-                    if (countedNames.containsKey(teamName)) {
-                        int value = countedNames.get(teamName);
-
-                        countedNames.put(teamName, value == 1 ? 3 : value + 1);
-                    } else {
-                        countedNames.put(teamName, 1);
-                    }
-                }
-            }
-        }
-
-        Hashtable<String, List<String>> teamMembers = new Hashtable<String, List<String>>();
-
-        // name teams
-        for (int i = teams.size() - 1; i >= 0; i--) {
-            String teamFullName = teams.get(i);
-            String name = teamFullName.substring(0, teamFullName.length() - 6);
-            Integer order = countedNames.get(name);
-            String newTeamName = name;
-
-            if (order > 1) {
-                newTeamName = name + " (" + (order - 1) + ")";
-            }
-            teamDuplicates.add(0, newTeamName);
-            teamMembers.put(teamFullName, new ArrayList<String>());
-            countedNames.put(name, order - 1);
-        }
-
-        // name robots
-        for (int i = battlingRobotsList.length - 1; i >= 0; i--) {
-            RobotSpecification specification = battlingRobotsList[i];
-            String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
-            Integer order = countedNames.get(name);
-            int duplicate = -1;
-
-            String newName = name;
-
-            if (order > 1) {
-                duplicate = (order - 2);
-                newName = name + " (" + (order - 1) + ")";
-            }
-            countedNames.put(name, (order - 1));
-            robotDuplicates.add(0, duplicate);
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            if (teamFullName != null) {
-                List<String> members = teamMembers.get(teamFullName);
-
-                members.add(newName);
-            }
-        }
-
-        // create teams
-        Hashtable<String, TeamPeer> namedTeams = new Hashtable<String, TeamPeer>();
-
-        // create robots
-        for (int i = 0; i < battlingRobotsList.length; i++) {
-            RobotSpecification specification = battlingRobotsList[i];
-            TeamPeer team = null;
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            // The team index and robot index depends on current sizes of the contestant list and robot list
-            int teamIndex = contestants.size();
-            int robotIndex = robots.size();
-
-            if (teamFullName != null) {
-                if (!namedTeams.containsKey(teamFullName)) {
-                    String newTeamName = teamDuplicates.get(teams.indexOf(teamFullName));
-
-                    team = new TeamPeer(newTeamName, teamMembers.get(teamFullName), teamIndex);
-
-                    namedTeams.put(teamFullName, team);
-                    contestants.add(team);
-
-                } else {
-                    team = namedTeams.get(teamFullName);
-                    if (team != null) {
-                        teamIndex = team.getTeamIndex();
-                    }
-                }
-            }
-            Integer duplicate = robotDuplicates.get(i);
-            // TODO Follow back from here to RobotPeer etc, to
-            RobotPeer robotPeer = new RobotPeer(this, hostManager, specification, duplicate, team, robotIndex);
-            
-            robots.add(robotPeer);
-            if (team == null) {
-                contestants.add(robotPeer);
-            }
-        }
-        
-        if(battleMode instanceof SoccerMode) {
-			RobotSpecification ball = 
-					repositoryManager.loadSelectedRobots("robots.BallBot*")[0];
-			robots.add(new BallPeer(this, hostManager, ball, 0, null, robots.size()));
-		}
-
+        initialRobotPositions = this.getBattleMode().computeInitialPositions(
+        		battleProperties.getInitialPositions(), battleRules, 
+        		robotsCount);
+        this.getBattleMode().createPeers(this, battlingRobotsList, hostManager, robots, contestants, this.repositoryManager);
     }
 
     public void registerDeathRobot(RobotPeer r) {
@@ -896,76 +762,7 @@ public final class Battle extends BaseBattle {
         }
         return count;
     }
-
-    private void computeInitialPositions(String initialPositions) {
-        initialRobotPositions = null;
-
-        if (initialPositions == null || initialPositions.trim().length() == 0) {
-            return;
-        }
-
-        List<String> positions = new ArrayList<String>();
-
-        Pattern pattern = Pattern.compile("([^,(]*[(][^)]*[)])?[^,]*,?");
-        Matcher matcher = pattern.matcher(initialPositions);
-
-        while (matcher.find()) {
-            String pos = matcher.group();
-
-            if (pos.length() > 0) {
-                positions.add(pos);
-            }
-        }
-
-        if (positions.isEmpty()) {
-            return;
-        }
-
-        initialRobotPositions = new double[positions.size()][3];
-
-        String[] coords;
-        double x, y, heading;
-
-        for (int i = 0; i < positions.size(); i++) {
-            coords = positions.get(i).split(",");
-
-            final Random random = RandomFactory.getRandom();
-
-            x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-            y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
-            heading = 2 * Math.PI * random.nextDouble();
-
-            int len = coords.length;
-
-            if (len >= 1) {
-                // noinspection EmptyCatchBlock
-                try {
-                    x = Double.parseDouble(coords[0].replaceAll("[\\D]", ""));
-                } catch (NumberFormatException e) {
-                }
-
-                if (len >= 2) {
-                    // noinspection EmptyCatchBlock
-                    try {
-                        y = Double.parseDouble(coords[1].replaceAll("[\\D]", ""));
-                    } catch (NumberFormatException e) {
-                    }
-
-                    if (len >= 3) {
-                        // noinspection EmptyCatchBlock
-                        try {
-                            heading = Math.toRadians(Double.parseDouble(coords[2].replaceAll("[\\D]", "")));
-                        } catch (NumberFormatException e) {
-                        }
-                    }
-                }
-            }
-            initialRobotPositions[i][0] = x;
-            initialRobotPositions[i][1] = y;
-            initialRobotPositions[i][2] = heading;
-        }
-    }
-
+    
     private boolean oneTeamRemaining() {
         if (getActiveRobots() <= 1) {
             return true;
@@ -1071,40 +868,4 @@ public final class Battle extends BaseBattle {
             }
         }
     }
-    
- // ######################### Soccer Mode Setup #########################
-	
- 	/*
- 	 * Updates initialRobotPositions based on the given robot count.
- 	 * Robots are split into two even teams and arranged in evenly spaced
- 	 * columns of 3. Robots are given an initial heading such that they
- 	 * face towards the centre of the field.
- 	 */
- 	private void computeSoccerPositions(int count) {
- 		initialRobotPositions = new double[(count + 1)][3];
- 		
- 		double height = battleRules.getBattlefieldHeight();
- 		double width = battleRules.getBattlefieldWidth();
- 		
- 		int teamSize = count / 2;
- 		
- 		// Horizontal spacing between columns of robots.
- 		double xOffset = ((width / 2)) / (1 + Math.max(1, Math.ceil(teamSize / 3.0)));
-
- 		for(int i = 0; i < teamSize; i++) {
- 			// Team 1 Initial Positions (Left side of field)
- 			initialRobotPositions[i][0] = (width / 2) - (((i/3) + 1) * xOffset);
- 			initialRobotPositions[i][1] = (0.2 * height) + (((0.9 * height) / 3) * (i % 3));
- 			initialRobotPositions[i][2] = (Math.PI / 2.0);
- 			
- 			// Team 2 Initial Positions
- 			initialRobotPositions[(i + teamSize)][0] = (width / 2) + (((i / 3) + 1) * xOffset);
- 			initialRobotPositions[(i + teamSize)][1] = (0.2 * height) + (((0.9 * height) / 3) * (i % 3));
- 			initialRobotPositions[(i + teamSize)][2] = 3 * (Math.PI / 2.0);
- 		}
- 		
- 		initialRobotPositions[count][0] = (width / 2);
- 		initialRobotPositions[count][1] = (height / 2);
- 		initialRobotPositions[count][2] = 0;
- 	}
 }
