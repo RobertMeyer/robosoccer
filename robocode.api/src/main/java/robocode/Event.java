@@ -163,8 +163,8 @@ public abstract class Event implements Comparable<Event>, Serializable {
 	}
 
 	/**
-	 * Could be called by robot to assign the time to events which are not managed by game.
-	 * If the event is added into EventQueue, the time could be overridden
+	 * Could be caled by robot to assign the time to events which are not managed by game.
+	 * If the event is added into EventQueue, the time could be overriden
 	 *
 	 * @param newTime the time this event occurred
 	 */
