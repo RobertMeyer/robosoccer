@@ -11,6 +11,7 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
+import java.util.Hashtable;
 import robocode.BattleRules;
 
 /**
@@ -18,5 +19,5 @@ import robocode.BattleRules;
  */
 public interface IHiddenRulesHelper {
 
-    BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames);
+    BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames, Hashtable<String, Object> modeRules);
 }

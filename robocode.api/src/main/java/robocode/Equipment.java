@@ -40,7 +40,7 @@ public class Equipment {
                 .set(RobotAttribute.ENERGY_REGEN, 50)
                 .set(RobotAttribute.SPEED, -5)
                 .build());
-
+        
         parts.put("Stealth Tracks",
                   new EquipmentPart.Builder(EquipmentSlot.TRACKS)
                 .set(RobotAttribute.SPEED, 40)
@@ -48,6 +48,11 @@ public class Equipment {
                 .set(RobotAttribute.BULLET_SPEED, 90)
                 .set(RobotAttribute.ENERGY, -60)
                 .build());
+        
+        parts.put("Test", 
+        		  new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+        		.sound("/robocode.sound/src/main/resources/net/sf/robocode/sound/sounds/zap.wav")
+        		.build());
     }
 
     /**

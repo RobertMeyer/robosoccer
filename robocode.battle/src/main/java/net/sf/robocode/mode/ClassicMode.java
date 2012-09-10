@@ -2,6 +2,9 @@ package net.sf.robocode.mode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Hashtable;
+import javax.swing.JPanel;
+import robocode.BattleRules;
 
 /**
  *
@@ -10,48 +13,60 @@ import java.util.List;
  *
  */
 public class ClassicMode implements IMode {
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return "Classic Mode";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getDescription() {
+		return "Original robocode mode.";
+	}
+	
+	public JPanel getRulesPanel() {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Hashtable<String, Object> getRulesPanelValues() {
+		return null;
+	}
+	
+	// ----- Mode-specific methods below this line ------
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
+		return modifyVelocity(velocityIncrement);
+	}
+	
+	public double modifyVelocity(double velocityIncrement) {
+		return velocityIncrement;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<String> getItems() {
+		return new ArrayList<String>();
+	}
+	
+	@Override
+	public void setItems() {
+		/* No items needed for Classic Mode */
+	}
 
-    private final String description = "Original robocode mode.";
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double modifyVelocity(double velocityIncrement) {
-        return velocityIncrement;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return "Classic Mode";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getItems() {
-        return new ArrayList<String>();
-    }
-
-    @Override
-    public void setItems() {
-        /* No items needed for Classic Mode */
-    }
-
-    @Override
-    public void scorePoints() {
-        // TODO Auto-generated method stub
-    }
+	@Override
+	public void scorePoints() {
+		// TODO Auto-generated method stub
+		
+	}
 }

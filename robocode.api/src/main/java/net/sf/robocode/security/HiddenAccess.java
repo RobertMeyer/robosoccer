@@ -22,6 +22,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Hashtable;
+
 import net.sf.robocode.core.ContainerBase;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.peer.IRobotStatics;
@@ -228,9 +230,9 @@ public class HiddenAccess {
                                          numRounds, time);
     }
 
-    public static BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames) {
+    public static BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames, Hashtable<String, Object> modeRules) {
         return rulesHelper.createRules(battlefieldWidth, battlefieldHeight, numRounds, gunCoolingRate, inactivityTime,
-                                       hideEnemyNames);
+                                       hideEnemyNames, modeRules);
     }
 
     public static boolean isSafeThread() {

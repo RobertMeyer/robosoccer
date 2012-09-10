@@ -310,6 +310,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     public boolean isHouseRobot() {
         return statics.isHouseRobot();
     }
+    
+    public boolean isBall() {
+    	return statics.isBall();
+    }
 
     public boolean isJuniorRobot() {
         return statics.isJuniorRobot();
@@ -1506,7 +1510,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
             velocityIncrement = Math.max(velocity - getRobotAcceleration(),
                                          Math.min(goalVel, velocity + maxDecel(-velocity)));
         }
-        return battle.getBattleMode().modifyVelocity(velocityIncrement);
+        return battle.getBattleMode().modifyVelocity(velocityIncrement, battle.getBattleRules());
     }
 
     protected double getMaxVelocity(double distance) {
@@ -1837,8 +1841,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     /**
      * @return a collection of all equipment parts equipped to the robot
      */
-    public Collection<EquipmentPart> getEquipment() {
-        return equipment.get().values();
+    public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+        return equipment;
     }
 
     /**
