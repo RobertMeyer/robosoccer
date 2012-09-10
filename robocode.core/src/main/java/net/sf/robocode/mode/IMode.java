@@ -24,5 +24,14 @@ public interface IMode {
 	 * @return String description
 	 */
 	public String getDescription();
+	
+	/**
+	 * Add's mode specific robots to the list of selected robots.
+	 * 
+	 * @param current list of selected robots in the form: 
+	 * "robots.myRobot*,robots.yourRobot*"...
+	 * @return list of selected robots plus any modeSpecific robots appended.
+	 */
+	public String addModeRobots(String selectedRobots);
 
 }

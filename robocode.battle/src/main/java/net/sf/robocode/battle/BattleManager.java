@@ -126,7 +126,11 @@ public class BattleManager implements IBattleManager {
 	// Called when starting a new battle from GUI
 	public void startNewBattle(BattleProperties battleProperties, boolean waitTillOver, boolean enableCLIRecording) {
 		this.battleProperties = battleProperties;
-		final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(battleProperties.getSelectedRobots());
+		
+		String selectedRobots = battleProperties.getSelectedRobots();
+		selectedRobots = 
+				battleProperties.getBattleMode().addModeRobots(selectedRobots);
+		final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(selectedRobots);
 
 		startNewBattleImpl(robots, waitTillOver, enableCLIRecording);
 	}
@@ -176,7 +180,7 @@ public class BattleManager implements IBattleManager {
 
 		Battle realBattle = Container.createComponent(Battle.class);
 
-		realBattle.setup(battlingRobotsList, battleProperties, isPaused());
+		realBattle.setup(battlingRobotsList, battleProperties, isPaused(), repositoryManager);
 
 		battle = realBattle;
 

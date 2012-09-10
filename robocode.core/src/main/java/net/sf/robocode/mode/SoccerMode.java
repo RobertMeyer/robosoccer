@@ -14,6 +14,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/**
 	 * {@inheritDoc}
 	 */
+	public String addModeRobots(String selectedRobots) {
+		return selectedRobots + ", robots.theBall*";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getDescription() {
 		return description;
 	}

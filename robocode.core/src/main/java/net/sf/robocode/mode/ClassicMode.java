@@ -20,6 +20,13 @@ public class ClassicMode implements IMode {
 	/**
 	 * {@inheritDoc}
 	 */
+	public String addModeRobots(String selectedRobots) {
+		return selectedRobots;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	
 	public String toString() {
 		return "Classic Mode";

@@ -108,6 +108,7 @@ import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.*;
+import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
@@ -143,6 +144,7 @@ public final class Battle extends BaseBattle {
 	private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
 
 	private final IHostManager hostManager;
+	private final IRepositoryManager repositoryManager;
 	private final long cpuConstant;
 
 	// Inactivity related items
@@ -171,14 +173,17 @@ public final class Battle extends BaseBattle {
 	// Initial robot start positions (if any)
 	private double[][] initialRobotPositions;
 
-	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
+	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, ICpuManager cpuManager, 
+			BattleEventDispatcher eventDispatcher, IRepositoryManager repositoryManager) {
 		super(properties, battleManager, eventDispatcher);
 		isDebugging = System.getProperty("debug", "false").equals("true");
 		this.hostManager = hostManager;
 		this.cpuConstant = cpuManager.getCpuConstant();
+		this.repositoryManager = repositoryManager;
 	}
 
-	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused) {
+	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, 
+			IRepositoryManager repositoryManager) {
 		isPaused = paused;
 		battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
 				battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
@@ -311,15 +316,18 @@ public final class Battle extends BaseBattle {
 
 			RobotPeer robotPeer = new RobotPeer(this, hostManager, specification, duplicate, team, robotIndex);
 			
-			if(robotPeer.isBall()) {
-				robotPeer = new BallPeer(this, hostManager, specification, duplicate, team, robotIndex);
-			}
-			
 			robots.add(robotPeer);
 			if (team == null) {
 				contestants.add(robotPeer);
 			}
 		}
+		
+		if(battleMode instanceof SoccerMode) {
+			RobotSpecification ball = 
+					repositoryManager.loadSelectedRobots("robots.BallBot*")[0];
+			robots.add(new BallPeer(this, hostManager, ball, 0, null, robots.size()));
+		}
+		
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
@@ -1007,7 +1015,7 @@ public final class Battle extends BaseBattle {
 	// ######################### Soccer Mode Setup #########################
 	
 	/*
-	 * Updates initialRobotPositions based onthe given robot count.
+	 * Updates initialRobotPositions based on the given robot count.
 	 * Robots are split into two even teams and arranged in evenly spaced
 	 * columns of 3. Robots are given an initial heading such that they
 	 * face towards the centre of the field.
