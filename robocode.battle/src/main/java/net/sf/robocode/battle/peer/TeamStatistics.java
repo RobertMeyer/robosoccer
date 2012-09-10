@@ -102,6 +102,20 @@ public class TeamStatistics implements ContestantStatistics {
 		}
 		return d;
 	}
+	
+	/**
+	 * Team-Telos addition
+	 * 
+	 * @return
+	 */
+	public double getTotalFlagScore() {
+		double d = 0;
+		
+		for (RobotPeer teammate : teamPeer) {
+			d += teammate.getRobotStatistics().getTotalFlagScore();
+		}
+		return d;
+	}
 
 	public int getTotalFirsts() {
 		int d = 0;
@@ -196,7 +210,7 @@ public class TeamStatistics implements ContestantStatistics {
 	public BattleResults getFinalResults() {
 		return new BattleResults(teamPeer.getName(), rank, getTotalScore(), getTotalSurvivalScore(),
 				getTotalLastSurvivorBonus(), getTotalBulletDamageScore(), getTotalBulletKillBonus(),
-				getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFirsts(), getTotalSeconds(),
+				getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFlagScore(), getTotalFirsts(), getTotalSeconds(),
 				getTotalThirds());
 	}
 }

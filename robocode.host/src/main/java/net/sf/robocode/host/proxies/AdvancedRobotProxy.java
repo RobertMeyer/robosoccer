@@ -219,4 +219,8 @@ public class AdvancedRobotProxy extends StandardRobotProxy implements IAdvancedR
 		getCall();
 		return robotFileSystemManager.getMaxQuota() - robotFileSystemManager.getQuotaUsed();
 	}
+
+	public void equip(String partName) {
+		peer.equip(partName);
+	}
 }

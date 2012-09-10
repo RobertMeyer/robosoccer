@@ -71,6 +71,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot, IBa
 	private static final int
 			WIDTH = 40,
 			HEIGHT = 40;
+	private int deathEffect = 2;
 
 	/**
 	 * Constructs a new robot.
@@ -673,6 +674,36 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot, IBa
 		uninitializedException();
 		return 0; // never called
 	}
+	
+
+	
+	/**
+	 * Prototype for set explosion. The idea is to call this at any time to queue
+	 * which kind of explosion your robot will make on death.
+	 */
+	public void setExplosion(int effect) {
+		deathEffect = effect;
+	}
+	
+	/**
+	 * Prototype for exploding.
+	 */
+	public void explosion(Robot r) {
+		if (r != null) {
+			if (r.getEnergy() == 0) {
+				// robot is dead
+				int damage = deathEffect*5;
+				int distance = 300/deathEffect;
+				/* Pseudo-code:
+				 * robotList <- getListOfRobots()
+				 * if Check Distance from r to robotList[0 -> n]
+				 * 		if robotList[0 -> n].isAlive()
+				 * 			damage robot
+				 */
+			}
+		}
+		uninitializedException();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -708,7 +739,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot, IBa
 	 * {@inheritDoc}
 	 */
 	public void onHitWall(HitWallEvent event) {}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

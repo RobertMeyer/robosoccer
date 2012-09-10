@@ -49,6 +49,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	//List of snapshots for teleporters on the current battefield
 	private List<ITeleporterSnapshot> teleports;
 
+	/** List of snapshots for the items that are currently on the battlefield */
+	//TODO expand this use
+	private List<IItemSnapshot> items;
+
 	/** Current TPS (turns per second) */
 	private int tps;
 
@@ -76,7 +80,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		robots = new ArrayList<IRobotSnapshot>();
 		bullets = new ArrayList<IBulletSnapshot>();
 		teleports = new ArrayList<ITeleporterSnapshot>();
-
+		items = new ArrayList<IItemSnapshot>();
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
 		}

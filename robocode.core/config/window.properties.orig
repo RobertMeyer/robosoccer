@@ -1,0 +1,12 @@
+<<<<<<< HEAD
+#Robocode window sizes
+#Mon Sep 03 12:34:11 EST 2012
+net.sf.robocode.ui.dialog.RobocodeFrame=0,0,929,701
+net.sf.robocode.ui.dialog.NewBattleDialog=39,25,850,650
+net.sf.robocode.ui.dialog.PreferencesDialog=95,202,738,296
+=======
+#Robocode window sizes
+#Fri Aug 31 11:20:04 EST 2012
+net.sf.robocode.ui.dialog.RobocodeFrame=0,0,929,701
+net.sf.robocode.ui.dialog.NewBattleDialog=39,25,850,650
+>>>>>>> master

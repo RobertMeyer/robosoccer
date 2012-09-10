@@ -477,6 +477,10 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
 	public boolean isJuniorRobot() {
 		return robotType.isJuniorRobot();
 	}
+	
+	public boolean isHouseRobot() {
+		return robotType.isHouseRobot();
+	}
 
 	public URL getClassPathURL() {
 		return classPathURL;

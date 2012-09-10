@@ -30,7 +30,10 @@ public enum RobotState {
 	HIT_ROBOT(2),
 
 	/** The robot is dead. */
-	DEAD(3);
+	DEAD(3),
+	
+	/** The robot has hit an item. */
+	HIT_ITEM(4);
 
 	private final int value;
 
@@ -73,6 +76,9 @@ public enum RobotState {
 
 		case 3:
 			return DEAD;
+			
+		case 4:
+			return HIT_ITEM;
 
 		default:
 			throw new IllegalArgumentException("unknown value");
@@ -121,5 +127,17 @@ public enum RobotState {
 	 */
 	public boolean isHitWall() {
 		return this == HIT_WALL;
+	}
+	
+	/**
+	 * Checks if the robot has hit an item.
+	 * 
+	 * @return {@code true} if the robot has hit an item; {@code false} otherwise.
+	 * 
+	 * @see #isHitRobot() 
+	 * @see #isHitWall()
+	 */
+	public boolean isHitItem() {
+		return this == HIT_ITEM;
 	}
 }

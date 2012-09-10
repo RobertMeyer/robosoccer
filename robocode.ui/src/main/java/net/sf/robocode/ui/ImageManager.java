@@ -46,6 +46,7 @@ public class ImageManager implements IImageManager {
 	private Image bodyImage;
 	private Image gunImage;
 	private Image radarImage;
+	private Image healthImage;
 
 	private static final int MAX_NUM_COLORS = 256;
 
@@ -67,15 +68,18 @@ public class ImageManager implements IImageManager {
 		bodyImage = null;
 		gunImage = null;
 		radarImage = null;
+		healthImage = null;
 		robotBodyImageCache = new RenderCache<Integer, RenderImage>();
 		robotGunImageCache = new RenderCache<Integer, RenderImage>();
 		robotRadarImageCache = new RenderCache<Integer, RenderImage>();
+		
 
 		// Read images into the cache
 		getBodyImage();
 		getGunImage();
 		getRadarImage();
 		getExplosionRenderImage(0, 0);
+		getHealthImage();
 	}
 
 	public Image getGroundTileImage(int index) {
@@ -183,6 +187,13 @@ public class ImageManager implements IImageManager {
 			radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
 		}
 		return radarImage;
+	}
+	
+	private Image getHealthImage(){
+		if (healthImage == null){
+			healthImage = getImage("/net/sf/robocode/ui/images/health.png");
+		}
+		return healthImage;
 	}
 
 	public RenderImage getColoredBodyRenderImage(Integer color) {

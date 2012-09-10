@@ -24,6 +24,7 @@ package net.sf.robocode.ui.dialog;
 
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRepositoryItem;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
@@ -60,6 +61,8 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
 	private NewBattleRulesTab rulesTab;
 	private WizardController wizardController;
+	
+	private NewBattleModeTab modeTab;
 
 	private RobotSelectionPanel robotSelectionPanel;
 
@@ -103,6 +106,11 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 				return;
 			}
 		}
+		IMode selectedMode = getBattleModeTab().getSelectedMode();
+		if(selectedMode == null) {
+			selectedMode = new ClassicMode();
+		}
+		
 		battleProperties.setSelectedRobots(getRobotSelectionPanel().getSelectedRobotsAsString());
 		battleProperties.setBattlefieldWidth(getBattleFieldTab().getBattleFieldWidth());
 		battleProperties.setBattlefieldHeight(getBattleFieldTab().getBattleFieldHeight());
@@ -110,6 +118,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		battleProperties.setGunCoolingRate(getRulesTab().getGunCoolingRate());
 		battleProperties.setInactivityTime(getRulesTab().getInactivityTime());
 		battleProperties.setHideEnemyNames(getRulesTab().getHideEnemyNames());
+		battleProperties.setBattleMode(selectedMode);
 
 		// Dispose this dialog before starting the battle due to pause/resume battle state
 		dispose();
@@ -206,6 +215,24 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 		return wizardController;
 	}
+	
+	/**
+	 * Return the modeTab
+	 * @return JPanel
+	 */
+	private NewBattleModeTab getBattleModeTab() {
+		if (modeTab == null) {
+			modeTab = new NewBattleModeTab();
+			
+			//modeTab.setup(); // this was calling NewBattleModeTab.initialise() twice (once already in the constructor).
+			// which was making
+			//the UI bugged, by adding the label twice. if we want to use the setup() in the future,
+			//go to NewBattleModeTab and add whatever u want, but remove initialise() from it.
+			
+			
+		}
+		return modeTab;
+	}
 
 	/**
 	 * Return the Page property value.
@@ -245,6 +272,9 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 			tabbedPane.insertTab("Rules", null, getRulesTab(), null, 2);
 			tabbedPane.setMnemonicAt(2, KeyEvent.VK_U);
 			tabbedPane.setDisplayedMnemonicIndexAt(2, 1);
+			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 3);
+			tabbedPane.setMnemonicAt(3, KeyEvent.VK_M);
+			tabbedPane.setDisplayedMnemonicIndexAt(3, 0);
 		}
 		return tabbedPane;
 	}

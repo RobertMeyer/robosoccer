@@ -396,6 +396,13 @@ public class BattleView extends Canvas {
 		}
 	}
 
+	//TODO Update graphic display of item
+	private void drawItems(Graphics2D g, ITurnSnapshot snapShot){
+		double x, y;
+		AffineTransform at;
+		int battleFieldHeight = battleField.getHeight();
+	}
+	
 	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
 		double x, y;
 		AffineTransform at;

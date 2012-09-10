@@ -35,8 +35,8 @@ import java.util.Vector;
 
 /**
  * A more advanced type of robot than Robot that allows non-blocking calls,
- * custom events, and writes to the filesystem.
- * <p/>
+ * custom events, writes to the filesystem, and may equip equipment parts.
+ *
  * If you have not already, you should create a {@link Robot} first.
  *
  * @author Mathew A. Nelson (original)
@@ -2026,6 +2026,19 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements IAdvancedRob
 	 */
 	public double getTurnRemainingRadians() {
 		return super.getTurnRemainingRadians();
+	}
+
+	/**
+	 * If the part's slot attribute matches the given slot, it equips the part
+	 * in that slot.
+	 *
+	 * @param partName the name of the part to equip
+	 * @see Equipment
+	 */
+	public void equip(String partName) {
+		if (peer != null) {
+			((IAdvancedRobotPeer) peer).equip(partName);
+		}
 	}
 
 	/**
