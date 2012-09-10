@@ -61,7 +61,7 @@ public class ImageManager implements IImageManager {
 		// Note that initialize could be called in order to reset all images (image buffering)
 
 		// Reset image cache
-		groundImages = new Image[6];
+		groundImages = new Image[9];
 		explosionRenderImages = null;
 		debriseRenderImage = null;
 		bodyImage = null;

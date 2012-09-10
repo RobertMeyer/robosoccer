@@ -214,7 +214,7 @@ public final class Battle extends BaseBattle {
 					if(effectAreaRandom == 10){
 						xCoord = x * tileWidth;
 						yCoord = battleProperties.getBattlefieldHeight() - (y * tileHeight);
-						EffectArea effectArea = new EffectArea(xCoord, yCoord, tileWidth, tileHeight, activeEffectAreas);
+						EffectArea effectArea = new EffectArea(xCoord, yCoord, tileWidth, tileHeight, activeEffectAreas, 0);
 						effArea.add(effectArea);
 						numEffectAreas--;
 					}

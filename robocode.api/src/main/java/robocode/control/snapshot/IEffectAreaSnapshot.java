@@ -7,4 +7,5 @@ public interface IEffectAreaSnapshot {
 	int getActiveEffectAreas();
 	int getTileWidth();
 	int getTileHeight();
+	int getActiveEffect();
 }

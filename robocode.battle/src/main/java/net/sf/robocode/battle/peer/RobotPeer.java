@@ -173,6 +173,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double x;
 	protected double y;
 	protected int skippedTurns;
+	
+	protected int inEffectArea = 0;
 
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
@@ -1104,12 +1106,36 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	//Checks if the robot is in an area that will drain it's energy
+	/*Checks if the robot is in an area that will drain it's energy
+	 * 
+	 *To Do List: 
+	 *	1. Since checkEffectAreaCollision is called every turn, it's constantly changing
+	 *and since a turn is very fast, the effect is not very clear
+	 *	2. Due to the ffects changing very fast, the velocity decrease effect hasn't 
+	 *been tested
+	 *	3. Need to add more effects
+	 * 
+	 */
 	private void checkEffectAreaCollision(List<EffectArea> effArea){
 		for(EffectArea effAreas : effArea){
 			for(int i=0; i < effAreas.getActiveEffectAreas(); i++){
 				if(x > effAreas.getXCoord() && x < (effAreas.getXCoord() + effAreas.getTileWidth()) && y < effAreas.getYCoord() && y > (effAreas.getYCoord() - effAreas.getTileHeight())){
-					setEnergy(energy - 5.0, false);
+					Random effR = new Random();
+					int effRandom = effR.nextInt(3) + 1;
+					if(effRandom == 1){
+						setEnergy(energy - 0.3, false);
+						effAreas.setActiveEffect(1);
+					}
+					else if(effRandom == 2){
+						if(velocity > 0.5){
+							velocity -= 0.3;
+						}
+						effAreas.setActiveEffect(2);
+					}
+					else if(effRandom == 3){
+						gunHeat += getGunHeat(0.5);
+						effAreas.setActiveEffect(3);
+					}
 				}
 			}
 		}

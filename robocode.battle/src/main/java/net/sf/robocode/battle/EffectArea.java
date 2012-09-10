@@ -13,24 +13,23 @@ public class EffectArea {
 	private int activeEffAreas;
 	private int tileWidth;
 	private int tileHeight;
+	private int activeEffect;
 	
-	EffectArea(double xCoord, double yCoord, int tileWidth, int tileHeight, int activeEffAreas){
+	EffectArea(double xCoord, double yCoord, int tileWidth, int tileHeight, int activeEffAreas, int activeEffect){
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		this.activeEffAreas = activeEffAreas;
+		this.activeEffect = activeEffect;
 	}
 	
-	public boolean checkOverlap(List<EffectArea> effArea){
-		for (EffectArea secondEffArea : effArea) {
-			if (secondEffArea != null) {
-				if (xCoord == secondEffArea.getXCoord() && yCoord == secondEffArea.getYCoord()) {
-					return true;
-				}
-			}
-		}
-		return true;
+	public void setActiveEffect(int effect){
+		activeEffect = effect;
+	}
+	
+	public int getActiveEffect(){
+		return activeEffect;
 	}
 	
 	public int getActiveEffectAreas(){
