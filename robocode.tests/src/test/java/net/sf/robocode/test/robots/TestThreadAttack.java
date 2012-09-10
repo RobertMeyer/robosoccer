@@ -11,49 +11,47 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
-import org.junit.Ignore;
-
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
+import org.junit.Ignore;
 import robocode.control.events.TurnEndedEvent;
-
 
 /**
  * @author Pavel Savara (original)
  */
 @Ignore("This test has been unreliable in student builds, and is not important for CSSE2003")
 public class TestThreadAttack extends RobocodeTestBed {
-	boolean messagedMax;
-	boolean messagedUnknown;
 
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.ThreadAttack,sample.SittingDuck";
-	}
+    boolean messagedMax;
+    boolean messagedUnknown;
 
-	@Override
-	public void onTurnEnded(TurnEndedEvent event) {
-		super.onTurnEnded(event);
-		final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.ThreadAttack,sample.SittingDuck";
+    }
 
-		if (out.contains("Robots are only allowed to create up to 5 threads!")) {
-			messagedMax = true;
-		}
+    @Override
+    public void onTurnEnded(TurnEndedEvent event) {
+        super.onTurnEnded(event);
+        final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
 
-		if (out.contains("Preventing Thread-") && out.contains("from access to MyAttack")) {
-			messagedUnknown = true;
-		}
-	}
+        if (out.contains("Robots are only allowed to create up to 5 threads!")) {
+            messagedMax = true;
+        }
 
-	@Override
-	protected void runTeardown() {
-		Assert.assertTrue(messagedMax);
-		Assert.assertTrue(messagedUnknown);
-	}
+        if (out.contains("Preventing Thread-") && out.contains("from access to MyAttack")) {
+            messagedUnknown = true;
+        }
+    }
 
-	@Override
-	protected int getExpectedErrors() {
-		return 1; // Security error must be reported as an error
-	}
+    @Override
+    protected void runTeardown() {
+        Assert.assertTrue(messagedMax);
+        Assert.assertTrue(messagedUnknown);
+    }
+
+    @Override
+    protected int getExpectedErrors() {
+        return 1; // Security error must be reported as an error
+    }
 }

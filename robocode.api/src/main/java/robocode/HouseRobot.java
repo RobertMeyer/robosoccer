@@ -9,49 +9,74 @@
  *     Mathew A. Nelson
  *     - Initial API and implementation
  *     Flemming N. Larsen
- *     - Ported to Java 5
  *     - Updated Javadocs
- *     - The uninitializedException() method does not need a method name as input
- *       parameter anymore
- *     - Changed the priority of the DeathEvent from 100 to -1 in order to let
- *       robots process events before they die
- *     - Added getStatusEvents()
- *     Robert D. Maupin
- *     - Replaced old collection types like Vector and Hashtable with
- *       synchronized List and HashMap
- *     Pavel Savara
- *     - Re-work of robot interfaces
  *******************************************************************************/
 package robocode;
 
-
+import robocode.exception.BoundaryException;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IHouseRobot;
-import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
-
-import java.io.File;
-import java.util.Vector;
-
 
 /**
- * A more advanced type of robot than Robot that allows non-blocking calls,
- * custom events, and writes to the filesystem.
- * <p/>
- * If you have not already, you should create a {@link Robot} first.
+ * A House Robot is a {@link Robot} which is more powerful, and only shoots when
+ * enemy robots enter a specified area.
  *
  * @author Mathew A. Nelson (original)
- * @author Flemming N. Larsen (contributor)
- * @author Robert D. Maupin (contributor)
- * @author Pavel Savara (contributor)
- * @see <a target="_top" href="http://robocode.sourceforge.net">
- *      robocode.sourceforge.net</a>
- * @see <a href="http://robocode.sourceforge.net/myfirstrobot/MyFirstRobot.html">
- *      Building your first robot<a>
+ * @author Laurence McLean 42373414
+ * @author Jack Reichelt
  * @see JuniorRobot
  * @see Robot
  * @see TeamRobot
  * @see Droid
+ * @see AdvancedRobot
  */
-public class HouseRobot extends AdvancedRobot implements IHouseRobot, IAdvancedEvents {
-
+public class HouseRobot extends AdvancedRobot implements IHouseRobot,
+                                                         IAdvancedEvents {
+	private HouseRobotBoundary boundaries;
+	private boolean boundariesSet;
+	
+	/**
+	 * Constructs a new House Robot
+	 * @see HouseRobotBoundary
+	 */
+	public HouseRobot() {
+		HouseRobotBoundary boundaries = new HouseRobotBoundary(0,0,0,100,0,100);
+		this.boundaries = boundaries;
+		boundariesSet = false;
+	}
+	
+	/**
+	 * Constructs a new House Robot
+	 * @param boundaries Boundaries for this House Robot, defined in {@link HouseRobotBoundary}
+	 * @see HouseRobotBoundary
+	 * @deprecated Use {@link HouseRobot#HouseRobot()} and {@link HouseRobot#setBoundaries(HouseRobotBoundary boundaries}
+	 */
+	public HouseRobot(HouseRobotBoundary boundaries) {
+		this.boundaries = boundaries;
+		boundariesSet = true;
+	}
+	
+	/**
+	 * Gets the {@link HouseRobotBoundary} object associated with this HouseRobot.
+	 * @return Boundaries of this House Robot.
+	 */
+	public HouseRobotBoundary getBoundaries() {
+		return this.boundaries;
+	}
+	
+	/**
+	 * Sets the {@link HouseRobotBoundary} object associated with this HouseRobot.
+	 * Can <b>only</b> be called once. If called a second time, will throw a BoundaryException.
+	 * @param boundaries
+	 * @throws BoundaryException
+	 */
+	protected void setBoundaries(HouseRobotBoundary boundaries) {
+		if(boundariesSet) {
+			throw new BoundaryException("Cannot set boundaries a second time.");
+		} else {
+			boundariesSet = true;
+			this.boundaries = boundaries;
+		}
+	}
+	
 }

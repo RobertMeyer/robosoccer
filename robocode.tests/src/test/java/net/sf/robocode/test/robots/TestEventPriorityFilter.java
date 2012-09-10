@@ -11,41 +11,41 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
 import robocode.control.events.TurnEndedEvent;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public class TestEventPriorityFilter extends RobocodeTestBed {
-	boolean messagedScanned;
 
-	@Test
-	public void run() {
-		super.run();
-	}
+    boolean messagedScanned;
 
-	public void onTurnEnded(TurnEndedEvent event) {
-		super.onTurnEnded(event);
-		final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
+    @Test
+    @Override
+    public void run() {
+        super.run();
+    }
 
-		if (out.contains("Scanned!!!")) {
-			messagedScanned = true;
-		}
-	}
+    @Override
+    public void onTurnEnded(TurnEndedEvent event) {
+        super.onTurnEnded(event);
+        final String out = event.getTurnSnapshot().getRobots()[1].getOutputStreamSnapshot();
 
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.EventPriorityFilter,tested.robots.EventPriorityFilter";
-	}
+        if (out.contains("Scanned!!!")) {
+            messagedScanned = true;
+        }
+    }
 
-	@Override
-	protected void runTeardown() {
-		Assert.assertFalse(messagedScanned);
-	}
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.EventPriorityFilter,tested.robots.EventPriorityFilter";
+    }
+
+    @Override
+    protected void runTeardown() {
+        Assert.assertFalse(messagedScanned);
+    }
 }
-

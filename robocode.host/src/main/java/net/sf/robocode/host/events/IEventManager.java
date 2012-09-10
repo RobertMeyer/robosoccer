@@ -11,44 +11,42 @@
  *******************************************************************************/
 package net.sf.robocode.host.events;
 
-
-import robocode.*;
-
 import java.util.List;
-
+import robocode.*;
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IEventManager {
-	void addCustomEvent(Condition condition);
 
-	void removeCustomEvent(Condition condition);
+    void addCustomEvent(Condition condition);
 
-	void clearAllEvents(boolean includingSystemEvents);
+    void removeCustomEvent(Condition condition);
 
-	void setEventPriority(String eventClass, int priority);
+    void clearAllEvents(boolean includingSystemEvents);
 
-	int getEventPriority(String eventClass);
+    void setEventPriority(String eventClass, int priority);
 
-	java.util.List<Event> getAllEvents();
+    int getEventPriority(String eventClass);
 
-	List<BulletMissedEvent> getBulletMissedEvents();
+    java.util.List<Event> getAllEvents();
 
-	List<BulletHitBulletEvent> getBulletHitBulletEvents();
+    List<BulletMissedEvent> getBulletMissedEvents();
 
-	List<BulletHitEvent> getBulletHitEvents();
+    List<BulletHitBulletEvent> getBulletHitBulletEvents();
 
-	List<HitByBulletEvent> getHitByBulletEvents();
+    List<BulletHitEvent> getBulletHitEvents();
 
-	List<HitRobotEvent> getHitRobotEvents();
+    List<HitByBulletEvent> getHitByBulletEvents();
 
-	List<HitWallEvent> getHitWallEvents();
+    List<HitRobotEvent> getHitRobotEvents();
 
-	List<RobotDeathEvent> getRobotDeathEvents();
+    List<HitWallEvent> getHitWallEvents();
 
-	List<ScannedRobotEvent> getScannedRobotEvents();
+    List<RobotDeathEvent> getRobotDeathEvents();
 
-	// team
-	List<MessageEvent> getMessageEvents();
+    List<ScannedRobotEvent> getScannedRobotEvents();
+
+    // team
+    List<MessageEvent> getMessageEvents();
 }

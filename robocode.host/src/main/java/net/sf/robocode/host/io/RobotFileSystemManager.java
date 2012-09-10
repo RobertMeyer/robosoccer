@@ -16,10 +16,6 @@
  *******************************************************************************/
 package net.sf.robocode.host.io;
 
-
-import net.sf.robocode.host.IHostedThread;
-import net.sf.robocode.io.FileUtil;
-
 import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -29,7 +25,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
+import net.sf.robocode.host.IHostedThread;
+import net.sf.robocode.io.FileUtil;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -37,272 +34,274 @@ import java.util.jar.JarFile;
  * @author Robert D. Maupin (contributor)
  */
 public class RobotFileSystemManager {
-	private final IHostedThread robotProxy;
-	private long quotaUsed;
-	private boolean quotaMessagePrinted;
-	private final List<RobotFileOutputStream> streams = new ArrayList<RobotFileOutputStream>();
-	private final long maxQuota;
-	private final String writableRootDirectory;
-	private final String readableRootDirectory;
-	private final String rootPath;
-	private final String dataDir;
 
-	public RobotFileSystemManager(IHostedThread robotProxy, long maxQuota, String writableRootDirectory, String readableRootDirectory, String rootPath) {
-		this.robotProxy = robotProxy;
-		this.maxQuota = maxQuota;
-		this.writableRootDirectory = writableRootDirectory;
-		this.readableRootDirectory = readableRootDirectory;
-		this.rootPath = rootPath;
+    private final IHostedThread robotProxy;
+    private long quotaUsed;
+    private boolean quotaMessagePrinted;
+    private final List<RobotFileOutputStream> streams = new ArrayList<RobotFileOutputStream>();
+    private final long maxQuota;
+    private final String writableRootDirectory;
+    private final String readableRootDirectory;
+    private final String rootPath;
+    private final String dataDir;
 
-		this.dataDir = robotProxy.getStatics().getFullClassName().replace('.', '/') + ".data/";
-	}
+    public RobotFileSystemManager(IHostedThread robotProxy, long maxQuota, String writableRootDirectory, String readableRootDirectory, String rootPath) {
+        this.robotProxy = robotProxy;
+        this.maxQuota = maxQuota;
+        this.writableRootDirectory = writableRootDirectory;
+        this.readableRootDirectory = readableRootDirectory;
+        this.rootPath = rootPath;
 
-	public void initialize() {
-		initializeQuota();
-		updateDataFiles();
-	}
+        this.dataDir = robotProxy.getStatics().getFullClassName().replace('.', '/') + ".data/";
+    }
 
-	public void addStream(RobotFileOutputStream s) throws IOException {
-		if (s == null) {
-			throw new SecurityException("You may not add a null stream.");
-		}
-		if (!streams.contains(s)) {
-			if (streams.size() < 5) {
-				streams.add(s);
-			} else {
-				throw new SecurityException(
-						"You may only have 5 streams open at a time.\n Make sure you call close() on your streams when you are finished with them.");
-			}
-		}
-	}
+    public void initialize() {
+        initializeQuota();
+        updateDataFiles();
+    }
 
-	public synchronized void adjustQuota(long len) {
-		quotaUsed += len;
-	}
+    public void addStream(RobotFileOutputStream s) throws IOException {
+        if (s == null) {
+            throw new SecurityException("You may not add a null stream.");
+        }
+        if (!streams.contains(s)) {
+            if (streams.size() < 5) {
+                streams.add(s);
+            } else {
+                throw new SecurityException(
+                        "You may only have 5 streams open at a time.\n Make sure you call close() on your streams when you are finished with them.");
+            }
+        }
+    }
 
-	public void checkQuota() throws IOException {
-		checkQuota(0);
-	}
+    public synchronized void adjustQuota(long len) {
+        quotaUsed += len;
+    }
 
-	public void checkQuota(long numBytes) throws IOException {
-		if (numBytes < 0) {
-			throw new IllegalArgumentException("checkQuota on negative numBytes!");
-		}
-		if (quotaUsed + numBytes <= maxQuota) {
-			adjustQuota(numBytes);
-		} else {
-			final String msg = "You have reached your filesystem quota of: " + maxQuota + " bytes.";
+    public void checkQuota() throws IOException {
+        checkQuota(0);
+    }
 
-			if (!quotaMessagePrinted) {
-				robotProxy.println("SYSTEM: " + msg);
-				quotaMessagePrinted = true;
-			}
-			throw new IOException(msg); // Must be IOException due to bug fix [2960894]
-		}
-	}
+    public void checkQuota(long numBytes) throws IOException {
+        if (numBytes < 0) {
+            throw new IllegalArgumentException("checkQuota on negative numBytes!");
+        }
+        if (quotaUsed + numBytes <= maxQuota) {
+            adjustQuota(numBytes);
+        } else {
+            final String msg = "You have reached your filesystem quota of: " + maxQuota + " bytes.";
 
-	public long getMaxQuota() {
-		return maxQuota;
-	}
+            if (!quotaMessagePrinted) {
+                robotProxy.println("SYSTEM: " + msg);
+                quotaMessagePrinted = true;
+            }
+            throw new IOException(msg); // Must be IOException due to bug fix [2960894]
+        }
+    }
 
-	public long getQuotaUsed() {
-		return quotaUsed;
-	}
+    public long getMaxQuota() {
+        return maxQuota;
+    }
 
-	public File getReadableDirectory() {
-		try {
-			return (readableRootDirectory == null) ? null : new File(readableRootDirectory).getCanonicalFile();
-		} catch (IOException e) {
-			return null;
-		}
-	}
+    public long getQuotaUsed() {
+        return quotaUsed;
+    }
 
-	public File getWritableDirectory() {
-		try {
-			return (writableRootDirectory == null)
-					? null
-					: new File(writableRootDirectory, robotProxy.getStatics().getShortClassName() + ".data").getCanonicalFile();
-		} catch (IOException e) {
-			return null;
-		}
-	}
+    public File getReadableDirectory() {
+        try {
+            return (readableRootDirectory == null) ? null : new File(readableRootDirectory).getCanonicalFile();
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
-	public File getDataFile(String filename) {
-		filename = filename.replaceAll("\\*", "");
+    public File getWritableDirectory() {
+        try {
+            return (writableRootDirectory == null)
+                    ? null
+                    : new File(writableRootDirectory, robotProxy.getStatics().getShortClassName() + ".data").getCanonicalFile();
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
-		final File parent = getWritableDirectory();
-		File file = new File(parent, filename);
+    public File getDataFile(String filename) {
+        filename = filename.replaceAll("\\*", "");
 
-		// TODO the file is never replaced from jar or directory after it was created
-		// TODO it would be good to replace it when it have bigger last modified time stamp
-		if (!file.exists()) {
-			if (!parent.exists() && !parent.mkdirs()) {
-				return file;
-			}
-			InputStream is = null;
-			OutputStream os = null;
+        final File parent = getWritableDirectory();
+        File file = new File(parent, filename);
 
-			try {
-				URL unUrl = new URL(rootPath + dataDir + filename);
-				final URLConnection connection = unUrl.openConnection();
+        // TODO the file is never replaced from jar or directory after it was created
+        // TODO it would be good to replace it when it have bigger last modified time stamp
+        if (!file.exists()) {
+            if (!parent.exists() && !parent.mkdirs()) {
+                return file;
+            }
+            InputStream is = null;
+            OutputStream os = null;
 
-				connection.setUseCaches(false);
+            try {
+                URL unUrl = new URL(rootPath + dataDir + filename);
+                final URLConnection connection = unUrl.openConnection();
 
-				is = connection.getInputStream();
-				os = new FileOutputStream(file);
+                connection.setUseCaches(false);
 
-				copyStream(is, os);
-			} catch (IOException ignore) {} finally {
-				FileUtil.cleanupStream(is);
-				FileUtil.cleanupStream(os);
-			}
-		}
-		return file;
-	}
+                is = connection.getInputStream();
+                os = new FileOutputStream(file);
 
-	private void initializeQuota() {
-		quotaUsed = 0;
-		quotaMessagePrinted = false;
+                copyStream(is, os);
+            } catch (IOException ignore) {
+            } finally {
+                FileUtil.cleanupStream(is);
+                FileUtil.cleanupStream(os);
+            }
+        }
+        return file;
+    }
 
-		File dataDirectory = getWritableDirectory();
+    private void initializeQuota() {
+        quotaUsed = 0;
+        quotaMessagePrinted = false;
 
-		if (dataDirectory != null && dataDirectory.exists()) {
-			File[] dataFiles = dataDirectory.listFiles();
+        File dataDirectory = getWritableDirectory();
 
-			for (File file : dataFiles) {
-				quotaUsed += file.length();
-			}
-		}
-	}
+        if (dataDirectory != null && dataDirectory.exists()) {
+            File[] dataFiles = dataDirectory.listFiles();
 
-	public boolean isReadable(String fileName) {
-		File allowedDirectory = getReadableDirectory();
+            for (File file : dataFiles) {
+                quotaUsed += file.length();
+            }
+        }
+    }
 
-		if (allowedDirectory == null) {
-			return false;
-		}
+    public boolean isReadable(String fileName) {
+        File allowedDirectory = getReadableDirectory();
 
-		File attemptedFile;
+        if (allowedDirectory == null) {
+            return false;
+        }
 
-		try {
-			attemptedFile = new File(fileName).getCanonicalFile();
-		} catch (IOException e) {
-			return false;
-		}
+        File attemptedFile;
 
-		if (attemptedFile.equals(allowedDirectory)) {
-			return true; // recursive check
-		}
+        try {
+            attemptedFile = new File(fileName).getCanonicalFile();
+        } catch (IOException e) {
+            return false;
+        }
 
-		if (attemptedFile.getParent().indexOf(allowedDirectory.toString()) == 0) {
-			String fs = attemptedFile.toString();
-			int dataIndex = fs.indexOf(".data", allowedDirectory.toString().length());
+        if (attemptedFile.equals(allowedDirectory)) {
+            return true; // recursive check
+        }
 
-			if (dataIndex >= 0) {
-				if (isWritable(fileName) || attemptedFile.equals(getWritableDirectory())) {
-					return true;
-				}
-				throw new java.security.AccessControlException(
-						"Preventing " + Thread.currentThread().getName() + " from access to: " + fileName
-						+ ": You may not read another robot's data directory.");
-			}
-			return true;
-		}
+        if (attemptedFile.getParent().indexOf(allowedDirectory.toString()) == 0) {
+            String fs = attemptedFile.toString();
+            int dataIndex = fs.indexOf(".data", allowedDirectory.toString().length());
 
-		return false;
-	}
+            if (dataIndex >= 0) {
+                if (isWritable(fileName) || attemptedFile.equals(getWritableDirectory())) {
+                    return true;
+                }
+                throw new java.security.AccessControlException(
+                        "Preventing " + Thread.currentThread().getName() + " from access to: " + fileName
+                        + ": You may not read another robot's data directory.");
+            }
+            return true;
+        }
 
-	public boolean isWritable(String fileName) {
-		File allowedDirectory = getWritableDirectory();
+        return false;
+    }
 
-		if (allowedDirectory == null) {
-			return false;
-		}
+    public boolean isWritable(String fileName) {
+        File allowedDirectory = getWritableDirectory();
 
-		File attemptedFile;
+        if (allowedDirectory == null) {
+            return false;
+        }
 
-		try {
-			attemptedFile = new File(fileName).getCanonicalFile();
-		} catch (IOException e) {
-			return false;
-		}
+        File attemptedFile;
 
-		return attemptedFile.equals(allowedDirectory) || attemptedFile.getParentFile().equals(allowedDirectory);
-	}
+        try {
+            attemptedFile = new File(fileName).getCanonicalFile();
+        } catch (IOException e) {
+            return false;
+        }
 
-	public void removeStream(RobotFileOutputStream s) {
-		if (s == null) {
-			throw new SecurityException("You may not remove a null stream.");
-		}
-		if (streams.contains(s)) {
-			streams.remove(s);
-		}
-	}
+        return attemptedFile.equals(allowedDirectory) || attemptedFile.getParentFile().equals(allowedDirectory);
+    }
 
-	private void updateDataFiles() {
-		try {
-			if (rootPath.startsWith("jar:")) {
-				updateDataFilesFromJar();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public void removeStream(RobotFileOutputStream s) {
+        if (s == null) {
+            throw new SecurityException("You may not remove a null stream.");
+        }
+        if (streams.contains(s)) {
+            streams.remove(s);
+        }
+    }
 
-	private void updateDataFilesFromJar() throws IOException {
-		URL url = new URL(rootPath);
-		JarURLConnection jarConnection = (JarURLConnection) url.openConnection();
+    private void updateDataFiles() {
+        try {
+            if (rootPath.startsWith("jar:")) {
+                updateDataFilesFromJar();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		jarConnection.setUseCaches(false);
+    private void updateDataFilesFromJar() throws IOException {
+        URL url = new URL(rootPath);
+        JarURLConnection jarConnection = (JarURLConnection) url.openConnection();
 
-		JarFile jarFile = jarConnection.getJarFile();
-		
-		Enumeration<?> entries = jarFile.entries();
+        jarConnection.setUseCaches(false);
 
-		final File parent = getWritableDirectory();
+        JarFile jarFile = jarConnection.getJarFile();
 
-		if (!parent.exists() && !parent.mkdirs()) {
-			throw new IOException("Could not create writeable directory for " + robotProxy.getStatics().getName());
-		}
+        Enumeration<?> entries = jarFile.entries();
 
-		InputStream is = null;
-		OutputStream os = null;
+        final File parent = getWritableDirectory();
 
-		while (entries.hasMoreElements()) {
-			JarEntry jarEntry = (JarEntry) entries.nextElement();
+        if (!parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Could not create writeable directory for " + robotProxy.getStatics().getName());
+        }
 
-			String filename = jarEntry.getName();
+        InputStream is = null;
+        OutputStream os = null;
 
-			if (filename.startsWith(dataDir)) {			
-				filename = filename.substring(dataDir.length());
-				if (filename.length() == 0) { // Bugfix [2845608] - FileNotFoundException
-					continue;
-				}
+        while (entries.hasMoreElements()) {
+            JarEntry jarEntry = (JarEntry) entries.nextElement();
 
-				is = null;
-				os = null;
-				try {
-					is = jarFile.getInputStream(jarEntry);
-					os = new FileOutputStream(new File(parent, filename));
-					copyStream(is, os);
-				} finally {
-					FileUtil.cleanupStream(is);
-					FileUtil.cleanupStream(os);
-				}
-			}
-		}
-	}
+            String filename = jarEntry.getName();
 
-	private void copyStream(InputStream is, OutputStream os) throws IOException {
-		BufferedInputStream bis = new BufferedInputStream(is);
-		BufferedOutputStream bos = new BufferedOutputStream(os);
+            if (filename.startsWith(dataDir)) {
+                filename = filename.substring(dataDir.length());
+                if (filename.length() == 0) { // Bugfix [2845608] - FileNotFoundException
+                    continue;
+                }
 
-		byte[] buf = new byte[8192];
-		int len;
+                is = null;
+                os = null;
+                try {
+                    is = jarFile.getInputStream(jarEntry);
+                    os = new FileOutputStream(new File(parent, filename));
+                    copyStream(is, os);
+                } finally {
+                    FileUtil.cleanupStream(is);
+                    FileUtil.cleanupStream(os);
+                }
+            }
+        }
+    }
 
-		while ((len = bis.read(buf)) > 0) {
-			bos.write(buf, 0, len);
-		}
-		bos.flush();
-	}
+    private void copyStream(InputStream is, OutputStream os) throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(is);
+        BufferedOutputStream bos = new BufferedOutputStream(os);
+
+        byte[] buf = new byte[8192];
+        int len;
+
+        while ((len = bis.read(buf)) > 0) {
+            bos.write(buf, 0, len);
+        }
+        bos.flush();
+    }
 }

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package robocode;
 
-
 /**
  * Robots that implement Droid have no scanner, but an extra 20 life/energy.
  * This class is intended for use in teams.
@@ -24,4 +23,5 @@ package robocode;
  * @see AdvancedRobot
  * @see TeamRobot
  */
-public interface Droid {}
+public interface Droid {
+}
