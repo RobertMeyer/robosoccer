@@ -20,6 +20,13 @@
  */
 package net.sf.robocode.ui.dialog;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.recording.BattleRecordFormat;
@@ -27,18 +34,10 @@ import net.sf.robocode.recording.IRecordManager;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.settings.ISettingsListener;
 import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.IFullScreenListener;
 import net.sf.robocode.ui.IWindowManagerExt;
 import net.sf.robocode.ui.editor.IRobocodeEditor;
 import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
-
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import net.sf.robocode.ui.IFullScreenListener;
 
 /**
  * Handles menu display and interaction for Robocode.
@@ -94,6 +93,7 @@ public class MenuBar extends JMenuBar {
 
     private class EventHandler implements ActionListener, MenuListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             MenuBar mb = MenuBar.this;
@@ -174,14 +174,17 @@ public class MenuBar extends JMenuBar {
             }
         }
 
+        @Override
         public void menuDeselected(MenuEvent e) {
             battleManager.resumeBattle();
         }
 
+        @Override
         public void menuSelected(MenuEvent e) {
             battleManager.pauseBattle();
         }
 
+        @Override
         public void menuCanceled(MenuEvent e) {
         }
     }
@@ -194,10 +197,10 @@ public class MenuBar extends JMenuBar {
     private final ICpuManager cpuManager;
 
     public MenuBar(ISettingsManager properties,
-            IWindowManagerExt windowManager,
-            IBattleManager battleManager,
-            IRecordManager recordManager,
-            ICpuManager cpuManager) {
+                   IWindowManagerExt windowManager,
+                   IBattleManager battleManager,
+                   IRecordManager recordManager,
+                   ICpuManager cpuManager) {
         this.properties = properties;
         this.windowManager = windowManager;
         this.battleManager = battleManager;
@@ -501,6 +504,7 @@ public class MenuBar extends JMenuBar {
 
             props.addPropertyListener(
                     new ISettingsListener() {
+                @Override
                         public void settingChanged(String property) {
                             if (property.equals(ISettingsManager.OPTIONS_COMMON_ENABLE_REPLAY_RECORDING)) {
                                 final boolean canReplayRecord = recordManager.hasRecord();
@@ -529,6 +533,7 @@ public class MenuBar extends JMenuBar {
 
             props.addPropertyListener(
                     new ISettingsListener() {
+                @Override
                         public void settingChanged(String property) {
                             if (property.equals(ISettingsManager.OPTIONS_COMMON_ENABLE_REPLAY_RECORDING)) {
                                 final boolean canReplayRecord = recordManager.hasRecord();
@@ -930,7 +935,7 @@ public class MenuBar extends JMenuBar {
 
     private void optionsRecalculateCpuConstantPerformed() {
         int ok = JOptionPane.showConfirmDialog(this, "Do you want to recalculate the CPU constant?",
-                "Recalculate CPU constant", JOptionPane.YES_NO_OPTION);
+                                               "Recalculate CPU constant", JOptionPane.YES_NO_OPTION);
 
         if (ok == JOptionPane.YES_OPTION) {
             try {
@@ -943,13 +948,13 @@ public class MenuBar extends JMenuBar {
             long cpuConstant = cpuManager.getCpuConstant();
 
             JOptionPane.showMessageDialog(this, "CPU constant: " + cpuConstant + " nanoseconds per turn",
-                    "New CPU constant", JOptionPane.INFORMATION_MESSAGE);
+                                          "New CPU constant", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     private void optionsCleanRobotCachePerformed() {
         int ok = JOptionPane.showConfirmDialog(this, "Do you want to clean the robot cache?", "Clean Robot Cache",
-                JOptionPane.YES_NO_OPTION);
+                                               JOptionPane.YES_NO_OPTION);
 
         if (ok == JOptionPane.YES_OPTION) {
             try {

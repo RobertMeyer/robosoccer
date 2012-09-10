@@ -112,7 +112,7 @@ public class WindowUtil {
         Object[] options = {"OK"};
 
         JOptionPane.showOptionDialog(frame, msg, "Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null,
-                options, options[0]);
+                                     options, options[0]);
     }
 
     public static void fitWindow(Window w) {

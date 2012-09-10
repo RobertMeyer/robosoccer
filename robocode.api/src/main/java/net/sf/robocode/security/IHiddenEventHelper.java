@@ -11,22 +11,25 @@
  *******************************************************************************/
 package net.sf.robocode.security;
 
-
+import java.awt.*;
 import net.sf.robocode.peer.IRobotStatics;
 import robocode.Event;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IHiddenEventHelper {
-	void setDefaultPriority(Event event);
-	void setPriority(Event event, int newPriority);
-	void setTime(Event event, long newTime);
-	boolean isCriticalEvent(Event event);
-	void dispatch(Event event, IBasicRobot robot, IRobotStatics statics, Graphics2D graphics);
-	byte getSerializationType(Event event);
+
+    void setDefaultPriority(Event event);
+
+    void setPriority(Event event, int newPriority);
+
+    void setTime(Event event, long newTime);
+
+    boolean isCriticalEvent(Event event);
+
+    void dispatch(Event event, IBasicRobot robot, IRobotStatics statics, Graphics2D graphics);
+
+    byte getSerializationType(Event event);
 }

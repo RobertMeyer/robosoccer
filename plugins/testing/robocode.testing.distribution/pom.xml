@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>robocode.testing.distribution</artifactId>
     <name>Robot Testing Framework Distribution</name>
@@ -9,7 +9,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <artifactId>robocode.testing</artifactId>
         <version>2012.0.1-SNAPSHOT</version>
     </parent>
-	<dependencies>
+    <dependencies>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.testing.api</artifactId>
@@ -20,27 +20,27 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.testing.content</artifactId>
             <version>${project.version}</version>
-			<type>jar</type>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.testing.installer</artifactId>
             <version>${project.version}</version>
-			<type>jar</type>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.testing.samples</artifactId>
             <version>${project.version}</version>
-			<type>jar</type>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.9</version>
-			<type>jar</type>
+            <type>jar</type>
         </dependency>
-	</dependencies>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

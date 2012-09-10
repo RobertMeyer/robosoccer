@@ -11,11 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import robocode.control.events.TurnEndedEvent;
-
 
 /**
  * This test was made due to hacker.Destroyer 1.3, which proved a security breach in
@@ -28,36 +26,37 @@ import robocode.control.events.TurnEndedEvent;
  * @author Flemming N. Larsen (original)
  */
 public class TestThreadGroupAttack extends RobocodeTestBed {
-	boolean messagedInterrupted;
-	boolean messagedPreventing;
 
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.ThreadGroupAttack,sample.SittingDuck";
-	}
+    boolean messagedInterrupted;
+    boolean messagedPreventing;
 
-	@Override
-	public void onTurnEnded(TurnEndedEvent event) {
-		super.onTurnEnded(event);
-		final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.ThreadGroupAttack,sample.SittingDuck";
+    }
 
-		if (out.contains("Interrupted: sample.SittingDuck")) {
-			messagedInterrupted = true;
-		}
+    @Override
+    public void onTurnEnded(TurnEndedEvent event) {
+        super.onTurnEnded(event);
+        final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
 
-		if (out.contains("Preventing tested.robots.ThreadGroupAttack from access to sample.SittingDuck")) {
-			messagedPreventing = true;
-		}
-	}
+        if (out.contains("Interrupted: sample.SittingDuck")) {
+            messagedInterrupted = true;
+        }
 
-	@Override
-	protected void runTeardown() {
-		Assert.assertFalse(messagedInterrupted);
-		Assert.assertTrue(messagedPreventing);
-	}
+        if (out.contains("Preventing tested.robots.ThreadGroupAttack from access to sample.SittingDuck")) {
+            messagedPreventing = true;
+        }
+    }
 
-	@Override
-	protected int getExpectedErrors() {
-		return 3; // Security error must be reported as an error
-	}
+    @Override
+    protected void runTeardown() {
+        Assert.assertFalse(messagedInterrupted);
+        Assert.assertTrue(messagedPreventing);
+    }
+
+    @Override
+    protected int getExpectedErrors() {
+        return 3; // Security error must be reported as an error
+    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>robocode.core</artifactId>
     <name>Robocode Core</name>
@@ -47,7 +47,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                                     <directory>..</directory>
                                     <filtering>false</filtering>
                                     <includes>
-                                        <!-- actually this is bit more complicated than usual, because of quirks with IDEA -->
+                                        <!-- actually this is bit more complicated than usual, because
+                             											of quirks with IDEA -->
                                         <include>versions.txt</include>
                                     </includes>
                                 </resource>
@@ -56,6 +57,68 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <windowtitle>Robocode ${project.version} Core</windowtitle>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <doctitle>
+                        <![CDATA[<h1>Robocode ${project.version} Core</h1>]]>
+                    </doctitle>
+                    <links>
+                        <link>http://docs.oracle.com/javase/6/docs/api/</link>
+                    </links>
+                    <use>false</use>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>yuml-active</id>
+            <activation>
+                <property>
+                    <name>yDoc.path</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <windowtitle>Robocode ${project.version} Core</windowtitle>
+                            <docfilessubdirs>true</docfilessubdirs>
+                            <doctitle>
+                        <![CDATA[<h1>Robocode ${project.version} Core</h1>]]>
+                            </doctitle>
+                            <use>false</use>
+                            <doclet>ydoc.doclets.YStandard</doclet>
+                            <docletPath>${yDoc.path}/lib/ydoc.jar:${yDoc.path}/lib/class2svg.jar:${yDoc.path}/resources</docletPath>
+                            <additionalparam>-link http://docs.oracle.com/javase/6/docs/api/
+                                -umlautogen
+                            </additionalparam>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

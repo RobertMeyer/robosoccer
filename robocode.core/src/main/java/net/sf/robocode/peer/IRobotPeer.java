@@ -11,33 +11,33 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRobotPeer {
 
-	void drainEnergy();
+    void drainEnergy();
 
-	void punishBadBehavior(BadBehavior badBehavior);
+    void punishBadBehavior(BadBehavior badBehavior);
 
-	void setRunning(boolean value);
+    void setRunning(boolean value);
 
-	boolean isRunning();
+    boolean isRunning();
 
-	ExecResults waitForBattleEndImpl(ExecCommands newCommands);
+    ExecResults waitForBattleEndImpl(ExecCommands newCommands);
 
-	ExecResults executeImpl(ExecCommands newCommands);
+    ExecResults executeImpl(ExecCommands newCommands);
 
-	void setupBuffer(ByteBuffer bidirectionalBuffer);
+    void setupBuffer(ByteBuffer bidirectionalBuffer);
 
-	void executeImplSerial() throws IOException;
+    void executeImplSerial() throws IOException;
 
-	void waitForBattleEndImplSerial() throws IOException;
+    void waitForBattleEndImplSerial() throws IOException;
 
-	void setupThread();
+    void setupThread();
+
+    void equip(String partName);
 }

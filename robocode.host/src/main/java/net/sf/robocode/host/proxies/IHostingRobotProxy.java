@@ -11,22 +11,19 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-
 import net.sf.robocode.peer.ExecCommands;
 import robocode.RobotStatus;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IHostingRobotProxy {
 
-	void startRound(ExecCommands commands, RobotStatus status);
+    void startRound(ExecCommands commands, RobotStatus status);
 
-	void forceStopThread();
+    void forceStopThread();
 
-	void waitForStopThread();
+    void waitForStopThread();
 
-	void cleanup();
-
+    void cleanup();
 }

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package robocode.robotinterfaces;
 
-
 /**
  * A robot interface for creating a more advanced type of robot like
  * {@link robocode.AdvancedRobot} that is able to handle advanced robot events.
@@ -31,14 +30,14 @@ package robocode.robotinterfaces;
  */
 public interface IAdvancedRobot extends IBasicRobot {
 
-	/**
-	 * This method is called by the game to notify this robot about advanced
-	 * robot event. Hence, this method must be implemented so it returns your
-	 * {@link IAdvancedEvents} listener.
-	 *
-	 * @return listener to advanced events or {@code null} if this robot should
-	 *         not receive the notifications.
-	 * @since 1.6
-	 */
-	IAdvancedEvents getAdvancedEventListener();
+    /**
+     * This method is called by the game to notify this robot about advanced
+     * robot event. Hence, this method must be implemented so it returns your
+     * {@link IAdvancedEvents} listener.
+     *
+     * @return listener to advanced events or {@code null} if this robot should
+     *         not receive the notifications.
+     * @since 1.6
+     */
+    IAdvancedEvents getAdvancedEventListener();
 }
