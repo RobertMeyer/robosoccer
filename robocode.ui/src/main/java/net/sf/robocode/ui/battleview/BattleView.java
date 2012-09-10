@@ -34,6 +34,7 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.IEffectAreaSnapshot;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -260,7 +261,6 @@ public class BattleView extends Canvas {
 					groundTiles[y][x] = (int) round(r.nextDouble() * 4);
 				}
 			}
-			initEffArea();
 		}
 
 		// Create new buffered image with the ground pre-rendered
@@ -285,55 +285,6 @@ public class BattleView extends Canvas {
 				}
 			}
 		}
-	}
-	
-	private void initEffArea(){
-		final int NUM_HORZ_TILES = battleField.getWidth() / groundTileWidth + 1;
-		final int NUM_VERT_TILES = battleField.getHeight() / groundTileHeight + 1;
-		
-		int numEffectAreas;		// sets how many effect areas will be present 
-		int numEffectAreasModifier = 100000; // smaller the number -> more effect areas
-		Random effectAreaR = new Random();
-		int effectAreaRandom;
-		
-		ArrayList<Rectangle2D.Double> effAreaCoordList = new ArrayList<Rectangle2D.Double>();
-	
-		numEffectAreas = (int) round((battleField.getWidth()*battleField.getHeight()/numEffectAreasModifier));
-		while(numEffectAreas > 0){
-			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
-				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
-					effectAreaRandom = effectAreaR.nextInt(51) + 1; //The 51 is the modifier for the odds of the tile appearing
-					if(effectAreaRandom == 10){
-						groundTiles[y][x] = 5; //the 5 indicates what index of the groundImages array we should access
-						Rectangle2D.Double effAreaCoord = new Rectangle2D.Double(x * groundTileWidth, battleField.getHeight() - (y * groundTileHeight), groundTileWidth, groundTileHeight);
-						effAreaCoordList.add(effAreaCoord);
-						numEffectAreas--;
-					}
-				}
-			}
-		}
-		
-		try{
-			int counter = 0;
-			FileWriter fstream = new FileWriter("effAreaCoord.txt");
-			BufferedWriter out = new BufferedWriter(fstream);
-			
-			out.write("" + effAreaCoordList.get(0).getHeight());
-			out.newLine();
-	
-			out.write("" + effAreaCoordList.get(0).getWidth());
-			out.newLine();
-			for(int i = 0; i < effAreaCoordList.size(); i++){
-				out.write("" + effAreaCoordList.get(i).getX());
-				out.newLine();
-				out.write("" + effAreaCoordList.get(i).getY());
-				out.newLine();
-					
-			}
-			out.close();
-		}catch(Exception e){
-				System.err.println("Error: " + e.getMessage());
-			}
 	}
 
 	private void drawBattle(Graphics2D g, ITurnSnapshot snapShot) {
@@ -369,6 +320,8 @@ public class BattleView extends Canvas {
 		if (snapShot != null) {
 			// Draw scan arcs
 			drawScanArcs(g, snapShot);
+			
+			drawEffectAreas(g, snapShot);
 
 			// Draw robots
 			drawRobots(g, snapShot);
@@ -447,6 +400,24 @@ public class BattleView extends Canvas {
 		double x, y;
 		AffineTransform at;
 		int battleFieldHeight = battleField.getHeight();
+	}
+	
+	private void drawEffectAreas(Graphics2D g, ITurnSnapshot snapShot) {
+		double x, y;
+		int battleFieldHeight = battleField.getHeight();
+		
+		for(IEffectAreaSnapshot effectAreaSnapshot : snapShot.getEffectAreas()) {
+			x = effectAreaSnapshot.getXCoord();
+			y = battleFieldHeight - effectAreaSnapshot.getYCoord();
+			
+			int x1 = (int)(x);
+			int y1 = (int)((battleFieldHeight - effectAreaSnapshot.getYCoord()));
+			
+			Image effAreaImg = imageManager.getGroundTileImage(5);
+			
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.drawImage(effAreaImg, x1, y1, null);
+		}
 	}
 	
 	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {

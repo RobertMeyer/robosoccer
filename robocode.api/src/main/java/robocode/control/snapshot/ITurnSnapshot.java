@@ -43,6 +43,9 @@ public interface ITurnSnapshot {
 	 *
 	 * @return the current TPS (turns per second) rate.
 	 */
+	
+	IEffectAreaSnapshot[] getEffectAreas();
+	
 	int getTPS();
 
 	/**

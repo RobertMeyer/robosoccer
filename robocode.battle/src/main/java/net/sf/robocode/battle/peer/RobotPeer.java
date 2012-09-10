@@ -72,6 +72,7 @@ import static net.sf.robocode.io.Logger.logMessage;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.battle.ItemDrop;
+import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -94,8 +95,6 @@ import static robocode.util.Utils.*;
 
 import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import static java.lang.Math.*;
 import java.nio.ByteBuffer;
@@ -107,8 +106,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.io.*;
-
 
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
@@ -957,7 +954,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<EffectArea> effArea, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -992,7 +989,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		checkRobotCollision(robots);
 		
 		//Check if robot is inside the effect area
-		checkEffectAreaCollision();
+		checkEffectAreaCollision(effArea);
 
 		// Now check for item collision
 		checkItemCollision(items);
@@ -1108,56 +1105,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	//Checks if the robot is in an area that will drain it's energy
-	private void checkEffectAreaCollision(){
-		double tileHeight = 0;
-		double tileWidth = 0;
-		int counter = 0;
-		ArrayList<Double> xList = new ArrayList<Double>();
-		ArrayList<Double> yList = new ArrayList<Double>();
-		try{
-			FileInputStream fstream = new FileInputStream("effAreaCoord.txt");
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			
-			while((strLine = br.readLine()) != null){
-				if (counter == 0) tileWidth = Double.valueOf(strLine);
-				else if (counter == 1) tileHeight = Double.valueOf(strLine);
-				else if (counter % 2 == 0){
-					xList.add(Double.valueOf(strLine));
+	private void checkEffectAreaCollision(List<EffectArea> effArea){
+		for(EffectArea effAreas : effArea){
+			for(int i=0; i < effAreas.getActiveEffectAreas(); i++){
+				if(x > effAreas.getXCoord() && x < (effAreas.getXCoord() + effAreas.getTileWidth()) && y < effAreas.getYCoord() && y > (effAreas.getYCoord() - effAreas.getTileHeight())){
+					setEnergy(energy - 5.0, false);
 				}
-				else if (counter % 2 == 1){
-					yList.add(Double.valueOf(strLine));
-				}
-				counter ++;
-			}	
-			in.close();
-		}catch(Exception e){
-			System.err.println("Error: " + e.getMessage());
-		}
-		
-		for(int i=0; i < xList.size(); i++){
-			if(x > xList.get(i) && x < (xList.get(i) + tileWidth) && y < yList.get(i) && y > (yList.get(i) - tileHeight)){
-				setEnergy(energy - 5.0, false);
-				//writeCoord(xList.get(i), yList.get(i));
-				//System.out.println("Robot x: " + x + "  grid x: " + xList.get(i) + "Robot y: " + y + "grid y: " + yList.get(i));
 			}
 		}
 	}
-	
-	/*private void writeCoord(double tileX, double tileY){	
-		try{
-			FileWriter fstream = new FileWriter("activieEffArea.txt");
-			BufferedWriter out = new BufferedWriter(fstream);
-			out.write("" + tileX);
-			out.newLine();
-			out.write("" + tileY);
-			out.newLine();
-			out.close();
-		}catch(Exception e){
-				System.err.println("Error: " + e.getMessage());
-			}
-	}*/
 	
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
@@ -2134,6 +2090,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public String toString() {
 		return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
 				+ (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
+	}
+
+	@Override
+	public void performMove(List<RobotPeer> robots, List<ItemDrop> items,
+			double zapEnergy) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

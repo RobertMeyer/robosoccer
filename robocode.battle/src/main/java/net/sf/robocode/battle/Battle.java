@@ -96,6 +96,7 @@
 package net.sf.robocode.battle;
 
 
+import static java.lang.Math.round;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -163,6 +164,7 @@ public final class Battle extends BaseBattle {
 	
 	/* List of items that are going to be dropped */
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
+	private List<EffectArea> effArea = new ArrayList<EffectArea>();
 
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -190,6 +192,35 @@ public final class Battle extends BaseBattle {
 		battleMode = battleProperties.getBattleMode();
 		computeInitialPositions(battleProperties.getInitialPositions());
 		createPeers(battlingRobotsList);
+		createEffectAreas(battleProperties);
+	}
+	
+	private void createEffectAreas(BattleProperties battleProperties){
+		int tileWidth = 64;
+		int tileHeight = 64;
+		double xCoord, yCoord;
+		final int NUM_HORZ_TILES = battleProperties.getBattlefieldWidth() / tileWidth + 1;
+		final int NUM_VERT_TILES = battleProperties.getBattlefieldHeight() / tileHeight + 1;
+		int numEffectAreasModifier = 100000; // smaller the number -> more effect areas
+		int numEffectAreas = (int) round((battleProperties.getBattlefieldWidth()*battleProperties.getBattlefieldHeight()/numEffectAreasModifier));
+		int activeEffectAreas = numEffectAreas;
+		Random effectAreaR = new Random();
+		int effectAreaRandom;
+		
+		while(numEffectAreas > 0){
+			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
+				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+					effectAreaRandom = effectAreaR.nextInt(51) + 1; //The 51 is the modifier for the odds of the tile appearing
+					if(effectAreaRandom == 10){
+						xCoord = x * tileWidth;
+						yCoord = battleProperties.getBattlefieldHeight() - (y * tileHeight);
+						EffectArea effectArea = new EffectArea(xCoord, yCoord, tileWidth, tileHeight, activeEffectAreas);
+						effArea.add(effectArea);
+						numEffectAreas--;
+					}
+				}
+			}
+		}
 	}
 
 	private void createPeers(RobotSpecification[] battlingRobotsList) {
@@ -503,7 +534,7 @@ public final class Battle extends BaseBattle {
 
 		Logger.logMessage(""); // puts in a new-line in the log message
 
-		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, false);
+		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, false);
 
 		eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
 	}
@@ -622,7 +653,7 @@ public final class Battle extends BaseBattle {
 	}
 	@Override
 	protected void finalizeTurn() {
-		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, true)));
+		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, true)));
 
 		super.finalizeTurn();
 	}
@@ -721,7 +752,7 @@ public final class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items, effArea, zapEnergy);
 		}
 		
 		// Increment mode specific points - TODO -team-Telos

@@ -17,6 +17,7 @@ package net.sf.robocode.battle.snapshot;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
@@ -48,6 +49,8 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	/** List of snapshots for the items that are currently on the battlefield */
 	//TODO expand this use
 	private List<IItemSnapshot> items;
+	
+	private List<IEffectAreaSnapshot> effArea;
 
 	/** Current TPS (turns per second) */
 	private int tps;
@@ -72,10 +75,11 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	 * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
 	 *                    {@code false} otherwise.
 	 */
-	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, boolean readoutText) {
+	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, boolean readoutText) {
 		robots = new ArrayList<IRobotSnapshot>();
 		bullets = new ArrayList<IBulletSnapshot>();
 		items = new ArrayList<IItemSnapshot>();
+		effArea = new ArrayList<IEffectAreaSnapshot>();
 
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
@@ -83,6 +87,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 		for (BulletPeer bulletPeer : battleBullets) {
 			bullets.add(new BulletSnapshot(bulletPeer));
+		}
+		
+		for (EffectArea effectArea : effectAreas) {
+			effArea.add(new EffectAreaSnapshot(effectArea));
 		}
 
 		tps = battle.getTPS();
@@ -107,6 +115,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	 */
 	public IBulletSnapshot[] getBullets() {
 		return bullets.toArray(new IBulletSnapshot[bullets.size()]);
+	}
+	
+	public IEffectAreaSnapshot[] getEffectAreas() {
+		return effArea.toArray(new IEffectAreaSnapshot[effArea.size()]);
 	}
 
 	/**
