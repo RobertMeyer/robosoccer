@@ -8,7 +8,7 @@ public class AirStrike {
 
 	public AirStrike(RobotPeer robotPeer, Battle battle) {
 		int battleHeight = battle.getBattleRules().getBattlefieldHeight();
-		for (int i = 0; i < battleHeight; i += 30) {
+		for (int i = 0; i < battleHeight; i += 15) {
 			BulletPeer bullet = new BulletPeer(robotPeer,
 					battle.getBattleRules(), i);
 			bullet.setPower(0.5);
