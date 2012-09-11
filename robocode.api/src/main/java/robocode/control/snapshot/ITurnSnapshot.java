@@ -23,12 +23,21 @@ package robocode.control.snapshot;
  */
 public interface ITurnSnapshot {
 
-    /**
-     * Returns a list of snapshots for the robots participating in the battle.
-     *
-     * @return a list of snapshots for the robots participating in the battle.
-     */
-    IRobotSnapshot[] getRobots();
+	/**
+	 * Returns a list of snapshots for the robots participating in the battle. 
+	 *
+	 * @return a list of snapshots for the robots participating in the battle. 
+	 */
+	IRobotSnapshot[] getRobots();
+	/**
+	 * Returns a list of snapshots for the robots participating in the battle. 
+	 *
+	 * @return a list of snapshots for the robots participating in the battle. 
+	 */
+	IRobotSnapshot[] getRobots();
+	
+	
+	IItemSnapshot[] getItems();
 
     /**
      * Returns a list of snapshots for the bullets that are currently on the battlefield.
@@ -68,6 +77,15 @@ public interface ITurnSnapshot {
      */
     IScoreSnapshot[] getSortedTeamScores();
 
+	/**
+	 * Returns an array of indexed scores grouped by teams that can be used to determine the score
+	 * for the individual team based on the team index.
+	 *
+	 * @return an array of indexed IScoreSnapshots, where each index matches an index of a specific team.
+	 * 
+	 * @see #getSortedTeamScores()
+	 */
+	IScoreSnapshot[] getIndexedTeamScores();
     /**
      * Returns an array of indexed scores grouped by teams that can be used to determine the score
      * for the individual team based on the team index.
@@ -77,4 +95,15 @@ public interface ITurnSnapshot {
      * @see #getSortedTeamScores()
      */
     IScoreSnapshot[] getIndexedTeamScores();
+	/**
+	 * Returns an array of indexed scores grouped by teams that can be used to determine the score
+	 * for the individual team based on the team index.
+	 *
+	 * @return an array of indexed IScoreSnapshots, where each index matches an index of a specific team.
+	 * 
+	 * @see #getSortedTeamScores()
+	 */
+	IScoreSnapshot[] getIndexedTeamScores();
+
+
 }
