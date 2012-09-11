@@ -20,8 +20,9 @@ import robocode.*;
 
 public abstract	class ItemDrop {
 	
-	private double xLocation;
-	private double yLocation;
+	//Set the location of the item outside the battlefield so it is not apart of the battle until it is spawned
+	private double xLocation = -50;
+	private double yLocation = -50;
 
 	private final static double width = 40; //Same width and height as robots
 	private final static double height = 40;
@@ -34,12 +35,11 @@ public abstract	class ItemDrop {
 	protected Battle battle;
 	protected final BoundingRectangle boundingBox;
 		
-	ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
+	public ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;
 		this.lifespan = lifespan;
 		this.health = health;
 		this.isEquippable = isEquippable;
-		System.out.println("Item made");
 		this.boundingBox = new BoundingRectangle(xLocation, yLocation, width, height);
 		this.battle = battle;
 		this.battleRules = this.battle.getBattleRules();		
@@ -57,7 +57,7 @@ public abstract	class ItemDrop {
 	 * Set the bounding box with the current x & y coordinates
 	 */
 	public void setBoundingBox() {
-		boundingBox.setRect(xLocation - width / 2 + 2, yLocation - height / 2 + 2, width - 4, height - 4);
+		this.boundingBox.setRect(xLocation - width / 2 + 2, yLocation - height / 2 + 2, width - 4, height - 4);
 	}
 	
 	/**
@@ -188,9 +188,9 @@ public abstract	class ItemDrop {
 		if (!valid) {
 			final Random random = RandomFactory.getRandom();
 			for (int j = 0; j < 1000; j++) {
-				xLocation = ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width);
-				yLocation = ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height);
-				setBoundingBox();
+				this.xLocation = ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width);
+				this.yLocation = ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height);
+				this.setBoundingBox();
 
 				if (validSpotRobot(robots)) {
 					if (validSpotItem(items)){
@@ -199,11 +199,12 @@ public abstract	class ItemDrop {
 				}
 			}
 		}
+		System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	public boolean initialiseNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){
-		xLocation = x;
-		yLocation = y;
+		this.xLocation = x;
+		this.yLocation = y;
 		if (validSpotRobot(robots)) {
 			if (validSpotItem(items)){
 				setBoundingBox();

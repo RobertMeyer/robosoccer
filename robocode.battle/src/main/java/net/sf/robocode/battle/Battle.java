@@ -119,6 +119,7 @@ import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -157,7 +158,6 @@ public final class Battle extends BaseBattle {
 	/*--ItemController--*/
 	private ItemController itemControl;// = new ItemController(); 
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
-	private long turnCount = 0;
 	private int itemCursor;
 	
 	// Objects in the battle
@@ -404,8 +404,6 @@ public final class Battle extends BaseBattle {
 		if (nanoWait == 0) {
 			nanoWait = 1;
 		}
-		
-		items.add(new HealthPack(true, 400, 0, false, this));
 	}
 
 	@Override
@@ -423,38 +421,68 @@ public final class Battle extends BaseBattle {
 
 		super.finalizeBattle();
 	}
-	/*
+	
 	protected void initialiseItems() {
-		/* Get the item IDs needed for the mode and add them to items 
-		for (String item : this.getBattleMode().getItems()) {
+		System.out.println(this.getBattleMode().getItems().size());
+		/* Get the item IDs needed for the mode and add them to items */
+		for (String itemName : this.getBattleMode().getItems()) {
 			try {
 				/* Get the item's class
 				 * Get the classes 'createForMode' method with parameters of type
 				 * IMode and Battle
 				 * Invoke the method as a static method (null means call on no object)
 				 * using this kind of Mode and this Battle
-				 *
-				items.add((ItemDrop) item
-						.getClass()
-						.getMethod("createForMode", IMode.class, Battle.class)
-						.invoke(null, this.getBattleMode(), this));
+				 */
+				String name = "net.sf.robocode.battle." + itemName;
+				System.out.println(name);
+				Class<ItemDrop> cl = (Class<ItemDrop>) Class.forName(name);
+				List<Class> paramTypeList = new ArrayList<Class>();
+				if (itemName.equals("Flag")){
+					paramTypeList.add(this.getClass());
+					paramTypeList.add(robots.get(0).getClass());
+				} else{
+					paramTypeList.add(this.getClass());
+				}
+				Object[] temp = paramTypeList.toArray();
+				Class [] paramType = new Class[temp.length];
+				for (int i = 0; i<temp.length;i++){
+					paramType[i] = temp[i].getClass();
+				}
+				Constructor<ItemDrop> co = cl.getConstructor(paramType);
+				List<Object> paramList = new ArrayList<Object>();
+				if (name.equals("Flag")){
+					//TODO add Flag variables
+					//paramList.add(this)
+				} else{
+					paramList.add(this);
+				}
+				Object param[] = paramList.toArray();
+				ItemDrop item = (ItemDrop)co.newInstance(param);
+				System.out.println(item.getXLocation());
+				items.add(item);
+				
 			} catch (NoSuchMethodException x) {
 			    x.printStackTrace();
 			    System.err.printf("Item '%s' has not implemented createForMode." +
-			    		"Modify the class so this method is overrided.\n", item);
+			    		"Modify the class so this method is overrided.\n", itemName);
 			} catch (InvocationTargetException x) {
 			    x.printStackTrace();
 			    x.getCause();
 			} catch (IllegalAccessException x) {
 			    x.printStackTrace();
 			    x.getCause();
+			} catch (InstantiationException x) {
+				x.printStackTrace();
+				x.getCause();
+			} catch (IllegalArgumentException x) {
+				x.printStackTrace();
+				x.getCause();
+			} catch (ClassNotFoundException x) {
+				x.printStackTrace();
+				x.getCause();
 			}
 		}
-
-		for(ItemDrop itemDrop : items){
-			itemDrop.initialiseRoundItems(robots, items);
-		}
-	} */
+	} 
 	
 	@Override
 	protected void preloadRound() {
@@ -473,11 +501,8 @@ public final class Battle extends BaseBattle {
 		}
 		
 		/* Start to initialise all the items */
-		//this.initialiseItems();
-		if (items.size() > 0){
-			itemControl.spawnItem(items.get(0), 40, 40);
-			itemCursor = items.size() - 1;
-		}
+		this.initialiseItems();
+		itemCursor = 0;
 
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
@@ -521,7 +546,7 @@ public final class Battle extends BaseBattle {
 
 		Logger.logMessage(""); // puts in a new-line in the log message
 
-		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, itemControl.getItems(), false);
+		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, items, false);
 
 		eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
 	}
@@ -572,11 +597,10 @@ public final class Battle extends BaseBattle {
 
 		publishStatuses();
 		
-		turnCount++;
-		if (turnCount == 400){
-			if (itemCursor > 0){
+		if (totalTurns % 100 == 0 || totalTurns == 1){
+			if (itemCursor < items.size()){
 				itemControl.spawnRandomItem(items.get(itemCursor));
-				itemCursor--;
+				itemCursor++;
 			}
 		}
 
@@ -651,7 +675,7 @@ public final class Battle extends BaseBattle {
 	}
 	@Override
 	protected void finalizeTurn() {
-		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets,itemControl.getItems(), true)));
+		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, items, true)));
 
 		super.finalizeTurn();
 	}

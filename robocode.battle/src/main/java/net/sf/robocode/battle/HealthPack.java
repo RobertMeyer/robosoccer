@@ -11,9 +11,9 @@ import net.sf.robocode.battle.peer.RobotPeer;
 public class HealthPack extends ItemDrop {
 
 		
-	public HealthPack(boolean isDestroyable, int lifespan, int health, boolean isEquippable, Battle battle){
-		super(isDestroyable, lifespan, health, isEquippable, battle);
-		System.out.println("Health Pack");
+	public HealthPack(Battle battle){
+		super(true, 400, 0, false, battle);
+		System.out.println("Health Pack at (" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	public void doItemEffect(RobotPeer robot){
