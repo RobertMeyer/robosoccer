@@ -436,35 +436,20 @@ public final class Battle extends BaseBattle {
 				String name = "net.sf.robocode.battle." + itemName;
 				System.out.println(name);
 				Class<ItemDrop> cl = (Class<ItemDrop>) Class.forName(name);
-				List<Class> paramTypeList = new ArrayList<Class>();
-				if (itemName.equals("Flag")){
-					paramTypeList.add(this.getClass());
-					paramTypeList.add(robots.get(0).getClass());
-				} else{
-					paramTypeList.add(this.getClass());
-				}
-				Object[] temp = paramTypeList.toArray();
-				Class [] paramType = new Class[temp.length];
-				for (int i = 0; i<temp.length;i++){
-					paramType[i] = temp[i].getClass();
-				}
-				Constructor<ItemDrop> co = cl.getConstructor(paramType);
+				
+				Constructor<?>[] co = cl.getConstructors();
 				List<Object> paramList = new ArrayList<Object>();
-				if (name.equals("Flag")){
+				if (name == "Flag"){
 					//TODO add Flag variables
 					//paramList.add(this)
 				} else{
 					paramList.add(this);
 				}
 				Object param[] = paramList.toArray();
-				ItemDrop item = (ItemDrop)co.newInstance(param);
+				ItemDrop item = (ItemDrop)co[0].newInstance(param);
 				System.out.println(item.getXLocation());
 				items.add(item);
 				
-			} catch (NoSuchMethodException x) {
-			    x.printStackTrace();
-			    System.err.printf("Item '%s' has not implemented createForMode." +
-			    		"Modify the class so this method is overrided.\n", itemName);
 			} catch (InvocationTargetException x) {
 			    x.printStackTrace();
 			    x.getCause();
