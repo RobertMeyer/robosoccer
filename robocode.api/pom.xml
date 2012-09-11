@@ -81,22 +81,7 @@
                             <docfilessubdirs>true</docfilessubdirs>
                             <doctitle>
                         <![CDATA[<h1>Robocode ${project.version} API</h1>]]>
-<<<<<<< HEAD
-                            </doctitle>
-                            <use>false</use>
-                            <doclet>ydoc.doclets.YStandard</doclet>
-                            <docletPath>${yDoc.path}/lib/ydoc.jar:${yDoc.path}/lib/class2svg.jar:${yDoc.path}/resources</docletPath>
-                            <additionalparam>-link http://docs.oracle.com/javase/6/docs/api/
-                                -umlautogen
-                            </additionalparam>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-=======
-							</doctitle>
+									</doctitle>
 							<use>false</use>
 							<doclet>ydoc.doclets.YStandard</doclet>
 							<docletPath>${yDoc.path}/lib/ydoc.jar:${yDoc.path}/lib/class2svg.jar:${yDoc.path}/resources</docletPath>
@@ -122,5 +107,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
->>>>>>> Added some initial testing work.
 </project>

@@ -38,6 +38,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final boolean isDroid;
     private final boolean isHouseRobot;
     private final boolean isBall;
+    private final boolean isBotzilla;
     private final String name;
     private final String shortName;
     private final String veryShortName;
@@ -78,6 +79,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isDroid = specification.isDroid();
         this.isHouseRobot = specification.isHouseRobot();
         this.isBall = specification.isBall();
+        this.isBotzilla = specification.isBotzilla();
         this.isTeamLeader = isLeader;
         this.battleRules = rules;
 
@@ -120,12 +122,14 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.teamIndex = teamIndex;
         this.isHouseRobot = false;
         this.isBall = isBall;
+        this.isBotzilla = false;
     }
 
     RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
                  boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, String name, String shortName,
                  String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
-                 String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot) {
+                 String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot, 
+                 boolean isBotzilla) {
 
         this.isJuniorRobot = isJuniorRobot;
         this.isInteractiveRobot = isInteractiveRobot;
@@ -146,6 +150,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.teamIndex = teamIndex;
         this.isHouseRobot = isHouseRobot;
         this.isBall = isBall;
+        this.isBotzilla = isBotzilla;
     }
 
     public String getAnnonymousName() {
@@ -191,6 +196,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     public boolean isBall() {
         return isBall;
     }
+
+	public boolean isBotzilla() {
+		return isBotzilla;
+	}
 
     public String getName() {
         return name;
