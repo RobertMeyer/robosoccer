@@ -478,7 +478,7 @@ public final class Battle extends BaseBattle {
         this.initialiseItems();
 
 		//boolean switch to switch off effect areas
-		if (true) {
+		if (false) {
 			//clear effect area and recreate every round
 			effArea.clear();
 			createEffectAreas();
