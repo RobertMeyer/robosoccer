@@ -15,18 +15,15 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
-import net.sf.robocode.ui.gfx.RobocodeLogo;
-import net.sf.robocode.version.IVersionManager;
-
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
-
+import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import net.sf.robocode.ui.gfx.RobocodeLogo;
+import net.sf.robocode.version.IVersionManager;
 
 /**
  * The splash screen.
@@ -37,86 +34,83 @@ import java.awt.image.BufferedImage;
 @SuppressWarnings("serial")
 public class RcSplashScreen extends JWindow {
 
-	private final static Color LABEL_COLOR = Color.WHITE;
+    private final static Color LABEL_COLOR = Color.WHITE;
+    private JLabel splashLabel;
+    private JPanel splashPanel;
+    private JPanel splashScreenContentPane;
+    private Image splashImage;
+    private final String version;
+    private final transient WindowListener eventHandler = new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            if (e.getSource() == RcSplashScreen.this) {
+                RcSplashScreen.this.dispose();
+            }
+        }
+    };
 
-	private JLabel splashLabel;
-	private JPanel splashPanel;
-	private JPanel splashScreenContentPane;
-	private Image splashImage;
-	private final String version;
+    public RcSplashScreen(IVersionManager versionManager) {
+        super();
+        this.version = versionManager.getVersion();
+        initialize();
+    }
 
-	private final transient WindowListener eventHandler = new WindowAdapter() {
+    public JLabel getSplashLabel() {
+        if (splashLabel == null) {
+            splashLabel = new JLabel();
+            splashLabel.setText("");
+            splashLabel.setForeground(LABEL_COLOR);
+            splashLabel.setOpaque(false);
+        }
+        return splashLabel;
+    }
 
-		@Override
-		public void windowClosing(WindowEvent e) {
-			if (e.getSource() == RcSplashScreen.this) {
-				RcSplashScreen.this.dispose();
-			}
-		}
-	};
+    private JPanel getSplashPanel() {
+        if (splashPanel == null) {
+            splashPanel = new JPanel() {
+                @Override
+                public void paintComponent(Graphics g) {
+                    g.drawImage(splashImage, 0, 0, null);
+                    g.setColor(LABEL_COLOR);
+                    g.setFont(new Font("Arial", 1, 12));
+                    FontMetrics fm = g.getFontMetrics();
 
-	public RcSplashScreen(IVersionManager versionManager) {
-		super();
-		this.version = versionManager.getVersion();
-		initialize();
-	}
+                    g.drawString("Version: " + version,
+                                 splashImage.getWidth(null) - fm.stringWidth("Version: " + version),
+                                 splashImage.getHeight(null) - 4);
+                }
 
-	public JLabel getSplashLabel() {
-		if (splashLabel == null) {
-			splashLabel = new JLabel();
-			splashLabel.setText("");
-			splashLabel.setForeground(LABEL_COLOR);
-			splashLabel.setOpaque(false);
-		}
-		return splashLabel;
-	}
+                @Override
+                public Dimension getPreferredSize() {
+                    return new Dimension(splashImage.getWidth(null), splashImage.getHeight(null));
+                }
+            };
+            splashPanel.setLayout(new BorderLayout());
+            splashPanel.add(getSplashLabel(), BorderLayout.NORTH);
+        }
+        return splashPanel;
+    }
 
-	private JPanel getSplashPanel() {
-		if (splashPanel == null) {
-			splashPanel = new JPanel() {
-				@Override
-				public void paintComponent(Graphics g) {
-					g.drawImage(splashImage, 0, 0, null);
-					g.setColor(LABEL_COLOR);
-					g.setFont(new Font("Arial", 1, 12));
-					FontMetrics fm = g.getFontMetrics();
+    private JPanel getSplashScreenContentPane() {
+        if (splashScreenContentPane == null) {
+            splashScreenContentPane = new JPanel();
+            splashScreenContentPane.setBorder(new EtchedBorder());
+            splashScreenContentPane.setLayout(new BorderLayout());
+            splashScreenContentPane.add(getSplashPanel(), "Center");
+        }
+        return splashScreenContentPane;
+    }
 
-					g.drawString("Version: " + version,
-							splashImage.getWidth(null) - fm.stringWidth("Version: " + version),
-							splashImage.getHeight(null) - 4);
-				}
+    private void initialize() {
+        splashImage = new BufferedImage(RobocodeLogo.WIDTH, RobocodeLogo.HEIGHT, BufferedImage.TYPE_INT_RGB);
+        new RobocodeLogo().paintLogoWithTanks(splashImage.getGraphics());
 
-				@Override
-				public Dimension getPreferredSize() {
-					return new Dimension(splashImage.getWidth(null), splashImage.getHeight(null));
-				}
-			};
-			splashPanel.setLayout(new BorderLayout());
-			splashPanel.add(getSplashLabel(), BorderLayout.NORTH);
-		}
-		return splashPanel;
-	}
+        setContentPane(getSplashScreenContentPane());
+        addWindowListener(eventHandler);
+    }
 
-	private JPanel getSplashScreenContentPane() {
-		if (splashScreenContentPane == null) {
-			splashScreenContentPane = new JPanel();
-			splashScreenContentPane.setBorder(new EtchedBorder());
-			splashScreenContentPane.setLayout(new BorderLayout());
-			splashScreenContentPane.add(getSplashPanel(), "Center");
-		}
-		return splashScreenContentPane;
-	}
-
-	private void initialize() {
-		splashImage = new BufferedImage(RobocodeLogo.WIDTH, RobocodeLogo.HEIGHT, BufferedImage.TYPE_INT_RGB);
-		new RobocodeLogo().paintLogoWithTanks(splashImage.getGraphics());
-
-		setContentPane(getSplashScreenContentPane());
-		addWindowListener(eventHandler);
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-	}
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+    }
 }

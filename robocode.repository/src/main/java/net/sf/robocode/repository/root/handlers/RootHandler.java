@@ -11,50 +11,50 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root.handlers;
 
-
-import net.sf.robocode.core.Container;
-import net.sf.robocode.repository.Database;
-import net.sf.robocode.repository.root.IRepositoryRoot;
-
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-
+import net.sf.robocode.core.Container;
+import net.sf.robocode.repository.Database;
+import net.sf.robocode.repository.root.IRepositoryRoot;
 
 /**
  * @author Pavel Savara (original)
  */
 public abstract class RootHandler {
-	public abstract void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force);
 
-	public void open() {}
+    public abstract void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force);
 
-	public void close() {}
+    public void open() {
+    }
 
-	public static void visitDirectories(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
-		// walk thru all plugins
-		final List<RootHandler> itemHandlerList = Container.getComponents(RootHandler.class);
+    public void close() {
+    }
 
-		for (RootHandler handler : itemHandlerList) {
-			handler.visitDirectory(dir, isDevel, newroots, roots, db, force);
-		}
-	}
+    public static void visitDirectories(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
+        // walk thru all plugins
+        final List<RootHandler> itemHandlerList = Container.getComponents(RootHandler.class);
 
-	public static void openHandlers() {
-		// walk thru all plugins
-		final List<RootHandler> itemHandlerList = Container.getComponents(RootHandler.class);
+        for (RootHandler handler : itemHandlerList) {
+            handler.visitDirectory(dir, isDevel, newroots, roots, db, force);
+        }
+    }
 
-		for (RootHandler handler : itemHandlerList) {
-			handler.open();
-		}
-	}
+    public static void openHandlers() {
+        // walk thru all plugins
+        final List<RootHandler> itemHandlerList = Container.getComponents(RootHandler.class);
 
-	public static void closeHandlers() {
-		// walk thru all plugins
-		final List<RootHandler> itemHandlerList = Container.getComponents(RootHandler.class);
+        for (RootHandler handler : itemHandlerList) {
+            handler.open();
+        }
+    }
 
-		for (RootHandler handler : itemHandlerList) {
-			handler.close();
-		}
-	}
+    public static void closeHandlers() {
+        // walk thru all plugins
+        final List<RootHandler> itemHandlerList = Container.getComponents(RootHandler.class);
+
+        for (RootHandler handler : itemHandlerList) {
+            handler.close();
+        }
+    }
 }

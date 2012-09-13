@@ -11,24 +11,21 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.Robot;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class Random extends Robot {
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		while (true) {
-			ahead(100 * Math.random());
-			turnRight(180 * Math.random());
-			back(100 * Math.random());
-			turnLeft(360 * Math.random());
-		}
-	}
+        while (true) {
+            ahead(100 * Math.random());
+            turnRight(180 * Math.random());
+            back(100 * Math.random());
+            turnLeft(360 * Math.random());
+        }
+    }
 }
-

@@ -15,18 +15,16 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-
-import robocode.AdvancedRobot;
-import robocode.Robot;
-import robocode.control.RobotSpecification;
-import net.sf.robocode.mode.*;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Hashtable;
 import java.util.Properties;
-
+import net.sf.robocode.mode.*;
+import robocode.AdvancedRobot;
+import robocode.Robot;
+import robocode.control.RobotSpecification;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -55,6 +53,7 @@ public class BattleProperties implements Serializable {
 	private String selectedRobots;
 	private String initialPositions;
 	private IMode battleMode;
+	private Hashtable<String, Object> modeRules;
 
 	private final Properties props = new Properties();
 
@@ -272,6 +271,22 @@ public class BattleProperties implements Serializable {
 	public void setBattleMode(IMode mode) {
 		this.battleMode = mode;
 	}
+	
+	/**
+	 * Get the current mode's rules
+	 * @return current mode rules
+	 */
+	public Hashtable<String, Object> getModeRules() {
+		return modeRules;
+	}
+	
+	/**
+	 * Set the selected mode rules as a Hashtable
+	 * @param selectedModeRulesValues
+	 */
+	public void setModeRules(Hashtable<String, Object> selectedModeRulesValues) {
+		this.modeRules = selectedModeRulesValues;
+	}
 
 	public void store(FileOutputStream out, String desc) throws IOException {
 		props.store(out, desc);
@@ -288,4 +303,5 @@ public class BattleProperties implements Serializable {
 		selectedRobots = props.getProperty(BATTLE_SELECTEDROBOTS, "");
 		initialPositions = props.getProperty(BATTLE_INITIAL_POSITIONS, "");
 	}
+
 }
