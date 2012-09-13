@@ -156,6 +156,7 @@ public final class Battle extends BaseBattle {
 	private int nanoWait;
 
 	// Objects in the battle
+	private BattleProperties bp;
 	private int robotsCount;
 	private List<RobotPeer> robots = new ArrayList<RobotPeer>();
 	private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
@@ -164,6 +165,8 @@ public final class Battle extends BaseBattle {
 	
 	/* List of items that are going to be dropped */
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
+	
+	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
 
 	// Death events
@@ -192,18 +195,17 @@ public final class Battle extends BaseBattle {
 		battleMode = battleProperties.getBattleMode();
 		computeInitialPositions(battleProperties.getInitialPositions());
 		createPeers(battlingRobotsList);
-		createEffectAreas(battleProperties);
+		bp = battleProperties;
 	}
 	
-	private void createEffectAreas(BattleProperties battleProperties){
+	private void createEffectAreas(){
 		int tileWidth = 64;
 		int tileHeight = 64;
 		double xCoord, yCoord;
-		final int NUM_HORZ_TILES = battleProperties.getBattlefieldWidth() / tileWidth + 1;
-		final int NUM_VERT_TILES = battleProperties.getBattlefieldHeight() / tileHeight + 1;
+		final int NUM_HORZ_TILES = bp.getBattlefieldWidth() / tileWidth + 1;
+		final int NUM_VERT_TILES = bp.getBattlefieldHeight() / tileHeight + 1;
 		int numEffectAreasModifier = 100000; // smaller the number -> more effect areas
-		int numEffectAreas = (int) round((battleProperties.getBattlefieldWidth()*battleProperties.getBattlefieldHeight()/numEffectAreasModifier));
-		int activeEffectAreas = numEffectAreas;
+		int numEffectAreas = (int) round((bp.getBattlefieldWidth()*bp.getBattlefieldHeight()/numEffectAreasModifier));
 		Random effectAreaR = new Random();
 		int effectAreaRandom;
 		
@@ -213,8 +215,8 @@ public final class Battle extends BaseBattle {
 					effectAreaRandom = effectAreaR.nextInt(51) + 1; //The 51 is the modifier for the odds of the tile appearing
 					if(effectAreaRandom == 10){
 						xCoord = x * tileWidth;
-						yCoord = battleProperties.getBattlefieldHeight() - (y * tileHeight);
-						EffectArea effectArea = new EffectArea(xCoord, yCoord, tileWidth, tileHeight, activeEffectAreas, 0);
+						yCoord = bp.getBattlefieldHeight() - (y * tileHeight);
+						EffectArea effectArea = new EffectArea(xCoord, yCoord, tileWidth, tileHeight, 0);
 						effArea.add(effectArea);
 						numEffectAreas--;
 					}
@@ -478,6 +480,13 @@ public final class Battle extends BaseBattle {
 		for(ItemDrop itemDrop : items){
 			itemDrop.initialiseRoundItems(robots, items);
 		}
+		
+		//boolean switch to switch off effect areas
+		if (true) {
+			//clear effect area and recreate every round
+			effArea.clear();
+			createEffectAreas();
+		}
 	}
 	
 	@Override
@@ -570,6 +579,8 @@ public final class Battle extends BaseBattle {
 
 		updateRobots();
 
+		updateEffectAreas();
+		
 		handleDeadRobots();
 
 		if (isAborted() || oneTeamRemaining()) {
@@ -752,7 +763,7 @@ public final class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), items, effArea, zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items,  zapEnergy);
 		}
 		
 		// Increment mode specific points - TODO -team-Telos
@@ -761,6 +772,28 @@ public final class Battle extends BaseBattle {
 		// Scan after moved all
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
 			robotPeer.performScan(getRobotsAtRandom());
+		}
+	}
+	
+	//TO FIX: gunHeat effect does not seem to work correctly
+	private void updateEffectAreas() { 
+		//update robots with effect areas
+		for (EffectArea effAreas : effArea) {
+			int collided = 0;
+			for (RobotPeer r : robots) {
+				//for all effect areas, check if all robots collide
+				if (effAreas.collision(r)) {
+					if (effAreas.getActiveEffect() == 0)
+					{
+						//if collide, give a random effect
+						Random effR = new Random();
+						collided = effR.nextInt(3) + 1;
+						effAreas.setActiveEffect(collided);
+					}
+					//handle effect
+					effAreas.handleEffect(r);
+				}
+			}
 		}
 	}
 	

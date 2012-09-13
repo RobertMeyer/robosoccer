@@ -956,7 +956,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<EffectArea> effArea, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -989,9 +989,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		// Now check for robot collision
 		checkRobotCollision(robots);
-		
-		//Check if robot is inside the effect area
-		checkEffectAreaCollision(effArea);
 
 		// Now check for item collision
 		checkItemCollision(items);
@@ -1106,40 +1103,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	/*Checks if the robot is in an area that will drain it's energy
-	 * 
-	 *To Do List: 
-	 *	1. Since checkEffectAreaCollision is called every turn, it's constantly changing
-	 *and since a turn is very fast, the effect is not very clear
-	 *	2. Due to the ffects changing very fast, the velocity decrease effect hasn't 
-	 *been tested
-	 *	3. Need to add more effects
-	 * 
-	 */
-	private void checkEffectAreaCollision(List<EffectArea> effArea){
-		for(EffectArea effAreas : effArea){
-			for(int i=0; i < effAreas.getActiveEffectAreas(); i++){
-				if(x > effAreas.getXCoord() && x < (effAreas.getXCoord() + effAreas.getTileWidth()) && y < effAreas.getYCoord() && y > (effAreas.getYCoord() - effAreas.getTileHeight())){
-					Random effR = new Random();
-					int effRandom = effR.nextInt(3) + 1;
-					if(effRandom == 1){
-						setEnergy(energy - 0.3, false);
-						effAreas.setActiveEffect(1);
-					}
-					else if(effRandom == 2){
-						if(velocity > 0.5){
-							velocity -= 0.3;
-						}
-						effAreas.setActiveEffect(2);
-					}
-					else if(effRandom == 3){
-						gunHeat += getGunHeat(0.5);
-						effAreas.setActiveEffect(3);
-					}
-				}
-			}
-		}
-	}
 	
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
@@ -1708,6 +1671,30 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+	public void setEnergyEffect(double newEnergy, boolean resetInactiveTurnCount) {
+		if (resetInactiveTurnCount && (energy != newEnergy)) {
+			battle.resetInactiveTurnCount(energy - newEnergy);
+		}
+		energy = newEnergy;
+		if (energy < .01) {
+			energy = 0;
+			ExecCommands localCommands = commands.get();
+
+			localCommands.setDistanceRemaining(0);
+			localCommands.setBodyTurnRemaining(0);
+		}
+	}
+	
+	public void setVelocityEffect(double v)
+	{
+		velocity = v;
+	}
+	
+	public void setGunHeatEffect(double g)
+	{
+		gunHeat = g;
+	}
+	
 	public void setWinner(boolean newWinner) {
 		isWinner = newWinner;
 	}
@@ -2118,11 +2105,5 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				+ (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
 	}
 
-	@Override
-	public void performMove(List<RobotPeer> robots, List<ItemDrop> items,
-			double zapEnergy) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

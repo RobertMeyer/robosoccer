@@ -20,7 +20,6 @@ public final class EffectAreaSnapshot implements IEffectAreaSnapshot {
 	public EffectAreaSnapshot(EffectArea effArea){
 		xCoord = effArea.getXCoord();
 		yCoord = effArea.getYCoord();
-		activeEffAreas = effArea.getActiveEffectAreas();
 		tileWidth = effArea.getTileWidth();
 		tileHeight = effArea.getTileHeight();
 		activeEffect = effArea.getActiveEffect();
