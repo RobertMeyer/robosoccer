@@ -63,6 +63,8 @@ public class RobotSelectionPanel extends WizardPanel {
     private JPanel setRobotsPositionPanel;
     private JScrollPane setRobotsScrollPane;
     private JPanel setRobotsList;
+    private JTextField[] inputXPos;
+    private JTextField[] inputYPos;
     private int selectedRobotsSize;
     private JPanel buttonsPanel;
     private JPanel addButtonsPanel;
@@ -178,7 +180,7 @@ public class RobotSelectionPanel extends WizardPanel {
         selectedRobotsSize += 1;
         setRobotsPositionPanel.add(getSetRobotsScrollPane(selectedRobotsSize), BorderLayout.CENTER);
         setRobotsPositionPanel.revalidate();
-        
+
         if (selectedModel.getSize() >= minRobots && selectedModel.getSize() <= maxRobots) {
             showInstructions();
         } else if (selectedModel.getSize() > maxRobots) {
@@ -187,6 +189,7 @@ public class RobotSelectionPanel extends WizardPanel {
 
         availableRobotsPanel.getAvailableRobotsList().requestFocus();
     }
+    
 
     private JButton getAddAllButton() {
         if (addAllButton == null) {
@@ -327,6 +330,28 @@ public class RobotSelectionPanel extends WizardPanel {
             selectedRobotsScrollPane.setViewportView(getSelectedRobotsList());
         }
         return selectedRobotsScrollPane;
+    }
+    
+    public ArrayList getSetPositionArrayX () {
+    	ArrayList positionX = null;
+    	JTextField[] inputX = inputXPos;
+    	for (int i=0; i < selectedRobotsSize; i++)
+    	{
+    		positionX.add(inputX[i].getText());
+    	}
+    	
+    	return positionX;
+    }
+    
+    public ArrayList getSetPositionArrayY () {
+    	ArrayList positionY = null;
+    	JTextField[] inputY = inputYPos;
+    	for (int i=0; i < selectedRobotsSize; i++)
+    	{
+    		positionY.add(inputY[i].getText());
+    	}
+    	
+    	return positionY;
     }
     
     private JPanel getSetRobotsList(int rows) {
