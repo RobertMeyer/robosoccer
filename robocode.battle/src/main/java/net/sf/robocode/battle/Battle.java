@@ -481,12 +481,6 @@ public final class Battle extends BaseBattle {
 			itemDrop.initialiseRoundItems(robots, items);
 		}
 		
-		//boolean switch to switch off effect areas
-		if (true) {
-			//clear effect area and recreate every round
-			effArea.clear();
-			createEffectAreas();
-		}
 	}
 	
 	@Override
@@ -504,6 +498,13 @@ public final class Battle extends BaseBattle {
 		/* Start to initialise all the items */
 		this.initialiseItems();
 
+		//boolean switch to switch off effect areas
+		if (true) {
+			//clear effect area and recreate every round
+			effArea.clear();
+			createEffectAreas();
+		}
+		
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
 			if (isPaused()) {

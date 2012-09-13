@@ -404,7 +404,6 @@ public class BattleView extends Canvas {
 	
 	private void drawEffectAreas(Graphics2D g, ITurnSnapshot snapShot) {
 		double x, y;
-		int activeEffect;
 		int tileIndex = 0;
 		int battleFieldHeight = battleField.getHeight();
 		
@@ -415,21 +414,9 @@ public class BattleView extends Canvas {
 			int x1 = (int)(x);
 			int y1 = (int)((battleFieldHeight - effectAreaSnapshot.getYCoord()));
 			
-			activeEffect = effectAreaSnapshot.getActiveEffect();
-			
-			if(activeEffect == 0){
-				tileIndex = 5;
-			}
-			else if(activeEffect == 1){
-				tileIndex = 6;
-			}
-			else if(activeEffect == 2){
-				tileIndex = 7;
-			}
-			else if(activeEffect == 3){
-				tileIndex = 8;
-			}
-			
+			//first four is default ground images
+			tileIndex = effectAreaSnapshot.getActiveEffect() + 5;
+		
 			Image effAreaImg = imageManager.getGroundTileImage(tileIndex);
 			
 			Graphics2D g2d = (Graphics2D) g;
