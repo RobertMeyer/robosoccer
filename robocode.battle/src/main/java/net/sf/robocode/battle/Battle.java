@@ -525,7 +525,7 @@ public final class Battle extends BaseBattle {
 
         Logger.logMessage(""); // puts in a new-line in the log message
 
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, false);
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -562,7 +562,9 @@ public final class Battle extends BaseBattle {
         itemControl.updateRobots(robots);
 
         updateBullets();
-
+        
+        updateEffectAreas();
+        
         updateRobots();
 
         handleDeadRobots();
@@ -649,7 +651,7 @@ public final class Battle extends BaseBattle {
 
     @Override
     protected void finalizeTurn() {
-        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, true)));
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, true)));
 
         super.finalizeTurn();
     }
@@ -1094,6 +1096,27 @@ public final class Battle extends BaseBattle {
 			}
 		}
 	}
+	
+	 private void updateEffectAreas() { 
+		    //update robots with effect areas
+		    for (EffectArea effAreas : effArea) {
+		        int collided = 0;
+		        for (RobotPeer r : robots) {
+		            //for all effect areas, check if all robots collide
+		            if (effAreas.collision(r)) {
+		                if (effAreas.getActiveEffect() == 0)
+		                {
+		                    //if collide, give a random effect
+		                    Random effR = new Random();
+		                    collided = effR.nextInt(3) + 1;
+		                    effAreas.setActiveEffect(collided);
+		                }
+		                //handle effect
+		                effAreas.handleEffect(r);
+		            }
+		        }
+		    }
+		}
 
 
 }

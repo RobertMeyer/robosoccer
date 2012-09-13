@@ -81,7 +81,7 @@ public class EffectArea {
 			break;
 		case 3:
 			//increases gunheat
-			r.setGunHeatEffect(r.getGunHeat() + r.getGunHeat(0.5));
+			r.setGunHeatEffect(r.getGunHeat() + 0.1);
 			break;
 		default:break;
 		}
