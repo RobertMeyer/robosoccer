@@ -299,7 +299,7 @@ public final class Battle extends BaseBattle {
             Integer duplicate = robotDuplicates.get(i);
             // TODO Follow back from here to RobotPeer etc, to
             RobotPeer robotPeer = new RobotPeer(this, hostManager, specification, duplicate, team, robotIndex);
-
+            
             robots.add(robotPeer);
             if (team == null) {
                 contestants.add(robotPeer);
@@ -549,8 +549,8 @@ public final class Battle extends BaseBattle {
         /*--ItemController--*/
         itemControl.updateRobots(robots);
 
-        updateBullets();
-
+        updateBullets();   
+        
         updateRobots();
 
         handleDeadRobots();
