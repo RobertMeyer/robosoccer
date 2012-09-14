@@ -1,11 +1,7 @@
 package net.sf.robocode.mode;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.BallPeer;
@@ -14,10 +10,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.security.HiddenAccess;
 import robocode.BattleRules;
-import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 
 public class SoccerMode extends ClassicMode implements IMode {
@@ -96,8 +89,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 		Hashtable<String, Integer> duplicates = new Hashtable<String, Integer>();
 		int teamSize = battle.getRobotsCount() / 2;
 		
-		
-		
 		// Counts the number of duplicates for each robot being used.
 		for(int i = 0; i < battle.getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
@@ -135,7 +126,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
 		// Create the ball robot and add it to the appropriate peer lists/team.
 		RobotSpecification ballSpec = 
-				repositoryManager.loadSelectedRobots("robots.BallBot*")[0];
+				repositoryManager.loadSelectedRobots("soccer.BallBot*")[0];
 		BallPeer ball = new BallPeer(battle, hostManager, ballSpec, 0, ballTeam, robots.size());
 
 		ballTeam.add(ball);
