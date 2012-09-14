@@ -128,6 +128,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 		RobotSpecification ballSpec = 
 				repositoryManager.loadSelectedRobots("soccer.BallBot*")[0];
 		BallPeer ball = new BallPeer(battle, hostManager, ballSpec, 0, ballTeam, robots.size());
+		System.out.println(ball.getName());
 
 		ballTeam.add(ball);
 		contestants.add(ballTeam);

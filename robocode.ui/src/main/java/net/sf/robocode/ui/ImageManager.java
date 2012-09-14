@@ -44,7 +44,9 @@ public class ImageManager implements IImageManager {
     private HashMap<Integer, RenderImage> robotBodyImageCache;
     private HashMap<Integer, RenderImage> robotGunImageCache;
     private HashMap<Integer, RenderImage> robotRadarImageCache;
+    private HashMap<Integer, RenderImage> ballImageCache;
 	private Image[] soccerField;
+	private Image ball;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -63,6 +65,7 @@ public class ImageManager implements IImageManager {
         gunImage = null;
         radarImage = null;
         healthImage = null;
+        ball = null;
         robotBodyImageCache = new RenderCache<Integer, RenderImage>();
         robotGunImageCache = new RenderCache<Integer, RenderImage>();
         robotRadarImageCache = new RenderCache<Integer, RenderImage>();
@@ -73,6 +76,7 @@ public class ImageManager implements IImageManager {
 		getGunImage();
 		getRadarImage();
 		getExplosionRenderImage(0, 0);
+		getBallImage();
 	}
 	
 	public Image getFieldTileImage(int index) {
@@ -146,6 +150,16 @@ public class ImageManager implements IImageManager {
         return image;
     }
 
+    public RenderImage getBallImage() {
+    	if(ball == null) {
+    		ball = getImage("/net/sf/robocode/ui/images/ball.png");
+    	}
+    	
+    	RenderImage img = new RenderImage(ball);
+    	
+    	return img;
+    }
+    
     /**
      * Gets the body image
      * Loads from disk if necessary.
@@ -191,7 +205,7 @@ public class ImageManager implements IImageManager {
         }
         return healthImage;
     }
-
+    
     @Override
     public RenderImage getColoredBodyRenderImage(Integer color) {
         RenderImage img = robotBodyImageCache.get(color);

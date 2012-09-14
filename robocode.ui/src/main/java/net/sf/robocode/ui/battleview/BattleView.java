@@ -429,7 +429,19 @@ public class BattleView extends Canvas {
         }
 
         for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-            if (robotSnapshot.getState().isAlive()) {
+        	if(robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
+                
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+                
+                RenderImage robotRenderImage = imageManager.getBallImage();
+                
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+                
+        	} else if (robotSnapshot.getState().isAlive()) {
                 x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
