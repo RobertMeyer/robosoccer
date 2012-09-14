@@ -95,6 +95,7 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import static java.lang.Math.round;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -150,10 +151,13 @@ public final class Battle extends BaseBattle {
     /*--ItemController--*/
     private ItemController itemControl;// = new ItemController();
     // Objects in the battle
+	private BattleProperties bp;
     private int robotsCount;
     private List<RobotPeer> robots = new ArrayList<RobotPeer>();
     private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
     private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
+	//List of effect areas
+	private List<EffectArea> effArea = new ArrayList<EffectArea>();
     private int activeRobots;
     /* List of items that are going to be dropped */
     private List<ItemDrop> items = new ArrayList<ItemDrop>();
@@ -186,6 +190,7 @@ public final class Battle extends BaseBattle {
         
         computeInitialPositions(battleProperties.getInitialPositions());
         createPeers(battlingRobotsList);
+		bp = battleProperties;
     }
 
     private void createPeers(RobotSpecification[] battlingRobotsList) {
@@ -472,6 +477,12 @@ public final class Battle extends BaseBattle {
         /* Start to initialise all the items */
         this.initialiseItems();
 
+		//boolean switch to switch off effect areas
+		if (false) {
+			//clear effect area and recreate every round
+			effArea.clear();
+			createEffectAreas();
+		}
         if (getRoundNum() == 0) {
             eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
             if (isPaused()) {
@@ -514,7 +525,7 @@ public final class Battle extends BaseBattle {
 
         Logger.logMessage(""); // puts in a new-line in the log message
 
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, false);
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -551,7 +562,9 @@ public final class Battle extends BaseBattle {
         itemControl.updateRobots(robots);
 
         updateBullets();
-
+        
+        updateEffectAreas();
+        
         updateRobots();
 
         handleDeadRobots();
@@ -638,7 +651,7 @@ public final class Battle extends BaseBattle {
 
     @Override
     protected void finalizeTurn() {
-        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, true)));
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, true)));
 
         super.finalizeTurn();
     }
@@ -1055,4 +1068,55 @@ public final class Battle extends BaseBattle {
             }
         }
     }
+    
+
+	private void createEffectAreas(){
+		int tileWidth = 64;
+		int tileHeight = 64;
+		double xCoord, yCoord;
+		final int NUM_HORZ_TILES = bp.getBattlefieldWidth() / tileWidth + 1;
+		final int NUM_VERT_TILES = bp.getBattlefieldHeight() / tileHeight + 1;
+		int numEffectAreasModifier = 100000; // smaller the number -> more effect areas
+		int numEffectAreas = (int) round((bp.getBattlefieldWidth()*bp.getBattlefieldHeight()/numEffectAreasModifier));
+		Random effectAreaR = new Random();
+		int effectAreaRandom;
+		
+		while(numEffectAreas > 0){
+			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
+				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+					effectAreaRandom = effectAreaR.nextInt(51) + 1; //The 51 is the modifier for the odds of the tile appearing
+					if(effectAreaRandom == 10){
+						xCoord = x * tileWidth;
+						yCoord = bp.getBattlefieldHeight() - (y * tileHeight);
+						EffectArea effectArea = new EffectArea(xCoord, yCoord, tileWidth, tileHeight, 0);
+						effArea.add(effectArea);
+						numEffectAreas--;
+					}
+				}
+			}
+		}
+	}
+	
+	 private void updateEffectAreas() { 
+		    //update robots with effect areas
+		    for (EffectArea effAreas : effArea) {
+		        int collided = 0;
+		        for (RobotPeer r : robots) {
+		            //for all effect areas, check if all robots collide
+		            if (effAreas.collision(r)) {
+		                if (effAreas.getActiveEffect() == 0)
+		                {
+		                    //if collide, give a random effect
+		                    Random effR = new Random();
+		                    collided = effR.nextInt(3) + 1;
+		                    effAreas.setActiveEffect(collided);
+		                }
+		                //handle effect
+		                effAreas.handleEffect(r);
+		            }
+		        }
+		    }
+		}
+
+
 }

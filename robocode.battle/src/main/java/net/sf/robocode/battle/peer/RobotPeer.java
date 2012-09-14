@@ -65,6 +65,9 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
+
+import static net.sf.robocode.io.Logger.logMessage;
+
 import java.awt.geom.Arc2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
@@ -78,9 +81,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.battle.ItemDrop;
+import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -101,6 +106,20 @@ import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.WinException;
 import static robocode.util.Utils.*;
+
+import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import static java.lang.Math.*;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
@@ -2078,6 +2097,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return Math.toRadians(getRadarTurnRate());
     }
 
+    /** 
+     * Effects
+     */
+    public void setEnergyEffect(double newEnergy, boolean resetInactiveTurnCount) {
+		if (resetInactiveTurnCount && (energy != newEnergy)) {
+			battle.resetInactiveTurnCount(energy - newEnergy);
+		}
+		energy = newEnergy;
+		if (energy < .01) {
+			energy = 0;
+			ExecCommands localCommands = commands.get();
+
+			localCommands.setDistanceRemaining(0);
+			localCommands.setBodyTurnRemaining(0);
+		}
+	}
+	
+	public void setVelocityEffect(double v)
+	{
+		velocity = v;
+	}
+	
+	public void setGunHeatEffect(double g)
+	{
+		gunHeat = g;
+	}
+	
     @Override
     public int compareTo(ContestantPeer cp) {
         double myScore = statistics.getTotalScore();
