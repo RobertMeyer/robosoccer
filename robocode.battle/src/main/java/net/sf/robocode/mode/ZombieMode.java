@@ -20,4 +20,9 @@ public class ZombieMode extends ClassicMode {
     public String getDescription() {
         return description;
     }
+    
+    @Override
+    public void spawnZombie(int turn) {
+    	
+    }
 }

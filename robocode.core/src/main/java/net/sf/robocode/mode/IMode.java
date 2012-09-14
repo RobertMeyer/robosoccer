@@ -58,4 +58,10 @@ public interface IMode {
 	 * Increments the score specific to the different modes
 	 */
 	public void scorePoints();
+
+	/**
+	 * Spawns zombies every certain amount of turns
+	 * @param turn
+	 */
+	public void spawnZombie(int turn);
 }
