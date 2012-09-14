@@ -8,7 +8,9 @@ import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
+import net.sf.robocode.repository.RepositoryManager;
 import net.sf.robocode.security.HiddenAccess;
 import robocode.control.RobotSpecification;
 
@@ -17,9 +19,17 @@ public class BattlePeers {
 
     private List<RobotPeer> robots = new ArrayList<RobotPeer>();
     private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
+    private IRepositoryManager repositoryManager;
 
-
-	public BattlePeers(RobotSpecification[] battlingRobotsList, IHostManager hostManager, Battle battle) {
+	public BattlePeers(RobotSpecification[] battlingRobotsList, IHostManager hostManager, Battle battle, IRepositoryManager rm) {
+		
+		
+		repositoryManager = rm;
+		
+		
+		//RobotSpecification[] robots = repositoryManager.loadSelectedRobots("robots.ZombieRobot");
+		
+		
 		// create teams
         Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
         List<String> teams = new ArrayList<String>();

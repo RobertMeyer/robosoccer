@@ -112,7 +112,9 @@ import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.*;
+import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
+import net.sf.robocode.repository.RepositoryManager;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.*;
@@ -179,7 +181,7 @@ public final class Battle extends BaseBattle {
         this.killstreakTracker = new KillstreakTracker(this);
     }
 
-    public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused) {
+    public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager rm) {
         isPaused = paused;
         battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
                                                battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
@@ -190,7 +192,7 @@ public final class Battle extends BaseBattle {
         
         computeInitialPositions(battleProperties.getInitialPositions());
         System.out.println(battlingRobotsList);
-        battlePeers = new BattlePeers(battlingRobotsList, hostManager, this);
+        battlePeers = new BattlePeers(battlingRobotsList, hostManager, this, rm);
 		bp = battleProperties;
     }
 

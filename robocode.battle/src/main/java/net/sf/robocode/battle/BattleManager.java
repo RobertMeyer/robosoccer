@@ -174,7 +174,7 @@ public class BattleManager implements IBattleManager {
 
         Battle realBattle = Container.createComponent(Battle.class);
 
-        realBattle.setup(battlingRobotsList, battleProperties, isPaused());
+        realBattle.setup(battlingRobotsList, battleProperties, isPaused(), repositoryManager);
 
         battle = realBattle;
 
