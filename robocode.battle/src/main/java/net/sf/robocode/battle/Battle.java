@@ -190,12 +190,8 @@ public final class Battle extends BaseBattle {
         
         computeInitialPositions(battleProperties.getInitialPositions());
         System.out.println(battlingRobotsList);
-        createPeers(battlingRobotsList);
+        battlePeers = new BattlePeers(battlingRobotsList, hostManager, this);
 		bp = battleProperties;
-    }
-
-    private void createPeers(RobotSpecification[] battlingRobotsList) {
-    	battlePeers = new BattlePeers(battlingRobotsList, hostManager, this);
     }
 
     public void registerDeathRobot(RobotPeer r) {

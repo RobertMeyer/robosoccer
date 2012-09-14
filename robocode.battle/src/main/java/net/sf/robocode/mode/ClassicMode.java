@@ -69,7 +69,7 @@ public class ClassicMode implements IMode {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
+	
 	public void spawnZombie(int turn) {
 		//No need to spawn zombies in Classic Mode
 	}

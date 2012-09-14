@@ -19,7 +19,6 @@ public class BattlePeers {
     private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
 
 
-
 	public BattlePeers(RobotSpecification[] battlingRobotsList, IHostManager hostManager, Battle battle) {
 		// create teams
         Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
