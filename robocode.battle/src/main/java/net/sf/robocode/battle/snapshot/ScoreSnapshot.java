@@ -70,8 +70,6 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     private double currentRammingDamageScore;
     /** The current ramming kill bonus */
     private double currentRammingKillBonus;
-    /** (team-Telos) the current flag score */
-    private double totalFlagScore;
 
     /**
      * Creates a snapshot of a score that must be filled out with data later.
@@ -104,8 +102,6 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
         currentBulletKillBonus = score.getCurrentBulletKillBonus();
         currentRammingDamageScore = score.getCurrentRammingDamageScore();
         currentRammingKillBonus = score.getCurrentRammingKillBonus();
-        // team-Telos
-        totalFlagScore = score.getTotalFlagScore();
     }
 
     /**
@@ -133,8 +129,6 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
         currentBulletKillBonus = score1.getCurrentBulletKillBonus() + score2.getCurrentBulletKillBonus();
         currentRammingDamageScore = score1.getCurrentRammingDamageScore() + score2.getCurrentRammingDamageScore();
         currentRammingKillBonus = score1.getCurrentBulletKillBonus() + score2.getCurrentBulletKillBonus();
-        // team-Telos FIXME TODO
-        totalFlagScore = score1;
     }
 
     @Override
@@ -284,13 +278,6 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     @Override
     public double getCurrentRammingKillBonus() {
         return currentRammingKillBonus;
-    }
-    
-    /**
-     * team-Telos
-     */
-    public double getTotalFlagScore() {
-    	return totalFlagScore;
     }
 
     /**
