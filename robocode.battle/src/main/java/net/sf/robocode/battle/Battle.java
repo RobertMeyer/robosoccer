@@ -981,10 +981,6 @@ public final class Battle extends BaseBattle {
     public void killRobot(int robotIndex) {
         sendCommand(new KillRobotCommand(robotIndex));
     }
-    
-    public void respawnRobot(int robotIndex) {
-    	sendCommand(new RespawnRobotCommand(robotIndex));
-    }
 
     @Override
     public void setPaintEnabled(int robotIndex, boolean enable) {
@@ -1008,7 +1004,6 @@ public final class Battle extends BaseBattle {
         @Override
         public void execute() {
             robots.get(robotIndex).kill();
-            
         }
     }
 
