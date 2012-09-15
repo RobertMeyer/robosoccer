@@ -69,4 +69,11 @@ public class ClassicMode implements IMode {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean respawnsOn() {
+		return false;
+	}
 }

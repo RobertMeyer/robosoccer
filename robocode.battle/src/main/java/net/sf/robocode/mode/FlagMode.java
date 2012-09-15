@@ -111,4 +111,13 @@ public class FlagMode extends ClassicMode {
         // TODO
         flagScore++;
     }
+    
+    /**
+     * Robots will respawn instantly on death in a random place.  To be used 
+     * with a time limit or point limit to prevent games going on forever.
+     * Time limit will be set by default if respawns are on.
+     */
+    public boolean respawnsOn() {
+    	return true;
+    }
 }

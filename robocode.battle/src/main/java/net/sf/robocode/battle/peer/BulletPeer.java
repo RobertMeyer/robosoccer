@@ -187,6 +187,9 @@ public class BulletPeer {
                 if (otherRobot.getEnergy() <= 0) {
                     if (otherRobot.isAlive()) {
                         otherRobot.kill();
+                        if (owner.battle.getBattleMode().respawnsOn()) {
+                    		otherRobot.respawn(robots);
+                    	}
                         ks.updateKillStreak(owner, otherRobot);
                         if (!teamFire) {
                             final double bonus = owner.getRobotStatistics().scoreBulletKill(otherRobot.getName());

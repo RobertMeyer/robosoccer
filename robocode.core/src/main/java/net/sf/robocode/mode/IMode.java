@@ -58,4 +58,10 @@ public interface IMode {
 	 * Increments the score specific to the different modes
 	 */
 	public void scorePoints();
+	
+	/**
+	 * Returns true if robots are to respawn instantly on death
+	 * @return boolean representing respawns on or off
+	 */
+	public boolean respawnsOn();
 }
