@@ -45,6 +45,13 @@ public interface IRobotSnapshot {
     AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment();
     
     /**
+     * Returns the scan radius of the robot.
+     * 
+     * @return scan radius of robot
+     */
+    double getScanRadius();
+    
+    /**
      * Returns the short name of the robot.
      *
      * @return the short name of the robot.
