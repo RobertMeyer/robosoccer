@@ -23,7 +23,11 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import static java.lang.Math.*;
 import java.util.Random;
+
+import net.sf.robocode.battle.BattleProperties;
+import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
+import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -83,11 +87,13 @@ public class BattleView extends Canvas {
     private static final MirroredGraphics mirroredGraphics = new MirroredGraphics();
     private final GraphicsState graphicsState = new GraphicsState();
     private IGraphicsProxy[] robotGraphics;
+    private IBattleManager battleManager;
 
     public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
         this.properties = properties;
         this.windowManager = (IWindowManagerExt) windowManager;
         this.imageManager = imageManager;
+        this.battleManager = windowManager.getBattleManager();
 
         battleField = new BattleField(800, 600);
 
@@ -216,8 +222,13 @@ public class BattleView extends Canvas {
 
         // Initialize ground image
         if (drawGround) {
-//            createGroundImage();
-        	createSoccerField();
+        	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+        		createSoccerField();
+        	} else {
+        		createGroundImage();
+        	}
+            
+        	
         } else {
             groundImage = null;
         }

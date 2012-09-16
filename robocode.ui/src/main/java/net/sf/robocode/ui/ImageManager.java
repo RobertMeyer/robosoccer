@@ -86,10 +86,10 @@ public class ImageManager implements IImageManager {
 		return soccerField[index];
 	}
 
-    @Override
+	@Override
     public Image getGroundTileImage(int index) {
         if (groundImages[index] == null) {
-            groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/field_tile-" + index + ".png");
+            groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
         }
         return groundImages[index];
     }
