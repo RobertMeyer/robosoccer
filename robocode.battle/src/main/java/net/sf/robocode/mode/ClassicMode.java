@@ -73,9 +73,11 @@ public class ClassicMode implements IMode {
 		/* No items needed for Classic Mode */
 	}
 
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub
+	/**
+	 * Increments the score for the mode per turn
+	 */
+	public void scoreTurnPoints() {
+		/* ClassicMode does not need a score method, optional for overriding */
 	}
 	
 	/**
