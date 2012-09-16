@@ -22,6 +22,8 @@ import java.awt.geom.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import static java.lang.Math.*;
+
+import java.util.HashMap;
 import java.util.Random;
 
 import net.sf.robocode.battle.BattleProperties;
@@ -35,6 +37,7 @@ import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IImageManager;
 import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.ui.IWindowManagerExt;
+import net.sf.robocode.ui.gfx.CustomRenderImage;
 import net.sf.robocode.ui.gfx.GraphicsState;
 import net.sf.robocode.ui.gfx.RenderImage;
 import net.sf.robocode.ui.gfx.RobocodeLogo;
@@ -95,12 +98,15 @@ public class BattleView extends Canvas {
     private IGraphicsProxy[] robotGraphics;
     private IBattleManager battleManager;
 
+    private HashMap<String, CustomRenderImage> customImage;
+    
     public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
         this.properties = properties;
         this.windowManager = (IWindowManagerExt) windowManager;
         this.imageManager = imageManager;
         this.battleManager = windowManager.getBattleManager();
-
+        this.customImage = new HashMap<String, CustomRenderImage>();
+        
         battleField = new BattleField(800, 600);
 
         new BattleObserver(windowManager);
@@ -229,6 +235,7 @@ public class BattleView extends Canvas {
         // Initialize ground image
         if (drawGround) {
         	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+        		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
         	} else {
         		createGroundImage();
@@ -340,6 +347,9 @@ public class BattleView extends Canvas {
 
         // Draw ground
         drawGround(g);
+        
+        // Draw custom
+        drawCustomeImages(g);
 
         if (snapShot != null) {
             // Draw scan arcs
@@ -425,6 +435,26 @@ public class BattleView extends Canvas {
         int battleFieldHeight = battleField.getHeight();
     }
     
+    private void drawCustomeImages(Graphics2D g) {
+    	for (CustomRenderImage image : customImage.values()) {
+    		AffineTransform at = AffineTransform.getTranslateInstance(image.getX(), image.getY());
+            
+    		image.setTransform(image.getPosition());
+    		image.paint(g);
+    	}
+    }
+    
+    public void addCustomImage(String name, String filename, double x, double y) {
+    	CustomRenderImage custom = new CustomRenderImage(imageManager.addCustomImage(name, filename), x, y);
+    	customImage.put(name, custom);
+    }
+    
+    public void setCustomImagePosition(String name, double x, double y) {
+    	if (customImage.containsKey(name)) {
+    		customImage.get(name).setPosition(x, y);
+    	}
+    }
+    
     private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
         double x, y;
         AffineTransform at;
@@ -454,7 +484,7 @@ public class BattleView extends Canvas {
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
                 
-                RenderImage robotRenderImage = imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
+                RenderImage robotRenderImage = imageManager.getCustomImage("ball");
                 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
