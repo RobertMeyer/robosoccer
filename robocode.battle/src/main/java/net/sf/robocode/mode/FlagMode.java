@@ -23,6 +23,7 @@ public class FlagMode extends ClassicMode {
     List<? extends ItemDrop> itemsG = new ArrayList<ItemDrop>();
     @SuppressWarnings("unchecked")
 	List<ItemDrop> items = (List<ItemDrop>) itemsG;
+    private Flag flag;
 
     /**
      *
@@ -105,15 +106,16 @@ public class FlagMode extends ClassicMode {
     @Override
     public void setItems(Battle battle) {
     	/* Add the flag to the items */
-        items.add(new Flag(false, Integer.MAX_VALUE, 0.0,
-                true, battle, null));
+    	flag = new Flag(false, Integer.MAX_VALUE, 0.0, true, battle, null);
+        items.add(flag);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void scorePoints() {
+    public void scoreTurnPoints() {
+    	flag.getCarrier().getRobotStatistics().scoreFlag();
     }
     
     /**
