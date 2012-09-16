@@ -49,6 +49,7 @@ import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
+import robocode.util.Utils;
 
 import java.util.ArrayList;
 
@@ -98,14 +99,14 @@ public class BattleView extends Canvas {
     private IGraphicsProxy[] robotGraphics;
     private IBattleManager battleManager;
 
-    private HashMap<String, CustomRenderImage> customImage;
+    private HashMap<String, RenderImage> customImage;
     
     public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
         this.properties = properties;
         this.windowManager = (IWindowManagerExt) windowManager;
         this.imageManager = imageManager;
         this.battleManager = windowManager.getBattleManager();
-        this.customImage = new HashMap<String, CustomRenderImage>();
+        this.customImage = new HashMap<String, RenderImage>();
         
         battleField = new BattleField(800, 600);
 
@@ -231,6 +232,18 @@ public class BattleView extends Canvas {
         // Scale font
         smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
         smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
+        
+        // Custom image initialisation
+        /* Check to see if game mode is of your instace, then add all your images
+         * with addCustomImage(String name, String filename, Double x, Double y).
+         */
+        if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+        	/* add your images 
+        	 * Example:
+        	 * addCustomImage("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
+        	 * setCustomImagePosition("flag", 10,10);
+        	*/
+        }
 
         // Initialize ground image
         if (drawGround) {
@@ -436,24 +449,42 @@ public class BattleView extends Canvas {
     }
     
     private void drawCustomeImages(Graphics2D g) {
-    	for (CustomRenderImage image : customImage.values()) {
-    		AffineTransform at = AffineTransform.getTranslateInstance(image.getX(), image.getY());
-            
-    		image.setTransform(image.getPosition());
+    	for (RenderImage image : customImage.values()) {
     		image.paint(g);
     	}
     }
-    
-    public void addCustomImage(String name, String filename, double x, double y) {
-    	CustomRenderImage custom = new CustomRenderImage(imageManager.addCustomImage(name, filename), x, y);
-    	customImage.put(name, custom);
-    }
-    
-    public void setCustomImagePosition(String name, double x, double y) {
-    	if (customImage.containsKey(name)) {
-    		customImage.get(name).setPosition(x, y);
-    	}
-    }
+
+	private RenderImage addCustomImage(String name, String filename, double x,
+			double y) {
+		RenderImage img = new RenderImage(imageManager.addCustomImage(name,
+				filename));
+		img.setTransform(AffineTransform.getTranslateInstance(x, y));
+		customImage.put(name, img);
+
+		return (img != null) ? img : null;
+	}
+
+	private void setCustomImagePosition(String name, double x, double y) {
+		if (customImage.containsKey(name)) {
+			customImage.get(name).setTransform(
+					AffineTransform.getTranslateInstance(x, y));
+		}
+	}
+
+	private void setCustomImageRotation(String name, double degrees) {
+		if (customImage.containsKey(name)) {
+			customImage.get(name).setTransform(
+					AffineTransform.getRotateInstance(Utils
+							.normalAbsoluteAngle(degrees)));
+		}
+	}
+	
+	private RenderImage removeCustomImage(String name) {
+		if (customImage.containsKey(name)) {
+			return customImage.remove(name);
+		}
+		return null;
+	}
     
     private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
         double x, y;
