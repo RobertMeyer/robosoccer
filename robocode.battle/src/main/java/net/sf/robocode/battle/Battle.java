@@ -624,11 +624,9 @@ public final class Battle extends BaseBattle {
 
         // Increment mode specific points - TODO -team-Telos
         scoreModePoints();
-
-        // Scan after moved all
-        for (RobotPeer robotPeer : getRobotsAtRandom()) {
-            robotPeer.performScan(getRobotsAtRandom());
-        }
+        
+        getBattleMode().updateRobotScans(getRobotsAtRandom());
+       
     }
 
     private void scoreModePoints() {

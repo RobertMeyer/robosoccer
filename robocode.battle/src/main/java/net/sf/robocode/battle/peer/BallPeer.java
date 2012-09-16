@@ -44,15 +44,11 @@ public final class BallPeer extends RobotPeer {
         if (distance == Double.POSITIVE_INFINITY) {
             goalVel = currentCommands.getMaxVelocity();
         } else {
-            goalVel = Math.min(getMaxVelocity(distance) * 4,
-                               currentCommands.getMaxVelocity() * 4);
+            goalVel = Math.min(getMaxVelocity(distance),
+                               currentCommands.getMaxVelocity());
         }
 
-		if (velocity >= 0) {
-			return Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
-		}
-		// else
-		return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
+		return goalVel;
 	}
 	
 

@@ -1,5 +1,6 @@
 package net.sf.robocode.mode;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -14,6 +15,9 @@ import robocode.BattleRules;
 import robocode.control.RobotSpecification;
 
 public class SoccerMode extends ClassicMode implements IMode {
+	
+	// This stores the ball(s) in a list for use in updateRobotScans
+	private List<RobotPeer> ball;
 	
 	private final String description = "Robocode soccer.";
 	
@@ -128,10 +132,25 @@ public class SoccerMode extends ClassicMode implements IMode {
 		RobotSpecification ballSpec = 
 				repositoryManager.loadSelectedRobots("soccer.BallBot*")[0];
 		BallPeer ball = new BallPeer(battle, hostManager, ballSpec, 0, ballTeam, robots.size());
+		this.ball = new ArrayList<RobotPeer>();
+		this.ball.add(ball);
 		System.out.println(ball.getName());
 
 		ballTeam.add(ball);
 		contestants.add(ballTeam);
 		robots.add(ball);
+	}
+	
+	/**
+	 * Perform scan dictates the scanning behaviour of robots. One parameter
+	 * List<RobotPeer> is iterated over an performScan called on each robot.
+	 * Useful for making some robots invisible to radar.
+	 */
+	@Override
+	public void updateRobotScans(List<RobotPeer> robotPeers) {
+		// Scan after moved all
+        for (RobotPeer robotPeer : robotPeers) {
+            robotPeer.performScan(ball);
+        }
 	}
 }

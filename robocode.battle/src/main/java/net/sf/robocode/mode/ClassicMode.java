@@ -305,4 +305,16 @@ public class ClassicMode implements IMode {
             }
         }
 	}
+	
+	/**
+	 * Perform scan dictates the scanning behaviour of robots. One parameter
+	 * List<RobotPeer> is iterated over an performScan called on each robot.
+	 * Useful for making some robots invisible to radar.
+	 */
+	public void updateRobotScans(List<RobotPeer> robotPeers) {
+		// Scan after moved all
+        for (RobotPeer robotPeer : robotPeers) {
+            robotPeer.performScan(robotPeers);
+        }
+	}
 }
