@@ -84,4 +84,11 @@ public class ClassicMode implements IMode {
 	public boolean respawnsOn() {
 		return false;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int turnLimit() {
+		return 5*30*60; // 9000 turns is the default
+	}
 }

@@ -575,7 +575,11 @@ public final class Battle extends BaseBattle {
         updateRobots();
 
         handleDeadRobots();
-
+        if (getBattleMode().respawnsOn()) {
+        	if (super.getTime() > getBattleMode().turnLimit()) {
+        		shutdownTurn();
+        	}
+        }
         if (isAborted() || oneTeamRemaining()) {
             shutdownTurn();
         }
