@@ -37,7 +37,6 @@ import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IImageManager;
 import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.ui.IWindowManagerExt;
-import net.sf.robocode.ui.gfx.CustomRenderImage;
 import net.sf.robocode.ui.gfx.GraphicsState;
 import net.sf.robocode.ui.gfx.RenderImage;
 import net.sf.robocode.ui.gfx.RobocodeLogo;
@@ -362,7 +361,7 @@ public class BattleView extends Canvas {
         drawGround(g);
         
         // Draw custom
-        drawCustomeImages(g);
+        drawImages(g);
 
         if (snapShot != null) {
             // Draw scan arcs
@@ -448,13 +447,29 @@ public class BattleView extends Canvas {
         int battleFieldHeight = battleField.getHeight();
     }
     
-    private void drawCustomeImages(Graphics2D g) {
+    /* Draws all active images in the scene.
+     *  
+     * @param Grahpics2D g - rendering context used to
+     * render goodies to the screen
+     */
+    private void drawImages(Graphics2D g) {
     	for (RenderImage image : customImage.values()) {
     		image.paint(g);
     	}
     }
 
-	private RenderImage addCustomImage(String name, String filename, double x,
+    /* Loads image in from given filename, puts RenderImage in
+     * Hashmap<String, RenderImage>. Once added it will get rendered
+     * each frame update.
+     * 
+     * @param String name - Key used for hashmap, used to fetch.
+     * @param String filename - path to file
+     * @param double x - X position
+     * @param double y - Y position
+     * 
+     * @return newly added RenderImage
+     */
+	private RenderImage addImage(String name, String filename, double x,
 			double y) {
 		RenderImage img = new RenderImage(imageManager.addCustomImage(name,
 				filename));
@@ -463,15 +478,38 @@ public class BattleView extends Canvas {
 
 		return (img != null) ? img : null;
 	}
+	
+	/* Added already created RenderImage to HashMap
+	 * 
+	 * @param String name - key name
+	 * @param RenderImage img - already created render object
+	 */
+	private RenderImage addImage(String name, RenderImage img) {
+		if (img != null) {
+			customImage.put(name,  img);
+			return img;
+		}
+		return null;
+	}
 
-	private void setCustomImagePosition(String name, double x, double y) {
+	/* Sets the object at key name x,y coords
+	 * @param String name - key to be fetched
+	 * @param double x - x position
+	 * @param double y - y position
+	 */
+	private void setImagePosition(String name, double x, double y) {
 		if (customImage.containsKey(name)) {
 			customImage.get(name).setTransform(
 					AffineTransform.getTranslateInstance(x, y));
 		}
 	}
 
-	private void setCustomImageRotation(String name, double degrees) {
+	/*	Sets the rotation of a given key.
+	 * 
+	 *  @param String name - key of RenderImage
+	 *  @param double degrees - degree to rotate to
+	 */
+	private void setImageRotation(String name, double degrees) {
 		if (customImage.containsKey(name)) {
 			customImage.get(name).setTransform(
 					AffineTransform.getRotateInstance(Utils
@@ -479,7 +517,13 @@ public class BattleView extends Canvas {
 		}
 	}
 	
-	private RenderImage removeCustomImage(String name) {
+	/* Removes a given key from HashMap
+	 * 
+	 * @param String name - key to remove
+	 * 
+	 * @return Deleted RenderImage
+	 */
+	private RenderImage removeImage(String name) {
 		if (customImage.containsKey(name)) {
 			return customImage.remove(name);
 		}
