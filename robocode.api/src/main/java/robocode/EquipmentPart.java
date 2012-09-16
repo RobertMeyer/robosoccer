@@ -16,7 +16,7 @@ public class EquipmentPart {
 
 	/** The position that the part occupes on the robot. */
 	private final EquipmentSlot slot;
-
+	private final String soundPath;
 	/**
 	 * This map holds various attributes of the robot that the part modifies,
 	 * where the attribute's value represents a percentage-based increase or
@@ -25,10 +25,13 @@ public class EquipmentPart {
 	 */
 	private Map<RobotAttribute, Double> attributes =
 			new HashMap<RobotAttribute, Double>();
+	
+	
 
 	public static class Builder {
 		// Required for builder initialization
 		private final EquipmentSlot slot;
+		private String soundPath;
 
 		private Map<RobotAttribute, Double> attributes =
 				new HashMap<RobotAttribute, Double>();
@@ -39,6 +42,11 @@ public class EquipmentPart {
 
 		public EquipmentPart build() {
 			return new EquipmentPart(this);
+		}
+		
+		public Builder sound(String path){
+			this.soundPath = path;
+			return this;
 		}
 		
 		public Builder set(RobotAttribute attribute, double value) {
@@ -53,6 +61,7 @@ public class EquipmentPart {
 
 	private EquipmentPart(Builder builder) {
 		slot = builder.slot;
+		soundPath = builder.soundPath;
 		
 		// Copy attributes from builder; default to 0 if attribute wasn't set.
 		for (RobotAttribute attribute : RobotAttribute.values()) {
@@ -62,6 +71,10 @@ public class EquipmentPart {
 			}
 			attributes.put(attribute, value);
 		}
+	}
+	
+	public String getSoundPath(){
+		return soundPath;
 	}
 
 	/**

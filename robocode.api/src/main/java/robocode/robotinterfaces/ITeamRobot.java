@@ -13,7 +13,6 @@
  *******************************************************************************/
 package robocode.robotinterfaces;
 
-
 /**
  * A robot interface for creating a team robot like {@link robocode.TeamRobot}
  * that is able to receive team events.
@@ -32,13 +31,13 @@ package robocode.robotinterfaces;
  */
 public interface ITeamRobot extends IAdvancedRobot {
 
-	/**
-	 * This method is called by the game to notify this robot about team events.
-	 * Hence, this method must be implemented so it returns your
-	 * {@link ITeamEvents} listener.
-	 *
-	 * @return listener to team events or {@code null} if this robot should
-	 *         not receive the notifications.
-	 */
-	ITeamEvents getTeamEventListener();
+    /**
+     * This method is called by the game to notify this robot about team events.
+     * Hence, this method must be implemented so it returns your
+     * {@link ITeamEvents} listener.
+     *
+     * @return listener to team events or {@code null} if this robot should
+     *         not receive the notifications.
+     */
+    ITeamEvents getTeamEventListener();
 }

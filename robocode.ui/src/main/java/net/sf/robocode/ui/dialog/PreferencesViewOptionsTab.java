@@ -23,17 +23,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
-import net.sf.robocode.settings.ISettingsListener;
-import net.sf.robocode.settings.ISettingsManager;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import net.sf.robocode.settings.ISettingsListener;
+import net.sf.robocode.settings.ISettingsManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -43,430 +40,429 @@ import java.awt.event.ActionListener;
 @SuppressWarnings("serial")
 public class PreferencesViewOptionsTab extends WizardPanel {
 
-	private static final int MIN_TPS = 1;
-	private static final int DEFAULT_TPS = 30;
-	private static final int FAST_TPS = 45;
-	private static final int MAX_TPS = 10000;
+    private static final int MIN_TPS = 1;
+    private static final int DEFAULT_TPS = 30;
+    private static final int FAST_TPS = 45;
+    private static final int MAX_TPS = 10000;
+    private final EventHandler eventHandler = new EventHandler();
+    private JCheckBox visibleRobotEnergyCheckBox;
+    private JCheckBox visibleRobotNameCheckBox;
+    private JCheckBox visibleScanArcsCheckBox;
+    private JCheckBox visibleExplosionsCheckBox;
+    private JCheckBox visibleGroundCheckBox;
+    private JCheckBox visibleExplosionDebrisCheckBox;
+    private JButton defaultViewOptionsButton;
+    private JButton enableAllViewOptionsButton;
+    private JButton disableAllViewOptionsButton;
+    private JTextField desiredTpsTextField;
+    private JLabel desiredTpsLabel;
+    private JCheckBox displayFpsCheckBox;
+    private JCheckBox displayTpsCheckBox;
+    private JPanel visibleOptionsPanel;
+    private JPanel tpsOptionsPanel;
+    private JButton minTpsButton;
+    private JButton defaultTpsButton;
+    private JButton fastTpsButton;
+    private JButton maxTpsButton;
+    private JCheckBox preventSpeedupWhenMinimizedCheckBox;
+    private final ISettingsManager properties;
 
-	private final EventHandler eventHandler = new EventHandler();
+    private class EventHandler implements ActionListener, DocumentListener {
 
-	private JCheckBox visibleRobotEnergyCheckBox;
-	private JCheckBox visibleRobotNameCheckBox;
-	private JCheckBox visibleScanArcsCheckBox;
-	private JCheckBox visibleExplosionsCheckBox;
-	private JCheckBox visibleGroundCheckBox;
-	private JCheckBox visibleExplosionDebrisCheckBox;
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object src = e.getSource();
 
-	private JButton defaultViewOptionsButton;
-	private JButton enableAllViewOptionsButton;
-	private JButton disableAllViewOptionsButton;
+            if (src == enableAllViewOptionsButton) {
+                setAllViewOptionsButtonsEnabled(true);
+            } else if (src == disableAllViewOptionsButton) {
+                setAllViewOptionsButtonsEnabled(false);
+            } else if (src == defaultViewOptionsButton) {
+                defaultViewOptionsButtonActionPerformed();
+            } else if (src == defaultTpsButton) {
+                defaultTpsButtonActionPerformed();
+            } else if (src == minTpsButton) {
+                minTpsButtonActionPerformed();
+            } else if (src == fastTpsButton) {
+                fastTpsButtonActionPerformed();
+            } else if (src == maxTpsButton) {
+                maxTpsButtonActionPerformed();
+            }
+        }
 
-	private JTextField desiredTpsTextField;
-	private JLabel desiredTpsLabel;
-	private JCheckBox displayFpsCheckBox;
-	private JCheckBox displayTpsCheckBox;
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            fireStateChanged();
+        }
 
-	private JPanel visibleOptionsPanel;
-	private JPanel tpsOptionsPanel;
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            fireStateChanged();
+        }
 
-	private JButton minTpsButton;
-	private JButton defaultTpsButton;
-	private JButton fastTpsButton;
-	private JButton maxTpsButton;
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            fireStateChanged();
+        }
+    }
 
-	private JCheckBox preventSpeedupWhenMinimizedCheckBox;
+    public PreferencesViewOptionsTab(ISettingsManager properties) {
+        super();
+        this.properties = properties;
+        initialize();
+    }
 
-	private final ISettingsManager properties;
+    private void defaultViewOptionsButtonActionPerformed() {
+        setAllViewOptionsButtonsEnabled(true);
+        getVisibleScanArcsCheckBox().setSelected(false);
+    }
 
-	private class EventHandler implements ActionListener, DocumentListener {
-		public void actionPerformed(ActionEvent e) {
-			Object src = e.getSource();
+    private void setAllViewOptionsButtonsEnabled(boolean enabled) {
+        getVisibleRobotEnergyCheckBox().setSelected(enabled);
+        getVisibleRobotNameCheckBox().setSelected(enabled);
+        getVisibleScanArcsCheckBox().setSelected(enabled);
+        getVisibleExplosionsCheckBox().setSelected(enabled);
+        getVisibleGroundCheckBox().setSelected(enabled);
+        getVisibleExplosionDebrisCheckBox().setSelected(enabled);
+    }
 
-			if (src == enableAllViewOptionsButton) {
-				setAllViewOptionsButtonsEnabled(true);
-			} else if (src == disableAllViewOptionsButton) {
-				setAllViewOptionsButtonsEnabled(false);
-			} else if (src == defaultViewOptionsButton) {
-				defaultViewOptionsButtonActionPerformed();
-			} else if (src == defaultTpsButton) {
-				defaultTpsButtonActionPerformed();
-			} else if (src == minTpsButton) {
-				minTpsButtonActionPerformed();
-			} else if (src == fastTpsButton) {
-				fastTpsButtonActionPerformed();
-			} else if (src == maxTpsButton) {
-				maxTpsButtonActionPerformed();
-			}
-		}
+    private void maxTpsButtonActionPerformed() {
+        getDesiredTpsTextField().setText("" + MAX_TPS);
+    }
 
-		public void changedUpdate(DocumentEvent e) {
-			fireStateChanged();
-		}
+    private void minTpsButtonActionPerformed() {
+        getDesiredTpsTextField().setText("" + MIN_TPS);
+    }
 
-		public void insertUpdate(DocumentEvent e) {
-			fireStateChanged();
-		}
+    private void fastTpsButtonActionPerformed() {
+        getDesiredTpsTextField().setText("" + FAST_TPS);
+    }
 
-		public void removeUpdate(DocumentEvent e) {
-			fireStateChanged();
-		}
-	}
+    private void defaultTpsButtonActionPerformed() {
+        getDesiredTpsTextField().setText("" + DEFAULT_TPS);
+    }
 
-	public PreferencesViewOptionsTab(ISettingsManager properties) {
-		super();
-		this.properties = properties;
-		initialize();
-	}
+    private JButton getDefaultViewOptionsButton() {
+        if (defaultViewOptionsButton == null) {
+            defaultViewOptionsButton = new JButton("Defaults");
+            defaultViewOptionsButton.setMnemonic('u');
+            defaultViewOptionsButton.setDisplayedMnemonicIndex(4);
+            defaultViewOptionsButton.addActionListener(eventHandler);
+        }
+        return defaultViewOptionsButton;
+    }
 
-	private void defaultViewOptionsButtonActionPerformed() {
-		setAllViewOptionsButtonsEnabled(true);
-		getVisibleScanArcsCheckBox().setSelected(false);
-	}
+    private JButton getEnableAllViewOptionsButton() {
+        if (enableAllViewOptionsButton == null) {
+            enableAllViewOptionsButton = new JButton("Enable all");
+            enableAllViewOptionsButton.setMnemonic('a');
+            enableAllViewOptionsButton.setDisplayedMnemonicIndex(7);
+            enableAllViewOptionsButton.addActionListener(eventHandler);
+        }
+        return enableAllViewOptionsButton;
+    }
 
-	private void setAllViewOptionsButtonsEnabled(boolean enabled) {
-		getVisibleRobotEnergyCheckBox().setSelected(enabled);
-		getVisibleRobotNameCheckBox().setSelected(enabled);
-		getVisibleScanArcsCheckBox().setSelected(enabled);
-		getVisibleExplosionsCheckBox().setSelected(enabled);
-		getVisibleGroundCheckBox().setSelected(enabled);
-		getVisibleExplosionDebrisCheckBox().setSelected(enabled);
-	}
+    private JButton getDisableAllViewOptionsButton() {
+        if (disableAllViewOptionsButton == null) {
+            disableAllViewOptionsButton = new JButton("Disable all");
+            disableAllViewOptionsButton.setMnemonic('i');
+            disableAllViewOptionsButton.setDisplayedMnemonicIndex(1);
+            disableAllViewOptionsButton.addActionListener(eventHandler);
+        }
+        return disableAllViewOptionsButton;
+    }
 
-	private void maxTpsButtonActionPerformed() {
-		getDesiredTpsTextField().setText("" + MAX_TPS);
-	}
+    private JLabel getDesiredTpsLabel() {
+        if (desiredTpsLabel == null) {
+            desiredTpsLabel = new JLabel("Desired TPS (" + MIN_TPS + '-' + MAX_TPS + "): ");
+        }
+        return desiredTpsLabel;
+    }
 
-	private void minTpsButtonActionPerformed() {
-		getDesiredTpsTextField().setText("" + MIN_TPS);
-	}
+    private JTextField getDesiredTpsTextField() {
+        if (desiredTpsTextField == null) {
+            desiredTpsTextField = new JTextField();
+            desiredTpsTextField.setColumns(5);
+            desiredTpsTextField.getDocument().addDocumentListener(eventHandler);
 
-	private void fastTpsButtonActionPerformed() {
-		getDesiredTpsTextField().setText("" + FAST_TPS);
-	}
+            desiredTpsTextField.setInputVerifier(
+                    new InputVerifier() {
+                        @Override
+                        public boolean verify(JComponent c) {
+                            String text = desiredTpsTextField.getText();
 
-	private void defaultTpsButtonActionPerformed() {
-		getDesiredTpsTextField().setText("" + DEFAULT_TPS);
-	}
-	
-	private JButton getDefaultViewOptionsButton() {
-		if (defaultViewOptionsButton == null) {
-			defaultViewOptionsButton = new JButton("Defaults");
-			defaultViewOptionsButton.setMnemonic('u');
-			defaultViewOptionsButton.setDisplayedMnemonicIndex(4);
-			defaultViewOptionsButton.addActionListener(eventHandler);
-		}
-		return defaultViewOptionsButton;
-	}
+                            int inputTps;
 
-	private JButton getEnableAllViewOptionsButton() {
-		if (enableAllViewOptionsButton == null) {
-			enableAllViewOptionsButton = new JButton("Enable all");
-			enableAllViewOptionsButton.setMnemonic('a');
-			enableAllViewOptionsButton.setDisplayedMnemonicIndex(7);
-			enableAllViewOptionsButton.addActionListener(eventHandler);
-		}
-		return enableAllViewOptionsButton;
-	}
+                            try {
+                                inputTps = new Integer(text);
+                            } catch (NumberFormatException e) {
+                                inputTps = -1;
+                            }
+                            return inputTps >= MIN_TPS && inputTps <= MAX_TPS;
+                        }
 
-	private JButton getDisableAllViewOptionsButton() {
-		if (disableAllViewOptionsButton == null) {
-			disableAllViewOptionsButton = new JButton("Disable all");
-			disableAllViewOptionsButton.setMnemonic('i');
-			disableAllViewOptionsButton.setDisplayedMnemonicIndex(1);
-			disableAllViewOptionsButton.addActionListener(eventHandler);
-		}
-		return disableAllViewOptionsButton;
-	}
+                @Override
+                        public boolean shouldYieldFocus(JComponent input) {
+                            if (verify(input)) {
+                                return true;
+                            }
+                            JOptionPane.showMessageDialog(null,
+                                                          "The specified value for 'Desired TPS' (" + MIN_TPS + '-' + MAX_TPS + ") is invalid.",
+                                                          "Invalid input", JOptionPane.ERROR_MESSAGE);
+                            return false;
+                        }
+                    });
+        }
+        return desiredTpsTextField;
+    }
 
-	private JLabel getDesiredTpsLabel() {
-		if (desiredTpsLabel == null) {
-			desiredTpsLabel = new JLabel("Desired TPS (" + MIN_TPS + '-' + MAX_TPS + "): ");
-		}
-		return desiredTpsLabel;
-	}
+    private JCheckBox getDisplayFpsCheckBox() {
+        if (displayFpsCheckBox == null) {
+            displayFpsCheckBox = new JCheckBox("Display FPS in titlebar");
+            displayFpsCheckBox.setMnemonic('P');
+            displayFpsCheckBox.setDisplayedMnemonicIndex(9);
+        }
+        return displayFpsCheckBox;
+    }
 
-	private JTextField getDesiredTpsTextField() {
-		if (desiredTpsTextField == null) {
-			desiredTpsTextField = new JTextField();
-			desiredTpsTextField.setColumns(5);
-			desiredTpsTextField.getDocument().addDocumentListener(eventHandler);
+    private JCheckBox getDisplayTpsCheckBox() {
+        if (displayTpsCheckBox == null) {
+            displayTpsCheckBox = new JCheckBox("Display TPS in titlebar");
+            displayTpsCheckBox.setMnemonic('T');
+            displayTpsCheckBox.setDisplayedMnemonicIndex(8);
+        }
+        return displayTpsCheckBox;
+    }
 
-			desiredTpsTextField.setInputVerifier(
-					new InputVerifier() {
-				@Override
-				public boolean verify(JComponent c) {			
-					String text = desiredTpsTextField.getText();
-					
-					int inputTps;
+    private JButton getDefaultTpsButton() {
+        if (defaultTpsButton == null) {
+            defaultTpsButton = new JButton("Default");
+            defaultTpsButton.addActionListener(eventHandler);
+        }
+        return defaultTpsButton;
+    }
 
-					try {
-						inputTps = new Integer(text);
-					} catch (NumberFormatException e) {
-						inputTps = -1;
-					}
-					return inputTps >= MIN_TPS && inputTps <= MAX_TPS;
-				}
-				
-				public boolean shouldYieldFocus(JComponent input) {
-					if (verify(input)) {
-						return true;
-					}
-					JOptionPane.showMessageDialog(null,
-							"The specified value for 'Desired TPS' (" + MIN_TPS + '-' + MAX_TPS + ") is invalid.",
-							"Invalid input", JOptionPane.ERROR_MESSAGE);
-					return false;
-				}
-			});
-		}
-		return desiredTpsTextField;
-	}
+    private JButton getMinTpsButton() {
+        if (minTpsButton == null) {
+            minTpsButton = new JButton("Minimum");
+            minTpsButton.addActionListener(eventHandler);
+        }
+        return minTpsButton;
+    }
 
-	private JCheckBox getDisplayFpsCheckBox() {
-		if (displayFpsCheckBox == null) {
-			displayFpsCheckBox = new JCheckBox("Display FPS in titlebar");
-			displayFpsCheckBox.setMnemonic('P');
-			displayFpsCheckBox.setDisplayedMnemonicIndex(9);
-		}
-		return displayFpsCheckBox;
-	}
+    private JButton getMaxTpsButton() {
+        if (maxTpsButton == null) {
+            maxTpsButton = new JButton("Max");
+            maxTpsButton.addActionListener(eventHandler);
+        }
+        return maxTpsButton;
+    }
 
-	private JCheckBox getDisplayTpsCheckBox() {
-		if (displayTpsCheckBox == null) {
-			displayTpsCheckBox = new JCheckBox("Display TPS in titlebar");
-			displayTpsCheckBox.setMnemonic('T');
-			displayTpsCheckBox.setDisplayedMnemonicIndex(8);
-		}
-		return displayTpsCheckBox;
-	}
+    private JButton getFastTpsButton() {
+        if (fastTpsButton == null) {
+            fastTpsButton = new JButton("Fast");
+            fastTpsButton.addActionListener(eventHandler);
+        }
+        return fastTpsButton;
+    }
 
-	private JButton getDefaultTpsButton() {
-		if (defaultTpsButton == null) {
-			defaultTpsButton = new JButton("Default");
-			defaultTpsButton.addActionListener(eventHandler);
-		}
-		return defaultTpsButton;
-	}
+    private JCheckBox getPreventSpeedupWhenMinimizedCheckBox() {
+        if (preventSpeedupWhenMinimizedCheckBox == null) {
+            preventSpeedupWhenMinimizedCheckBox = new JCheckBox("Prevent speedup when minimized");
+        }
+        return preventSpeedupWhenMinimizedCheckBox;
+    }
 
-	private JButton getMinTpsButton() {
-		if (minTpsButton == null) {
-			minTpsButton = new JButton("Minimum");
-			minTpsButton.addActionListener(eventHandler);
-		}
-		return minTpsButton;
-	}
+    private JPanel getTpsOptionsPanel() {
+        if (tpsOptionsPanel == null) {
+            tpsOptionsPanel = new JPanel();
+            tpsOptionsPanel.setBorder(
+                    BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Turns Per Second (TPS)"));
+            tpsOptionsPanel.setLayout(new GridBagLayout());
 
-	private JButton getMaxTpsButton() {
-		if (maxTpsButton == null) {
-			maxTpsButton = new JButton("Max");
-			maxTpsButton.addActionListener(eventHandler);
-		}
-		return maxTpsButton;
-	}
+            GridBagConstraints c = new GridBagConstraints();
 
-	private JButton getFastTpsButton() {
-		if (fastTpsButton == null) {
-			fastTpsButton = new JButton("Fast");
-			fastTpsButton.addActionListener(eventHandler);
-		}
-		return fastTpsButton;
-	}
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.gridwidth = 4;
 
-	private JCheckBox getPreventSpeedupWhenMinimizedCheckBox() {
-		if (preventSpeedupWhenMinimizedCheckBox == null) {
-			preventSpeedupWhenMinimizedCheckBox = new JCheckBox("Prevent speedup when minimized");
-		}
-		return preventSpeedupWhenMinimizedCheckBox;
-	}
-	
-	private JPanel getTpsOptionsPanel() {
-		if (tpsOptionsPanel == null) {
-			tpsOptionsPanel = new JPanel();
-			tpsOptionsPanel.setBorder(
-					BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Turns Per Second (TPS)"));
-			tpsOptionsPanel.setLayout(new GridBagLayout());
+            tpsOptionsPanel.add(getDisplayTpsCheckBox(), c);
+            c.gridy = 1;
+            tpsOptionsPanel.add(getDisplayFpsCheckBox(), c);
 
-			GridBagConstraints c = new GridBagConstraints();
+            JPanel tpsPanel = new JPanel();
 
-			c.anchor = GridBagConstraints.NORTHWEST;
-			c.gridwidth = 4;
+            tpsPanel.add(getDesiredTpsLabel());
+            tpsPanel.add(getDesiredTpsTextField());
 
-			tpsOptionsPanel.add(getDisplayTpsCheckBox(), c);
-			c.gridy = 1;
-			tpsOptionsPanel.add(getDisplayFpsCheckBox(), c);
+            c.fill = GridBagConstraints.VERTICAL;
+            c.gridy = 2;
+            c.insets = new Insets(10, 0, 0, 0);
+            tpsOptionsPanel.add(tpsPanel, c);
 
-			JPanel tpsPanel = new JPanel();
+            c.fill = GridBagConstraints.NONE;
+            c.gridx = 0;
+            c.gridy = 3;
+            c.gridwidth = 1;
+            c.weightx = 0.25;
+            tpsOptionsPanel.add(getMinTpsButton(), c);
+            c.gridx = 1;
+            tpsOptionsPanel.add(getDefaultTpsButton(), c);
+            c.gridx = 2;
+            tpsOptionsPanel.add(getFastTpsButton(), c);
+            c.gridx = 3;
+            tpsOptionsPanel.add(getMaxTpsButton(), c);
 
-			tpsPanel.add(getDesiredTpsLabel());
-			tpsPanel.add(getDesiredTpsTextField());
+            c.insets = new Insets(20, 0, 0, 0);
+            c.gridwidth = 4;
+            c.gridx = 0;
+            c.gridy = 4;
+            c.weighty = 1;
+            tpsOptionsPanel.add(getPreventSpeedupWhenMinimizedCheckBox(), c);
+        }
+        return tpsOptionsPanel;
+    }
 
-			c.fill = GridBagConstraints.VERTICAL;
-			c.gridy = 2;
-			c.insets = new Insets(10, 0, 0, 0);
-			tpsOptionsPanel.add(tpsPanel, c);
+    private JPanel getVisibleOptionsPanel() {
+        if (visibleOptionsPanel == null) {
+            visibleOptionsPanel = new JPanel();
+            visibleOptionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Arena"));
+            visibleOptionsPanel.setLayout(new GridBagLayout());
 
-			c.fill = GridBagConstraints.NONE;
-			c.gridx = 0;
-			c.gridy = 3;
-			c.gridwidth = 1;
-			c.weightx = 0.25;
-			tpsOptionsPanel.add(getMinTpsButton(), c);
-			c.gridx = 1;
-			tpsOptionsPanel.add(getDefaultTpsButton(), c);
-			c.gridx = 2;
-			tpsOptionsPanel.add(getFastTpsButton(), c);
-			c.gridx = 3;
-			tpsOptionsPanel.add(getMaxTpsButton(), c);
+            GridBagConstraints c = new GridBagConstraints();
 
-			c.insets = new Insets(20, 0, 0, 0);
-			c.gridwidth = 4;
-			c.gridx = 0;
-			c.gridy = 4;
-			c.weighty = 1;
-			tpsOptionsPanel.add(getPreventSpeedupWhenMinimizedCheckBox(), c);
-		}
-		return tpsOptionsPanel;
-	}
+            c.anchor = GridBagConstraints.NORTHWEST;
+            c.gridwidth = GridBagConstraints.REMAINDER;
+            c.weightx = 1;
 
-	private JPanel getVisibleOptionsPanel() {
-		if (visibleOptionsPanel == null) {
-			visibleOptionsPanel = new JPanel();
-			visibleOptionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Arena"));
-			visibleOptionsPanel.setLayout(new GridBagLayout());
+            visibleOptionsPanel.add(getVisibleRobotEnergyCheckBox(), c);
+            visibleOptionsPanel.add(getVisibleRobotNameCheckBox(), c);
+            visibleOptionsPanel.add(getVisibleScanArcsCheckBox(), c);
+            visibleOptionsPanel.add(getVisibleExplosionsCheckBox(), c);
+            visibleOptionsPanel.add(getVisibleGroundCheckBox(), c);
+            visibleOptionsPanel.add(getVisibleExplosionDebrisCheckBox(), c);
 
-			GridBagConstraints c = new GridBagConstraints();
+            c.insets = new Insets(10, 0, 0, 10);
+            c.gridwidth = 1;
+            c.fill = GridBagConstraints.NONE;
+            c.weighty = 1;
+            c.weightx = 0;
+            visibleOptionsPanel.add(getEnableAllViewOptionsButton(), c);
+            visibleOptionsPanel.add(getDisableAllViewOptionsButton(), c);
+            visibleOptionsPanel.add(getDefaultViewOptionsButton(), c);
+        }
+        return visibleOptionsPanel;
+    }
 
-			c.anchor = GridBagConstraints.NORTHWEST;
-			c.gridwidth = GridBagConstraints.REMAINDER;
-			c.weightx = 1;
+    private JCheckBox getVisibleRobotEnergyCheckBox() {
+        if (visibleRobotEnergyCheckBox == null) {
+            visibleRobotEnergyCheckBox = new JCheckBox("Visible Robot Energy");
+            visibleRobotEnergyCheckBox.setMnemonic('y');
+            visibleRobotEnergyCheckBox.setDisplayedMnemonicIndex(19);
+        }
+        return visibleRobotEnergyCheckBox;
+    }
 
-			visibleOptionsPanel.add(getVisibleRobotEnergyCheckBox(), c);
-			visibleOptionsPanel.add(getVisibleRobotNameCheckBox(), c);
-			visibleOptionsPanel.add(getVisibleScanArcsCheckBox(), c);
-			visibleOptionsPanel.add(getVisibleExplosionsCheckBox(), c);
-			visibleOptionsPanel.add(getVisibleGroundCheckBox(), c);
-			visibleOptionsPanel.add(getVisibleExplosionDebrisCheckBox(), c);
+    private JCheckBox getVisibleRobotNameCheckBox() {
+        if (visibleRobotNameCheckBox == null) {
+            visibleRobotNameCheckBox = new JCheckBox("Visible Robot Name");
+            visibleRobotNameCheckBox.setMnemonic('V');
+        }
+        return visibleRobotNameCheckBox;
+    }
 
-			c.insets = new Insets(10, 0, 0, 10);
-			c.gridwidth = 1;
-			c.fill = GridBagConstraints.NONE;
-			c.weighty = 1;
-			c.weightx = 0;
-			visibleOptionsPanel.add(getEnableAllViewOptionsButton(), c);
-			visibleOptionsPanel.add(getDisableAllViewOptionsButton(), c);
-			visibleOptionsPanel.add(getDefaultViewOptionsButton(), c);
-		}
-		return visibleOptionsPanel;
-	}
+    private JCheckBox getVisibleScanArcsCheckBox() {
+        if (visibleScanArcsCheckBox == null) {
+            visibleScanArcsCheckBox = new JCheckBox("Visible Scan Arcs");
+            visibleScanArcsCheckBox.setMnemonic('b');
+            visibleScanArcsCheckBox.setDisplayedMnemonicIndex(4);
+        }
+        return visibleScanArcsCheckBox;
+    }
 
-	private JCheckBox getVisibleRobotEnergyCheckBox() {
-		if (visibleRobotEnergyCheckBox == null) {
-			visibleRobotEnergyCheckBox = new JCheckBox("Visible Robot Energy");
-			visibleRobotEnergyCheckBox.setMnemonic('y');
-			visibleRobotEnergyCheckBox.setDisplayedMnemonicIndex(19);
-		}
-		return visibleRobotEnergyCheckBox;
-	}
+    private JCheckBox getVisibleExplosionsCheckBox() {
+        if (visibleExplosionsCheckBox == null) {
+            visibleExplosionsCheckBox = new JCheckBox("Visible Explosions");
+            visibleExplosionsCheckBox.setMnemonic('x');
+            visibleExplosionsCheckBox.setDisplayedMnemonicIndex(9);
+        }
+        return visibleExplosionsCheckBox;
+    }
 
-	private JCheckBox getVisibleRobotNameCheckBox() {
-		if (visibleRobotNameCheckBox == null) {
-			visibleRobotNameCheckBox = new JCheckBox("Visible Robot Name");
-			visibleRobotNameCheckBox.setMnemonic('V');
-		}
-		return visibleRobotNameCheckBox;
-	}
+    private JCheckBox getVisibleGroundCheckBox() {
+        if (visibleGroundCheckBox == null) {
+            visibleGroundCheckBox = new JCheckBox("Visible Ground");
+            visibleGroundCheckBox.setMnemonic('G');
+            visibleGroundCheckBox.setDisplayedMnemonicIndex(8);
+        }
+        return visibleGroundCheckBox;
+    }
 
-	private JCheckBox getVisibleScanArcsCheckBox() {
-		if (visibleScanArcsCheckBox == null) {
-			visibleScanArcsCheckBox = new JCheckBox("Visible Scan Arcs");
-			visibleScanArcsCheckBox.setMnemonic('b');
-			visibleScanArcsCheckBox.setDisplayedMnemonicIndex(4);
-		}
-		return visibleScanArcsCheckBox;
-	}
+    private JCheckBox getVisibleExplosionDebrisCheckBox() {
+        if (visibleExplosionDebrisCheckBox == null) {
+            visibleExplosionDebrisCheckBox = new JCheckBox("Visible Explosion Debris");
+            visibleExplosionDebrisCheckBox.setMnemonic('E');
+            visibleExplosionDebrisCheckBox.setDisplayedMnemonicIndex(8);
+        }
+        return visibleExplosionDebrisCheckBox;
+    }
 
-	private JCheckBox getVisibleExplosionsCheckBox() {
-		if (visibleExplosionsCheckBox == null) {
-			visibleExplosionsCheckBox = new JCheckBox("Visible Explosions");
-			visibleExplosionsCheckBox.setMnemonic('x');
-			visibleExplosionsCheckBox.setDisplayedMnemonicIndex(9);
-		}
-		return visibleExplosionsCheckBox;
-	}
+    private void initialize() {
+        setLayout(new GridLayout(1, 2));
+        add(getVisibleOptionsPanel());
+        add(getTpsOptionsPanel());
 
-	private JCheckBox getVisibleGroundCheckBox() {
-		if (visibleGroundCheckBox == null) {
-			visibleGroundCheckBox = new JCheckBox("Visible Ground");
-			visibleGroundCheckBox.setMnemonic('G');
-			visibleGroundCheckBox.setDisplayedMnemonicIndex(8);
-		}
-		return visibleGroundCheckBox;
-	}
+        final ISettingsManager props = properties;
 
-	private JCheckBox getVisibleExplosionDebrisCheckBox() {
-		if (visibleExplosionDebrisCheckBox == null) {
-			visibleExplosionDebrisCheckBox = new JCheckBox("Visible Explosion Debris");
-			visibleExplosionDebrisCheckBox.setMnemonic('E');
-			visibleExplosionDebrisCheckBox.setDisplayedMnemonicIndex(8);
-		}
-		return visibleExplosionDebrisCheckBox;
-	}
+        loadPreferences(props);
 
-	private void initialize() {
-		setLayout(new GridLayout(1, 2));
-		add(getVisibleOptionsPanel());
-		add(getTpsOptionsPanel());
+        props.addPropertyListener(new ISettingsListener() {
+            @Override
+            public void settingChanged(String property) {
+                if (property.equals(ISettingsManager.OPTIONS_BATTLE_DESIREDTPS)) {
+                    PreferencesViewOptionsTab.this.desiredTpsTextField.setText("" + props.getOptionsBattleDesiredTPS());
+                }
+            }
+        });
+    }
 
-		final ISettingsManager props = properties;
+    private void loadPreferences(ISettingsManager robocodeProperties) {
+        getDisplayFpsCheckBox().setSelected(robocodeProperties.getOptionsViewFPS());
+        getDisplayTpsCheckBox().setSelected(robocodeProperties.getOptionsViewTPS());
+        getVisibleRobotNameCheckBox().setSelected(robocodeProperties.getOptionsViewRobotNames());
+        getVisibleRobotEnergyCheckBox().setSelected(robocodeProperties.getOptionsViewRobotEnergy());
+        getVisibleScanArcsCheckBox().setSelected(robocodeProperties.getOptionsViewScanArcs());
+        getVisibleExplosionsCheckBox().setSelected(robocodeProperties.getOptionsViewExplosions());
+        getVisibleGroundCheckBox().setSelected(robocodeProperties.getOptionsViewGround());
+        getVisibleExplosionDebrisCheckBox().setSelected(robocodeProperties.getOptionsViewExplosionDebris());
+        getDesiredTpsTextField().setText("" + robocodeProperties.getOptionsBattleDesiredTPS());
+        getPreventSpeedupWhenMinimizedCheckBox().setSelected(
+                robocodeProperties.getOptionsViewPreventSpeedupWhenMinimized());
+    }
 
-		loadPreferences(props);
+    public void storePreferences() {
+        ISettingsManager props = properties;
 
-		props.addPropertyListener(new ISettingsListener() {
-			public void settingChanged(String property) {
-				if (property.equals(ISettingsManager.OPTIONS_BATTLE_DESIREDTPS)) {
-					PreferencesViewOptionsTab.this.desiredTpsTextField.setText("" + props.getOptionsBattleDesiredTPS());
-				}
-			}
-		});
-	}
+        props.setOptionsViewFPS(getDisplayFpsCheckBox().isSelected());
+        props.setOptionsViewTPS(getDisplayTpsCheckBox().isSelected());
+        props.setOptionsViewRobotNames(getVisibleRobotNameCheckBox().isSelected());
+        props.setOptionsViewRobotEnergy(getVisibleRobotEnergyCheckBox().isSelected());
+        props.setOptionsViewScanArcs(getVisibleScanArcsCheckBox().isSelected());
+        props.setOptionsViewExplosions(getVisibleExplosionsCheckBox().isSelected());
+        props.setOptionsViewGround(getVisibleGroundCheckBox().isSelected());
+        props.setOptionsViewExplosionDebris(getVisibleExplosionDebrisCheckBox().isSelected());
+        props.setOptionsBattleDesiredTPS(Integer.parseInt(getDesiredTpsTextField().getText()));
+        props.setOptionsViewPreventSpeedupWhenMinimized(getPreventSpeedupWhenMinimizedCheckBox().isSelected());
+        properties.saveProperties();
+    }
 
-	private void loadPreferences(ISettingsManager robocodeProperties) {
-		getDisplayFpsCheckBox().setSelected(robocodeProperties.getOptionsViewFPS());
-		getDisplayTpsCheckBox().setSelected(robocodeProperties.getOptionsViewTPS());
-		getVisibleRobotNameCheckBox().setSelected(robocodeProperties.getOptionsViewRobotNames());
-		getVisibleRobotEnergyCheckBox().setSelected(robocodeProperties.getOptionsViewRobotEnergy());
-		getVisibleScanArcsCheckBox().setSelected(robocodeProperties.getOptionsViewScanArcs());
-		getVisibleExplosionsCheckBox().setSelected(robocodeProperties.getOptionsViewExplosions());
-		getVisibleGroundCheckBox().setSelected(robocodeProperties.getOptionsViewGround());
-		getVisibleExplosionDebrisCheckBox().setSelected(robocodeProperties.getOptionsViewExplosionDebris());
-		getDesiredTpsTextField().setText("" + robocodeProperties.getOptionsBattleDesiredTPS());
-		getPreventSpeedupWhenMinimizedCheckBox().setSelected(
-				robocodeProperties.getOptionsViewPreventSpeedupWhenMinimized());
-	}
+    @Override
+    public boolean isReady() {
+        try {
+            int tps = Integer.parseInt(getDesiredTpsTextField().getText());
 
-	public void storePreferences() {
-		ISettingsManager props = properties;
-
-		props.setOptionsViewFPS(getDisplayFpsCheckBox().isSelected());
-		props.setOptionsViewTPS(getDisplayTpsCheckBox().isSelected());
-		props.setOptionsViewRobotNames(getVisibleRobotNameCheckBox().isSelected());
-		props.setOptionsViewRobotEnergy(getVisibleRobotEnergyCheckBox().isSelected());
-		props.setOptionsViewScanArcs(getVisibleScanArcsCheckBox().isSelected());
-		props.setOptionsViewExplosions(getVisibleExplosionsCheckBox().isSelected());
-		props.setOptionsViewGround(getVisibleGroundCheckBox().isSelected());
-		props.setOptionsViewExplosionDebris(getVisibleExplosionDebrisCheckBox().isSelected());
-		props.setOptionsBattleDesiredTPS(Integer.parseInt(getDesiredTpsTextField().getText()));
-		props.setOptionsViewPreventSpeedupWhenMinimized(getPreventSpeedupWhenMinimizedCheckBox().isSelected());
-		properties.saveProperties();
-	}
-
-	@Override
-	public boolean isReady() {
-		try {
-			int tps = Integer.parseInt(getDesiredTpsTextField().getText());
-
-			return (tps >= MIN_TPS && tps <= MAX_TPS);
-		} catch (Exception e) {
-			return false;
-		}
-	}
+            return (tps >= MIN_TPS && tps <= MAX_TPS);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

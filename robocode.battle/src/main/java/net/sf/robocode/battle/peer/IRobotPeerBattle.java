@@ -11,65 +11,62 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-
-import robocode.Event;
-
 import java.util.List;
-
 import net.sf.robocode.battle.ItemDrop;
-
+import robocode.Event;
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IRobotPeerBattle extends ContestantPeer {
-	void setSGPaintEnabled(boolean enabled);
 
-	RobotStatistics getRobotStatistics();
+    void setSGPaintEnabled(boolean enabled);
 
-	TeamPeer getTeamPeer();
+    RobotStatistics getRobotStatistics();
 
-	void publishStatus(long currentTurn);
+    TeamPeer getTeamPeer();
 
-	void addEvent(Event event);
+    void publishStatus(long currentTurn);
 
-	void setPaintEnabled(boolean enabled);
+    void addEvent(Event event);
 
-	void kill();
+    void setPaintEnabled(boolean enabled);
 
-	void cleanup();
+    void kill();
 
-	boolean isDead();
+    void cleanup();
 
-	boolean isAlive();
+    boolean isDead();
 
-	boolean isRunning();
+    boolean isAlive();
 
-	boolean isWinner();
+    boolean isRunning();
 
-	boolean isTeamLeader();
+    boolean isWinner();
 
-	void setHalt(boolean value);
+    boolean isTeamLeader();
 
-	void println(String s);
+    void setHalt(boolean value);
 
-	void waitWakeup();
+    void println(String s);
 
-	void waitSleeping(long millisWait, int nanosWait);
+    void waitWakeup();
 
-	void waitForStop();
+    void waitSleeping(long millisWait, int nanosWait);
 
-	void setWinner(boolean newWinner);
+    void waitForStop();
 
-	void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions);
+    void setWinner(boolean newWinner);
 
-	void startRound(long millisWait, int nanosWait);
+    void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions);
 
-	void checkSkippedTurn();
+    void startRound(long millisWait, int nanosWait);
 
-	void performLoadCommands();
+    void checkSkippedTurn();
 
-	void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy);
+    void performLoadCommands();
 
-	void performScan(List<RobotPeer> robots);
+    void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy);
+
+    void performScan(List<RobotPeer> robots);
 }

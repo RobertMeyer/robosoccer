@@ -11,45 +11,43 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
+import java.io.File;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.File;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class TestFileWrite extends RobocodeTestBed {
 
-	@Test
-	public void run() {
-		super.run();
-	}
+    @Test
+    @Override
+    public void run() {
+        super.run();
+    }
 
-	public String getRobotNames() {
-		return "sample.Walls,sample.SittingDuck";
-	}
+    @Override
+    public String getRobotNames() {
+        return "sample.Walls,sample.SittingDuck";
+    }
+    File file = new File(robotsPath, "/target/classes/sample/SittingDuck.data/count.dat");
 
-	File file = new File(robotsPath, "/target/classes/sample/SittingDuck.data/count.dat");
+    @Override
+    protected void runSetup() {
+        if (file.exists()) {
+            if (!file.delete()) {
+                Logger.logError("Can't delete" + file);
+            }
+        }
+    }
 
-	@Override
-	protected void runSetup() {
-		if (file.exists()) {
-			if (!file.delete()) {
-				Logger.logError("Can't delete" + file);
-			}
-		}
-	}
-
-	@Override
-	protected void runTeardown() {
-		Assert.assertTrue(file.exists());
-		if (!file.delete()) {
-			Logger.logError("Can't delete" + file);
-		}
-	}
+    @Override
+    protected void runTeardown() {
+        Assert.assertTrue(file.exists());
+        if (!file.delete()) {
+            Logger.logError("Can't delete" + file);
+        }
+    }
 }

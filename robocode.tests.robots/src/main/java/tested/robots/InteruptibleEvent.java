@@ -11,11 +11,9 @@
  *******************************************************************************/
 package tested.robots;
 
-
 import robocode.AdvancedRobot;
 import robocode.HitWallEvent;
 import robocode.ScannedRobotEvent;
-
 
 /**
  * Based on bug 2212289.
@@ -27,24 +25,24 @@ import robocode.ScannedRobotEvent;
  */
 public class InteruptibleEvent extends AdvancedRobot {
 
-	@Override
-	public void run() {
-		setEventPriority("HitWallEvent", getEventPriority("ScannedRobotEvent")); // make same as scan
+    @Override
+    public void run() {
+        setEventPriority("HitWallEvent", getEventPriority("ScannedRobotEvent")); // make same as scan
 
-		// noinspection InfiniteLoopStatement
-		for (;;) {
-			ahead(10); // make sure we eventually hits a wall to receive onHitWall
-		}
-	}
+        // noinspection InfiniteLoopStatement
+        for (;;) {
+            ahead(10); // make sure we eventually hits a wall to receive onHitWall
+        }
+    }
 
-	@Override
-	public void onScannedRobot(ScannedRobotEvent event) {
-		out.println("Scanned!!!"); // a robot was scanned -> success!
-	}
+    @Override
+    public void onScannedRobot(ScannedRobotEvent event) {
+        out.println("Scanned!!!"); // a robot was scanned -> success!
+    }
 
-	@Override
-	public void onHitWall(HitWallEvent e) {
-		setInterruptible(true); // make sure that the event handler can be interrupted and restarted
-		turnRadarRight(360); // when the radar is turned here, at least another robot should be scanned
-	}
+    @Override
+    public void onHitWall(HitWallEvent e) {
+        setInterruptible(true); // make sure that the event handler can be interrupted and restarted
+        turnRadarRight(360); // when the radar is turned here, at least another robot should be scanned
+    }
 }

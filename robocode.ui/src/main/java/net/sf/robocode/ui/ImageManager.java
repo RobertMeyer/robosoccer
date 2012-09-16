@@ -18,15 +18,12 @@
  *******************************************************************************/
 package net.sf.robocode.ui;
 
-
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.gfx.ImageUtil;
-import net.sf.robocode.ui.gfx.RenderImage;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.gfx.ImageUtil;
+import net.sf.robocode.ui.gfx.RenderImage;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -35,224 +32,225 @@ import java.util.List;
  */
 public class ImageManager implements IImageManager {
 
-	private final ISettingsManager properties;
+    private final ISettingsManager properties;
+    private Image[] groundImages;
+    private RenderImage[][] explosionRenderImages;
+    private RenderImage debriseRenderImage;
+    private Image bodyImage;
+    private Image gunImage;
+    private Image radarImage;
+    private Image healthImage;
+    private static final int MAX_NUM_COLORS = 256;
+    private HashMap<Integer, RenderImage> robotBodyImageCache;
+    private HashMap<Integer, RenderImage> robotGunImageCache;
+    private HashMap<Integer, RenderImage> robotRadarImageCache;
 
-	private Image[] groundImages;
+    public ImageManager(ISettingsManager properties) {
+        this.properties = properties;
+    }
 
-	private RenderImage[][] explosionRenderImages;
-	private RenderImage debriseRenderImage;
+    @Override
+    public void initialize() {
+        // Note that initialize could be called in order to reset all images (image buffering)
 
-	private Image bodyImage;
-	private Image gunImage;
-	private Image radarImage;
-	private Image healthImage;
+        // Reset image cache
+        groundImages = new Image[9];
+        explosionRenderImages = null;
+        debriseRenderImage = null;
+        bodyImage = null;
+        gunImage = null;
+        radarImage = null;
+        healthImage = null;
+        robotBodyImageCache = new RenderCache<Integer, RenderImage>();
+        robotGunImageCache = new RenderCache<Integer, RenderImage>();
+        robotRadarImageCache = new RenderCache<Integer, RenderImage>();
 
-	private static final int MAX_NUM_COLORS = 256;
 
-	private HashMap<Integer, RenderImage> robotBodyImageCache;
-	private HashMap<Integer, RenderImage> robotGunImageCache;
-	private HashMap<Integer, RenderImage> robotRadarImageCache;
+        // Read images into the cache
+        getBodyImage();
+        getGunImage();
+        getRadarImage();
+        getExplosionRenderImage(0, 0);
+        getHealthImage();
+    }
 
-	public ImageManager(ISettingsManager properties) {
-		this.properties = properties;
-	}
+    @Override
+    public Image getGroundTileImage(int index) {
+        if (groundImages[index] == null) {
+            groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
+        }
+        return groundImages[index];
+    }
 
-	public void initialize() {
-		// Note that initialize could be called in order to reset all images (image buffering)
+    @Override
+    public RenderImage getExplosionRenderImage(int which, int frame) {
+        if (explosionRenderImages == null) {
+            int numExplosion, numFrame;
+            String filename;
 
-		// Reset image cache
-		groundImages = new Image[5];
-		explosionRenderImages = null;
-		debriseRenderImage = null;
-		bodyImage = null;
-		gunImage = null;
-		radarImage = null;
-		healthImage = null;
-		robotBodyImageCache = new RenderCache<Integer, RenderImage>();
-		robotGunImageCache = new RenderCache<Integer, RenderImage>();
-		robotRadarImageCache = new RenderCache<Integer, RenderImage>();
-		
+            List<List<RenderImage>> explosions = new ArrayList<List<RenderImage>>();
 
-		// Read images into the cache
-		getBodyImage();
-		getGunImage();
-		getRadarImage();
-		getExplosionRenderImage(0, 0);
-		getHealthImage();
-	}
+            boolean done = false;
 
-	public Image getGroundTileImage(int index) {
-		if (groundImages[index] == null) {
-			groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
-		}
-		return groundImages[index];
-	}
+            for (numExplosion = 1; !done; numExplosion++) {
+                List<RenderImage> frames = new ArrayList<RenderImage>();
 
-	public RenderImage getExplosionRenderImage(int which, int frame) {
-		if (explosionRenderImages == null) {
-			int numExplosion, numFrame;
-			String filename;
+                for (numFrame = 1;; numFrame++) {
+                    filename = "/net/sf/robocode/ui/images/explosion/explosion" + numExplosion + '-' + numFrame + ".png";
 
-			List<List<RenderImage>> explosions = new ArrayList<List<RenderImage>>();
+                    if (ImageManager.class.getResource(filename) == null) {
+                        if (numFrame == 1) {
+                            done = true;
+                        } else {
+                            explosions.add(frames);
+                        }
+                        break;
+                    }
 
-			boolean done = false;
+                    frames.add(new RenderImage(getImage(filename)));
+                }
+            }
 
-			for (numExplosion = 1; !done; numExplosion++) {
-				List<RenderImage> frames = new ArrayList<RenderImage>();
+            numExplosion = explosions.size();
+            explosionRenderImages = new RenderImage[numExplosion][];
 
-				for (numFrame = 1;; numFrame++) {
-					filename = "/net/sf/robocode/ui/images/explosion/explosion" + numExplosion + '-' + numFrame + ".png";
+            for (int i = numExplosion - 1; i >= 0; i--) {
+                explosionRenderImages[i] = explosions.get(i).toArray(new RenderImage[explosions.size()]);
+            }
+        }
+        return explosionRenderImages[which][frame];
+    }
 
-					if (ImageManager.class.getResource(filename) == null) {
-						if (numFrame == 1) {
-							done = true;
-						} else {
-							explosions.add(frames);
-						}
-						break;
-					}
+    @Override
+    public RenderImage getExplosionDebriseRenderImage() {
+        if (debriseRenderImage == null) {
+            debriseRenderImage = new RenderImage(getImage("/net/sf/robocode/ui/images/ground/explode_debris.png"));
+        }
+        return debriseRenderImage;
+    }
 
-					frames.add(new RenderImage(getImage(filename)));
-				}
-			}
+    private Image getImage(String filename) {
+        Image image = ImageUtil.getImage(filename);
 
-			numExplosion = explosions.size();
-			explosionRenderImages = new RenderImage[numExplosion][];
+        if (properties.getOptionsRenderingBufferImages()) {
+            image = ImageUtil.getBufferedImage(image);
+        }
+        return image;
+    }
 
-			for (int i = numExplosion - 1; i >= 0; i--) {
-				explosionRenderImages[i] = explosions.get(i).toArray(new RenderImage[explosions.size()]);
-			}
-		}
-		return explosionRenderImages[which][frame];
-	}
+    /**
+     * Gets the body image
+     * Loads from disk if necessary.
+     *
+     * @return the body image
+     */
+    private Image getBodyImage() {
+        if (bodyImage == null) {
+            bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
+        }
+        return bodyImage;
+    }
 
-	public RenderImage getExplosionDebriseRenderImage() {
-		if (debriseRenderImage == null) {
-			debriseRenderImage = new RenderImage(getImage("/net/sf/robocode/ui/images/ground/explode_debris.png"));
-		}
-		return debriseRenderImage;
-	}
+    /**
+     * Gets the gun image
+     * Loads from disk if necessary.
+     *
+     * @return the gun image
+     */
+    private Image getGunImage() {
+        if (gunImage == null) {
+            gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
+        }
+        return gunImage;
+    }
 
-	private Image getImage(String filename) {
-		Image image = ImageUtil.getImage(filename);
+    /**
+     * Gets the radar image
+     * Loads from disk if necessary.
+     *
+     * @return the radar image
+     */
+    private Image getRadarImage() {
+        if (radarImage == null) {
+            radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
+        }
+        return radarImage;
+    }
 
-		if (properties.getOptionsRenderingBufferImages()) {
-			image = ImageUtil.getBufferedImage(image);
-		}
-		return image;
-	}
+    private Image getHealthImage() {
+        if (healthImage == null) {
+            healthImage = getImage("/net/sf/robocode/ui/images/health.png");
+        }
+        return healthImage;
+    }
 
-	/**
-	 * Gets the body image
-	 * Loads from disk if necessary.
-	 *
-	 * @return the body image
-	 */
-	private Image getBodyImage() {
-		if (bodyImage == null) {
-			bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
-		}
-		return bodyImage;
-	}
+    @Override
+    public RenderImage getColoredBodyRenderImage(Integer color) {
+        RenderImage img = robotBodyImageCache.get(color);
 
-	/**
-	 * Gets the gun image
-	 * Loads from disk if necessary.
-	 *
-	 * @return the gun image
-	 */
-	private Image getGunImage() {
-		if (gunImage == null) {
-			gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
-		}
-		return gunImage;
-	}
+        if (img == null) {
+            img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(), new Color(color, true)));
+            robotBodyImageCache.put(color, img);
+        }
+        return img;
+    }
 
-	/**
-	 * Gets the radar image
-	 * Loads from disk if necessary.
-	 *
-	 * @return the radar image
-	 */
-	private Image getRadarImage() {
-		if (radarImage == null) {
-			radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
-		}
-		return radarImage;
-	}
-	
-	private Image getHealthImage(){
-		if (healthImage == null){
-			healthImage = getImage("/net/sf/robocode/ui/images/health.png");
-		}
-		return healthImage;
-	}
+    @Override
+    public RenderImage getColoredGunRenderImage(Integer color) {
+        RenderImage img = robotGunImageCache.get(color);
 
-	public RenderImage getColoredBodyRenderImage(Integer color) {
-		RenderImage img = robotBodyImageCache.get(color);
+        if (img == null) {
+            img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(), new Color(color, true)));
+            robotGunImageCache.put(color, img);
+        }
+        return img;
+    }
 
-		if (img == null) {
-			img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(), new Color(color, true)));
-			robotBodyImageCache.put(color, img);
-		}
-		return img;
-	}
+    @Override
+    public RenderImage getColoredRadarRenderImage(Integer color) {
+        RenderImage img = robotRadarImageCache.get(color);
 
-	public RenderImage getColoredGunRenderImage(Integer color) {
-		RenderImage img = robotGunImageCache.get(color);
+        if (img == null) {
+            img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(), new Color(color, true)));
+            robotRadarImageCache.put(color, img);
+        }
+        return img;
+    }
 
-		if (img == null) {
-			img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(), new Color(color, true)));
-			robotGunImageCache.put(color, img);
-		}
-		return img;
-	}
+    /**
+     * Class used for caching rendered robot parts in various colors.
+     *
+     * @author Titus Chen
+     */
+    @SuppressWarnings("serial")
+    private static class RenderCache<K, V> extends LinkedHashMap<K, V> {
 
-	public RenderImage getColoredRadarRenderImage(Integer color) {
-		RenderImage img = robotRadarImageCache.get(color);
+        /* Note about initial capacity:
+         * To avoid rehashing (inefficient though probably unavoidable), initial
+         * capacity must be at least 1 greater than the maximum capacity.
+         * However, initial capacities are set to the smallest power of 2 greater
+         * than or equal to the passed argument, resulting in 512 with this code.
+         * I was not aware of this before, but notice: the current implementation
+         * behaves similarly.  The simple solution would be to set maximum capacity
+         * to 255, but the problem with doing so is that in a battle of 256 robots
+         * of different colors, the net result would end up being real-time
+         * rendering due to the nature of access ordering.  However, 256 robot
+         * battles are rarely fought.
+         */
+        private static final int INITIAL_CAPACITY = MAX_NUM_COLORS + 1;
+        private static final float LOAD_FACTOR = 1;
 
-		if (img == null) {
-			img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(), new Color(color, true)));
-			robotRadarImageCache.put(color, img);
-		}
-		return img;
-	}
+        public RenderCache() {
 
-	/**
-	 * Class used for caching rendered robot parts in various colors.
-	 *
-	 * @author Titus Chen
-	 */
-	@SuppressWarnings("serial")
-	private static class RenderCache<K, V> extends LinkedHashMap<K, V> {
+            /* The "true" parameter needed for access-order:
+             * when cache fills, the least recently accessed entry is removed
+             */
+            super(INITIAL_CAPACITY, LOAD_FACTOR, true);
+        }
 
-		/* Note about initial capacity:
-		 * To avoid rehashing (inefficient though probably unavoidable), initial
-		 * capacity must be at least 1 greater than the maximum capacity.
-		 * However, initial capacities are set to the smallest power of 2 greater
-		 * than or equal to the passed argument, resulting in 512 with this code.
-		 * I was not aware of this before, but notice: the current implementation
-		 * behaves similarly.  The simple solution would be to set maximum capacity
-		 * to 255, but the problem with doing so is that in a battle of 256 robots
-		 * of different colors, the net result would end up being real-time
-		 * rendering due to the nature of access ordering.  However, 256 robot
-		 * battles are rarely fought.
-		 */
-		private static final int INITIAL_CAPACITY = MAX_NUM_COLORS + 1;
-
-		private static final float LOAD_FACTOR = 1;
-
-		public RenderCache() {
-
-			/* The "true" parameter needed for access-order:
-			 * when cache fills, the least recently accessed entry is removed
-			 */
-			super(INITIAL_CAPACITY, LOAD_FACTOR, true);
-		}
-
-		@Override
-		protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-			return size() > MAX_NUM_COLORS;
-		}
-	}
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+            return size() > MAX_NUM_COLORS;
+        }
+    }
 }
