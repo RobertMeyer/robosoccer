@@ -162,6 +162,7 @@ public final class Battle extends BaseBattle {
     private int activeRobots;
     /* List of items that are going to be dropped */
     private List<ItemDrop> items = new ArrayList<ItemDrop>();
+    /** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
     // Death events
     private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
@@ -752,7 +753,7 @@ public final class Battle extends BaseBattle {
 
         // Move all bots
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
-            robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
+            robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
         }
 
         // Increment mode specific points - TODO -team-Telos

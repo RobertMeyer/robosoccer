@@ -52,40 +52,56 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.util.List;
 
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BoundingRectangle;
+
 
 /**
  * @author Joel Addison
  */
 public class ObstaclePeer {
 
-
-
-	private final BattleRules battleRules;
-
-	private double heading;
-
+	// Use width and height of the background squares
+	public final static int WIDTH = 64;
+    public final static int HEIGHT = 64;
+    protected BattleRules battleRules;
+    protected Battle battle;
+    protected final BoundingRectangle boundingBox;
+	
 	protected double x;
 	protected double y;
 
-	private double lastX;
-	private double lastY;
-
-	private double deltaX;
-	private double deltaY;
-
-	private final Line2D.Double boundingLine = new Line2D.Double();
-
-	protected int frame; // Do not set to -1
-
-	private final int color;
-
-
-	public ObstaclePeer(RobotPeer owner, BattleRules battleRules, int bulletId) {
+	public ObstaclePeer(Battle battle, BattleRules battleRules, int obstacleId) {
 		super();
+		this.battle = battle;
 		this.battleRules = battleRules;
-		color = owner.getBulletColor(); // Store current bullet color set on robot
+		this.boundingBox = new BoundingRectangle();
 	}
 
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+    public double getX() {
+        return x;
+    }
+
+	public double getY() {
+        return y;
+    }
+	
+    public void updateBoundingBox() {
+        boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+    }
+	
+    public BoundingRectangle getBoundingBox() {
+        return boundingBox;
+    }
+	
 	@Override
 	public String toString() {
 		return "Obstacle";

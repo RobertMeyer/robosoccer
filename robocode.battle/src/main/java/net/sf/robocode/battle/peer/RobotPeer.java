@@ -977,7 +977,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     }
 
     @Override
-    public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
+    public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
 
         // Reset robot state to active if it is not dead
         if (isDead()) {
@@ -1008,6 +1008,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         // First and foremost, we can never go through a wall:
         checkWallCollision();
 
+        // Now check for robot collision
+        checkObstacleCollision(obstacles);
+        
         // Now check for robot collision
         checkRobotCollision(robots);
 
@@ -1205,6 +1208,48 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {
+        boolean hitObstacle = false;
+        double fixx = 0, fixy = 0;
+        double angle = 0;
+        
+        for (ObstaclePeer obstacle : obstacles) {
+            if (!(obstacle == null) && boundingBox.intersects(obstacle.getBoundingBox())) {
+                hitObstacle = true;
+                
+                if (x > obstacle.getX() - (ObstaclePeer.WIDTH / 2) - HALF_WIDTH_OFFSET) {
+                    fixx = obstacle.getX() - (ObstaclePeer.WIDTH / 2) - HALF_WIDTH_OFFSET - x;
+                    angle = normalRelativeAngle(PI / 2 - bodyHeading);
+                }
+
+                if (x < obstacle.getX() + (ObstaclePeer.WIDTH / 2) + HALF_WIDTH_OFFSET) {
+                    fixx = obstacle.getX() + (ObstaclePeer.WIDTH / 2) + HALF_WIDTH_OFFSET - x;
+                    angle = normalRelativeAngle(3 * PI / 2 - bodyHeading);
+                }
+
+                if (y > obstacle.getY() - (ObstaclePeer.HEIGHT / 2) - HALF_HEIGHT_OFFSET) {
+                    fixy = obstacle.getY() - (ObstaclePeer.HEIGHT / 2) - HALF_HEIGHT_OFFSET - y;
+                    angle = normalRelativeAngle(-bodyHeading);
+                }
+
+                if (y < obstacle.getY() + (ObstaclePeer.HEIGHT / 2) + HALF_HEIGHT_OFFSET) {
+                    fixy = obstacle.getY() + (ObstaclePeer.HEIGHT / 2) + HALF_HEIGHT_OFFSET - y;
+                    angle = normalRelativeAngle(PI - bodyHeading);
+                }
+                //addEvent(new HitItemEvent());
+            }
+        }
+
+        if (hitObstacle) {
+        	addEvent(new HitWallEvent(angle));
+        	x += fixx;
+            y += fixy;
+
+        	updateBoundingBox();
+            setState(RobotState.HIT_WALL);
+        }
+    }
+    
     protected void checkWallCollision() {
         boolean hitWall = false;
         double fixx = 0, fixy = 0;
