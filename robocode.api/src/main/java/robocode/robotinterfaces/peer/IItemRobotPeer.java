@@ -6,7 +6,7 @@ package robocode.robotinterfaces.peer;
  * A robot peer is the object that deals with game mechanics and rules, and
  * makes sure your robot abides by them.
  * 
- * TODO Add methods to interface
+ * TODO Add parameters to doItemEffect if applicable
  * 
  * @author Ameer Sabri
  * @see IBasicRobotPeer
@@ -17,5 +17,6 @@ package robocode.robotinterfaces.peer;
  *
  */
 public interface IItemRobotPeer extends IAdvancedRobotPeer {
-
+	
+	void doItemEffect();
 }

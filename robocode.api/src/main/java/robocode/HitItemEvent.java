@@ -1,19 +1,21 @@
 package robocode;
 
-import java.awt.*;
 import net.sf.robocode.peer.IRobotStatics;
 import robocode.robotinterfaces.IBasicRobot;
 //import robocode.robotinterfaces.IBasicEvents;
-//import net.sf.robocode.serialization.ISerializableHelper;
-//import net.sf.robocode.serialization.RbSerializer;
+import net.sf.robocode.serialization.ISerializableHelper;
+import net.sf.robocode.serialization.RbSerializer;
 //import net.sf.robocode.battle.*;
+
+import java.awt.*;
+import java.nio.ByteBuffer;
 
 /**
  * A HitItemEvent is sent to {@link Robot#onHitItem(HitItemEvent) onHitItem()}
  * when your robot collides with an item.
  * You can use the information contained in this event to determine what to do.
  * 
- * TODO serializables, addition of tracked variables that may have been missed
+ * TODO addition of tracked variables that may have been missed
  * 
  * @author Ameer Sabri
  *
@@ -99,16 +101,39 @@ public final class HitItemEvent extends Event {
 	/**
 	 * {@inheritDoc}
 	 */
-	//@Override
-	//byte getSerializationType() {
-	//	
-	//}
+	@Override
+	byte getSerializationType() {
+		return RbSerializer.HitItemEvent_TYPE;
+	}
 	
-	//static ISerializableHelper createHiddenSerializer() {
-	//	return new SerializableHelper();
-	//}
+	static ISerializableHelper createHiddenSerializer() {
+		return new SerializableHelper();
+	}
 	
-	//private static class SerializableHelper implements ISerializableHelper {
+	private static class SerializableHelper implements ISerializableHelper {
+		public int sizeOf(RbSerializer serializer, Object object) {
+			HitItemEvent obj = (HitItemEvent) object;
+
+			return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.robotName) + RbSerializer.SIZEOF_DOUBLE
+					+ 2 * RbSerializer.SIZEOF_BOOL;
+		}
 		
-	//}
+		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+			HitItemEvent obj = (HitItemEvent) object;
+			
+			serializer.serialize(buffer, obj.robotName);
+			serializer.serialize(buffer, obj.energy);
+			serializer.serialize(buffer, obj.isDestroyable);
+			serializer.serialize(buffer, obj.isEquippable);
+		}
+		
+		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+			String robotName = serializer.deserializeString(buffer);
+			double energy = buffer.getDouble();
+			boolean isDestroyable = serializer.deserializeBoolean(buffer);
+			boolean isEquippable = serializer.deserializeBoolean(buffer);
+			
+			return new HitItemEvent(robotName, energy, isDestroyable, isEquippable);
+		}
+	}
 }
