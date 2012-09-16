@@ -18,6 +18,7 @@ import java.util.*;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
@@ -32,6 +33,7 @@ import robocode.control.snapshot.*;
  * @author Pavel Savara (contributor)
  * @since 1.6.1
  */
+
 public final class TurnSnapshot implements java.io.Serializable,
                                            IXmlSerializable, ITurnSnapshot {
 
@@ -43,6 +45,8 @@ public final class TurnSnapshot implements java.io.Serializable,
     /** List of snapshots for the items that are currently on the battlefield */
     //TODO expand this use
     private List<IItemSnapshot> items;
+    /** List of snapshots of effect areas */
+	private List<IEffectAreaSnapshot> effArea;
     /** Current TPS (turns per second) */
     private int tps;
     /** Current round in the battle */
@@ -65,11 +69,12 @@ public final class TurnSnapshot implements java.io.Serializable,
      * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
      *                    {@code false} otherwise.
      */
-    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, boolean readoutText) {
+    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, boolean readoutText) {
         robots = new ArrayList<IRobotSnapshot>();
         bullets = new ArrayList<IBulletSnapshot>();
         items = new ArrayList<IItemSnapshot>();
-
+		effArea = new ArrayList<IEffectAreaSnapshot>();
+        
         for (RobotPeer robotPeer : battleRobots) {
             robots.add(new RobotSnapshot(robotPeer, readoutText));
         }
@@ -78,6 +83,10 @@ public final class TurnSnapshot implements java.io.Serializable,
             bullets.add(new BulletSnapshot(bulletPeer));
         }
 
+        for (EffectArea effectArea : effectAreas) {
+			effArea.add(new EffectAreaSnapshot(effectArea));
+		}
+        
         tps = battle.getTPS();
         turn = battle.getTime();
         round = battle.getRoundNum();
@@ -104,6 +113,11 @@ public final class TurnSnapshot implements java.io.Serializable,
         return bullets.toArray(new IBulletSnapshot[bullets.size()]);
     }
 
+
+	public IEffectAreaSnapshot[] getEffectAreas() {
+		return effArea.toArray(new IEffectAreaSnapshot[effArea.size()]);
+	}
+	
     /**
      * {@inheritDoc}
      */

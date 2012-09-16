@@ -35,7 +35,7 @@ import robocode.robotinterfaces.*;
  * @author Pavel Savara (original)
  */
 public class JavaHost implements IHost {
-
+	
     public IRobotClassLoader createLoader(IRobotRepositoryItem robotRepositoryItem) {
         return new RobotClassLoader(robotRepositoryItem.getClassPathURL(), robotRepositoryItem.getFullClassName());
     }
@@ -117,6 +117,8 @@ public class JavaHost implements IHost {
         boolean isTeamRobot = false;
         boolean isDroid = false;
         boolean isHouseRobot = false;
+        boolean isBall = false;
+        boolean isBotzilla = false;
 
         if (Droid.class.isAssignableFrom(robotClass)) {
             isDroid = true;
@@ -132,6 +134,14 @@ public class JavaHost implements IHost {
 
         if (IHouseRobot.class.isAssignableFrom(robotClass)) {
             isHouseRobot = true;
+        }
+        
+        if (IBall.class.isAssignableFrom(robotClass)) {
+			isBall = true;
+		}
+        
+        if (IBotzilla.class.isAssignableFrom(robotClass)) {
+        	isBotzilla = true;
         }
 
         if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
@@ -178,8 +188,8 @@ public class JavaHost implements IHost {
             }
         }
         return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-                             isTeamRobot, isDroid, isHouseRobot);
-    }
+                             isTeamRobot, isDroid, isHouseRobot, isBall, isBotzilla);
+    	}
 
     private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {
         if (knownBase.isAssignableFrom(robotClass)) {
@@ -196,4 +206,5 @@ public class JavaHost implements IHost {
         }
         return true;
     }
+
 }

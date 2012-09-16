@@ -27,8 +27,10 @@ public interface IRobotRepositoryItem extends IRepositoryItem {
     String getRobotLanguage();
 
     boolean isDroid();
-
-    boolean isHouseRobot();
+	
+	boolean isHouseRobot();
+	
+	boolean isBall();
 
     boolean isTeamRobot();
 
@@ -41,4 +43,6 @@ public interface IRobotRepositoryItem extends IRepositoryItem {
     boolean isPaintRobot();
 
     boolean isJuniorRobot();
+
+	boolean isBotzilla();
 }

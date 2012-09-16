@@ -114,12 +114,18 @@ public class SoundManager implements ISoundManager {
      *
      * @return a SoundCache instance
      */
-    private SoundCache getSounds() {
+    private SoundCache getSounds(String path) {
         if (sounds == null) {
             sounds = new SoundCache(getMixer());
 
             // Sound effects
-            sounds.addSound("gunshot", properties.getFileGunshotSfx(), 5);
+            if(path != null){
+            	 sounds.addSound("gunshot", path, 5);
+            }
+            else {
+            	sounds.addSound("gunshot", properties.getFileGunshotSfx(), 5);
+            }
+           
             sounds.addSound("robot death", properties.getRobotDeathSfx(), 3);
             sounds.addSound("bullet hits robot", properties.getBulletHitsRobotSfx(), 3);
             sounds.addSound("bullet hits bullet", properties.getBulletHitsBulletSfx(), 2);
@@ -172,8 +178,8 @@ public class SoundManager implements ISoundManager {
      * @param volume volume to be used, from 0 to 1
      * @param loop   the number of times to loop the sound
      */
-    private void playSound(Object key, float pan, float volume, int loop) {
-        Clip c = getSounds().getSound(key);
+    private void playSound(Object key, float pan, float volume, int loop, String path) {
+        Clip c = getSounds(path).getSound(key);
 
         if (c == null) {
             return;
@@ -181,9 +187,9 @@ public class SoundManager implements ISoundManager {
 
         if (properties.getOptionsSoundEnableMixerPan() && c.isControlSupported(FloatControl.Type.PAN)) {
             FloatControl panCtrl = (FloatControl) c.getControl(FloatControl.Type.PAN);
-
             panCtrl.setValue(pan);
         }
+        
         if (properties.getOptionsSoundEnableMixerVolume() && c.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
             FloatControl volCtrl = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
 
@@ -202,8 +208,8 @@ public class SoundManager implements ISoundManager {
      * @param key the sound name, as stored in the sound table
      * @param pan panning to be used (-1=left, 0=middle, +1=right)
      */
-    private void playSound(Object key, float pan) {
-        playSound(key, pan, 1, 0);
+    private void playSound(Object key, float pan, String path) {
+        playSound(key, pan, 1, 0, path);
     }
 
     /**
@@ -214,7 +220,7 @@ public class SoundManager implements ISoundManager {
      * @param loop the number of times to loop the music
      */
     private void playMusic(Object key, int loop) {
-        playSound(key, 0, 1, loop);
+        playSound(key, 0, 1, loop, "");
     }
 
     /**
@@ -232,19 +238,19 @@ public class SoundManager implements ISoundManager {
         switch (bp.getState()) {
             case FIRED:
                 if (properties.getOptionsSoundEnableGunshot()) {
-                    playSound("gunshot", pan, calcBulletVolume(bp), 0);
+                    playSound("gunshot", pan, calcBulletVolume(bp), 0, bp.getBulletSound());
                 }
                 break;
 
             case HIT_VICTIM:
                 if (properties.getOptionsSoundEnableBulletHit()) {
-                    playSound("bullet hits robot", pan);
+                    playSound("bullet hits robot", pan, bp.getBulletSound());
                 }
                 break;
 
             case HIT_BULLET:
                 if (properties.getOptionsSoundEnableBulletHit()) {
-                    playSound("bullet hits bullet", pan);
+                    playSound("bullet hits bullet", pan, bp.getBulletSound());
                 }
                 break;
 
@@ -254,7 +260,7 @@ public class SoundManager implements ISoundManager {
 
             case EXPLODED:
                 if (properties.getOptionsSoundEnableRobotDeath()) {
-                    playSound("robot death", pan);
+                    playSound("robot death", pan, bp.getBulletSound());
                 }
                 break;
 
@@ -277,13 +283,13 @@ public class SoundManager implements ISoundManager {
         switch (robotPeer.getState()) {
             case HIT_ROBOT:
                 if (properties.getOptionsSoundEnableRobotCollision()) {
-                    playSound("robot collision", pan);
+                    playSound("robot collision",pan , null);
                 }
                 break;
 
             case HIT_WALL:
                 if (properties.getOptionsSoundEnableWallCollision()) {
-                    playSound("wall collision", pan);
+                    playSound("wall collision", pan, null);
                 }
                 break;
 
@@ -312,7 +318,7 @@ public class SoundManager implements ISoundManager {
      * Stops the background music.
      */
     public void stopBackgroundMusic() {
-        Clip c = getSounds().getSound("background");
+        Clip c = getSounds(null).getSound("background");
 
         if (c != null) {
             c.stop();
@@ -370,12 +376,12 @@ public class SoundManager implements ISoundManager {
         public void onTurnEnded(TurnEndedEvent event) {
             if (isSoundEnabled()) {
                 int battleFieldWidth = battleManager.getBattleProperties().getBattlefieldWidth();
-
+                
                 for (IBulletSnapshot bp : event.getTurnSnapshot().getBullets()) {
                     if (bp.getFrame() == 0) {
                         playBulletSound(bp, battleFieldWidth);
                     }
-                }
+                }           
 
                 boolean playedRobotHitRobot = false;
 

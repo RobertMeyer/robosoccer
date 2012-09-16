@@ -19,7 +19,7 @@ import net.sf.robocode.io.Logger;
 import static net.sf.robocode.io.Logger.logError;
 import static net.sf.robocode.io.Logger.logMessage;
 import net.sf.robocode.io.URLJarCollector;
-import net.sf.robocode.mode.IMode;
+import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.BattleRules;
 import robocode.control.events.BattlePausedEvent;
@@ -41,7 +41,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
     // rules
     protected BattleRules battleRules;
     // mode
-    protected IMode battleMode;
+    protected ClassicMode battleMode;
     // Current round items
     private int roundNum;
     protected int currentTime;
@@ -125,7 +125,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
         return tps;
     }
 
-    public IMode getBattleMode() {
+    public ClassicMode getBattleMode() {
         return battleMode;
     }
 

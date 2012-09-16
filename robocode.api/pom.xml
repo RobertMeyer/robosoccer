@@ -81,17 +81,30 @@
                             <docfilessubdirs>true</docfilessubdirs>
                             <doctitle>
                         <![CDATA[<h1>Robocode ${project.version} API</h1>]]>
-                            </doctitle>
-                            <use>false</use>
-                            <doclet>ydoc.doclets.YStandard</doclet>
-                            <docletPath>${yDoc.path}/lib/ydoc.jar:${yDoc.path}/lib/class2svg.jar:${yDoc.path}/resources</docletPath>
-                            <additionalparam>-link http://docs.oracle.com/javase/6/docs/api/
-                                -umlautogen
-                            </additionalparam>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+									</doctitle>
+							<use>false</use>
+							<doclet>ydoc.doclets.YStandard</doclet>
+							<docletPath>${yDoc.path}/lib/ydoc.jar:${yDoc.path}/lib/class2svg.jar:${yDoc.path}/resources</docletPath>
+							<additionalparam>-link http://docs.oracle.com/javase/6/docs/api/
+								-umlautogen</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.9</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

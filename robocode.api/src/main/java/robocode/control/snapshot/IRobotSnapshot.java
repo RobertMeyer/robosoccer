@@ -13,6 +13,13 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import robocode.EquipmentPart;
+import robocode.EquipmentSlot;
+
 /**
  * Interface of a robot snapshot at a specific time in a battle.
  *
@@ -29,7 +36,21 @@ public interface IRobotSnapshot {
      * @return the name of the robot.
      */
     String getName();
-
+    
+    /**
+     * Returns the array of parts equipped to the robot.
+     *
+     * @return the robots equipment.
+     */
+    AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment();
+    
+    /**
+     * Returns the scan radius of the robot.
+     * 
+     * @return scan radius of robot
+     */
+    double getScanRadius();
+    
     /**
      * Returns the short name of the robot.
      *

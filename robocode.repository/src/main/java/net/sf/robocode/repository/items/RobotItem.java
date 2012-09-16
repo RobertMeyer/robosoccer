@@ -480,10 +480,20 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     public boolean isJuniorRobot() {
         return robotType.isJuniorRobot();
     }
+    
+    @Override
+    public boolean isBall() {
+		return robotType.isBall();
+	}
 
     @Override
     public boolean isHouseRobot() {
         return robotType.isHouseRobot();
+    }
+    
+    @Override
+    public boolean isBotzilla() {
+    	return robotType.isBotzilla();
     }
 
     @Override
@@ -615,4 +625,5 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     public String toString() {
         return itemURL.toString();
     }
+
 }
