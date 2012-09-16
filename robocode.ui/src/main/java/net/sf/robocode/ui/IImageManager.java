@@ -25,7 +25,9 @@ public interface IImageManager {
 	
 	Image getFieldTileImage(int index);
 	
-	RenderImage getBallImage();
+	RenderImage getCustomImage(String name);
+	
+	RenderImage addCustomImage(String name, String filename);
 
     RenderImage getExplosionRenderImage(int which, int frame);
 

@@ -424,7 +424,7 @@ public class BattleView extends Canvas {
         AffineTransform at;
         int battleFieldHeight = battleField.getHeight();
     }
-
+    
     private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
         double x, y;
         AffineTransform at;
@@ -454,7 +454,7 @@ public class BattleView extends Canvas {
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
                 
-                RenderImage robotRenderImage = imageManager.getBallImage();
+                RenderImage robotRenderImage = imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
                 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
