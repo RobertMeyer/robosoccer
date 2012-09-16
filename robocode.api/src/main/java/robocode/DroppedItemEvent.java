@@ -10,4 +10,22 @@ package robocode;
  * @author team-Telos
  */
 public class DroppedItemEvent {
+	/* String representation of the item */
+	private String item;
+	
+	/**
+	 * New DroppedItemEvent
+	 * @param item String representation of the item
+	 */
+	DroppedItemEvent(String item) {
+		this.item = item;
+	}
+	
+	/**
+	 * Get the name of the item scanned
+	 * @return String representation of the name of the item
+	 */
+	public String getItemName() {
+		return this.item;
+	}
 }
