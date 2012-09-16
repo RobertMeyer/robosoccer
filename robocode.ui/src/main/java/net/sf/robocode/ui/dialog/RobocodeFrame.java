@@ -23,6 +23,7 @@
  */
 package net.sf.robocode.ui.dialog;
 
+import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.recording.IRecordManager;
 import net.sf.robocode.settings.ISettingsManager;
@@ -85,6 +86,7 @@ public class RobocodeFrame extends JFrame {
     private JButton restartButton;
     private JButton replayButton;
     private JSlider tpsSlider;
+    private EffectAreaCheckbox box;
     private JLabel tpsLabel;
     private boolean iconified;
     private boolean exitOnClose = true;
@@ -114,6 +116,7 @@ public class RobocodeFrame extends JFrame {
         this.recordManager = recordManager;
         this.battleView = battleView;
         this.menuBar = menuBar;
+        box = new EffectAreaCheckbox(battleManager.getBattleProperties());
         menuBar.setup(this);
         initialize();
     }
@@ -295,9 +298,9 @@ public class RobocodeFrame extends JFrame {
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container
                     .getComponent(BattleButton.class);
-
             btn.attach();
             sidePanel.add(btn, BorderLayout.SOUTH);
+            sidePanel.add(box, BorderLayout.NORTH);
         }
         return sidePanel;
     }
@@ -592,6 +595,7 @@ public class RobocodeFrame extends JFrame {
 
     private void pauseResumeButtonActionPerformed() {
         battleManager.togglePauseResumeBattle();
+        
     }
 
     /**
@@ -886,7 +890,7 @@ public class RobocodeFrame extends JFrame {
         }
 
         @Override
-        public void onRoundStarted(final RoundStartedEvent event) {
+        public void onRoundStarted(final RoundStartedEvent event) {	
             if (event.getRound() == 0) {
                 getRobotButtonsPanel().removeAll();
 

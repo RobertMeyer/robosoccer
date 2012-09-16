@@ -54,7 +54,7 @@ public class BattleProperties implements Serializable {
 	private String initialPositions;
 	private IMode battleMode;
 	private Hashtable<String, Object> modeRules;
-
+	private Boolean effectAreaOn = false;
 	private final Properties props = new Properties();
 
 	/**
@@ -278,6 +278,22 @@ public class BattleProperties implements Serializable {
 	 */
 	public Hashtable<String, Object> getModeRules() {
 		return modeRules;
+	}
+	
+	/** 
+	 * Get whether effect area is on
+	 * @return whether effect area is on
+	 */
+	public Boolean getEffectArea() {
+		return this.effectAreaOn;
+	}
+
+	 /**
+	  * Set effect area
+	  */
+	
+	public void setEffectArea(Boolean b) {
+		effectAreaOn = b;
 	}
 	
 	/**

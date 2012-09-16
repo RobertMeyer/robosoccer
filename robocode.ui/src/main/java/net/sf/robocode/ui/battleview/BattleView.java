@@ -45,6 +45,12 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.IEffectAreaSnapshot;
+
+import java.util.ArrayList;
+
+import java.io.*;
+
 
 /**
  * @author Mathew A. Nelson (original)
@@ -339,6 +345,7 @@ public class BattleView extends Canvas {
             // Draw scan arcs
             drawScanArcs(g, snapShot);
 
+            drawEffectAreas(g, snapShot);
             // Draw robots
             drawRobots(g, snapShot);
 
@@ -487,8 +494,8 @@ public class BattleView extends Canvas {
 
     private void drawText(Graphics2D g, ITurnSnapshot snapShot) {
         final Shape savedClip = g.getClip();
-
-        g.setClip(null);
+    
+	     g.setClip(null);
 
         for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
             if (robotSnapshot.getState().isDead()) {
@@ -523,6 +530,29 @@ public class BattleView extends Canvas {
         g.setClip(savedClip);
     }
 
+
+	private void drawEffectAreas(Graphics2D g, ITurnSnapshot snapShot) {
+		double x, y;
+		int tileIndex = 0;
+		int battleFieldHeight = battleField.getHeight();
+		
+		for(IEffectAreaSnapshot effectAreaSnapshot : snapShot.getEffectAreas()) {
+			x = effectAreaSnapshot.getXCoord();
+			y = battleFieldHeight - effectAreaSnapshot.getYCoord();
+			
+			int x1 = (int)(x);
+			int y1 = (int)((battleFieldHeight - effectAreaSnapshot.getYCoord()));
+			
+			//first four is default ground images
+			tileIndex = effectAreaSnapshot.getActiveEffect() + 5;
+		
+			Image effAreaImg = imageManager.getGroundTileImage(tileIndex);
+			
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.drawImage(effAreaImg, x1, y1, null);
+		}
+	}
+	
     private void drawRobotPaint(Graphics2D g, ITurnSnapshot turnSnapshot) {
 
         int robotIndex = 0;
@@ -658,7 +688,7 @@ public class BattleView extends Canvas {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
 
         scanArc.setAngleStart((360 - scanArc.getAngleStart() - scanArc.getAngleExtent()) % 360);
-        scanArc.y = battleField.getHeight() - robotSnapshot.getY() - robocode.Rules.RADAR_SCAN_RADIUS;
+        scanArc.y = battleField.getHeight() - robotSnapshot.getY() - robotSnapshot.getScanRadius();
 
         int scanColor = robotSnapshot.getScanColor();
 
