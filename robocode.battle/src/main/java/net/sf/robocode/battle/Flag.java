@@ -9,7 +9,7 @@ public class Flag extends ItemDrop {
     // Variable to indicate the carrier of the flag
     RobotPeer carrier;
 
-    Flag(boolean isDestroyable, int lifespan, double health,
+    public Flag(boolean isDestroyable, int lifespan, double health,
          boolean isEquippable, Battle battle, RobotPeer carrier) {
         super(isDestroyable, lifespan, health, isEquippable, battle);
 

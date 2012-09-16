@@ -42,19 +42,6 @@ public interface IMode {
 	public Hashtable<String, Object> getRulesPanelValues();
 	
 	/**
-	 * Returns a list of String of the item to 
-	 * spawn in the beginning of the round
-	 * @return list of items
-	 */
-	public List<String> getItems();
-	
-	/**
-	 * Create a list of Strings representing the items to
-	 * spawn in the beginning of the round
-	 */
-	public void setItems();
-	
-	/**
 	 * Increments the score specific to the different modes
 	 */
 	public void scorePoints();

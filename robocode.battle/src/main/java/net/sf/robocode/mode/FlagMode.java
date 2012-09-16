@@ -3,6 +3,10 @@ package net.sf.robocode.mode;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.Flag;
+import net.sf.robocode.battle.ItemDrop;
+
 /**
  * Basic Construct for the CTF mode:
  *  Contains methods for initialising settings
@@ -16,9 +20,9 @@ public class FlagMode extends ClassicMode {
     // Class Variables
     private double pointLimit;
     private double timeLimit;
-    // Score variable
-    private double flagScore = 0;
-    List<String> items = new ArrayList<String>();
+    List<? extends ItemDrop> itemsG = new ArrayList<ItemDrop>();
+    @SuppressWarnings("unchecked")
+	List<ItemDrop> items = (List<ItemDrop>) itemsG;
 
     /**
      *
@@ -88,10 +92,10 @@ public class FlagMode extends ClassicMode {
 
     /**
      * Get the items needed for the items
-     * @return the items needed
+     * @return The items needed to be spawned/used
      */
     @Override
-    public List<String> getItems() {
+    public List<? extends ItemDrop> getItems() {
         return items;
     }
 
@@ -99,8 +103,10 @@ public class FlagMode extends ClassicMode {
      * Add Flag as an item to be used for this Mode
      */
     @Override
-    public void setItems() {
-        items.add("Flag");
+    public void setItems(Battle battle) {
+    	/* Add the flag to the items */
+        items.add(new Flag(false, Integer.MAX_VALUE, 0.0,
+                true, battle, null));
     }
 
     /**
@@ -108,8 +114,6 @@ public class FlagMode extends ClassicMode {
      */
     @Override
     public void scorePoints() {
-        // TODO
-        flagScore++;
     }
     
     /**

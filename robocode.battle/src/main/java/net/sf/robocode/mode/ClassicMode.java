@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Hashtable;
 import javax.swing.JPanel;
+
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.ItemDrop;
 import robocode.BattleRules;
 
 /**
@@ -53,21 +56,26 @@ public class ClassicMode implements IMode {
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns a list of ItemDrop's to 
+	 * spawn in the beginning of the round
+	 * @return List of items
 	 */
-	public List<String> getItems() {
-		return new ArrayList<String>();
+	public List<? extends ItemDrop> getItems() {
+		return new ArrayList<ItemDrop>();
 	}
 	
-	@Override
-	public void setItems() {
+	/**
+	 * Create a list of ItemDrop's to
+	 * spawn in the beginning of the round
+	 * @param battle The Battle to add the items to
+	 */
+	public void setItems(Battle battle) {
 		/* No items needed for Classic Mode */
 	}
 
 	@Override
 	public void scorePoints() {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	/**
