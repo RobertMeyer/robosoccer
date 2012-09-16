@@ -120,4 +120,11 @@ public class FlagMode extends ClassicMode {
     public boolean respawnsOn() {
     	return true;
     }
+    
+    /**
+     * Rounds will last 2 mins at 30 turns per second (3600 turns)
+     */
+    public int turnLimit() {
+    	return 2*30*60;  // 2 min. at 30 turns per sec (default)
+    }
 }

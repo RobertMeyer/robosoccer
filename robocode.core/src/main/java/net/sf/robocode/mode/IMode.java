@@ -64,4 +64,14 @@ public interface IMode {
 	 * @return boolean representing respawns on or off
 	 */
 	public boolean respawnsOn();
+	
+	/**
+	 * Returns the turn number each round will end on.  Automatically enabled
+	 * when respawns are.  Default set to 9000 turns (5 mins at 30 TPS)
+	 * Note: You do not have to implement this if respawns are on unless
+	 * you want to change the turn limit.
+	 * @return the turn number that each round will end on if respawns are
+	 * enabled
+	 */
+	public int turnLimit();
 }
