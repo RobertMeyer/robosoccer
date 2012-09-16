@@ -40,7 +40,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	private final boolean isTeamLeader;
 	private final boolean isDroid;
 	private final boolean isHouseRobot;
-	private final boolean isItemRobot;
 	private final String name;
 	private final String shortName;
 	private final String veryShortName;
@@ -80,7 +79,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.isTeamRobot = specification.isTeamRobot();
 		this.isDroid = specification.isDroid();
 		this.isHouseRobot = specification.isHouseRobot();
-		this.isItemRobot = specification.isItemRobot();
 		this.isTeamLeader = isLeader;
 		this.battleRules = rules;
 
@@ -101,7 +99,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	}
 
 	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
-			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isItemRobot, String name, String shortName,
+			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, String name, String shortName,
 			String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
 			String[] teammates, String teamName, int robotIndex, int teamIndex) {
 		this.isJuniorRobot = isJuniorRobot;
@@ -111,7 +109,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.isTeamRobot = isTeamRobot;
 		this.isTeamLeader = isTeamLeader;
 		this.isDroid = isDroid;
-		this.isItemRobot = isItemRobot;
 		this.name = name;
 		this.shortName = shortName;
 		this.veryShortName = veryShortName;
@@ -126,7 +123,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	}
 	
 	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
-			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isItemRobot, String name, String shortName,
+			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, String name, String shortName,
 			String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
 			String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot) {
 
@@ -137,7 +134,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.isTeamRobot = isTeamRobot;
 		this.isTeamLeader = isTeamLeader;
 		this.isDroid = isDroid;
-		this.isItemRobot = isItemRobot;
 		this.name = name;
 		this.shortName = shortName;
 		this.veryShortName = veryShortName;
@@ -185,10 +181,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	
 	public boolean isHouseRobot() {
 		return isHouseRobot;
-	}
-	
-	public boolean isItemRobot() {
-		return isItemRobot;
 	}
 
 	public String getName() {
@@ -238,7 +230,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	private static class SerializableHelper implements ISerializableHelper {
 		public int sizeOf(RbSerializer serializer, Object object) {
 			RobotStatics obj = (RobotStatics) object;
-			int size = RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_BOOL * 8 + serializer.sizeOf(obj.name)
+			int size = RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_BOOL * 7 + serializer.sizeOf(obj.name)
 					+ serializer.sizeOf(obj.shortName) + serializer.sizeOf(obj.veryShortName)
 					+ serializer.sizeOf(obj.fullClassName) + serializer.sizeOf(obj.shortClassName)
 					+ RbSerializer.SIZEOF_INT * 5 + RbSerializer.SIZEOF_DOUBLE + RbSerializer.SIZEOF_LONG;
@@ -264,7 +256,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 			serializer.serialize(buffer, obj.isTeamRobot);
 			serializer.serialize(buffer, obj.isTeamLeader);
 			serializer.serialize(buffer, obj.isDroid);
-			serializer.serialize(buffer, obj.isItemRobot);
 			serializer.serialize(buffer, obj.name);
 			serializer.serialize(buffer, obj.shortName);
 			serializer.serialize(buffer, obj.veryShortName);
@@ -295,7 +286,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 			boolean isTeamRobot = serializer.deserializeBoolean(buffer);
 			boolean isTeamLeader = serializer.deserializeBoolean(buffer);
 			boolean isDroid = serializer.deserializeBoolean(buffer);
-			boolean isItemRobot = serializer.deserializeBoolean(buffer);
 			String name = serializer.deserializeString(buffer);
 			String shortName = serializer.deserializeString(buffer);
 			String veryShortName = serializer.deserializeString(buffer);
@@ -323,7 +313,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 			int contestantIndex = serializer.deserializeInt(buffer);
 
 			return new RobotStatics(isJuniorRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot, isTeamRobot,
-					isTeamLeader, isDroid, isItemRobot, name, shortName, veryShortName, fullClassName, shortClassName, battleRules,
+					isTeamLeader, isDroid, name, shortName, veryShortName, fullClassName, shortClassName, battleRules,
 					teammates.toArray(new String[teammates.size()]), teamName, index, contestantIndex);
 		}
 	}
