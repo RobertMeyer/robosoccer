@@ -11,32 +11,32 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class TestNames extends RobocodeTestBed {
-	@Test
-	public void run() {
-		super.run();
-	}
 
-	@Override
-	protected int getExpectedErrors() {
-		return 4;
-	}
+    @Test
+    @Override
+    public void run() {
+        super.run();
+    }
 
-	@Override
-	public int getExpectedRobotCount(String list) {
-		return 2;
-	}
+    @Override
+    protected int getExpectedErrors() {
+        return 4;
+    }
 
-	@Override
-	public String getRobotNames() {
-		return "sample.Fire,robocode.BadNamespace,tested.robots.TooLongNameThisIsReallyTooLongName,tooLongNamespaceThisIsReallyTooLongNamespace.TooLongNamespace,NoPackageButReallyLongNameIWouldSayTooLongMaybeEventLonger,NoPackageShortName";
-	}
+    @Override
+    public int getExpectedRobotCount(String list) {
+        return 2;
+    }
+
+    @Override
+    public String getRobotNames() {
+        return "sample.Fire,robocode.BadNamespace,tested.robots.TooLongNameThisIsReallyTooLongName,tooLongNamespaceThisIsReallyTooLongNamespace.TooLongNamespace,NoPackageButReallyLongNameIWouldSayTooLongMaybeEventLonger,NoPackageShortName";
+    }
 }

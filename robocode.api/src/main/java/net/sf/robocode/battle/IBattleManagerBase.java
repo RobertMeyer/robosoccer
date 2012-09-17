@@ -11,22 +11,21 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-
 import robocode.control.BattleSpecification;
 import robocode.control.events.IBattleListener;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IBattleManagerBase {
-	void addListener(IBattleListener listener);
 
-	void removeListener(IBattleListener listener);
+    void addListener(IBattleListener listener);
 
-	void waitTillOver();
+    void removeListener(IBattleListener listener);
 
-	void stop(boolean waitTillEnd);
+    void waitTillOver();
 
-	void startNewBattle(BattleSpecification spec, String initialPositions, boolean waitTillOver, boolean enableCLIRecording);
+    void stop(boolean waitTillEnd);
+
+    void startNewBattle(BattleSpecification spec, String initialPositions, boolean waitTillOver, boolean enableCLIRecording);
 }

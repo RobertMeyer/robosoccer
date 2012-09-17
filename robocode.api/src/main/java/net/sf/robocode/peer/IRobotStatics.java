@@ -11,16 +11,16 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface IRobotStatics {
-	boolean isInteractiveRobot();
 
-	boolean isPaintRobot();
+    boolean isInteractiveRobot();
 
-	boolean isAdvancedRobot();
+    boolean isPaintRobot();
 
-	boolean isTeamRobot();
+    boolean isAdvancedRobot();
+
+    boolean isTeamRobot();
 }

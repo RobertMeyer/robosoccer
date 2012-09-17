@@ -16,7 +16,7 @@ package robocode.control.snapshot;
 
 /**
  * Interface of a bullet snapshot at a specific time in a battle.
- * 
+ *
  * @author Pavel Savara (original)
  * @author Flemming N. Larsen (contributor)
  *
@@ -24,114 +24,122 @@ package robocode.control.snapshot;
  */
 public interface IBulletSnapshot {
 
-	/**
-	 * Returns the bullet state.
-	 *
-	 * @return the bullet state.
-	 */
-	BulletState getState();
+    /**
+     * Returns the bullet state.
+     *
+     * @return the bullet state.
+     */
+    BulletState getState();
+    
+    /**
+     * Returns the path to the bullets sound file, and null if there is none,
+     * as it would be with normal robots
+     *
+     * @return the path to bullet sound file.
+     */
+    String getBulletSound();
 
-	/**
-	 * Returns the bullet power.
-	 *
-	 * @return the bullet power.
-	 */
-	double getPower();
+    /**
+     * Returns the bullet power.
+     *
+     * @return the bullet power.
+     */
+    double getPower();
 
-	/**
-	 * Returns the X position of the bullet.
-	 *
-	 * @return the X position of the bullet.
-	 */
-	double getX();
+    /**
+     * Returns the X position of the bullet.
+     *
+     * @return the X position of the bullet.
+     */
+    double getX();
 
-	/**
-	 * Returns the Y position of the bullet.
-	 *
-	 * @return the Y position of the bullet.
-	 */
-	double getY();
+    /**
+     * Returns the Y position of the bullet.
+     *
+     * @return the Y position of the bullet.
+     */
+    double getY();
 
-	/**
-	 * Returns the X painting position of the bullet.
-	 * Note that this is not necessarily equal to the X position of the bullet, even though
-	 * it will be in most cases. The painting position of the bullet is needed as the bullet
-	 * will "stick" to its victim when it has been hit, but only visually. 
-	 *
-	 * @return the X painting position of the bullet.
-	 */
-	double getPaintX();
+    /**
+     * Returns the X painting position of the bullet.
+     * Note that this is not necessarily equal to the X position of the bullet, even though
+     * it will be in most cases. The painting position of the bullet is needed as the bullet
+     * will "stick" to its victim when it has been hit, but only visually.
+     *
+     * @return the X painting position of the bullet.
+     */
+    double getPaintX();
 
-	/**
-	 * Returns the Y painting position of the bullet.
-	 * Note that this is not necessarily equal to the Y position of the bullet, even though
-	 * it will be in most cases. The painting position of the bullet is needed as the bullet
-	 * will "stick" to its victim when it has been hit, but only visually. 
-	 *
-	 * @return the Y painting position of the bullet.
-	 */
-	double getPaintY();
+    /**
+     * Returns the Y painting position of the bullet.
+     * Note that this is not necessarily equal to the Y position of the bullet, even though
+     * it will be in most cases. The painting position of the bullet is needed as the bullet
+     * will "stick" to its victim when it has been hit, but only visually.
+     *
+     * @return the Y painting position of the bullet.
+     */
+    double getPaintY();
 
-	/**
-	 * Returns the color of the bullet.
-	 *
-	 * @return an ARGB color value. (Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue)
-	 * 
-	 * @see java.awt.Color#getRGB()
-	 */
-	int getColor();
+    /**
+     * Returns the color of the bullet.
+     *
+     * @return an ARGB color value. (Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue)
+     *
+     * @see java.awt.Color#getRGB()
+     */
+    int getColor();
 
-	/**
-	 * Returns the current frame number to display, i.e. when the bullet explodes.
-	 *
-	 * @return the current frame number.
-	 * 
-	 * @see #isExplosion()
-	 * @see #getExplosionImageIndex()
-	 */
-	int getFrame();
+    /**
+     * Returns the current frame number to display, i.e. when the bullet explodes.
+     *
+     * @return the current frame number.
+     *
+     * @see #isExplosion()
+     * @see #getExplosionImageIndex()
+     */
+    int getFrame();
 
-	/**
-	 * Checks if the bullet has become an explosion, i.e. when it a robot or bullet has been hit.
-	 *
-	 * @return {@code true} if the bullet is an explosion; {@code false} otherwise.
-	 * 
-	 * @see #getFrame()
-	 * @see #getExplosionImageIndex()
-	 */
-	boolean isExplosion();
+    /**
+     * Checks if the bullet has become an explosion, i.e. when it a robot or bullet has been hit.
+     *
+     * @return {@code true} if the bullet is an explosion; {@code false} otherwise.
+     *
+     * @see #getFrame()
+     * @see #getExplosionImageIndex()
+     */
+    boolean isExplosion();
 
-	/**
-	 * Returns the explosion image index, which is different depending on the type of explosion.
-	 * E.g. if it is a small explosion on a robot that has been hit by this bullet,
-	 * or a big explosion when a robot dies.
-	 *
-	 * @return the explosion image index.
-	 * 
-	 * @see #isExplosion()
-	 * @see #getExplosionImageIndex()
-	 */
-	int getExplosionImageIndex();
+    /**
+     * Returns the explosion image index, which is different depending on the type of explosion.
+     * E.g. if it is a small explosion on a robot that has been hit by this bullet,
+     * or a big explosion when a robot dies.
+     *
+     * @return the explosion image index.
+     *
+     * @see #isExplosion()
+     * @see #getExplosionImageIndex()
+     */
+    int getExplosionImageIndex();
 
-	/**
-	 * Returns the ID of the bullet used for identifying the bullet in a collection of bullets.
-	 *
-	 * @return the ID of the bullet.
-	 */
-	int getBulletId();
+    /**
+     * Returns the ID of the bullet used for identifying the bullet in a collection of bullets.
+     *
+     * @return the ID of the bullet.
+     */
+    int getBulletId();
 
-	/**
-	 * @return heading of the bullet
-	 */
-	double getHeading();
+    /**
+     * @return heading of the bullet
+     */
+    double getHeading();
 
-	/**
-	 * @return contestantIndex of the victim, or -1 if still in air
-	 */
-	int getVictimIndex();
+    /**
+     * @return contestantIndex of the victim, or -1 if still in air
+     */
+    int getVictimIndex();
 
-	/**
-	 * @return contestantIndex of the owner
-	 */
-	int getOwnerIndex();
+    /**
+     * @return contestantIndex of the owner
+     */
+    int getOwnerIndex();
 }

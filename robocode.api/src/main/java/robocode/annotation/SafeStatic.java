@@ -11,15 +11,13 @@
  *******************************************************************************/
 package robocode.annotation;
 
-
 import java.lang.annotation.*;
-
 
 /**
  * Annotation used for marking a static field as being safe so that Robocode should
  * not print out warnings at runtime when this annotation is being used.
  * For example, Robocode will print out warnings if a static field to a robot is found.
- * But not when the @SafeStatic is declared for the static field.  
+ * But not when the @SafeStatic is declared for the static field.
  *
  * @author Flemming N. Larsen (original)
  *
@@ -27,4 +25,5 @@ import java.lang.annotation.*;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SafeStatic {}
+public @interface SafeStatic {
+}

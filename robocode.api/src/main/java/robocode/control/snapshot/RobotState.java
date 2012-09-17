@@ -11,7 +11,6 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
-
 /**
  * Defines a robot state, which can be: active on the battlefield, hitting a wall or robot this turn, or dead.
  *
@@ -22,19 +21,14 @@ public enum RobotState {
 
 	/** The robot is active on the battlefield and has not hit the wall or a robot at this turn. */
 	ACTIVE(0),
-
 	/** The robot has hit a wall, i.e. one of the four borders, at this turn. This state only last one turn. */
 	HIT_WALL(1),
-
 	/** The robot has hit another robot at this turn. This state only last one turn. */
 	HIT_ROBOT(2),
-
 	/** The robot is dead. */
 	DEAD(3),
-	
 	/** The robot has hit an item. */
-	HIT_ITEM(4),
-	
+	HIT_ITEM(4),	
 	/** The robot is frozen */
 	FROZEN(5);
 

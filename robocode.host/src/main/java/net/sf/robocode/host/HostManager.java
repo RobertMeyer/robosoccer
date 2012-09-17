@@ -11,101 +11,108 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
-
+import java.io.InputStream;
+import java.io.PrintStream;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.host.jarjar.JarJarURLConnection;
 import net.sf.robocode.host.proxies.*;
 import net.sf.robocode.host.security.*;
-import net.sf.robocode.host.jarjar.JarJarURLConnection;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.repository.RobotType;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.core.Container;
 import robocode.control.RobotSpecification;
-
-import java.io.InputStream;
-import java.io.PrintStream;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public class HostManager implements IHostManager {
-	private final ISettingsManager properties;
-	private IThreadManager threadManager;
 
-	public HostManager(ISettingsManager properties, IThreadManager threadManager) {
-		this.properties = properties;
-		this.threadManager = threadManager;
-	}
+    private final ISettingsManager properties;
+    private IThreadManager threadManager;
 
-	static {
-		initStreams();
-	}
+    public HostManager(ISettingsManager properties, IThreadManager threadManager) {
+        this.properties = properties;
+        this.threadManager = threadManager;
+    }
 
-	private static void initStreams() {
-		PrintStream sysout = new SecurePrintStream(Logger.realOut, true);
-		PrintStream syserr = new SecurePrintStream(Logger.realErr, true);
-		InputStream sysin = new SecureInputStream(System.in);
+    static {
+        initStreams();
+    }
 
-		System.setOut(sysout);
-		if (!System.getProperty("debug", "false").equals("true")) {
-			System.setErr(syserr);
-		}
-		System.setIn(sysin);
-	}
+    private static void initStreams() {
+        PrintStream sysout = new SecurePrintStream(Logger.realOut, true);
+        PrintStream syserr = new SecurePrintStream(Logger.realErr, true);
+        InputStream sysin = new SecureInputStream(System.in);
 
-	public long getRobotFilesystemQuota() {
-		return properties.getRobotFilesystemQuota();
-	}
+        System.setOut(sysout);
+        if (!System.getProperty("debug", "false").equals("true")) {
+            System.setErr(syserr);
+        }
+        System.setIn(sysin);
+    }
 
-	public IThreadManager getThreadManager() {
-		return threadManager;
-	}
+    @Override
+    public long getRobotFilesystemQuota() {
+        return properties.getRobotFilesystemQuota();
+    }
 
-	public void resetThreadManager() {
-		threadManager.reset();
-	}
+    public IThreadManager getThreadManager() {
+        return threadManager;
+    }
 
-	public void addSafeThread(Thread safeThread) {
-		threadManager.addSafeThread(safeThread);
-	}
+    @Override
+    public void resetThreadManager() {
+        threadManager.reset();
+    }
 
-	public void removeSafeThread(Thread safeThread) {
-		threadManager.removeSafeThread(safeThread);
-	}
+    @Override
+    public void addSafeThread(Thread safeThread) {
+        threadManager.addSafeThread(safeThread);
+    }
 
-	public PrintStream getRobotOutputStream() {
-		return threadManager.getRobotOutputStream();
-	}
+    @Override
+    public void removeSafeThread(Thread safeThread) {
+        threadManager.removeSafeThread(safeThread);
+    }
 
-	public void cleanup() {// TODO
-	}
+    @Override
+    public PrintStream getRobotOutputStream() {
+        return threadManager.getRobotOutputStream();
+    }
 
-	public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
-		return getHost(robotRepositoryItem).getReferencedClasses(robotRepositoryItem);
-	}
+    @Override
+    public void cleanup() {// TODO
+    }
 
-	public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
-		return getHost(robotRepositoryItem).getRobotType(robotRepositoryItem, resolve, message);
-	}
+    @Override
+    public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
+        return getHost(robotRepositoryItem).getReferencedClasses(robotRepositoryItem);
+    }
 
-	public IHostingRobotProxy createRobotProxy(RobotSpecification robotSpecification, RobotStatics statics, IRobotPeer peer) {
-		final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
-				robotSpecification);
+    @Override
+    public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
+        return getHost(robotRepositoryItem).getRobotType(robotRepositoryItem, resolve, message);
+    }
 
-		return getHost(specification).createRobotProxy(this, robotSpecification, statics, peer);
-	}
+    @Override
+    public IHostingRobotProxy createRobotProxy(RobotSpecification robotSpecification, RobotStatics statics, IRobotPeer peer) {
+        final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
+                robotSpecification);
 
-	private IHost getHost(IRobotRepositoryItem robotRepositoryItem) {
-		return (IHost) Container.cache.getComponent("robocode.host." + robotRepositoryItem.getRobotLanguage());
-	}
+        return getHost(specification).createRobotProxy(this, robotSpecification, statics, peer);
+    }
 
-	public void initSecurity() {
-		JarJarURLConnection.register();
-		new RobocodeSecurityPolicy(threadManager);
-		new RobocodeSecurityManager(threadManager);
-	}
+    private IHost getHost(IRobotRepositoryItem robotRepositoryItem) {
+        return (IHost) Container.cache.getComponent("robocode.host." + robotRepositoryItem.getRobotLanguage());
+    }
 
+    @Override
+    public void initSecurity() {
+        JarJarURLConnection.register();
+        new RobocodeSecurityPolicy(threadManager);
+        new RobocodeSecurityManager(threadManager);
+    }
 }

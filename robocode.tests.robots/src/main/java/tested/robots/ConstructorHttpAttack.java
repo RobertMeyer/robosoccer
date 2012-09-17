@@ -11,34 +11,32 @@
  *******************************************************************************/
 package tested.robots;
 
-
-import robocode.AdvancedRobot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import robocode.AdvancedRobot;
 
 /**
  * @author Flemming N. Larsen (original)
  */
 public class ConstructorHttpAttack extends AdvancedRobot {
 
-	static final String HTTP_ADDR = "http://robocode.sourceforge.net/";
+    static final String HTTP_ADDR = "http://robocode.sourceforge.net/";
 
-	public ConstructorHttpAttack() {
-		try {
-			URL url = new URL(HTTP_ADDR);
+    public ConstructorHttpAttack() {
+        try {
+            URL url = new URL(HTTP_ADDR);
 
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-			if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				InputStream is = conn.getInputStream();
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStream is = conn.getInputStream();
 
-				is.read();
-			}
-		} catch (IOException e) {
-			e.printStackTrace(out);
-		}
-	}
+                is.read();
+            }
+        } catch (IOException e) {
+            e.printStackTrace(out);
+        }
+    }
 }

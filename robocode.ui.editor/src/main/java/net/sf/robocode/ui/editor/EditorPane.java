@@ -11,7 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-
 import java.awt.Event;
 import java.awt.FontMetrics;
 import java.awt.event.KeyAdapter;
@@ -20,7 +19,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.Reader;
-
 import javax.swing.InputMap;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
@@ -37,7 +35,6 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
-
 /**
  * Editor pane used for editing source code.
  *
@@ -46,291 +43,287 @@ import javax.swing.text.TabStop;
 @SuppressWarnings("serial")
 public class EditorPane extends JTextPane {
 
-	private int tabSize = 4; // Default
+    private int tabSize = 4; // Default
+    // Key bindings
+    private static final KeyStroke CUT_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.CTRL_MASK);
+    private static final KeyStroke COPY_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C, Event.CTRL_MASK);
+    private static final KeyStroke PASTE_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_V, Event.CTRL_MASK);
+    private static final KeyStroke UNDO_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_Z, Event.CTRL_MASK);
+    private static final KeyStroke REDO_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_Y, Event.CTRL_MASK);
+    private final JavaDocument document;
+    private final CompoundUndoManager undoManager = new CompoundUndoManager();
+    private final TextTool textTool = new TextTool();
+    private JViewport viewport;
 
-	// Key bindings
-	private static final KeyStroke CUT_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_X, Event.CTRL_MASK);
-	private static final KeyStroke COPY_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C, Event.CTRL_MASK);
-	private static final KeyStroke PASTE_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_V, Event.CTRL_MASK);
-	private static final KeyStroke UNDO_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_Z, Event.CTRL_MASK);
-	private static final KeyStroke REDO_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_Y, Event.CTRL_MASK);
+    public EditorPane(JViewport viewport) {
+        super();
+        this.viewport = viewport;
+        document = new JavaDocument(this);
 
-	private final JavaDocument document;
+        new LineNumberArea(this);
 
-	private final CompoundUndoManager undoManager = new CompoundUndoManager();
+        EditorKit editorKit = new StyledEditorKit() {
+            @Override
+            public Document createDefaultDocument() {
+                return document;
+            }
+        };
 
-	private final TextTool textTool = new TextTool();
+        setEditorKitForContentType("text/java", editorKit);
+        setContentType("text/java");
 
-	private JViewport viewport;
+        addPropertyChangeListener("font", new FontHandler());
+        addKeyListener(new KeyHandler());
 
-	public EditorPane(JViewport viewport) {
-		super();
-		this.viewport = viewport;
-		document = new JavaDocument(this);
+        setKeyBindings();
+        setActionBindings();
 
-		new LineNumberArea(this);
+        getDocument().addUndoableEditListener(undoManager);
+    }
 
-		EditorKit editorKit = new StyledEditorKit() {
-			@Override
-			public Document createDefaultDocument() {
-				return document;
-			}
-		};
+    public JViewport getViewport() {
+        return viewport;
+    }
 
-		setEditorKitForContentType("text/java", editorKit);
-		setContentType("text/java");
+    // No line wrapping!
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return getUI().getPreferredSize(this).width <= getParent().getSize().width;
+    }
 
-		addPropertyChangeListener("font", new FontHandler());
-		addKeyListener(new KeyHandler());
+    // Don't enforce height -> Avoid line height changes
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        return false;
+    }
 
-		setKeyBindings();
-		setActionBindings();
+    // Make sure to discard all undo/redo edits when text completely replaced
+    @Override
+    public void setText(String text) {
+        super.setText(text);
+        undoManager.discardAllEdits();
+    }
 
-		getDocument().addUndoableEditListener(undoManager);
-	}
+    // Make sure to discard all undo/redo edits when text is read as one block
+    @Override
+    public void read(Reader in, Object desc) throws IOException {
+        super.read(in, desc);
+        undoManager.discardAllEdits();
+    }
 
-	public JViewport getViewport() {
-		return viewport;
-	}
+    public void undo() {
+        if (undoManager.canUndo()) {
+            undoManager.undo();
+        }
+    }
 
-	// No line wrapping!
-	@Override
-	public boolean getScrollableTracksViewportWidth() {
-		return getUI().getPreferredSize(this).width <= getParent().getSize().width;
-	}
+    public void redo() {
+        if (undoManager.canRedo()) {
+            undoManager.redo();
+        }
+    }
 
-	// Don't enforce height -> Avoid line height changes
-	@Override
-	public boolean getScrollableTracksViewportHeight() {
-		return false;
-	}
+    private void setKeyBindings() {
+        InputMap inputMap = this.getInputMap();
 
-	// Make sure to discard all undo/redo edits when text completely replaced
-	@Override
-	public void setText(String text) {
-		super.setText(text);
-		undoManager.discardAllEdits();
-	}
+        inputMap.put(CUT_KEYSTROKE, DefaultEditorKit.cutAction);
+        inputMap.put(COPY_KEYSTROKE, DefaultEditorKit.copyAction);
+        inputMap.put(PASTE_KEYSTROKE, DefaultEditorKit.pasteAction);
+        inputMap.put(UNDO_KEYSTROKE, undoManager.getUndoAction());
+        inputMap.put(REDO_KEYSTROKE, undoManager.getRedoAction());
+    }
 
-	// Make sure to discard all undo/redo edits when text is read as one block
-	@Override
-	public void read(Reader in, Object desc) throws IOException {
-		super.read(in, desc);
-		undoManager.discardAllEdits();
-	}
-     
-	public void undo() {
-		if (undoManager.canUndo()) {
-			undoManager.undo();
-		}
-	}
-	
-	public void redo() {
-		if (undoManager.canRedo()) {
-			undoManager.redo();
-		}
-	}
+    private void setActionBindings() {
+        getActionMap().put("undo-keystroke", undoManager.getUndoAction());
+        getActionMap().put("redo-keystroke", undoManager.getRedoAction());
+    }
 
-	private void setKeyBindings() {
-		InputMap inputMap = this.getInputMap();
+    private void setTabSize(int tabSize) {
+        document.setTabSize(tabSize);
 
-		inputMap.put(CUT_KEYSTROKE, DefaultEditorKit.cutAction);
-		inputMap.put(COPY_KEYSTROKE, DefaultEditorKit.copyAction);
-		inputMap.put(PASTE_KEYSTROKE, DefaultEditorKit.pasteAction);
-		inputMap.put(UNDO_KEYSTROKE, undoManager.getUndoAction());
-		inputMap.put(REDO_KEYSTROKE, undoManager.getRedoAction());
-	}
+        FontMetrics fm = getFontMetrics(getFont());
+        int charWidth = fm.charWidth('#');
+        int tabWidth = charWidth * tabSize;
 
-	private void setActionBindings() {
-		getActionMap().put("undo-keystroke", undoManager.getUndoAction());
-		getActionMap().put("redo-keystroke", undoManager.getRedoAction());
-	}
+        TabStop[] tabs = new TabStop[100];
 
-	private void setTabSize(int tabSize) {
-		document.setTabSize(tabSize);
-		
-		FontMetrics fm = getFontMetrics(getFont());
-		int charWidth = fm.charWidth('#');
-		int tabWidth = charWidth * tabSize;
+        for (int j = 0; j < tabs.length; j++) {
+            tabs[j] = new TabStop((j + 1) * tabWidth);
+        }
 
-		TabStop[] tabs = new TabStop[100];
+        SimpleAttributeSet attributes = new SimpleAttributeSet();
 
-		for (int j = 0; j < tabs.length; j++) {
-			tabs[j] = new TabStop((j + 1) * tabWidth);
-		}
+        StyleConstants.setTabSet(attributes, new TabSet(tabs));
 
-		SimpleAttributeSet attributes = new SimpleAttributeSet();
+        getDocument().removeUndoableEditListener(undoManager); // Avoid this change to be undone
+        getStyledDocument().setParagraphAttributes(0, getDocument().getLength(), attributes, false);
+        getDocument().addUndoableEditListener(undoManager);
+    }
 
-		StyleConstants.setTabSet(attributes, new TabSet(tabs));
+    private void onTabCharPressed(boolean isUnindent) {
 
-		getDocument().removeUndoableEditListener(undoManager); // Avoid this change to be undone
-		getStyledDocument().setParagraphAttributes(0, getDocument().getLength(), attributes, false);
-		getDocument().addUndoableEditListener(undoManager);
-	}
+        int selectionStart = getSelectionStart();
+        int selectionEnd = getSelectionEnd();
 
-	private void onTabCharPressed(boolean isUnindent) {
+        if (selectionStart == selectionEnd) {
+            // No selection -> Handle normal tab indentation
 
-		int selectionStart = getSelectionStart();
-		int selectionEnd = getSelectionEnd();
+            if (isUnindent) {
+                textTool.removeLastTab(getCaretPosition());
+            } else {
+                textTool.insertString(getCaretPosition(), "\t");
+            }
+        } else {
+            // Start block indentation
 
-		if (selectionStart == selectionEnd) {
-			// No selection -> Handle normal tab indentation
+            // Make sure that the start selection is lesser than the end selection
+            if (selectionStart > selectionEnd) {
+                // Swap selection start and selection end
+                int tmp = selectionStart;
 
-			if (isUnindent) {
-				textTool.removeLastTab(getCaretPosition());
-			} else {
-				textTool.insertString(getCaretPosition(), "\t");
-			}
-		} else {
-			// Start block indentation
+                selectionStart = selectionEnd;
+                selectionEnd = tmp;
+            }
 
-			// Make sure that the start selection is lesser than the end selection
-			if (selectionStart > selectionEnd) {
-				// Swap selection start and selection end
-				int tmp = selectionStart;
+            StringBuilder newText = new StringBuilder();
+            int count = 0;
+            boolean stopUnindent = false;
 
-				selectionStart = selectionEnd;
-				selectionEnd = tmp;
-			}
+            // Handle each line
 
-			StringBuilder newText = new StringBuilder();
-			int count = 0;
-			boolean stopUnindent = false;
+            String selectedText = textTool.getSelectedText();
 
-			// Handle each line
+            selectedText = selectedText.replaceAll("\\s*$", "");
 
-			String selectedText = textTool.getSelectedText();
+            String[] lines = selectedText.split(String.valueOf('\n'));
 
-			selectedText = selectedText.replaceAll("\\s*$", "");
+            // iterate lines, rebuilding tabs and newlines
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i];
 
-			String[] lines = selectedText.split(String.valueOf('\n'));
+                if (isUnindent) {
+                    if (line.charAt(0) != '\t') {
+                        stopUnindent = true;
+                        break;
+                    } else {
+                        newText.append(line.substring(1, line.length()));
+                        count++;
+                    }
+                } else {
+                    newText.append('\t').append(line);
+                    count++;
+                }
+                if (i != lines.length - 1) {
+                    newText.append('\n');
+                }
+            }
 
-			// iterate lines, rebuilding tabs and newlines
-			for (int i = 0; i < lines.length; i++) {
-				String line = lines[i];
+            if (!stopUnindent) {
+                try {
+                    // Replace the indented/unindented text in one single compound edit
+                    undoManager.markCompoundStart();
+                    getDocument().remove(selectionStart, selectedText.length());
+                    textTool.insertString(selectionStart, newText.toString());
+                    undoManager.markCompoundStart();
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
 
-				if (isUnindent) {
-					if (line.charAt(0) != '\t') {
-						stopUnindent = true;
-						break;
-					} else {
-						newText.append(line.substring(1, line.length()));
-						count++;
-					}
-				} else {
-					newText.append('\t').append(line);
-					count++;
-				}
-				if (i != lines.length - 1) {
-					newText.append('\n');
-				}
-			}
-			
-			if (!stopUnindent) {
-				try {
-					// Replace the indented/unindented text in one single compound edit
-					undoManager.markCompoundStart();
-					getDocument().remove(selectionStart, selectedText.length());
-					textTool.insertString(selectionStart, newText.toString());
-					undoManager.markCompoundStart();
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
+                // Compute the new selection
+                int mod = isUnindent ? -1 : 1;
 
-				// Compute the new selection
-				int mod = isUnindent ? -1 : 1;
+                // Make new selection using the EDT, as replacing the text above must run before a new selection can be made
 
-				// Make new selection using the EDT, as replacing the text above must run before a new selection can be made 
+                final int newSelectionStart = selectionStart;
+                final int newSelectionEnd = selectionStart + selectedText.length() + count * mod;
 
-				final int newSelectionStart = selectionStart;
-				final int newSelectionEnd = selectionStart + selectedText.length() + count * mod;
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        setSelectionStart(newSelectionStart);
+                        setSelectionEnd(newSelectionEnd);
+                    }
+                });
+            }
+        }
+    }
 
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						setSelectionStart(newSelectionStart);
-						setSelectionEnd(newSelectionEnd);
-					}
-				});
-			}
-		}
-	}
+    private class FontHandler implements PropertyChangeListener {
 
-	private class FontHandler implements PropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent e) {
-			setTabSize(tabSize);
-		}
-	}
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+            setTabSize(tabSize);
+        }
+    }
 
+    private class KeyHandler extends KeyAdapter {
 
-	private class KeyHandler extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_TAB:
+                    onTabCharPressed(e.isShiftDown());
+                    e.consume();
+                    break;
+            }
+        }
+    }
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			switch (e.getKeyCode()) {
-			case KeyEvent.VK_TAB:
-				onTabCharPressed(e.isShiftDown());
-				e.consume();
-				break;
-			}
-		}
-	}
+    /**
+     * Handy text tool.
+     */
+    private class TextTool {
 
+        String getSelectedText() {
+            int start = getSelectionStart();
+            int end = getSelectionEnd();
 
-	/**
-	 * Handy text tool.
-	 */
-	private class TextTool {
+            try {
+                return getDocument().getText(start, end - start);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
-		String getSelectedText() {
-			int start = getSelectionStart();
-			int end = getSelectionEnd();
+        void insertString(int offset, String str) {
+            insertString(offset, str, null);
+        }
 
-			try {
-				return getDocument().getText(start, end - start);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
+        void insertString(final int offset, final String str, final AttributeSet a) {
+            try {
+                getDocument().insertString(offset, str, a);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+        }
 
-		void insertString(int offset, String str) {
-			insertString(offset, str, null);
-		}
+        void removeLastTab(int offset) {
+            int pos = offset;
 
-		void insertString(final int offset, final String str, final AttributeSet a) {
-			try {
-				getDocument().insertString(offset, str, a);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			}
-		}
+            while (--pos >= 0) {
+                try {
+                    char ch = getDocument().getText(pos, 1).charAt(0);
 
-		void removeLastTab(int offset) {
-			int pos = offset;
+                    if (ch == '\t') {
+                        remove(pos, 1);
+                        return;
+                    }
+                    if (ch == '\n') {
+                        return;
+                    }
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-			while (--pos >= 0) {
-				try {
-					char ch = getDocument().getText(pos, 1).charAt(0);
-
-					if (ch == '\t') {
-						remove(pos, 1);
-						return;
-					}
-					if (ch == '\n') {
-						return;
-					}
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		void remove(final int offset, final int len) {
-			try {
-				getDocument().remove(offset, len);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        void remove(final int offset, final int len) {
+            try {
+                getDocument().remove(offset, len);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -29,24 +29,23 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
-import net.sf.robocode.core.Container;
-import net.sf.robocode.repository.IRepositoryItem;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.settings.ISettingsManager;
-import net.sf.robocode.ui.IWindowManager;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
-import java.util.ArrayList;
-
+import net.sf.robocode.core.Container;
+import net.sf.robocode.repository.IRepositoryItem;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.settings.ISettingsManager;
+import net.sf.robocode.ui.IWindowManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -58,11 +57,10 @@ import java.util.ArrayList;
 public class RobotSelectionPanel extends WizardPanel {
 
 	private AvailableRobotsPanel availableRobotsPanel;
-
 	private JPanel selectedRobotsPanel;
 	private JScrollPane selectedRobotsScrollPane;
 	private JList selectedRobotsList;
-
+	private JPanel setRobotsList;
 	private JPanel buttonsPanel;
 	private JPanel addButtonsPanel;
 	private JPanel removeButtonsPanel;
@@ -70,7 +68,6 @@ public class RobotSelectionPanel extends WizardPanel {
 	private JButton addAllButton;
 	private JButton removeButton;
 	private JButton removeAllButton;
-
 	private final EventHandler eventHandler = new EventHandler();
 	private RobotDescriptionPanel descriptionPanel;
 	private String instructions;
@@ -92,17 +89,20 @@ public class RobotSelectionPanel extends WizardPanel {
 	private final ISettingsManager properties;
 	private final IRepositoryManager repositoryManager;
 	private boolean nummerOfRoundSetByGame;
+	private SetRobotPostionPanel setRobotPositionPanel;
 
-	public RobotSelectionPanel(ISettingsManager properties, IRepositoryManager repositoryManager) {
+	public RobotSelectionPanel(ISettingsManager properties,
+			IRepositoryManager repositoryManager) {
 		super();
 		this.properties = properties;
 		this.repositoryManager = repositoryManager;
 	}
 
-	public void setup(int minRobots, int maxRobots,
-			boolean showNumRoundsPanel, String instructions, boolean onlyShowSource, boolean onlyShowWithPackage,
-			boolean onlyShowRobots, boolean onlyShowDevelopment, boolean onlyShowInJar, boolean ignoreTeamRobots,
-			String preSelectedRobots) {
+	public void setup(int minRobots, int maxRobots, boolean showNumRoundsPanel,
+			String instructions, boolean onlyShowSource,
+			boolean onlyShowWithPackage, boolean onlyShowRobots,
+			boolean onlyShowDevelopment, boolean onlyShowInJar,
+			boolean ignoreTeamRobots, String preSelectedRobots) {
 		this.showNumRoundsPanel = showNumRoundsPanel;
 		this.minRobots = minRobots;
 		this.maxRobots = maxRobots;
@@ -119,6 +119,8 @@ public class RobotSelectionPanel extends WizardPanel {
 	}
 
 	private class EventHandler implements ActionListener, ListSelectionListener {
+
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == getAddAllButton()) {
 				addAllButtonActionPerformed();
@@ -131,6 +133,7 @@ public class RobotSelectionPanel extends WizardPanel {
 			}
 		}
 
+		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if (e.getValueIsAdjusting()) {
 				return;
@@ -143,16 +146,19 @@ public class RobotSelectionPanel extends WizardPanel {
 
 	private void addAllButtonActionPerformed() {
 		JList selectedList = getSelectedRobotsList();
-		SelectedRobotsModel selectedModel = (SelectedRobotsModel) selectedList.getModel();
+		SelectedRobotsModel selectedModel = (SelectedRobotsModel) selectedList
+				.getModel();
 
-		for (AvailableRobotsPanel.ItemWrapper selected : availableRobotsPanel.getAvailableRobots()) {
+		for (AvailableRobotsPanel.ItemWrapper selected : availableRobotsPanel
+				.getAvailableRobots()) {
 			selectedRobots.add(selected);
 		}
 
 		selectedList.clearSelection();
 		selectedModel.changed();
 		fireStateChanged();
-		if (selectedModel.getSize() >= minRobots && selectedModel.getSize() <= maxRobots) {
+		if (selectedModel.getSize() >= minRobots
+				&& selectedModel.getSize() <= maxRobots) {
 			showInstructions();
 		} else if (selectedModel.getSize() > maxRobots) {
 			showWrongNumInstructions();
@@ -162,16 +168,27 @@ public class RobotSelectionPanel extends WizardPanel {
 	}
 
 	private void addButtonActionPerformed() {
-		SelectedRobotsModel selectedModel = (SelectedRobotsModel) getSelectedRobotsList().getModel();
-		List<AvailableRobotsPanel.ItemWrapper> moves = availableRobotsPanel.getSelectedRobots();
+		SelectedRobotsModel selectedModel = (SelectedRobotsModel) getSelectedRobotsList()
+				.getModel();
+		List<AvailableRobotsPanel.ItemWrapper> moves = availableRobotsPanel
+				.getSelectedRobots();
 
 		for (AvailableRobotsPanel.ItemWrapper move : moves) {
-			selectedRobots.add(new AvailableRobotsPanel.ItemWrapper(move.getItem()));
+			selectedRobots.add(new AvailableRobotsPanel.ItemWrapper(move
+					.getItem()));
 		}
 
 		selectedModel.changed();
 		fireStateChanged();
-		if (selectedModel.getSize() >= minRobots && selectedModel.getSize() <= maxRobots) {
+		/**
+		 * selectedRobotsSize += 1;
+		 * setRobotsPositionPanel.add(getSetRobotsScrollPane
+		 * (selectedRobotsSize), BorderLayout.CENTER);
+		 * setRobotsPositionPanel.revalidate();
+		 */
+
+		if (selectedModel.getSize() >= minRobots
+				&& selectedModel.getSize() <= maxRobots) {
 			showInstructions();
 		} else if (selectedModel.getSize() > maxRobots) {
 			showWrongNumInstructions();
@@ -215,7 +232,8 @@ public class RobotSelectionPanel extends WizardPanel {
 		if (buttonsPanel == null) {
 			buttonsPanel = new JPanel();
 			buttonsPanel.setLayout(new BorderLayout(5, 5));
-			buttonsPanel.setBorder(BorderFactory.createEmptyBorder(21, 5, 5, 5));
+			buttonsPanel
+					.setBorder(BorderFactory.createEmptyBorder(21, 5, 5, 5));
 			buttonsPanel.add(getAddButtonsPanel(), BorderLayout.NORTH);
 			if (showNumRoundsPanel) {
 				buttonsPanel.add(getNumRoundsPanel(), BorderLayout.CENTER);
@@ -258,13 +276,14 @@ public class RobotSelectionPanel extends WizardPanel {
 	}
 
 	public String getSelectedRobotsAsString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < selectedRobots.size(); i++) {
 			if (i != 0) {
 				sb.append(',');
 			}
-			sb.append(selectedRobots.get(i).getItem().getUniqueFullClassNameWithVersion());
+			sb.append(selectedRobots.get(i).getItem()
+					.getUniqueFullClassNameWithVersion());
 		}
 		return sb.toString();
 	}
@@ -282,7 +301,8 @@ public class RobotSelectionPanel extends WizardPanel {
 		if (selectedRobotsList == null) {
 			selectedRobotsList = new JList();
 			selectedRobotsList.setModel(new SelectedRobotsModel());
-			selectedRobotsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			selectedRobotsList
+					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			MouseListener mouseListener = new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -306,9 +326,10 @@ public class RobotSelectionPanel extends WizardPanel {
 			selectedRobotsPanel = new JPanel();
 			selectedRobotsPanel.setLayout(new BorderLayout());
 			selectedRobotsPanel.setPreferredSize(new Dimension(120, 100));
-			selectedRobotsPanel.setBorder(
-					BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Selected Robots"));
-			selectedRobotsPanel.add(getSelectedRobotsScrollPane(), BorderLayout.CENTER);
+			selectedRobotsPanel.setBorder(BorderFactory.createTitledBorder(
+					BorderFactory.createEtchedBorder(), "Selected Robots"));
+			selectedRobotsPanel.add(getSelectedRobotsScrollPane(),
+					BorderLayout.CENTER);
 		}
 		return selectedRobotsPanel;
 	}
@@ -320,6 +341,67 @@ public class RobotSelectionPanel extends WizardPanel {
 		}
 		return selectedRobotsScrollPane;
 	}
+
+	private JPanel getSetRobotsList(int rows) {
+		setRobotsList = new JPanel();
+		setRobotsList.setPreferredSize(new Dimension(125, 350));
+		FlowLayout flow = new FlowLayout();
+		setRobotsList.setLayout(flow);
+		flow.setHgap(5);
+		flow.setVgap(1);
+		Border noBorder = BorderFactory.createEmptyBorder();
+		JTextField[] inputX = new JTextField[rows];
+		JTextField[] inputY = new JTextField[rows];
+		for (int i = 0; i < rows; i++) {
+			inputX[i] = new JTextField();
+			inputY[i] = new JTextField();
+
+			inputX[i].setPreferredSize(new Dimension(63, 16));
+			inputY[i].setPreferredSize(new Dimension(63, 16));
+
+			inputX[i].setBorder(noBorder);
+			inputY[i].setBorder(noBorder);
+
+			setRobotsList.add(inputX[i]);
+			setRobotsList.add(inputY[i]);
+		}
+		return setRobotsList;
+	}
+
+	private SetRobotPostionPanel getRobotPostionPanel() {
+		if (setRobotPositionPanel == null) {
+			setRobotPositionPanel = new SetRobotPostionPanel();
+		}
+		return setRobotPositionPanel;
+	}
+
+	public ArrayList<String> GetPositions() {
+		if (setRobotPositionPanel != null) {
+			return setRobotPositionPanel.GetPostion();
+		} else {
+			return null;
+		}
+	}
+
+	public int GetNumberOfSelectedRobot() {
+		return selectedRobots.size();
+	}
+
+	/**
+	 * private JPanel getSetRobotsPositionPanel() { if (setRobotsPositionPanel
+	 * == null) { setRobotsPositionPanel = new JPanel();
+	 * setRobotsPositionPanel.setLayout(new BorderLayout());
+	 * setRobotsPositionPanel.setPreferredSize(new Dimension(120, 100));
+	 * setRobotsPositionPanel.setBorder(
+	 * BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+	 * "Set Position (X,Y,Heading)")); } return setRobotsPositionPanel; }
+	 * 
+	 * 
+	 * private JScrollPane getSetRobotsScrollPane(int rows) {
+	 * setRobotsScrollPane = new JScrollPane();
+	 * setRobotsScrollPane.setViewportView(getSetRobotsList(rows)); return
+	 * setRobotsScrollPane; }
+	 */
 
 	private void initialize() {
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -334,7 +416,8 @@ public class RobotSelectionPanel extends WizardPanel {
 
 	private void removeAllButtonActionPerformed() {
 		JList selectedList = getSelectedRobotsList();
-		SelectedRobotsModel selectedModel = (SelectedRobotsModel) selectedList.getModel();
+		SelectedRobotsModel selectedModel = (SelectedRobotsModel) selectedList
+				.getModel();
 
 		selectedRobots.clear();
 		selectedList.clearSelection();
@@ -343,11 +426,13 @@ public class RobotSelectionPanel extends WizardPanel {
 		showInstructions();
 	}
 
-	private void contextMenuActionPerformed() {}
+	private void contextMenuActionPerformed() {
+	}
 
 	private void removeButtonActionPerformed() {
 		JList selectedList = getSelectedRobotsList();
-		SelectedRobotsModel selectedModel = (SelectedRobotsModel) selectedList.getModel();
+		SelectedRobotsModel selectedModel = (SelectedRobotsModel) selectedList
+				.getModel();
 		int sel[] = selectedList.getSelectedIndices();
 
 		for (int i = 0; i < sel.length; i++) {
@@ -356,7 +441,8 @@ public class RobotSelectionPanel extends WizardPanel {
 		selectedList.clearSelection();
 		selectedModel.changed();
 		fireStateChanged();
-		if (selectedModel.getSize() < minRobots || selectedModel.getSize() > maxRobots) {
+		if (selectedModel.getSize() < minRobots
+				|| selectedModel.getSize() > maxRobots) {
 			showWrongNumInstructions();
 		} else {
 			showInstructions();
@@ -364,14 +450,17 @@ public class RobotSelectionPanel extends WizardPanel {
 	}
 
 	class SelectedRobotsModel extends AbstractListModel {
+
 		public void changed() {
 			fireContentsChanged(this, 0, getSize());
 		}
 
+		@Override
 		public int getSize() {
 			return selectedRobots.size();
 		}
 
+		@Override
 		public Object getElementAt(int which) {
 			return selectedRobots.get(which);
 		}
@@ -379,8 +468,8 @@ public class RobotSelectionPanel extends WizardPanel {
 
 	public AvailableRobotsPanel getAvailableRobotsPanel() {
 		if (availableRobotsPanel == null) {
-			availableRobotsPanel = new AvailableRobotsPanel(getAddButton(), "Available Robots", getSelectedRobotsList(),
-					this);
+			availableRobotsPanel = new AvailableRobotsPanel(getAddButton(),
+					"Available Robots", getSelectedRobotsList(), this);
 		}
 		return availableRobotsPanel;
 	}
@@ -388,7 +477,8 @@ public class RobotSelectionPanel extends WizardPanel {
 	private RobotDescriptionPanel getDescriptionPanel() {
 		if (descriptionPanel == null) {
 			descriptionPanel = new RobotDescriptionPanel();
-			descriptionPanel.setBorder(BorderFactory.createEmptyBorder(1, 10, 1, 10));
+			descriptionPanel.setBorder(BorderFactory.createEmptyBorder(1, 10,
+					1, 10));
 		}
 		return descriptionPanel;
 	}
@@ -426,12 +516,20 @@ public class RobotSelectionPanel extends WizardPanel {
 			constraints.anchor = GridBagConstraints.CENTER;
 			layout.setConstraints(getButtonsPanel(), constraints);
 			mainPanel.add(getButtonsPanel());
-			constraints.gridwidth = GridBagConstraints.REMAINDER;
+			constraints.gridwidth = GridBagConstraints.CENTER;
 			constraints.weightx = 1;
 			constraints.weighty = 1;
 			constraints.anchor = GridBagConstraints.NORTHWEST;
 			layout.setConstraints(getSelectedRobotsPanel(), constraints);
 			mainPanel.add(getSelectedRobotsPanel());
+
+			constraints.gridwidth = GridBagConstraints.REMAINDER;
+			constraints.weightx = 1;
+			constraints.weighty = 1;
+			constraints.anchor = GridBagConstraints.NORTHWEST;
+			layout.setConstraints(getRobotPostionPanel(), constraints);
+			mainPanel.add(getRobotPostionPanel());
+
 		}
 		return mainPanel;
 	}
@@ -450,18 +548,20 @@ public class RobotSelectionPanel extends WizardPanel {
 	private JPanel getNumRoundsPanel() {
 		if (numRoundsPanel == null) {
 			numRoundsPanel = new JPanel();
-			numRoundsPanel.setLayout(new BoxLayout(numRoundsPanel, BoxLayout.Y_AXIS));
+			numRoundsPanel.setLayout(new BoxLayout(numRoundsPanel,
+					BoxLayout.Y_AXIS));
 			numRoundsPanel.setBorder(BorderFactory.createEmptyBorder());
 			numRoundsPanel.add(new JPanel());
 			JPanel j = new JPanel();
 
 			j.setLayout(new BoxLayout(j, BoxLayout.Y_AXIS));
-			TitledBorder border = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-					"Number of Rounds");
+			TitledBorder border = BorderFactory.createTitledBorder(
+					BorderFactory.createEtchedBorder(), "Number of Rounds");
 
 			j.setBorder(border);
 			j.add(getNumRoundsTextField());
-			j.setPreferredSize(new Dimension(border.getMinimumSize(j).width, j.getPreferredSize().height));
+			j.setPreferredSize(new Dimension(border.getMinimumSize(j).width, j
+					.getPreferredSize().height));
 			j.setMinimumSize(j.getPreferredSize());
 			j.setMaximumSize(j.getPreferredSize());
 			numRoundsPanel.add(j);
@@ -483,32 +583,41 @@ public class RobotSelectionPanel extends WizardPanel {
 			numRoundsTextField.setHorizontalAlignment(SwingConstants.CENTER);
 
 			// Add document listener
-			numRoundsTextField.getDocument().addDocumentListener(new DocumentListener() {
+			numRoundsTextField.getDocument().addDocumentListener(
+					new DocumentListener() {
+						@Override
+						public void changedUpdate(DocumentEvent e) {
+						}
 
-				public void changedUpdate(DocumentEvent e) {}
+						@Override
+						public void insertUpdate(DocumentEvent e) {
+							handleChange();
+						}
 
-				public void insertUpdate(DocumentEvent e) {
-					handleChange();
-				}
+						@Override
+						public void removeUpdate(DocumentEvent e) {
+							handleChange();
+						}
 
-				public void removeUpdate(DocumentEvent e) {
-					handleChange();
-				}
+						private void handleChange() {
+							// Ignore the change if the 'number of rounds' was
+							// set by the game, not the user
+							if (nummerOfRoundSetByGame) {
+								return;
+							}
 
-				private void handleChange() {
-					// Ignore the change if the 'number of rounds' was set by the game, not the user
-					if (nummerOfRoundSetByGame) {
-						return;
-					}
-					
-					// Here we assume that the user made the change
-					try {
-						int numRounds = Integer.parseInt(numRoundsTextField.getText());
+							// Here we assume that the user made the change
+							try {
+								int numRounds = Integer
+										.parseInt(numRoundsTextField.getText());
 
-						props.setNumberOfRounds(numRounds); // Update the user settings
-					} catch (NumberFormatException ignored) {}
-				}
-			});
+								props.setNumberOfRounds(numRounds); // Update
+																	// the user
+																	// settings
+							} catch (NumberFormatException ignored) {
+							}
+						}
+					});
 		}
 
 		return numRoundsTextField;
@@ -526,18 +635,24 @@ public class RobotSelectionPanel extends WizardPanel {
 	public void refreshRobotList(final boolean withClear) {
 
 		final Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
-				final IWindowManager windowManager = Container.getComponent(IWindowManager.class);
+				final IWindowManager windowManager = Container
+						.getComponent(IWindowManager.class);
 
 				try {
 					windowManager.setBusyPointer(true);
 					repositoryManager.refresh(withClear);
 
-					List<IRepositoryItem> robotList = repositoryManager.filterRepositoryItems(onlyShowSource,
-							onlyShowWithPackage, onlyShowRobots, onlyShowDevelopment, false, ignoreTeamRobots, onlyShowInJar);
+					List<IRepositoryItem> robotList = repositoryManager
+							.filterRepositoryItems(onlyShowSource,
+									onlyShowWithPackage, onlyShowRobots,
+									onlyShowDevelopment, false,
+									ignoreTeamRobots, onlyShowInJar);
 
 					getAvailableRobotsPanel().setRobotList(robotList);
-					if (preSelectedRobots != null && preSelectedRobots.length() > 0) {
+					if (preSelectedRobots != null
+							&& preSelectedRobots.length() > 0) {
 						setSelectedRobots(preSelectedRobots);
 						preSelectedRobots = null;
 					}
@@ -555,7 +670,8 @@ public class RobotSelectionPanel extends WizardPanel {
 
 		if (sel.length == 1) {
 			availableRobotsPanel.clearSelection();
-			IRepositoryItem robotSpecification = ((AvailableRobotsPanel.ItemWrapper) getSelectedRobotsList().getModel().getElementAt(sel[0])).getItem();
+			IRepositoryItem robotSpecification = ((AvailableRobotsPanel.ItemWrapper) getSelectedRobotsList()
+					.getModel().getElementAt(sel[0])).getItem();
 
 			showDescription(robotSpecification);
 		} else {
@@ -575,8 +691,10 @@ public class RobotSelectionPanel extends WizardPanel {
 
 	private void setSelectedRobots(String selectedRobotsString) {
 		if (selectedRobotsString != null) {
-			for (IRepositoryItem item: repositoryManager.getSelectedSpecifications(selectedRobotsString)) {
-				this.selectedRobots.add(new AvailableRobotsPanel.ItemWrapper(item));
+			for (IRepositoryItem item : repositoryManager
+					.getSelectedSpecifications(selectedRobotsString)) {
+				this.selectedRobots.add(new AvailableRobotsPanel.ItemWrapper(
+						item));
 			}
 		}
 		((SelectedRobotsModel) getSelectedRobotsList().getModel()).changed();
@@ -601,10 +719,12 @@ public class RobotSelectionPanel extends WizardPanel {
 			if (minRobots == 1) {
 				instructionsLabel.setText("Please select exactly 1 robot.");
 			} else {
-				instructionsLabel.setText("Please select exactly " + minRobots + " robots.");
+				instructionsLabel.setText("Please select exactly " + minRobots
+						+ " robots.");
 			}
 		} else {
-			instructionsLabel.setText("Please select between " + minRobots + " and " + maxRobots + " robots.");
+			instructionsLabel.setText("Please select between " + minRobots
+					+ " and " + maxRobots + " robots.");
 		}
 		instructionsLabel.setVisible(true);
 	}

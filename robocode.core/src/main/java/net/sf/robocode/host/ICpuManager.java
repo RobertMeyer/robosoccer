@@ -11,12 +11,12 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
-
 /**
  * @author Pavel Savara (original)
  */
 public interface ICpuManager {
-	long getCpuConstant();
 
-	void calculateCpuConstant();
+    long getCpuConstant();
+
+    void calculateCpuConstant();
 }

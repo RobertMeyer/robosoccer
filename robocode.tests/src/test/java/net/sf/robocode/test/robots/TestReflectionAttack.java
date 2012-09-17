@@ -11,13 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.test.robots;
 
-
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Assert;
 import org.junit.Ignore;
-
 import robocode.control.events.TurnEndedEvent;
-
 
 /**
  * @author Flemming N. Larsen (original)
@@ -25,31 +22,31 @@ import robocode.control.events.TurnEndedEvent;
 @Ignore("This test has been unreliable in student builds, and is not important for CSSE2003")
 public class TestReflectionAttack extends RobocodeTestBed {
 
-	private boolean messagedAccessDenied;
-	
-	@Override
-	public String getRobotNames() {
-		return "tested.robots.ReflectionAttack,sample.Target";
-	}
+    private boolean messagedAccessDenied;
 
-	@Override
-	public void onTurnEnded(TurnEndedEvent event) {
-		super.onTurnEnded(event);
+    @Override
+    public String getRobotNames() {
+        return "tested.robots.ReflectionAttack,sample.Target";
+    }
 
-		final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
+    @Override
+    public void onTurnEnded(TurnEndedEvent event) {
+        super.onTurnEnded(event);
 
-		if (out.contains("access denied (java.lang.reflect.ReflectPermission")) {
-			messagedAccessDenied = true;	
-		}	
-	}
+        final String out = event.getTurnSnapshot().getRobots()[0].getOutputStreamSnapshot();
 
-	@Override
-	protected void runTeardown() {
-		Assert.assertTrue("Reflection is not allowed", messagedAccessDenied);
-	}
+        if (out.contains("access denied (java.lang.reflect.ReflectPermission")) {
+            messagedAccessDenied = true;
+        }
+    }
 
-	@Override
-	protected int getExpectedErrors() {
-		return 1; // Security error must be reported as an error
-	}
+    @Override
+    protected void runTeardown() {
+        Assert.assertTrue("Reflection is not allowed", messagedAccessDenied);
+    }
+
+    @Override
+    protected int getExpectedErrors() {
+        return 1; // Security error must be reported as an error
+    }
 }

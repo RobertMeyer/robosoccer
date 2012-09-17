@@ -13,14 +13,13 @@
  *******************************************************************************/
 package robocode.control.events;
 
-
 /**
  * A BattlePausedEvent is sent to {@link IBattleListener#onBattlePaused(BattlePausedEvent)
- * onBattlePaused()} when a battle has been paused. 
+ * onBattlePaused()} when a battle has been paused.
  *
  * @see IBattleListener
  * @see BattleResumedEvent
- * 
+ *
  * @author Pavel Savara (original)
  * @author Flemming N. Larsen (contributor)
  *
@@ -28,11 +27,11 @@ package robocode.control.events;
  */
 public class BattlePausedEvent extends BattleEvent {
 
-	/**
-	 * Called by the game to create a new BattlePausedEvent.
-	 * Please don't use this constructor as it might change.
-	 */
-	public BattlePausedEvent() {
-		super();		
-	}
+    /**
+     * Called by the game to create a new BattlePausedEvent.
+     * Please don't use this constructor as it might change.
+     */
+    public BattlePausedEvent() {
+        super();
+    }
 }

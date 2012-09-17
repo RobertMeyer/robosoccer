@@ -13,7 +13,6 @@
  *******************************************************************************/
 package robocode.control.events;
 
-
 /**
  * This is the base class of all battle events.
  *
@@ -24,10 +23,10 @@ package robocode.control.events;
  */
 public abstract class BattleEvent {
 
-	/**
-	 * Creates a new BattleEvent.
-	 */
-	public BattleEvent() {
-		super();		
-	}
+    /**
+     * Creates a new BattleEvent.
+     */
+    public BattleEvent() {
+        super();
+    }
 }

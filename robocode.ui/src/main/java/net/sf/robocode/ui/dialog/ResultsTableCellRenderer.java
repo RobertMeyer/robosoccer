@@ -14,12 +14,10 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -28,31 +26,31 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class ResultsTableCellRenderer extends DefaultTableCellRenderer {
 
-	private final boolean isBordered;
+    private final boolean isBordered;
 
-	public ResultsTableCellRenderer(boolean isBordered) {
-		super();
-		this.isBordered = isBordered;
-		setHorizontalAlignment(SwingConstants.CENTER);
-		setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-	}
+    public ResultsTableCellRenderer(boolean isBordered) {
+        super();
+        this.isBordered = isBordered;
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+    }
 
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-			boolean hasFocus, int row, int column) {
-		if (isBordered) {
-			setBorder(new EtchedBorder(EtchedBorder.RAISED));
-			setBackground(SystemColor.menu);
-			setForeground(SystemColor.menuText);
-		} else if (isSelected) {
-			setBackground(SystemColor.textHighlight);
-			setForeground(SystemColor.textHighlightText);
-		} else {
-			setBackground(SystemColor.text);
-			setForeground(SystemColor.textText);
-		}
-		setText(value.toString());
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                   boolean hasFocus, int row, int column) {
+        if (isBordered) {
+            setBorder(new EtchedBorder(EtchedBorder.RAISED));
+            setBackground(SystemColor.menu);
+            setForeground(SystemColor.menuText);
+        } else if (isSelected) {
+            setBackground(SystemColor.textHighlight);
+            setForeground(SystemColor.textHighlightText);
+        } else {
+            setBackground(SystemColor.text);
+            setForeground(SystemColor.textText);
+        }
+        setText(value.toString());
 
-		return this;
-	}
+        return this;
+    }
 }

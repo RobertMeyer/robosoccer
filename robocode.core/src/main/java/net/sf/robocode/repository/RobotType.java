@@ -13,11 +13,10 @@
  */
 package net.sf.robocode.repository;
 
-
 import java.io.Serializable;
 
-
 public class RobotType implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	transient public static final RobotType INVALID = new RobotType(0);
@@ -30,6 +29,8 @@ public class RobotType implements Serializable {
 	transient public static final RobotType PAINTING = new RobotType(64);
 	transient public static final RobotType HOUSE = new RobotType(128);
 	transient public static final RobotType FREEZE = new RobotType(256);
+	transient public static final RobotType BALL = new RobotType(512);
+    transient public static final RobotType BOTZILLA = new RobotType(1024);
 
 	private int code;
 
@@ -46,7 +47,9 @@ public class RobotType implements Serializable {
 			boolean isTeamRobot,
 			boolean isDroid,
 			boolean isHouse,
-			boolean isFreeze
+			boolean isFreeze,
+			boolean isBall,
+            boolean isBotzilla
 			) {
 		this.code = 0;
 		if (isJuniorRobot) {
@@ -75,6 +78,12 @@ public class RobotType implements Serializable {
 		}
 		if (isFreeze) {
 			code += FREEZE.getCode();
+		}
+		if (isBall) {
+			code += BALL.getCode();
+		}
+        if (isBotzilla) {
+            code += BOTZILLA.getCode();
 		}
 	}
 
@@ -120,6 +129,14 @@ public class RobotType implements Serializable {
 	
 	public boolean isFreezeRobot() {
 		return (code & FREEZE.code) != 0;
+    }
+
+	public boolean isBall() {
+		return (code & BALL.code) != 0;
+	}
+
+  public boolean isBotzilla() {
+        return (code & BOTZILLA.code) != 0;
 	}
 
 	@Override

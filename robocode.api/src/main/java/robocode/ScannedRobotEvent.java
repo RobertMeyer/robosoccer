@@ -13,16 +13,15 @@
  *******************************************************************************/
 package robocode;
 
-
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Event;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
-
 
 /**
  * A ScannedRobotEvent is sent to {@link Robot#onScannedRobot(ScannedRobotEvent)
@@ -36,9 +35,9 @@ import java.nio.ByteBuffer;
  * @author Mathew A. Nelson (original)
  */
 public class ScannedRobotEvent extends Event {
+
 	private static final long serialVersionUID = 1L;
 	private final static int DEFAULT_PRIORITY = 10;
-
 	private final String name;
 	private final double energy;
 	private final double heading;
@@ -319,12 +318,15 @@ public class ScannedRobotEvent extends Event {
 	}
 
 	private static class SerializableHelper implements ISerializableHelper {
+
+        @Override
 		public int sizeOf(RbSerializer serializer, Object object) {
 			ScannedRobotEvent obj = (ScannedRobotEvent) object;
 
 			return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.name) + 5 * RbSerializer.SIZEOF_DOUBLE;
 		}
 
+        @Override
 		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
 			ScannedRobotEvent obj = (ScannedRobotEvent) object;
 
@@ -336,6 +338,7 @@ public class ScannedRobotEvent extends Event {
 			serializer.serialize(buffer, obj.velocity);
 		}
 
+        @Override
 		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
 			String name = serializer.deserializeString(buffer);
 			double energy = buffer.getDouble();

@@ -13,24 +13,27 @@
  *******************************************************************************/
 package net.sf.robocode.battle.snapshot;
 
+import java.awt.geom.Arc2D;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.peer.DebugProperty;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.serialization.IXmlSerializable;
-import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
+import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
+import robocode.EquipmentPart;
+import robocode.EquipmentSlot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.RobotState;
-
-import java.awt.geom.Arc2D;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Hashtable;
-import java.util.List;
-
 
 /**
  * A snapshot of a robot at a specific time instant in a battle.
@@ -40,96 +43,72 @@ import java.util.List;
  * @author Pavel Savara (contributor)
  * @since 1.6.1
  */
-public final class RobotSnapshot implements Serializable, IXmlSerializable, IRobotSnapshot {
+public final class RobotSnapshot implements Serializable, IXmlSerializable,
+                                            IRobotSnapshot {
 
 	private static final long serialVersionUID = 2L;
-
 	/** The name of the robot */
 	private String name;
-
 	/** The short name of the robot */
 	private String shortName;
-
 	/** Very short name of the robot */
 	private String veryShortName;
-
 	/** Very short name of the team leader robot (might be null) */
 	private String teamName;
-
 	/** The unique robot index */
 	private int robotIndex;
-
 	/** The team index for the robot */
 	private int teamIndex;
-
 	/** The robot state */
 	private RobotState state;
-
 	/** The energy level of the robot */
 	private double energy;
-
 	/** The velocity of the robot */
 	private double velocity;
-
 	/** The gun heat level of the robot */
 	private double gunHeat;
-
 	/** The body heading in radians */
 	private double bodyHeading;
-
 	/** The gun heading in radians */
 	private double gunHeading;
-
 	/** The radar heading in radians */
 	private double radarHeading;
-
 	/** The X position */
 	private double x;
-
 	/** The Y position */
 	private double y;
-
 	/** The ARGB color of the body */
 	private int bodyColor = ExecCommands.defaultBodyColor;
-
 	/** The ARGB color of the gun */
 	private int gunColor = ExecCommands.defaultGunColor;
-
 	/** The ARGB color of the radar */
 	private int radarColor = ExecCommands.defaultRadarColor;
-
 	/** The ARGB color of the scan arc */
 	private int scanColor = ExecCommands.defaultScanColor;
-
 	/** Flag specifying if this robot is a Droid */
 	private boolean isDroid;
-	
 	/** Flag specifying if the robot is a FreezeRobot */
 	private boolean isFreezeRobot;
-
 	/** Flag specifying if this robot is a IPaintRobot or is invoking getGraphics() */
 	private boolean isPaintRobot;
-
 	/** Flag specifying if painting is enabled for this robot */
 	private boolean isPaintEnabled;
-
 	/** Flag specifying if RobocodeSG painting is enabled for this robot */
 	private boolean isSGPaintEnabled;
-
 	/** Snapshot of the scan arc */
 	private SerializableArc scanArc;
-
 	/** Snapshot of the object with queued calls for Graphics object */
 	private Object graphicsCalls;
-
 	/** Snapshot of debug properties */
 	private DebugProperty[] debugProperties;
-
 	/** Snapshot of the output print stream for this robot */
 	private String outputStreamSnapshot;
-
 	/** Snapshot of score of the robot */
 	private IScoreSnapshot robotScoreSnapshot;
+
+    private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
+    
+    private double scanRadius;
 
 	/**
 	 * Creates a snapshot of a robot that must be filled out with data later.
@@ -160,6 +139,10 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 		velocity = robot.getVelocity();
 		gunHeat = robot.getGunHeat(); 
 
+        equipment = robot.getEquipment();
+        
+        scanRadius = robot.getRadarScanRadius();
+        
 		bodyHeading = robot.getBodyHeading();
 		gunHeading = robot.getGunHeading();
 		radarHeading = robot.getRadarHeading();
@@ -203,6 +186,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	 */
 	// Used to identify buttons
 	// TODO: Fix this so that getRobotIndex() is used instead
+    @Override
 	public String getName() {
 		return name;
 	}
@@ -211,6 +195,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	 * {@inheritDoc}
 	 */
 	// Used for text on buttons
+    @Override
 	public String getShortName() {
 		return shortName;
 	}
@@ -218,7 +203,24 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
+	public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+		return equipment;
+	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getScanRadius(){
+    	return scanRadius;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
 	// Used for drawing the name of the robot on the battle view
+    @Override
 	public String getVeryShortName() {
 		return veryShortName;
 	}
@@ -226,6 +228,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public String getTeamName() {
 		return teamName;
 	}
@@ -233,6 +236,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public int getContestantIndex() {
 		return teamIndex >= 0 ? teamIndex : robotIndex;
 	}
@@ -240,6 +244,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public int getRobotIndex() {
 		return robotIndex;
 	}
@@ -247,6 +252,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public int getTeamIndex() {
 		return teamIndex;
 	}
@@ -254,6 +260,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public RobotState getState() {
 		return state;
 	}
@@ -261,6 +268,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getEnergy() {
 		return energy;
 	}
@@ -268,6 +276,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getVelocity() {
 		return velocity;
 	}
@@ -275,6 +284,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getBodyHeading() {
 		return bodyHeading;
 	}
@@ -282,6 +292,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getGunHeading() {
 		return gunHeading;
 	}
@@ -289,6 +300,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getRadarHeading() {
 		return radarHeading;
 	}
@@ -296,6 +308,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getGunHeat() {
 		return gunHeat;
 	}
@@ -303,6 +316,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getX() {
 		return x;
 	}
@@ -310,6 +324,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public double getY() {
 		return y;
 	}
@@ -317,6 +332,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public int getBodyColor() {
 		return bodyColor;
 	}
@@ -324,6 +340,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public int getGunColor() {
 		return gunColor;
 	}
@@ -331,6 +348,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public int getRadarColor() {
 		return radarColor;
 	}
@@ -338,6 +356,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public int getScanColor() {
 		return scanColor;
 	}
@@ -345,6 +364,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public boolean isDroid() {
 		return isDroid;
 	}
@@ -359,6 +379,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public boolean isPaintRobot() {
 		return isPaintRobot;
 	}
@@ -366,6 +387,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public boolean isPaintEnabled() {
 		return isPaintEnabled;
 	}
@@ -383,6 +405,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public boolean isSGPaintEnabled() {
 		return isSGPaintEnabled;
 	}
@@ -390,6 +413,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public DebugProperty[] getDebugProperties() {
 		return debugProperties;
 	}
@@ -397,6 +421,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public String getOutputStreamSnapshot() {
 		return outputStreamSnapshot;
 	}
@@ -428,6 +453,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public IScoreSnapshot getScoreSnapshot() {
 		return robotScoreSnapshot;
 	}
@@ -453,8 +479,10 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
-		writer.startElement(options.shortAttributes ? "r" : "robot"); {
+        writer.startElement(options.shortAttributes ? "r" : "robot");
+        {
 			writer.writeAttribute("id", robotIndex);
 			if (!options.skipNames) {
 				writer.writeAttribute("vsName", veryShortName);
@@ -498,7 +526,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 					writer.writeAttribute("out", outputStreamSnapshot);
 				}
 				if (debugProperties != null) {
-					writer.startElement("debugProperties"); {
+                    writer.startElement("debugProperties");
+                    {
 						for (DebugProperty prop : debugProperties) {
 							prop.writeXml(writer, options);
 						}
@@ -527,12 +556,15 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public XmlReader.Element readXml(XmlReader reader) {
 		return reader.expect("robot", "r", new XmlReader.Element() {
+            @Override
 			public IXmlSerializable read(final XmlReader reader) {
 				final RobotSnapshot snapshot = new RobotSnapshot();
 
 				reader.expect("id", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.robotIndex = Integer.parseInt(value);
 
@@ -559,6 +591,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 				});
 
 				reader.expect("name", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.name = value;
 						Hashtable<String, Object> context = reader.getContext();
@@ -577,108 +610,126 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 				});
 
 				reader.expect("sName", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.shortName = value;
 					}
 				});
 
 				reader.expect("vsName", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.veryShortName = value;
 					}
 				});
 
 				reader.expect("teamName", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.teamName = value;
 					}
 				});
 
 				reader.expect("state", "s", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.state = RobotState.valueOf(value);
 					}
 				});
 
 				reader.expect("isDroid", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.isDroid = Boolean.valueOf(value);
 					}
 				});
 
 				reader.expect("bodyColor", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.bodyColor = (Long.valueOf(value.toUpperCase(), 16).intValue());
 					}
 				});
 
 				reader.expect("gunColor", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.gunColor = Long.valueOf(value.toUpperCase(), 16).intValue();
 					}
 				});
 
 				reader.expect("radarColor", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.radarColor = Long.valueOf(value.toUpperCase(), 16).intValue();
 					}
 				});
 
 				reader.expect("scanColor", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.scanColor = Long.valueOf(value.toUpperCase(), 16).intValue();
 					}
 				});
 
 				reader.expect("energy", "e", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.energy = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("velocity", "v", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.velocity = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("gunHeat", "h", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.gunHeat = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("bodyHeading", "b", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.bodyHeading = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("gunHeading", "g", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.gunHeading = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("radarHeading", "r", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.radarHeading = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("x", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.x = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("y", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						snapshot.y = Double.parseDouble(value);
 					}
 				});
 
 				reader.expect("out", new XmlReader.Attribute() {
+                    @Override
 					public void read(String value) {
 						if (value != null && value.length() != 0) {
 							snapshot.outputStreamSnapshot = value;
@@ -689,6 +740,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 				final XmlReader.Element element = (new ScoreSnapshot()).readXml(reader);
 
 				reader.expect("score", "sc", new XmlReader.Element() {
+                    @Override
 					public IXmlSerializable read(XmlReader reader) {
 						snapshot.robotScoreSnapshot = (IScoreSnapshot) element.read(reader);
 						return (ScoreSnapshot) snapshot.robotScoreSnapshot;
@@ -708,8 +760,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable, IRob
 	 * @author Pavel Savara
 	 */
 	private static class SerializableArc implements Serializable {
-		private static final long serialVersionUID = 1L;
 
+        private static final long serialVersionUID = 1L;
 		public final double x;
 		public final double y;
 		public final double w;

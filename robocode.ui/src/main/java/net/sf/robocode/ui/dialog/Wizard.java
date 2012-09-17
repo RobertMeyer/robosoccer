@@ -11,29 +11,28 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-
 import java.awt.*;
-
 
 /**
  * @author Mathew A. Nelson (original)
  */
 public interface Wizard {
-	abstract void back();
 
-	abstract Component getCurrentPanel();
+    abstract void back();
 
-	abstract WizardController getWizardController();
+    abstract Component getCurrentPanel();
 
-	WizardListener getWizardListener();
+    abstract WizardController getWizardController();
 
-	abstract boolean isBackAvailable();
+    WizardListener getWizardListener();
 
-	abstract boolean isNextAvailable();
+    abstract boolean isBackAvailable();
 
-	abstract boolean isReady();
+    abstract boolean isNextAvailable();
 
-	abstract void next();
+    abstract boolean isReady();
 
-	void setWizardControllerOnPanel(WizardPanel panel);
+    abstract void next();
+
+    void setWizardControllerOnPanel(WizardPanel panel);
 }

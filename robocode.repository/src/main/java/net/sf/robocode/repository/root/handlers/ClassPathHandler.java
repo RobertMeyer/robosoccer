@@ -14,16 +14,13 @@
  *******************************************************************************/
 package net.sf.robocode.repository.root.handlers;
 
-
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.Map;
 import net.sf.robocode.repository.Database;
 import net.sf.robocode.repository.parsers.ClasspathFileParser;
 import net.sf.robocode.repository.root.ClassPathRoot;
 import net.sf.robocode.repository.root.IRepositoryRoot;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.util.Map;
-
 
 /**
  * Handler for registering class path roots.
@@ -32,61 +29,63 @@ import java.util.Map;
  * @author Flemming N. Larsen (contributor)
  */
 public class ClassPathHandler extends RootHandler {
-	public void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {	
-		if (isDevel) {
-			File classpathFile = new File(dir, ".classpath");
 
-			if (classpathFile.exists()) {	
-				ClasspathFileParser classpathParser = new ClasspathFileParser();
+    @Override
+    public void visitDirectory(File dir, boolean isDevel, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
+        if (isDevel) {
+            File classpathFile = new File(dir, ".classpath");
 
-				boolean parsed = true;
+            if (classpathFile.exists()) {
+                ClasspathFileParser classpathParser = new ClasspathFileParser();
 
-				try {
-					classpathParser.parse(classpathFile.toURI().toURL());
-				} catch (MalformedURLException e) {
-					parsed = false;
-				}
-				if (parsed) {
-					String classPath = classpathParser.getClassPath();
+                boolean parsed = true;
 
-					if (classPath != null) {
-						File classPathDir = new File(dir, classPath);
+                try {
+                    classpathParser.parse(classpathFile.toURI().toURL());
+                } catch (MalformedURLException e) {
+                    parsed = false;
+                }
+                if (parsed) {
+                    String classPath = classpathParser.getClassPath();
 
-						handleDirectory(classPathDir, dir, newroots, roots, db, force);			
-					}
+                    if (classPath != null) {
+                        File classPathDir = new File(dir, classPath);
 
-					for (String sourcePath : classpathParser.getSourcePaths()) {
-						if (sourcePath != null) {
-							File sourcePathDir = new File(dir, sourcePath);
+                        handleDirectory(classPathDir, dir, newroots, roots, db, force);
+                    }
 
-							handleDirectory(sourcePathDir, dir, newroots, roots, db, force);			
-						}
-					}
+                    for (String sourcePath : classpathParser.getSourcePaths()) {
+                        if (sourcePath != null) {
+                            File sourcePathDir = new File(dir, sourcePath);
 
-					return; // we are done! 
-				}
-			}
-		}
-		handleDirectory(dir, null, newroots, roots, db, force);
-	}
+                            handleDirectory(sourcePathDir, dir, newroots, roots, db, force);
+                        }
+                    }
 
-	private void handleDirectory(File dir, File projectDir, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
-		String key;
+                    return; // we are done!
+                }
+            }
+        }
+        handleDirectory(dir, null, newroots, roots, db, force);
+    }
 
-		try {
-			key = dir.toURI().toURL().toString();
-		} catch (MalformedURLException e) {
-			return;
-		}
+    private void handleDirectory(File dir, File projectDir, Map<String, IRepositoryRoot> newroots, Map<String, IRepositoryRoot> roots, Database db, boolean force) {
+        String key;
 
-		IRepositoryRoot root = roots.get(key);
+        try {
+            key = dir.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            return;
+        }
 
-		if (root == null) {
-			root = new ClassPathRoot(db, dir, projectDir);
-		} else {
-			roots.remove(key);
-		}
-		root.update(force);
-		newroots.put(key, root);
-	}
+        IRepositoryRoot root = roots.get(key);
+
+        if (root == null) {
+            root = new ClassPathRoot(db, dir, projectDir);
+        } else {
+            roots.remove(key);
+        }
+        root.update(force);
+        newroots.put(key, root);
+    }
 }

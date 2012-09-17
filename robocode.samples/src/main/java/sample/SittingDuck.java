@@ -15,16 +15,13 @@
  *******************************************************************************/
 package sample;
 
-
-import robocode.AdvancedRobot;
-import robocode.RobocodeFileOutputStream;
-
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
-
+import robocode.AdvancedRobot;
+import robocode.RobocodeFileOutputStream;
 
 /**
  * SittingDuck - a sample robot by Mathew Nelson, and maintained by Flemming N. Larsen
@@ -32,69 +29,71 @@ import java.io.PrintStream;
  * Along with sitting still doing nothing, this robot demonstrates persistency.
  */
 public class SittingDuck extends AdvancedRobot {
-	static boolean incrementedBattles = false;
 
-	public void run() {
-		setBodyColor(Color.yellow);
-		setGunColor(Color.yellow);
+    static boolean incrementedBattles = false;
 
-		int roundCount, battleCount;
+    @Override
+    public void run() {
+        setBodyColor(Color.yellow);
+        setGunColor(Color.yellow);
 
-		try {
-			BufferedReader reader = null;
-			try {
-				// Read file "count.dat" which contains 2 lines, a round count, and a battle count
-				reader = new BufferedReader(new FileReader(getDataFile("count.dat")));
+        int roundCount, battleCount;
 
-				// Try to get the counts
-				roundCount = Integer.parseInt(reader.readLine());
-				battleCount = Integer.parseInt(reader.readLine());
+        try {
+            BufferedReader reader = null;
+            try {
+                // Read file "count.dat" which contains 2 lines, a round count, and a battle count
+                reader = new BufferedReader(new FileReader(getDataFile("count.dat")));
 
-			} finally {
-				if (reader != null) {
-					reader.close();
-				}
-			}
-		} catch (IOException e) {
-			// Something went wrong reading the file, reset to 0.
-			roundCount = 0;
-			battleCount = 0;
-		} catch (NumberFormatException e) {
-			// Something went wrong converting to ints, reset to 0
-			roundCount = 0;
-			battleCount = 0;
-		}
+                // Try to get the counts
+                roundCount = Integer.parseInt(reader.readLine());
+                battleCount = Integer.parseInt(reader.readLine());
 
-		// Increment the # of rounds
-		roundCount++;
+            } finally {
+                if (reader != null) {
+                    reader.close();
+                }
+            }
+        } catch (IOException e) {
+            // Something went wrong reading the file, reset to 0.
+            roundCount = 0;
+            battleCount = 0;
+        } catch (NumberFormatException e) {
+            // Something went wrong converting to ints, reset to 0
+            roundCount = 0;
+            battleCount = 0;
+        }
 
-		// If we haven't incremented # of battles already,
-		// Note: Because robots are only instantiated once per battle, member variables remain valid throughout it.
-		if (!incrementedBattles) {
-			// Increment # of battles
-			battleCount++;
-			incrementedBattles = true;
-		}
+        // Increment the # of rounds
+        roundCount++;
 
-		PrintStream w = null;
-		try {
-			w = new PrintStream(new RobocodeFileOutputStream(getDataFile("count.dat")));
+        // If we haven't incremented # of battles already,
+        // Note: Because robots are only instantiated once per battle, member variables remain valid throughout it.
+        if (!incrementedBattles) {
+            // Increment # of battles
+            battleCount++;
+            incrementedBattles = true;
+        }
 
-			w.println(roundCount);
-			w.println(battleCount);
+        PrintStream w = null;
+        try {
+            w = new PrintStream(new RobocodeFileOutputStream(getDataFile("count.dat")));
 
-			// PrintStreams don't throw IOExceptions during prints, they simply set a flag.... so check it here.
-			if (w.checkError()) {
-				out.println("I could not write the count!");
-			}
-		} catch (IOException e) {
-			out.println("IOException trying to write: ");
-			e.printStackTrace(out);
-		} finally {
-			if (w != null) {
-				w.close();
-			}
-		}
-		out.println("I have been a sitting duck for " + roundCount + " rounds, in " + battleCount + " battles."); 
-	}
+            w.println(roundCount);
+            w.println(battleCount);
+
+            // PrintStreams don't throw IOExceptions during prints, they simply set a flag.... so check it here.
+            if (w.checkError()) {
+                out.println("I could not write the count!");
+            }
+        } catch (IOException e) {
+            out.println("IOException trying to write: ");
+            e.printStackTrace(out);
+        } finally {
+            if (w != null) {
+                w.close();
+            }
+        }
+        out.println("I have been a sitting duck for " + roundCount + " rounds, in " + battleCount + " battles.");
+    }
 }
