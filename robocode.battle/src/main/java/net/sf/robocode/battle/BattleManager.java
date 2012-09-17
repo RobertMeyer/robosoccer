@@ -123,9 +123,10 @@ public class BattleManager implements IBattleManager {
     @Override
     public void startNewBattle(BattleProperties battleProperties, boolean waitTillOver, boolean enableCLIRecording) {
         this.battleProperties = battleProperties;
-        final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(battleProperties.getSelectedRobots());
-
-        startNewBattleImpl(robots, waitTillOver, enableCLIRecording);
+        //String battleRobots = battleProperties.getSelectedRobots() + ((ClassicMode) battleProperties.getBattleMode()).addRobots();
+        //final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(battleRobots);
+        
+        startNewBattleImpl(battleProperties.getSelectedRobots(), waitTillOver, enableCLIRecording);
     }
 
     // Called from the RobocodeEngine
@@ -142,9 +143,12 @@ public class BattleManager implements IBattleManager {
         battleProperties.setInitialPositions(initialPositions);
         battleProperties.setBattleMode(new ClassicMode());
 
-        final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(spec.getRobots());
-
-        startNewBattleImpl(robots, waitTillOver, enableCLIRecording);
+        startNewBattleImpl(spec.getRobots(), waitTillOver, enableCLIRecording);
+    }
+    
+    private void startNewBattleImpl(String battlingRobotList, boolean waitTillOver, boolean enableCLIRecording) {
+    	RobotSpecification[] robotList = repositoryManager.loadSelectedRobots(repositoryManager.loadSelectedRobots(battlingRobotList));
+    	startNewBattleImpl(robotList, waitTillOver, enableCLIRecording);
     }
 
     private void startNewBattleImpl(RobotSpecification[] battlingRobotsList, boolean waitTillOver, boolean enableCLIRecording) {

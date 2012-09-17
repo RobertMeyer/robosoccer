@@ -191,7 +191,7 @@ public final class Battle extends BaseBattle {
         battleMode = (ClassicMode) battleProperties.getBattleMode();
         
         computeInitialPositions(battleProperties.getInitialPositions());
-        System.out.println(battlingRobotsList);
+        
         battlePeers = new BattlePeers(battlingRobotsList, hostManager, this, rm);
 		bp = battleProperties;
     }

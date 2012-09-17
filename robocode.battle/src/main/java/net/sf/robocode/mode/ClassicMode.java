@@ -73,4 +73,13 @@ public class ClassicMode implements IMode {
 	public void spawnZombie(int turn) {
 		//No need to spawn zombies in Classic Mode
 	}
+	
+	/**
+	 * Add extra robots to the battle.
+	 * @param robots
+	 * @return
+	 */
+	public String addRobots(){
+		return "";
+	}
 }

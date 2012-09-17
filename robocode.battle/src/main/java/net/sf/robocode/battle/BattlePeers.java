@@ -16,27 +16,34 @@ import robocode.control.RobotSpecification;
 
 public class BattlePeers {
 	
+	private IHostManager hostManager;
+	private Battle battle;
 
     private List<RobotPeer> robots = new ArrayList<RobotPeer>();
+    private List<RobotPeer> activeRobots = new ArrayList<RobotPeer>();
     private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
     private IRepositoryManager repositoryManager;
+    
+	// create teams
+    private Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
+    private List<String> teams = new ArrayList<String>();
+    private List<String> teamDuplicates = new ArrayList<String>();
+    private List<Integer> robotDuplicates = new ArrayList<Integer>();
+    
 
-	public BattlePeers(RobotSpecification[] battlingRobotsList, IHostManager hostManager, Battle battle, IRepositoryManager rm) {
+	public BattlePeers(RobotSpecification[] battlingRobotsList, IHostManager hostManager, Battle battle, IRepositoryManager repositoryManager) {
 		
 		
-		repositoryManager = rm;
+		this.repositoryManager = repositoryManager;
+		this.hostManager = hostManager;
+		this.battle = battle;
 		
-		
-		//RobotSpecification[] robots = repositoryManager.loadSelectedRobots("robots.ZombieRobot");
-		
-		
-		// create teams
-        Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
-        List<String> teams = new ArrayList<String>();
-        List<String> teamDuplicates = new ArrayList<String>();
-        List<Integer> robotDuplicates = new ArrayList<Integer>();
+        createPeers(battlingRobotsList);
+	}
 
-        // count duplicate robots, enumerate teams, enumerate team members
+
+	private void createPeers(RobotSpecification[] battlingRobotsList) {
+		// count duplicate robots, enumerate teams, enumerate team members
         for (RobotSpecification specification : battlingRobotsList) {
             final String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
 
@@ -140,6 +147,7 @@ public class BattlePeers {
             }
             Integer duplicate = robotDuplicates.get(i);
             // TODO Follow back from here to RobotPeer etc, to
+            
             RobotPeer robotPeer = new RobotPeer(battle, hostManager, specification, duplicate, team, robotIndex);
             
             robots.add(robotPeer);
@@ -149,7 +157,6 @@ public class BattlePeers {
         }
 	}
 	
-	
 	public List<RobotPeer> getRobots(){
 		return robots;
 	}
@@ -157,7 +164,7 @@ public class BattlePeers {
 	public List<ContestantPeer> getContestants() {
 		return contestants;
 	}
-
+	
 
 	public void cleanup() {
         if (contestants != null) {

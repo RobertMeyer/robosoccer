@@ -25,4 +25,8 @@ public class ZombieMode extends ClassicMode {
     public void spawnZombie(int turn) {
     	
     }
+    
+    public String addRobots(){
+    	return ",sample.FirstZombieRobot,sample.FirstZombieRobot,sample.FirstZombieRobot,sample.FirstZombieRobot,sample.FirstZombieRobot";
+    }
 }

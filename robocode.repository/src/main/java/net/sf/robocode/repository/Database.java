@@ -232,10 +232,9 @@ public class Database {
     }
 
     public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
-    	System.out.println(selectedRobots);
         List<IRepositoryItem> result = new ArrayList<IRepositoryItem>();
         StringTokenizer tokenizer = new StringTokenizer(selectedRobots, ",");
-
+        System.out.println("Tokenizer: " + tokenizer);
         while (tokenizer.hasMoreTokens()) {
             String bot = tokenizer.nextToken().trim();
             final IItem item = getItem(bot);
@@ -250,6 +249,7 @@ public class Database {
                 Logger.logError("Can't find " + bot);
             }
         }
+        System.out.println("Result: " + result);
         return result;
     }
 

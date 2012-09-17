@@ -11,6 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import net.sf.robocode.mode.ClassicMode;
+
 /**
  * @author Pavel Savara (original)
  */
@@ -33,4 +35,6 @@ public interface IBattle extends Runnable {
     void waitTillOver();
 
     void setPaintEnabled(int robotIndex, boolean enable);
+    
+    ClassicMode getBattleMode();
 }
