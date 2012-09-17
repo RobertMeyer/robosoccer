@@ -82,6 +82,14 @@ public class ClassicMode implements IMode {
 		// TODO Auto-generated method stub	
 	}
 
+	public void updateCustomObjects(List<CustomObject> customObject) {
+		
+	}
+	
+	public List<CustomObject> createCustomObjects() {
+		return null;
+	}
+	
 	@Override
 	public String addModeRobots(String selectedRobots) {
 		// Don't need to add any extra robots for classic mode

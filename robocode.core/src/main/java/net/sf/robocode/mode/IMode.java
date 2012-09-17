@@ -71,6 +71,4 @@ public interface IMode {
 	 * @return list of selected robots plus any modeSpecific robots appended.
 	 */
 	public String addModeRobots(String selectedRobots);
-
-	
 }

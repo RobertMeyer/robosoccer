@@ -26,7 +26,6 @@ import static java.lang.Math.*;
 import java.util.HashMap;
 import java.util.Random;
 
-import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
@@ -45,6 +44,7 @@ import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
+import robocode.control.snapshot.ICustomObjectSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
@@ -232,18 +232,6 @@ public class BattleView extends Canvas {
         smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
         smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
         
-        // Custom image initialisation
-        /* Check to see if game mode is of your instace, then add all your images
-         * with addCustomImage(String name, String filename, Double x, Double y).
-         */
-        if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
-        	/* add your images 
-        	 * Example:
-        	 * addCustomImage("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
-        	 * setCustomImagePosition("flag", 10,10);
-        	*/
-        }
-
         // Initialize ground image
         if (drawGround) {
         	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
@@ -359,15 +347,16 @@ public class BattleView extends Canvas {
 
         // Draw ground
         drawGround(g);
-        
-        // Draw custom
-        drawImages(g);
 
         if (snapShot != null) {
             // Draw scan arcs
             drawScanArcs(g, snapShot);
 
             drawEffectAreas(g, snapShot);
+            
+            // Draw custom
+            drawImages(g, snapShot);
+            
             // Draw robots
             drawRobots(g, snapShot);
 
@@ -452,9 +441,16 @@ public class BattleView extends Canvas {
      * @param Grahpics2D g - rendering context used to
      * render goodies to the screen
      */
-    private void drawImages(Graphics2D g) {
-    	for (RenderImage image : customImage.values()) {
+    private void drawImages(Graphics2D g, ITurnSnapshot snapShot) {
+    	for (ICustomObjectSnapshot snap : snapShot.getCustomObjects()) {
+    		RenderImage image = customImage.get(snap.getName());
+    		if (image == null) {
+    			image = addImage(snap.getName(), snap.getFilename());
+    		}
+			AffineTransform at = snap.getMatrix();
+    		image.setTransform(at);
     		image.paint(g);
+    		
     	}
     }
 
@@ -469,11 +465,9 @@ public class BattleView extends Canvas {
      * 
      * @return newly added RenderImage
      */
-	private RenderImage addImage(String name, String filename, double x,
-			double y) {
+	private RenderImage addImage(String name, String filename) {
 		RenderImage img = new RenderImage(imageManager.addCustomImage(name,
 				filename));
-		img.setTransform(AffineTransform.getTranslateInstance(x, y));
 		customImage.put(name, img);
 
 		return (img != null) ? img : null;
@@ -490,31 +484,6 @@ public class BattleView extends Canvas {
 			return img;
 		}
 		return null;
-	}
-
-	/* Sets the object at key name x,y coords
-	 * @param String name - key to be fetched
-	 * @param double x - x position
-	 * @param double y - y position
-	 */
-	private void setImagePosition(String name, double x, double y) {
-		if (customImage.containsKey(name)) {
-			customImage.get(name).setTransform(
-					AffineTransform.getTranslateInstance(x, y));
-		}
-	}
-
-	/*	Sets the rotation of a given key.
-	 * 
-	 *  @param String name - key of RenderImage
-	 *  @param double degrees - degree to rotate to
-	 */
-	private void setImageRotation(String name, double degrees) {
-		if (customImage.containsKey(name)) {
-			customImage.get(name).setTransform(
-					AffineTransform.getRotateInstance(Utils
-							.normalAbsoluteAngle(degrees)));
-		}
 	}
 	
 	/* Removes a given key from HashMap

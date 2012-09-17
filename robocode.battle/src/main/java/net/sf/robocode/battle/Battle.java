@@ -158,6 +158,7 @@ public final class Battle extends BaseBattle {
     private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+	private List<CustomObject> customObject = new ArrayList<CustomObject>();
     private int activeRobots;
     /* List of items that are going to be dropped */
     private List<ItemDrop> items = new ArrayList<ItemDrop>();
@@ -360,8 +361,13 @@ public final class Battle extends BaseBattle {
 
         /* Start to initialise all the items */
         this.initialiseItems();
-
 		effArea.clear();
+		customObject.clear();
+		
+		List<CustomObject> objs = this.getBattleMode().createCustomObjects();
+		if (objs != null)
+			customObject = objs;
+		
 		//boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {
 			//clear effect area and recreate every round
@@ -409,7 +415,7 @@ public final class Battle extends BaseBattle {
 
         Logger.logMessage(""); // puts in a new-line in the log message
 
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, customObject, false);
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -448,6 +454,8 @@ public final class Battle extends BaseBattle {
         updateBullets();
         
         updateEffectAreas();
+        
+        this.getBattleMode().updateCustomObjects(customObject);
         
         updateRobots();
 
@@ -534,7 +542,7 @@ public final class Battle extends BaseBattle {
 
     @Override
     protected void finalizeTurn() {
-        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, true)));
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, customObject, true)));
 
         super.finalizeTurn();
     }
@@ -930,5 +938,9 @@ public final class Battle extends BaseBattle {
 		    }
 		}
 
-
+	 	public void createCustomObject(String name, String filename, double x, double y) {
+	 		CustomObject obj = new CustomObject(name, filename);
+	 		obj.setTranslate(x, y);
+	 		customObject.add(obj);
+	 	}
 }

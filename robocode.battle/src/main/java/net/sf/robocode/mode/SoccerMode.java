@@ -1,10 +1,14 @@
 package net.sf.robocode.mode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.CustomObject;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -101,7 +105,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 			IRepositoryManager repositoryManager) {
 		Hashtable<String, Integer> duplicates = new Hashtable<String, Integer>();
 		int teamSize = battle.getRobotsCount() / 2;
-		
 		// Counts the number of duplicates for each robot being used.
 		for(int i = 0; i < battle.getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
@@ -113,6 +116,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 				duplicates.put(name, 1);
 			}
 		}
+		
+		battle.createCustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
 		
 		// Create teams 1 and 2.
 		TeamPeer team1 = new TeamPeer("Team 1", null, 0);
@@ -143,7 +148,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 		BallPeer ball = new BallPeer(battle, hostManager, ballSpec, 0, ballTeam, robots.size());
 		this.ball = new ArrayList<RobotPeer>();
 		this.ball.add(ball);
-		System.out.println(ball.getName());
 
 		ballTeam.add(ball);
 		contestants.add(ballTeam);
@@ -176,6 +180,20 @@ public class SoccerMode extends ClassicMode implements IMode {
 	@Override
 	public boolean isRoundOver(int endTimer, int time) {
 		return roundOver;
+	}
+	
+	@Override
+	public List<CustomObject> createCustomObjects() {
+		List<CustomObject> objs = new ArrayList<CustomObject>(); 
+		//objs.add(new CustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10));
+		return objs;
+	}
+	
+	@Override
+	public void updateCustomObjects(List<CustomObject> objects) {
+		/*for (CustomObject obj: objects) {
+			obj.setTranslate(obj.getTranslateX() + 1, obj.getTranslateY() + 1);
+		}*/
 	}
 	
 }

@@ -45,6 +45,8 @@ public interface ITurnSnapshot {
     int getTPS();
 
 	IEffectAreaSnapshot[] getEffectAreas();
+	
+	ICustomObjectSnapshot[] getCustomObjects();
 
     /**
      * Returns the current round of the battle.
