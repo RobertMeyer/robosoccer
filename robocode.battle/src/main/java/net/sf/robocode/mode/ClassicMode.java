@@ -311,4 +311,8 @@ public class ClassicMode implements IMode {
             robotPeer.performScan(robotPeers);
         }
 	}
+	
+	public boolean shouldRicochet() {
+		return false;
+	}
 }
