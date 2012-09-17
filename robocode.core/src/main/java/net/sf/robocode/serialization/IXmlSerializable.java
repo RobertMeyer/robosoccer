@@ -11,15 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.serialization;
 
-
 import java.io.IOException;
-
 
 /**
  * @author Pavel Savara (original)
  */
 public interface IXmlSerializable {
-	void writeXml(XmlWriter writer, SerializableOptions options) throws IOException;
 
-	XmlReader.Element readXml(XmlReader reader);
+    void writeXml(XmlWriter writer, SerializableOptions options) throws IOException;
+
+    XmlReader.Element readXml(XmlReader reader);
 }

@@ -11,16 +11,14 @@
  *******************************************************************************/
 package net.sf.robocode.ui.editor;
 
-
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
-
 
 /**
  * Undo manager containing actions for performing undo and redo edits.
@@ -30,71 +28,74 @@ import javax.swing.undo.UndoManager;
 @SuppressWarnings("serial")
 public class UndoManagerWithActions extends UndoManager {
 
-	private Action undoAction = new UndoAction();
-	private Action redoAction = new RedoAction();
+    private Action undoAction = new UndoAction();
+    private Action redoAction = new RedoAction();
 
-	public UndoManagerWithActions() {
-		super();
-		updateUndoRedoState();
-	}
+    public UndoManagerWithActions() {
+        super();
+        updateUndoRedoState();
+    }
 
-	@Override
-	public synchronized void undo() throws CannotUndoException {
-		super.undo();
-		updateUndoRedoState();
-	}
+    @Override
+    public synchronized void undo() throws CannotUndoException {
+        super.undo();
+        updateUndoRedoState();
+    }
 
-	@Override
-	public synchronized void redo() throws CannotRedoException {
-		super.redo();
-		updateUndoRedoState();
-	}
+    @Override
+    public synchronized void redo() throws CannotRedoException {
+        super.redo();
+        updateUndoRedoState();
+    }
 
-	@Override
-	public void undoableEditHappened(UndoableEditEvent undoableEditEvent) {
-		super.undoableEditHappened(undoableEditEvent);
-		updateUndoRedoState();
-	}
+    @Override
+    public void undoableEditHappened(UndoableEditEvent undoableEditEvent) {
+        super.undoableEditHappened(undoableEditEvent);
+        updateUndoRedoState();
+    }
 
-	public Action getUndoAction() {
-		return undoAction;
-	}
+    public Action getUndoAction() {
+        return undoAction;
+    }
 
-	public Action getRedoAction() {
-		return redoAction;
-	}
+    public Action getRedoAction() {
+        return redoAction;
+    }
 
-	protected void updateUndoRedoState() {
-		undoAction.setEnabled(canUndo());
-		redoAction.setEnabled(canRedo());
-	}
+    protected void updateUndoRedoState() {
+        undoAction.setEnabled(canUndo());
+        redoAction.setEnabled(canRedo());
+    }
 
-	private class UndoAction extends AbstractAction {
-		public UndoAction() {
-			super("Undo");
-		}
+    private class UndoAction extends AbstractAction {
 
-		public void actionPerformed(ActionEvent ae) {
-			try {
-				undo();
-			} catch (CannotUndoException e) {
-				Toolkit.getDefaultToolkit().beep();
-			}
-		}
-	}
+        public UndoAction() {
+            super("Undo");
+        }
 
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            try {
+                undo();
+            } catch (CannotUndoException e) {
+                Toolkit.getDefaultToolkit().beep();
+            }
+        }
+    }
 
-	private class RedoAction extends AbstractAction {
-		public RedoAction() {
-			super("Redo");
-		}
+    private class RedoAction extends AbstractAction {
 
-		public void actionPerformed(ActionEvent ae) {
-			try {
-				redo();
-			} catch (CannotRedoException e) {
-				Toolkit.getDefaultToolkit().beep();
-			}
-		}
-	}
+        public RedoAction() {
+            super("Redo");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            try {
+                redo();
+            } catch (CannotRedoException e) {
+                Toolkit.getDefaultToolkit().beep();
+            }
+        }
+    }
 }

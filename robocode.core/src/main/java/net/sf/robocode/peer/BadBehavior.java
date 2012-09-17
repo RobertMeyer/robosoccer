@@ -11,13 +11,13 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
-
 /**
  * @author Flemming N. Larsen (original)
  */
 public enum BadBehavior {
-	CANNOT_START,
-	SKIPPED_TOO_MANY_TURNS,
-	UNSTOPPABLE,
-	SECURITY_VIOLATION
+
+    CANNOT_START,
+    SKIPPED_TOO_MANY_TURNS,
+    UNSTOPPABLE,
+    SECURITY_VIOLATION
 }

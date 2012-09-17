@@ -4,20 +4,22 @@ import javax.swing.*;
 
 import net.sf.robocode.mode.*;
 import java.awt.*;
+import java.util.Hashtable;
 /**
  * 
  * add javadoc here! eventually
  *
  */
-@SuppressWarnings("serial")
 public class NewBattleModeTab extends JPanel {
 	
 	//list of available modes
-	private ModeList<IMode> modeList;
+	private ModeList modeList;
 	//description of each mode
-	private JLabel description;
+	private JLabel description = new JLabel("");
 	
-	private DefaultListModel<IMode> modeListModel;
+	private DefaultListModel modeListModel;
+	
+	private JPanel currentModeRulesPanel;
 	
 	private IMode modes[] = { 
 		
@@ -26,24 +28,15 @@ public class NewBattleModeTab extends JPanel {
 		new SlowMode(), 
 		new DifferentWeapons(), 
 		new RaceMode(),
+		new SoccerMode(),
 		new ZombieMode(),
-		new FlagMode()
+		new FlagMode(),
+		new RicochetMode(),
+		new ItemMode()
 	};
 	
 	public NewBattleModeTab() {
 		super();
-		
-		description = new JLabel("");
-		
-		modeList = new ModeList<IMode>(description);
-		modeList.setModel(modeListModel());
-		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-		initialize();
-		
-	}
-	
-	public void setup() {
 		initialize();
 	}
 	
@@ -56,16 +49,21 @@ public class NewBattleModeTab extends JPanel {
 	}
 	
 	private void initialize() {
-		JPanel j = new JPanel();
-
-		j.setLayout(new FlowLayout());
-		j.setBorder(BorderFactory.createEtchedBorder());
-		j.add(getModeList());
-		j.add(getDescriptionLabel());
-		add(j);
+		
+		modeList = new ModeList(this);
+		modeList.setModel(modeListModel());
+		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		currentModeRulesPanel = new JPanel();
+		
+		setLayout(new GridLayout(3,1,5,5));
+		setBorder(BorderFactory.createEtchedBorder());
+		add(getModeList());
+		add(getDescriptionLabel());
+		
 	}
 	
-	private JList<IMode> getModeList() {
+	private JList getModeList() {
 		return modeList;
 	}
 	
@@ -73,12 +71,31 @@ public class NewBattleModeTab extends JPanel {
 		return description;
 	}
 	
-	private ListModel<IMode> modeListModel() {
-		modeListModel = new DefaultListModel<IMode>();
+	public void updateModePanel() {
+		description.setText(getSelectedMode().getDescription());
+		if(currentModeRulesPanel != null){
+			remove(currentModeRulesPanel);
+		}
+		
+		currentModeRulesPanel = getSelectedMode().getRulesPanel();
+		
+		if(currentModeRulesPanel != null){
+			add(currentModeRulesPanel);
+		}
+		repaint();
+	}
+	
+	public Hashtable<String, Object> getSelectedModeRulesValues() {
+		return getSelectedMode().getRulesPanelValues();
+	}
+	
+	private ListModel modeListModel() {
+		modeListModel = new DefaultListModel();
 		int index = 0;
 		for(IMode mode : modes) {
 			modeListModel.add(index++, mode);
 		}
 		return modeListModel;
 	}
+
 }

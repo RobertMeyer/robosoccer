@@ -11,7 +11,10 @@
  *******************************************************************************/
 package net.sf.robocode.host;
 
-
+import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
@@ -20,302 +23,322 @@ import net.sf.robocode.serialization.RbSerializer;
 import robocode.BattleRules;
 import robocode.control.RobotSpecification;
 
-import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * @author Pavel Savara (original)
  */
 public final class RobotStatics implements IRobotStatics, Serializable {
-	private static final long serialVersionUID = 1L;
 
-	private final boolean isJuniorRobot;
-	private final boolean isInteractiveRobot;
-	private final boolean isPaintRobot;
-	private final boolean isAdvancedRobot;
-	private final boolean isTeamRobot;
-	private final boolean isTeamLeader;
-	private final boolean isDroid;
-	private final boolean isHouseRobot;
-	private final String name;
-	private final String shortName;
-	private final String veryShortName;
-	private final String fullClassName;
-	private final String shortClassName;
-	private final BattleRules battleRules;
-	private final String[] teammates;
-	private final String teamName;
-	private final int robotIndex;
-	private final int teamIndex;
+    private static final long serialVersionUID = 1L;
+    private final boolean isJuniorRobot;
+    private final boolean isInteractiveRobot;
+    private final boolean isPaintRobot;
+    private final boolean isAdvancedRobot;
+    private final boolean isTeamRobot;
+    private final boolean isTeamLeader;
+    private final boolean isDroid;
+    private final boolean isHouseRobot;
+    private final boolean isBall;
+    private final boolean isBotzilla;
+    private final String name;
+    private final String shortName;
+    private final String veryShortName;
+    private final String fullClassName;
+    private final String shortClassName;
+    private final BattleRules battleRules;
+    private final String[] teammates;
+    private final String teamName;
+    private final int robotIndex;
+    private final int teamIndex;
 
-	public RobotStatics(RobotSpecification robotSpecification, int duplicate, boolean isLeader, BattleRules rules, String teamName, List<String> teamMembers, int robotIndex, int teamIndex) {
-		IRobotRepositoryItem specification = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(
-				robotSpecification));
+    public RobotStatics(RobotSpecification robotSpecification, int duplicate, boolean isLeader, BattleRules rules, String teamName, List<String> teamMembers, int robotIndex, int teamIndex) {
+        IRobotRepositoryItem specification = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(
+                                              robotSpecification));
 
-		this.robotIndex = robotIndex;
-		this.teamIndex = teamIndex;
+        this.robotIndex = robotIndex;
+        this.teamIndex = teamIndex;
 
-		shortClassName = specification.getShortClassName();
-		fullClassName = specification.getFullClassName();
-		if (duplicate >= 0) {
-			String countString = " (" + (duplicate + 1) + ')';
+        shortClassName = specification.getShortClassName();
+        fullClassName = specification.getFullClassName();
+        if (duplicate >= 0) {
+            String countString = " (" + (duplicate + 1) + ')';
 
-			name = specification.getUniqueFullClassNameWithVersion() + countString;
-			shortName = specification.getUniqueShortClassNameWithVersion() + countString;
-			veryShortName = specification.getUniqueVeryShortClassNameWithVersion() + countString;
-		} else {
-			name = specification.getUniqueFullClassNameWithVersion();
-			shortName = specification.getUniqueShortClassNameWithVersion();
-			veryShortName = specification.getUniqueVeryShortClassNameWithVersion();
-		}
+            name = specification.getUniqueFullClassNameWithVersion() + countString;
+            shortName = specification.getUniqueShortClassNameWithVersion() + countString;
+            veryShortName = specification.getUniqueVeryShortClassNameWithVersion() + countString;
+        } else {
+            name = specification.getUniqueFullClassNameWithVersion();
+            shortName = specification.getUniqueShortClassNameWithVersion();
+            veryShortName = specification.getUniqueVeryShortClassNameWithVersion();
+        }
 
-		this.isJuniorRobot = specification.isJuniorRobot();
-		this.isInteractiveRobot = specification.isInteractiveRobot();
-		this.isPaintRobot = specification.isPaintRobot();
-		this.isAdvancedRobot = specification.isAdvancedRobot();
-		this.isTeamRobot = specification.isTeamRobot();
-		this.isDroid = specification.isDroid();
-		this.isHouseRobot = specification.isHouseRobot();
-		this.isTeamLeader = isLeader;
-		this.battleRules = rules;
+        this.isJuniorRobot = specification.isJuniorRobot();
+        this.isInteractiveRobot = specification.isInteractiveRobot();
+        this.isPaintRobot = specification.isPaintRobot();
+        this.isAdvancedRobot = specification.isAdvancedRobot();
+        this.isTeamRobot = specification.isTeamRobot();
+        this.isDroid = specification.isDroid();
+        this.isHouseRobot = specification.isHouseRobot();
+        this.isBall = specification.isBall();
+        this.isBotzilla = specification.isBotzilla();
+        this.isTeamLeader = isLeader;
+        this.battleRules = rules;
 
-		if (teamMembers != null) {
-			List<String> list = new ArrayList<String>();
+        if (teamMembers != null) {
+            List<String> list = new ArrayList<String>();
 
-			for (String mate : teamMembers) {
-				if (!name.equals(mate)) {
-					list.add(mate);
-				}
-			}
-			teammates = list.toArray(new String[] {});
-			this.teamName = teamName;
-		} else {
-			teammates = null;
-			this.teamName = name;
-		}
+            for (String mate : teamMembers) {
+                if (!name.equals(mate)) {
+                    list.add(mate);
+                }
+            }
+            teammates = list.toArray(new String[]{});
+            this.teamName = teamName;
+        } else {
+            teammates = null;
+            this.teamName = name;
+        }
+    }
+
+    RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
+                 boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, String name, String shortName,
+                 String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
+                 String[] teammates, String teamName, int robotIndex, int teamIndex) {
+        this.isJuniorRobot = isJuniorRobot;
+        this.isInteractiveRobot = isInteractiveRobot;
+        this.isPaintRobot = isPaintRobot;
+        this.isAdvancedRobot = isAdvancedRobot;
+        this.isTeamRobot = isTeamRobot;
+        this.isTeamLeader = isTeamLeader;
+        this.isDroid = isDroid;
+        this.name = name;
+        this.shortName = shortName;
+        this.veryShortName = veryShortName;
+        this.fullClassName = fullClassName;
+        this.shortClassName = shortClassName;
+        this.battleRules = battleRules;
+        this.teammates = teammates;
+        this.teamName = teamName;
+        this.robotIndex = robotIndex;
+        this.teamIndex = teamIndex;
+        this.isHouseRobot = false;
+        this.isBall = isBall;
+        this.isBotzilla = false;
+    }
+
+    RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
+                 boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, String name, String shortName,
+                 String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
+                 String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot, 
+                 boolean isBotzilla) {
+
+        this.isJuniorRobot = isJuniorRobot;
+        this.isInteractiveRobot = isInteractiveRobot;
+        this.isPaintRobot = isPaintRobot;
+        this.isAdvancedRobot = isAdvancedRobot;
+        this.isTeamRobot = isTeamRobot;
+        this.isTeamLeader = isTeamLeader;
+        this.isDroid = isDroid;
+        this.name = name;
+        this.shortName = shortName;
+        this.veryShortName = veryShortName;
+        this.fullClassName = fullClassName;
+        this.shortClassName = shortClassName;
+        this.battleRules = battleRules;
+        this.teammates = teammates;
+        this.teamName = teamName;
+        this.robotIndex = robotIndex;
+        this.teamIndex = teamIndex;
+        this.isHouseRobot = isHouseRobot;
+        this.isBall = isBall;
+        this.isBotzilla = isBotzilla;
+    }
+
+    public String getAnnonymousName() {
+        return "#" + robotIndex;
+    }
+
+    public boolean isJuniorRobot() {
+        return isJuniorRobot;
+    }
+
+    @Override
+    public boolean isInteractiveRobot() {
+        return isInteractiveRobot;
+    }
+
+    @Override
+    public boolean isPaintRobot() {
+        return isPaintRobot;
+    }
+
+    @Override
+    public boolean isAdvancedRobot() {
+        return isAdvancedRobot;
+    }
+
+    @Override
+    public boolean isTeamRobot() {
+        return isTeamRobot;
+    }
+
+    public boolean isTeamLeader() {
+        return isTeamLeader;
+    }
+
+    public boolean isDroid() {
+        return isDroid;
+    }
+
+    public boolean isHouseRobot() {
+        return isHouseRobot;
+    }
+    
+    public boolean isBall() {
+        return isBall;
+    }
+
+	public boolean isBotzilla() {
+		return isBotzilla;
 	}
 
-	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
-			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, String name, String shortName,
-			String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
-			String[] teammates, String teamName, int robotIndex, int teamIndex) {
-		this.isJuniorRobot = isJuniorRobot;
-		this.isInteractiveRobot = isInteractiveRobot;
-		this.isPaintRobot = isPaintRobot;
-		this.isAdvancedRobot = isAdvancedRobot;
-		this.isTeamRobot = isTeamRobot;
-		this.isTeamLeader = isTeamLeader;
-		this.isDroid = isDroid;
-		this.name = name;
-		this.shortName = shortName;
-		this.veryShortName = veryShortName;
-		this.fullClassName = fullClassName;
-		this.shortClassName = shortClassName;
-		this.battleRules = battleRules;
-		this.teammates = teammates;
-		this.teamName = teamName;
-		this.robotIndex = robotIndex;
-		this.teamIndex = teamIndex;
-		this.isHouseRobot = false;
-	}
-	
-	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
-			boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, String name, String shortName,
-			String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
-			String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot) {
+    public String getName() {
+        return name;
+    }
 
-		this.isJuniorRobot = isJuniorRobot;
-		this.isInteractiveRobot = isInteractiveRobot;
-		this.isPaintRobot = isPaintRobot;
-		this.isAdvancedRobot = isAdvancedRobot;
-		this.isTeamRobot = isTeamRobot;
-		this.isTeamLeader = isTeamLeader;
-		this.isDroid = isDroid;
-		this.name = name;
-		this.shortName = shortName;
-		this.veryShortName = veryShortName;
-		this.fullClassName = fullClassName;
-		this.shortClassName = shortClassName;
-		this.battleRules = battleRules;
-		this.teammates = teammates;
-		this.teamName = teamName;
-		this.robotIndex = robotIndex;
-		this.teamIndex = teamIndex;
-		this.isHouseRobot = isHouseRobot;
-	}
+    public String getShortName() {
+        return shortName;
+    }
 
-	public String getAnnonymousName() {
-		return "#" + robotIndex;
-	}
+    public String getVeryShortName() {
+        return veryShortName;
+    }
 
-	public boolean isJuniorRobot() {
-		return isJuniorRobot;
-	}
+    public String getFullClassName() {
+        return fullClassName;
+    }
 
-	public boolean isInteractiveRobot() {
-		return isInteractiveRobot;
-	}
+    public String getShortClassName() {
+        return shortClassName;
+    }
 
-	public boolean isPaintRobot() {
-		return isPaintRobot;
-	}
+    public BattleRules getBattleRules() {
+        return battleRules;
+    }
 
-	public boolean isAdvancedRobot() {
-		return isAdvancedRobot;
-	}
+    public String[] getTeammates() {
+        return teammates == null ? null : teammates.clone();
+    }
 
-	public boolean isTeamRobot() {
-		return isTeamRobot;
-	}
+    public String getTeamName() {
+        return teamName;
+    }
 
-	public boolean isTeamLeader() {
-		return isTeamLeader;
-	}
+    public int getRobotIndex() {
+        return robotIndex;
+    }
 
-	public boolean isDroid() {
-		return isDroid;
-	}
-	
-	public boolean isHouseRobot() {
-		return isHouseRobot;
-	}
+    public int getTeamIndex() {
+        return teamIndex;
+    }
 
-	public String getName() {
-		return name;
-	}
+    static ISerializableHelper createHiddenSerializer() {
+        return new SerializableHelper();
+    }
 
-	public String getShortName() {
-		return shortName;
-	}
+    private static class SerializableHelper implements ISerializableHelper {
 
-	public String getVeryShortName() {
-		return veryShortName;
-	}
+        @Override
+        public int sizeOf(RbSerializer serializer, Object object) {
+            RobotStatics obj = (RobotStatics) object;
+            int size = RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_BOOL * 7 + serializer.sizeOf(obj.name)
+                    + serializer.sizeOf(obj.shortName) + serializer.sizeOf(obj.veryShortName)
+                    + serializer.sizeOf(obj.fullClassName) + serializer.sizeOf(obj.shortClassName)
+                    + RbSerializer.SIZEOF_INT * 5 + RbSerializer.SIZEOF_DOUBLE + RbSerializer.SIZEOF_LONG;
 
-	public String getFullClassName() {
-		return fullClassName;
-	}
+            if (obj.teammates != null) {
+                for (String mate : obj.teammates) {
+                    size += serializer.sizeOf(mate);
+                }
+            }
+            size += RbSerializer.SIZEOF_INT;
+            size += serializer.sizeOf(obj.teamName);
 
-	public String getShortClassName() {
-		return shortClassName;
-	}
+            return size;
+        }
 
-	public BattleRules getBattleRules() {
-		return battleRules;
-	}
+        @Override
+        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+            RobotStatics obj = (RobotStatics) object;
 
-	public String[] getTeammates() {
-		return teammates == null ? null : teammates.clone();
-	}
+            serializer.serialize(buffer, obj.isJuniorRobot);
+            serializer.serialize(buffer, obj.isInteractiveRobot);
+            serializer.serialize(buffer, obj.isPaintRobot);
+            serializer.serialize(buffer, obj.isAdvancedRobot);
+            serializer.serialize(buffer, obj.isTeamRobot);
+            serializer.serialize(buffer, obj.isTeamLeader);
+            serializer.serialize(buffer, obj.isDroid);
+            serializer.serialize(buffer, obj.isBall);
+            serializer.serialize(buffer, obj.name);
+            serializer.serialize(buffer, obj.shortName);
+            serializer.serialize(buffer, obj.veryShortName);
+            serializer.serialize(buffer, obj.fullClassName);
+            serializer.serialize(buffer, obj.shortClassName);
+            serializer.serialize(buffer, obj.battleRules.getBattlefieldWidth());
+            serializer.serialize(buffer, obj.battleRules.getBattlefieldHeight());
+            serializer.serialize(buffer, obj.battleRules.getNumRounds());
+            serializer.serialize(buffer, obj.battleRules.getGunCoolingRate());
+            serializer.serialize(buffer, obj.battleRules.getInactivityTime());
+            if (obj.teammates != null) {
+                for (String mate : obj.teammates) {
+                    serializer.serialize(buffer, mate);
+                }
+            }
+            buffer.putInt(-1);
+            serializer.serialize(buffer, obj.teamName);
+            serializer.serialize(buffer, obj.robotIndex);
+            serializer.serialize(buffer, obj.teamIndex);
+        }
 
-	public String getTeamName() {
-		return teamName;
-	}
+        @Override
+        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
 
-	public int getRobotIndex() {
-		return robotIndex;
-	}
-	
-	public int getTeamIndex() {
-		return teamIndex;
-	}
+            boolean isJuniorRobot = serializer.deserializeBoolean(buffer);
+            boolean isInteractiveRobot = serializer.deserializeBoolean(buffer);
+            boolean isPaintRobot = serializer.deserializeBoolean(buffer);
+            boolean isAdvancedRobot = serializer.deserializeBoolean(buffer);
+            boolean isTeamRobot = serializer.deserializeBoolean(buffer);
+            boolean isTeamLeader = serializer.deserializeBoolean(buffer);
+            boolean isDroid = serializer.deserializeBoolean(buffer);
+            boolean isBall = serializer.deserializeBoolean(buffer);
+            String name = serializer.deserializeString(buffer);
+            String shortName = serializer.deserializeString(buffer);
+            String veryShortName = serializer.deserializeString(buffer);
+            String fullClassName = serializer.deserializeString(buffer);
+            String shortClassName = serializer.deserializeString(buffer);
+            BattleRules battleRules = HiddenAccess.createRules(serializer.deserializeInt(buffer),
+                                                               serializer.deserializeInt(buffer), serializer.deserializeInt(buffer), serializer.deserializeDouble(buffer),
+                                                               serializer.deserializeLong(buffer), serializer.deserializeBoolean(buffer), null);
 
-	static ISerializableHelper createHiddenSerializer() {
-		return new SerializableHelper();
-	}
+            List<String> teammates = new ArrayList<String>();
+            Object item = serializer.deserializeString(buffer);
 
-	private static class SerializableHelper implements ISerializableHelper {
-		public int sizeOf(RbSerializer serializer, Object object) {
-			RobotStatics obj = (RobotStatics) object;
-			int size = RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_BOOL * 7 + serializer.sizeOf(obj.name)
-					+ serializer.sizeOf(obj.shortName) + serializer.sizeOf(obj.veryShortName)
-					+ serializer.sizeOf(obj.fullClassName) + serializer.sizeOf(obj.shortClassName)
-					+ RbSerializer.SIZEOF_INT * 5 + RbSerializer.SIZEOF_DOUBLE + RbSerializer.SIZEOF_LONG;
+            if (item == null) {
+                teammates = null;
+            }
+            while (item != null) {
+                if (item instanceof String) {
+                    teammates.add((String) item);
+                }
+                item = serializer.deserializeString(buffer);
+            }
 
-			if (obj.teammates != null) {
-				for (String mate : obj.teammates) {
-					size += serializer.sizeOf(mate);
-				}
-			}
-			size += RbSerializer.SIZEOF_INT;
-			size += serializer.sizeOf(obj.teamName);
+            String teamName = serializer.deserializeString(buffer);
+            int index = serializer.deserializeInt(buffer);
+            int contestantIndex = serializer.deserializeInt(buffer);
 
-			return size;
-		}
-
-		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-			RobotStatics obj = (RobotStatics) object;
-
-			serializer.serialize(buffer, obj.isJuniorRobot);
-			serializer.serialize(buffer, obj.isInteractiveRobot);
-			serializer.serialize(buffer, obj.isPaintRobot);
-			serializer.serialize(buffer, obj.isAdvancedRobot);
-			serializer.serialize(buffer, obj.isTeamRobot);
-			serializer.serialize(buffer, obj.isTeamLeader);
-			serializer.serialize(buffer, obj.isDroid);
-			serializer.serialize(buffer, obj.name);
-			serializer.serialize(buffer, obj.shortName);
-			serializer.serialize(buffer, obj.veryShortName);
-			serializer.serialize(buffer, obj.fullClassName);
-			serializer.serialize(buffer, obj.shortClassName);
-			serializer.serialize(buffer, obj.battleRules.getBattlefieldWidth());
-			serializer.serialize(buffer, obj.battleRules.getBattlefieldHeight());
-			serializer.serialize(buffer, obj.battleRules.getNumRounds());
-			serializer.serialize(buffer, obj.battleRules.getGunCoolingRate());
-			serializer.serialize(buffer, obj.battleRules.getInactivityTime());
-			if (obj.teammates != null) {
-				for (String mate : obj.teammates) {
-					serializer.serialize(buffer, mate);
-				}
-			}
-			buffer.putInt(-1);
-			serializer.serialize(buffer, obj.teamName);
-			serializer.serialize(buffer, obj.robotIndex);
-			serializer.serialize(buffer, obj.teamIndex);
-		}
-
-		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-
-			boolean isJuniorRobot = serializer.deserializeBoolean(buffer);
-			boolean isInteractiveRobot = serializer.deserializeBoolean(buffer);
-			boolean isPaintRobot = serializer.deserializeBoolean(buffer);
-			boolean isAdvancedRobot = serializer.deserializeBoolean(buffer);
-			boolean isTeamRobot = serializer.deserializeBoolean(buffer);
-			boolean isTeamLeader = serializer.deserializeBoolean(buffer);
-			boolean isDroid = serializer.deserializeBoolean(buffer);
-			String name = serializer.deserializeString(buffer);
-			String shortName = serializer.deserializeString(buffer);
-			String veryShortName = serializer.deserializeString(buffer);
-			String fullClassName = serializer.deserializeString(buffer);
-			String shortClassName = serializer.deserializeString(buffer);
-			BattleRules battleRules = HiddenAccess.createRules(serializer.deserializeInt(buffer),
-					serializer.deserializeInt(buffer), serializer.deserializeInt(buffer), serializer.deserializeDouble(buffer),
-					serializer.deserializeLong(buffer), serializer.deserializeBoolean(buffer));
-
-			List<String> teammates = new ArrayList<String>();
-			Object item = serializer.deserializeString(buffer);
-
-			if (item == null) {
-				teammates = null;
-			}
-			while (item != null) {
-				if (item instanceof String) {
-					teammates.add((String) item);
-				}
-				item = serializer.deserializeString(buffer);
-			}
-
-			String teamName = serializer.deserializeString(buffer);
-			int index = serializer.deserializeInt(buffer);
-			int contestantIndex = serializer.deserializeInt(buffer);
-
-			return new RobotStatics(isJuniorRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot, isTeamRobot,
-					isTeamLeader, isDroid, name, shortName, veryShortName, fullClassName, shortClassName, battleRules,
-					teammates.toArray(new String[teammates.size()]), teamName, index, contestantIndex);
-		}
-	}
-
+            return new RobotStatics(isJuniorRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot, isTeamRobot,
+                                    isTeamLeader, isDroid, isBall, name, shortName, veryShortName, fullClassName, shortClassName, battleRules,
+                                    teammates.toArray(new String[teammates.size()]), teamName, index, contestantIndex);
+        }
+    }
 }

@@ -11,7 +11,9 @@
  *******************************************************************************/
 package net.sf.robocode.repository;
 
-
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.*;
 import net.sf.robocode.io.FileUtil;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.repository.items.IItem;
@@ -21,306 +23,302 @@ import net.sf.robocode.repository.root.BaseRoot;
 import net.sf.robocode.repository.root.IRepositoryRoot;
 import net.sf.robocode.repository.root.handlers.RootHandler;
 
-import java.io.*;
-import java.net.URLDecoder;
-import java.util.*;
-
-
 /**
  * @author Pavel Savara (original)
  */
 public class Database {
-	private Map<String, IRepositoryRoot> roots = new Hashtable<String, IRepositoryRoot>();
-	private Map<String, IItem> items = new Hashtable<String, IItem>();
-	private Map<String, IItem> oldItems = new Hashtable<String, IItem>();
-	private final IRepositoryManager manager;
 
-	public Database(IRepositoryManager manager) {
-		this.manager = manager;
-	}
+    private Map<String, IRepositoryRoot> roots = new Hashtable<String, IRepositoryRoot>();
+    private Map<String, IItem> items = new Hashtable<String, IItem>();
+    private Map<String, IItem> oldItems = new Hashtable<String, IItem>();
+    private final IRepositoryManager manager;
 
-	public boolean update(File robotsDir, Collection<File> devDirs, boolean force) {
-		final int prev = items.size();
+    public Database(IRepositoryManager manager) {
+        this.manager = manager;
+    }
 
-		RootHandler.openHandlers();
+    public boolean update(File robotsDir, Collection<File> devDirs, boolean force) {
+        final int prev = items.size();
 
-		Hashtable<String, IRepositoryRoot> newroots = new Hashtable<String, IRepositoryRoot>();
+        RootHandler.openHandlers();
 
-		RootHandler.visitDirectories(robotsDir, false, newroots, roots, this, force);
-		for (File dir : devDirs) {
-			RootHandler.visitDirectories(dir, true, newroots, roots, this, force);
-		}
+        Hashtable<String, IRepositoryRoot> newroots = new Hashtable<String, IRepositoryRoot>();
 
-		// removed roots
-		for (IRepositoryRoot oldRoot : roots.values()) {
-			if (!newroots.containsKey(oldRoot.getURL().toString())) {
-				moveOldItems(oldRoot);
-			}
-		}
+        RootHandler.visitDirectories(robotsDir, false, newroots, roots, this, force);
+        for (File dir : devDirs) {
+            RootHandler.visitDirectories(dir, true, newroots, roots, this, force);
+        }
 
-		roots = newroots;
-		oldItems = new Hashtable<String, IItem>();
+        // removed roots
+        for (IRepositoryRoot oldRoot : roots.values()) {
+            if (!newroots.containsKey(oldRoot.getURL().toString())) {
+                moveOldItems(oldRoot);
+            }
+        }
 
-		RootHandler.closeHandlers();
+        roots = newroots;
+        oldItems = new Hashtable<String, IItem>();
 
-		return prev != items.size();
-	}
+        RootHandler.closeHandlers();
 
-	public boolean update(String file, boolean force) {
-		final IItem item = items.get(file);
+        return prev != items.size();
+    }
 
-		if (item != null) {
-			item.getRoot().update(item, force);
-			return true;
-		}
-		return false; 
-	}
+    public boolean update(String file, boolean force) {
+        final IItem item = items.get(file);
 
-	public void putItem(IItem item) {
-		final Collection<String> friendlyUrls = item.getFriendlyURLs();
+        if (item != null) {
+            item.getRoot().update(item, force);
+            return true;
+        }
+        return false;
+    }
 
-		if (friendlyUrls != null) {
-			for (String friendly : friendlyUrls) {
-				if (friendly != null) {
-					final IItem conflict = items.get(friendly);
+    public void putItem(IItem item) {
+        final Collection<String> friendlyUrls = item.getFriendlyURLs();
 
-					if (conflict != null) {
-						if (item.compareTo(conflict) > 0) {
-							// replace with higher version
-							items.put(friendly, item);
-						}
-					} else {
-						items.put(friendly, item);
-					}
-				}
-			}
-		}
-	}
+        if (friendlyUrls != null) {
+            for (String friendly : friendlyUrls) {
+                if (friendly != null) {
+                    final IItem conflict = items.get(friendly);
 
-	public IItem getItem(String file) {
-		IItem item = oldItems.get(file);
+                    if (conflict != null) {
+                        if (item.compareTo(conflict) > 0) {
+                            // replace with higher version
+                            items.put(friendly, item);
+                        }
+                    } else {
+                        items.put(friendly, item);
+                    }
+                }
+            }
+        }
+    }
 
-		if (item == null) {
-			item = items.get(file);
-		}
-		return item;
-	}
+    public IItem getItem(String file) {
+        IItem item = oldItems.get(file);
 
-	public void moveOldItems(IRepositoryRoot root) {
-		Collection<Map.Entry<String, IItem>> move = new ArrayList<Map.Entry<String, IItem>>();
+        if (item == null) {
+            item = items.get(file);
+        }
+        return item;
+    }
 
-		for (Map.Entry<String, IItem> entry : items.entrySet()) {
-			if (entry.getValue().getRoot().equals(root)) {
-				move.add(entry);
-			}
-		}
+    public void moveOldItems(IRepositoryRoot root) {
+        Collection<Map.Entry<String, IItem>> move = new ArrayList<Map.Entry<String, IItem>>();
 
-		for (Map.Entry<String, IItem> entry : move) {
-			String key = entry.getKey();
+        for (Map.Entry<String, IItem> entry : items.entrySet()) {
+            if (entry.getValue().getRoot().equals(root)) {
+                move.add(entry);
+            }
+        }
 
-			oldItems.put(key, entry.getValue());
-			items.remove(key);
-		}
-	}
+        for (Map.Entry<String, IItem> entry : move) {
+            String key = entry.getKey();
 
-	public List<TeamItem> filterTeams(Collection<IRepositoryItem> selectedRobots) {
-		List<TeamItem> result = new ArrayList<TeamItem>();
+            oldItems.put(key, entry.getValue());
+            items.remove(key);
+        }
+    }
 
-		for (IRepositoryItem item : selectedRobots) {
-			if (item.isTeam()) {
-				result.add((TeamItem) item);
-			}
-		}
-		return result;
-	}
+    public List<TeamItem> filterTeams(Collection<IRepositoryItem> selectedRobots) {
+        List<TeamItem> result = new ArrayList<TeamItem>();
 
-	public List<RobotItem> expandTeams(Collection<IRepositoryItem> selectedRobots) {
-		List<RobotItem> result = new ArrayList<RobotItem>();
+        for (IRepositoryItem item : selectedRobots) {
+            if (item.isTeam()) {
+                result.add((TeamItem) item);
+            }
+        }
+        return result;
+    }
 
-		for (IRepositoryItem item : selectedRobots) {
-			if (item.isTeam()) {
-				result.addAll(expandTeam((TeamItem) item));
-			} else {
-				result.add((RobotItem) item);
-			}
-		}
-		return result;
-	}
+    public List<RobotItem> expandTeams(Collection<IRepositoryItem> selectedRobots) {
+        List<RobotItem> result = new ArrayList<RobotItem>();
 
-	public Collection<RobotItem> expandTeam(TeamItem team) {
-		Collection<RobotItem> result = new ArrayList<RobotItem>();
-		StringTokenizer teamTokenizer = new StringTokenizer(team.getMembers(), ",");
+        for (IRepositoryItem item : selectedRobots) {
+            if (item.isTeam()) {
+                result.addAll(expandTeam((TeamItem) item));
+            } else {
+                result.add((RobotItem) item);
+            }
+        }
+        return result;
+    }
 
-		while (teamTokenizer.hasMoreTokens()) {
-			String botNameAndVersion = teamTokenizer.nextToken();
-			int versionIndex = botNameAndVersion.indexOf(' ');
-			String botPath = versionIndex < 0 ? botNameAndVersion : botNameAndVersion.substring(0, versionIndex);
+    public Collection<RobotItem> expandTeam(TeamItem team) {
+        Collection<RobotItem> result = new ArrayList<RobotItem>();
+        StringTokenizer teamTokenizer = new StringTokenizer(team.getMembers(), ",");
 
-			botPath = botPath.replace('.', '/').replaceAll("\\*", "");
+        while (teamTokenizer.hasMoreTokens()) {
+            String botNameAndVersion = teamTokenizer.nextToken();
+            int versionIndex = botNameAndVersion.indexOf(' ');
+            String botPath = versionIndex < 0 ? botNameAndVersion : botNameAndVersion.substring(0, versionIndex);
 
-			// first load from same classPath
-			String teamBot = team.getRoot().getURL() + botPath;
-			IItem res = getItem(teamBot);
+            botPath = botPath.replace('.', '/').replaceAll("\\*", "");
 
-			if (res != null && res instanceof RobotItem) {
-				result.add((RobotItem) res);
-				continue;
-			}
+            // first load from same classPath
+            String teamBot = team.getRoot().getURL() + botPath;
+            IItem res = getItem(teamBot);
 
-			// try general search
-			res = getItem(botNameAndVersion);
-			if (res != null && res instanceof RobotItem) {
-				result.add((RobotItem) res);
-				continue;
-			}
+            if (res != null && res instanceof RobotItem) {
+                result.add((RobotItem) res);
+                continue;
+            }
 
-			// no found
-			Logger.logError("Can't find robot: " + botNameAndVersion);
-		}
-		return result;
-	}
+            // try general search
+            res = getItem(botNameAndVersion);
+            if (res != null && res instanceof RobotItem) {
+                result.add((RobotItem) res);
+                continue;
+            }
 
-	public List<IRepositoryItem> filterSpecifications(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean onlyInJar) {
-		final List<IRepositoryItem> res = new ArrayList<IRepositoryItem>();
+            // no found
+            Logger.logError("Can't find robot: " + botNameAndVersion);
+        }
+        return result;
+    }
 
-		for (IItem item : items.values()) {
-			final IRepositoryItem spec = (IRepositoryItem) item;
+    public List<IRepositoryItem> filterSpecifications(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean onlyInJar) {
+        final List<IRepositoryItem> res = new ArrayList<IRepositoryItem>();
 
-			if (!item.isValid()) {
-				continue;
-			}
-			if (onlyWithSource && !spec.isSourceIncluded()) {
-				continue;
-			}
-			if (onlyWithPackage && spec.getFullPackage() == null) {
-				continue;
-			}
-			if (onlyInJar && !spec.isInJAR()) {
-				continue;
-			}
-			if (onlyRobots && !(item instanceof RobotItem)) {
-				continue;
-			}
-			if (onlyDevelopment && !spec.isDevelopmentVersion()) {
-				continue;
-			}
-			if (onlyNotDevelopment && spec.isDevelopmentVersion()) {
-				continue;
-			}
-			if (res.contains(spec)) {
-				continue;
-			}
-			res.add(spec);
-		}
-		Collections.sort(res);
-		return res;
-	}
+        for (IItem item : items.values()) {
+            final IRepositoryItem spec = (IRepositoryItem) item;
 
-	public Collection<IRepositoryItem> getAllSpecifications() {
-		final ArrayList<IRepositoryItem> res = new ArrayList<IRepositoryItem>();
+            if (!item.isValid()) {
+                continue;
+            }
+            if (onlyWithSource && !spec.isSourceIncluded()) {
+                continue;
+            }
+            if (onlyWithPackage && spec.getFullPackage() == null) {
+                continue;
+            }
+            if (onlyInJar && !spec.isInJAR()) {
+                continue;
+            }
+            if (onlyRobots && !(item instanceof RobotItem)) {
+                continue;
+            }
+            if (onlyDevelopment && !spec.isDevelopmentVersion()) {
+                continue;
+            }
+            if (onlyNotDevelopment && spec.isDevelopmentVersion()) {
+                continue;
+            }
+            if (res.contains(spec)) {
+                continue;
+            }
+            res.add(spec);
+        }
+        Collections.sort(res);
+        return res;
+    }
 
-		for (IItem item : items.values()) {
-			final IRepositoryItem spec = (IRepositoryItem) item;
+    public Collection<IRepositoryItem> getAllSpecifications() {
+        final ArrayList<IRepositoryItem> res = new ArrayList<IRepositoryItem>();
 
-			if (!item.isValid()) {
-				continue;
-			}
+        for (IItem item : items.values()) {
+            final IRepositoryItem spec = (IRepositoryItem) item;
 
-			if (!res.contains(spec)) {
-				res.add(spec);
-			}
-		}
-		return res;
-	}
+            if (!item.isValid()) {
+                continue;
+            }
 
-	public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
-		List<IRepositoryItem> result = new ArrayList<IRepositoryItem>();
-		StringTokenizer tokenizer = new StringTokenizer(selectedRobots, ",");
+            if (!res.contains(spec)) {
+                res.add(spec);
+            }
+        }
+        return res;
+    }
 
-		while (tokenizer.hasMoreTokens()) {
-			String bot = tokenizer.nextToken().trim();
-			final IItem item = getItem(bot);
+    public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
+        List<IRepositoryItem> result = new ArrayList<IRepositoryItem>();
+        StringTokenizer tokenizer = new StringTokenizer(selectedRobots, ",");
 
-			if (item != null) {
-				if (item.isValid()) {
-					result.add((IRepositoryItem) item);
-				} else {
-					Logger.logError("Can't load " + bot + ", because it is invalid robot or team.");
-				}
-			} else {
-				Logger.logError("Can't find " + bot);
-			}
-		}
-		return result;
-	}
+        while (tokenizer.hasMoreTokens()) {
+            String bot = tokenizer.nextToken().trim();
+            final IItem item = getItem(bot);
 
-	public void save() {
-		Collection<IItem> uniqueitems = new LinkedList<IItem>();
-		Collection<IRepositoryRoot> uniqueroots = new LinkedList<IRepositoryRoot>();
+            if (item != null) {
+                if (item.isValid()) {
+                    result.add((IRepositoryItem) item);
+                } else {
+                    Logger.logError("Can't load " + bot + ", because it is invalid robot or team.");
+                }
+            } else {
+                Logger.logError("Can't find " + bot);
+            }
+        }
+        return result;
+    }
 
-		for (IItem item : items.values()) {
-			if (!uniqueitems.contains(item)) {
-				uniqueitems.add(item);
-			}
-		}
+    public void save() {
+        Collection<IItem> uniqueitems = new LinkedList<IItem>();
+        Collection<IRepositoryRoot> uniqueroots = new LinkedList<IRepositoryRoot>();
 
-		for (IRepositoryRoot root : roots.values()) {
-			uniqueroots.add(root);
-		}
+        for (IItem item : items.values()) {
+            if (!uniqueitems.contains(item)) {
+                uniqueitems.add(item);
+            }
+        }
 
-		FileOutputStream fos = null;
-		ObjectOutputStream oos = null;
+        for (IRepositoryRoot root : roots.values()) {
+            uniqueroots.add(root);
+        }
 
-		try {
-			fos = new FileOutputStream(new File(manager.getRobotsDirectory(), "robot.database"));
-			oos = new ObjectOutputStream(fos);
-			oos.writeObject(uniqueroots);
-			oos.writeObject(uniqueitems);
-		} catch (IOException e) {
-			Logger.logError("Can't save robot database", e);
-		} finally {
-			FileUtil.cleanupStream(oos);
-			FileUtil.cleanupStream(fos);
-		}
-	}
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
 
-	@SuppressWarnings({ "unchecked"})
-	public static Database load(IRepositoryManager manager) {
-		Collection<IItem> uniqueitems;
-		Collection<IRepositoryRoot> uniqueroots;
-		FileInputStream fis = null;
-		ObjectInputStream ois = null;
+        try {
+            fos = new FileOutputStream(new File(manager.getRobotsDirectory(), "robot.database"));
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(uniqueroots);
+            oos.writeObject(uniqueitems);
+        } catch (IOException e) {
+            Logger.logError("Can't save robot database", e);
+        } finally {
+            FileUtil.cleanupStream(oos);
+            FileUtil.cleanupStream(fos);
+        }
+    }
 
-		try {
-			final File file = new File(manager.getRobotsDirectory(), "robot.database");
+    @SuppressWarnings({"unchecked"})
+    public static Database load(IRepositoryManager manager) {
+        Collection<IItem> uniqueitems;
+        Collection<IRepositoryRoot> uniqueroots;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
 
-			if (!file.exists()) {
-				return null;
-			}
-			fis = new FileInputStream(file);
-			ois = new ObjectInputStream(fis);
-			uniqueroots = (Collection<IRepositoryRoot>) ois.readObject();
-			uniqueitems = (Collection<IItem>) ois.readObject();
-			Database res = new Database(manager);
+        try {
+            final File file = new File(manager.getRobotsDirectory(), "robot.database");
 
-			for (IRepositoryRoot root : uniqueroots) {
-				((BaseRoot) root).setDatabase(res);
-				String key = root.getURL().toString();
+            if (!file.exists()) {
+                return null;
+            }
+            fis = new FileInputStream(file);
+            ois = new ObjectInputStream(fis);
+            uniqueroots = (Collection<IRepositoryRoot>) ois.readObject();
+            uniqueitems = (Collection<IItem>) ois.readObject();
+            Database res = new Database(manager);
 
-				key = URLDecoder.decode(key, "UTF-8");
+            for (IRepositoryRoot root : uniqueroots) {
+                ((BaseRoot) root).setDatabase(res);
+                String key = root.getURL().toString();
 
-				res.roots.put(key, root);
-			}
-			for (IItem item : uniqueitems) {
-				res.putItem(item);
-			}
-			return res;
-		} catch (Throwable t) {
-			Logger.logError("Can't load robot database: " + t.getMessage());
-			return null;
-		} finally {
-			FileUtil.cleanupStream(ois);
-			FileUtil.cleanupStream(fis);
-		}
-	}
+                key = URLDecoder.decode(key, "UTF-8");
+
+                res.roots.put(key, root);
+            }
+            for (IItem item : uniqueitems) {
+                res.putItem(item);
+            }
+            return res;
+        } catch (Throwable t) {
+            Logger.logError("Can't load robot database: " + t.getMessage());
+            return null;
+        } finally {
+            FileUtil.cleanupStream(ois);
+            FileUtil.cleanupStream(fis);
+        }
+    }
 }

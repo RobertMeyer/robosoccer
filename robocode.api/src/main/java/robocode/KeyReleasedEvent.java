@@ -13,18 +13,16 @@
  *******************************************************************************/
 package robocode;
 
-
+import java.awt.*;
+import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.security.SafeComponent;
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.IInteractiveEvents;
 import robocode.robotinterfaces.IInteractiveRobot;
-
-import java.awt.*;
-import java.nio.ByteBuffer;
-
 
 /**
  * A KeyReleasedEvent is sent to {@link Robot#onKeyReleased(java.awt.event.KeyEvent)
@@ -36,82 +34,86 @@ import java.nio.ByteBuffer;
  * @since 1.6.1
  */
 public final class KeyReleasedEvent extends KeyEvent {
-	private static final long serialVersionUID = 1L;
-	private final static int DEFAULT_PRIORITY = 98;
 
-	/**
-	 * Called by the game to create a new KeyReleasedEvent.
-	 *
-	 * @param source the source key event originating from the AWT.
-	 */
-	public KeyReleasedEvent(java.awt.event.KeyEvent source) {
-		super(source);
-	}
+    private static final long serialVersionUID = 1L;
+    private final static int DEFAULT_PRIORITY = 98;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final int getDefaultPriority() {
-		return DEFAULT_PRIORITY;
-	}
+    /**
+     * Called by the game to create a new KeyReleasedEvent.
+     *
+     * @param source the source key event originating from the AWT.
+     */
+    public KeyReleasedEvent(java.awt.event.KeyEvent source) {
+        super(source);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		if (statics.isInteractiveRobot()) {
-			IInteractiveEvents listener = ((IInteractiveRobot) robot).getInteractiveEventListener();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final int getDefaultPriority() {
+        return DEFAULT_PRIORITY;
+    }
 
-			if (listener != null) {
-				listener.onKeyReleased(getSourceEvent());
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+        if (statics.isInteractiveRobot()) {
+            IInteractiveEvents listener = ((IInteractiveRobot) robot).getInteractiveEventListener();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	byte getSerializationType() {
-		return RbSerializer.KeyReleasedEvent_TYPE;
-	}
+            if (listener != null) {
+                listener.onKeyReleased(getSourceEvent());
+            }
+        }
+    }
 
-	static ISerializableHelper createHiddenSerializer() {
-		return new SerializableHelper();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    byte getSerializationType() {
+        return RbSerializer.KeyReleasedEvent_TYPE;
+    }
 
-	private static class SerializableHelper implements ISerializableHelper {
+    static ISerializableHelper createHiddenSerializer() {
+        return new SerializableHelper();
+    }
 
-		public int sizeOf(RbSerializer serializer, Object object) {
-			return RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_CHAR + RbSerializer.SIZEOF_INT
-					+ RbSerializer.SIZEOF_INT + RbSerializer.SIZEOF_LONG + RbSerializer.SIZEOF_INT + RbSerializer.SIZEOF_INT;
-		}
+    private static class SerializableHelper implements ISerializableHelper {
 
-		public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-			KeyReleasedEvent obj = (KeyReleasedEvent) object;
-			java.awt.event.KeyEvent src = obj.getSourceEvent();
+        @Override
+        public int sizeOf(RbSerializer serializer, Object object) {
+            return RbSerializer.SIZEOF_TYPEINFO + RbSerializer.SIZEOF_CHAR + RbSerializer.SIZEOF_INT
+                    + RbSerializer.SIZEOF_INT + RbSerializer.SIZEOF_LONG + RbSerializer.SIZEOF_INT + RbSerializer.SIZEOF_INT;
+        }
 
-			serializer.serialize(buffer, src.getKeyChar());
-			serializer.serialize(buffer, src.getKeyCode());
-			serializer.serialize(buffer, src.getKeyLocation());
-			serializer.serialize(buffer, src.getID());
-			serializer.serialize(buffer, src.getModifiersEx());
-			serializer.serialize(buffer, src.getWhen());
-		}
+        @Override
+        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+            KeyReleasedEvent obj = (KeyReleasedEvent) object;
+            java.awt.event.KeyEvent src = obj.getSourceEvent();
 
-		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-			char keyChar = buffer.getChar();
-			int keyCode = buffer.getInt();
-			int keyLocation = buffer.getInt();
-			int id = buffer.getInt();
-			int modifiersEx = buffer.getInt();
-			long when = buffer.getLong();
+            serializer.serialize(buffer, src.getKeyChar());
+            serializer.serialize(buffer, src.getKeyCode());
+            serializer.serialize(buffer, src.getKeyLocation());
+            serializer.serialize(buffer, src.getID());
+            serializer.serialize(buffer, src.getModifiersEx());
+            serializer.serialize(buffer, src.getWhen());
+        }
 
-			return new KeyReleasedEvent(
-					new java.awt.event.KeyEvent(SafeComponent.getSafeEventComponent(), id, when, modifiersEx, keyCode, keyChar,
-					keyLocation));
-		}
-	}
+        @Override
+        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+            char keyChar = buffer.getChar();
+            int keyCode = buffer.getInt();
+            int keyLocation = buffer.getInt();
+            int id = buffer.getInt();
+            int modifiersEx = buffer.getInt();
+            long when = buffer.getLong();
+
+            return new KeyReleasedEvent(
+                    new java.awt.event.KeyEvent(SafeComponent.getSafeEventComponent(), id, when, modifiersEx, keyCode, keyChar,
+                                                keyLocation));
+        }
+    }
 }

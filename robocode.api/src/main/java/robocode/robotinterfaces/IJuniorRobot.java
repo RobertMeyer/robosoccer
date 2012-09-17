@@ -13,7 +13,6 @@
  *******************************************************************************/
 package robocode.robotinterfaces;
 
-
 /**
  * A robot interface for creating the most primitive robot type, which is a
  * {@link robocode.JuniorRobot}. A junior robot is simpler than the
@@ -41,4 +40,5 @@ package robocode.robotinterfaces;
  * @see ITeamRobot
  * @since 1.6
  */
-public interface IJuniorRobot extends IBasicRobot {}
+public interface IJuniorRobot extends IBasicRobot {
+}
