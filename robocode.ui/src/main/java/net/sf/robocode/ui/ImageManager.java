@@ -21,6 +21,8 @@ package net.sf.robocode.ui;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+
+import robocode.CustomEvent;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.gfx.ImageUtil;
 import net.sf.robocode.ui.gfx.RenderImage;
@@ -44,9 +46,8 @@ public class ImageManager implements IImageManager {
     private HashMap<Integer, RenderImage> robotBodyImageCache;
     private HashMap<Integer, RenderImage> robotGunImageCache;
     private HashMap<Integer, RenderImage> robotRadarImageCache;
-    private HashMap<Integer, RenderImage> ballImageCache;
+    private HashMap<String, RenderImage> customImageCache;
 	private Image[] soccerField;
-	private Image ball;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -65,7 +66,7 @@ public class ImageManager implements IImageManager {
         gunImage = null;
         radarImage = null;
         healthImage = null;
-        ball = null;
+        customImageCache = new RenderCache<String, RenderImage>();
         robotBodyImageCache = new RenderCache<Integer, RenderImage>();
         robotGunImageCache = new RenderCache<Integer, RenderImage>();
         robotRadarImageCache = new RenderCache<Integer, RenderImage>();
@@ -76,7 +77,6 @@ public class ImageManager implements IImageManager {
 		getGunImage();
 		getRadarImage();
 		getExplosionRenderImage(0, 0);
-		getBallImage();
 	}
 	
 	public Image getFieldTileImage(int index) {
@@ -149,16 +149,28 @@ public class ImageManager implements IImageManager {
         }
         return image;
     }
-
-    public RenderImage getBallImage() {
-    	if(ball == null) {
-    		ball = getImage("/net/sf/robocode/ui/images/ball.png");
+    
+    @SuppressWarnings("unused")
+	public RenderImage addCustomImage(String name, String filename) {
+    	if (customImageCache.containsKey(name)) {
+    		getCustomImage(name);
+    	}
+    	RenderImage img = new RenderImage(getImage(filename));
+    	
+    	if(img != null) {
+    		customImageCache.put(name, img);
+    		return img;
     	}
     	
-    	RenderImage img = new RenderImage(ball);
-    	
-    	return img;
+    	return null;
     }
+    
+    public RenderImage getCustomImage(String name) {
+    	if (customImageCache.containsKey(name)) {
+    		return customImageCache.get(name);
+    	}
+    	return null;
+    }	
     
     /**
      * Gets the body image
