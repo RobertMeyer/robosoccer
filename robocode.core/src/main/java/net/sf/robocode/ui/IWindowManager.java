@@ -12,8 +12,6 @@
 package net.sf.robocode.ui;
 
 import javax.swing.*;
-
-import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.gui.IWindowManagerBase;
 import robocode.control.events.IBattleListener;
 import robocode.control.snapshot.ITurnSnapshot;
@@ -58,6 +56,4 @@ public interface IWindowManager extends IWindowManagerBase {
     void removeBattleListener(IBattleListener listener);
 
     void runIntroBattle();
-
-	IBattleManager getBattleManager();
 }

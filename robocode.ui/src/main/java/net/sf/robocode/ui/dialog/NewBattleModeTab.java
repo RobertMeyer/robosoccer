@@ -1,3 +1,4 @@
+
 package net.sf.robocode.ui.dialog;
 
 import javax.swing.*;
@@ -28,10 +29,8 @@ public class NewBattleModeTab extends JPanel {
 		new SlowMode(), 
 		new DifferentWeapons(), 
 		new RaceMode(),
-		new SoccerMode(),
 		new ZombieMode(),
 		new FlagMode(),
-		new RicochetMode(),
 		new ItemMode()
 	};
 	

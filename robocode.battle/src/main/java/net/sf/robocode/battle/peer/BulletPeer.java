@@ -249,30 +249,30 @@ public class BulletPeer {
 				|| (x + RADIUS >= battleRules.getBattlefieldWidth())
 				|| (y + RADIUS >= battleRules.getBattlefieldHeight())) {
 			// check if bullet should ricochet
-			if (owner.battle.getBattleMode().shouldRicochet()) {
-				// the following checks which wall (top/bottom/side) the bullet
-				// is hitting and adjusts the heading accordingly
-				if (y - RADIUS <= 0
-						|| y + RADIUS >= battleRules.getBattlefieldHeight()) {
-					// top/bottom wall
-					if (getHeading() >= Math.PI) {
-						// bullet moving in a right to left direction
-						setHeading(3 * Math.PI - getHeading());
-					} else {
-						// bullet moving in a left to right direction
-						setHeading(Math.PI - getHeading());
-					}
-				} else if (x - RADIUS <= 0
-						|| x + RADIUS >= battleRules.getBattlefieldWidth()) {
-					// side wall
-					setHeading(2 * Math.PI - getHeading());
-				}
-			} else {
+//			if (owner.battle.getBattleMode().shouldRicochet()) {
+//				// the following checks which wall (top/bottom/side) the bullet
+//				// is hitting and adjusts the heading accordingly
+//				if (y - RADIUS <= 0
+//						|| y + RADIUS >= battleRules.getBattlefieldHeight()) {
+//					// top/bottom wall
+//					if (getHeading() >= Math.PI) {
+//						// bullet moving in a right to left direction
+//						setHeading(3 * Math.PI - getHeading());
+//					} else {
+//						// bullet moving in a left to right direction
+//						setHeading(Math.PI - getHeading());
+//					}
+//				} else if (x - RADIUS <= 0
+//						|| x + RADIUS >= battleRules.getBattlefieldWidth()) {
+//					// side wall
+//					setHeading(2 * Math.PI - getHeading());
+//				}
+//			} else {
 				// Bullet shouldn't ricochet
 				state = BulletState.HIT_WALL;
 				frame = 0;
 				owner.addEvent(new BulletMissedEvent(createBullet(false)));
-			}
+//			}
 		}
 	}
 

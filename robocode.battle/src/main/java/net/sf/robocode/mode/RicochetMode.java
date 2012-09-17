@@ -20,7 +20,7 @@ public class RicochetMode extends ClassicMode {
 	 * Will check if a projectile should ricochet and return modified values
 	 * accordingly, currently just returns true
 	 */
-	@Override
+//	@Override
 	public boolean shouldRicochet() {
 		return true;
 	}

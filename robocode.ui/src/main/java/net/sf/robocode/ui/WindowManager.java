@@ -681,9 +681,4 @@ public class WindowManager implements IWindowManagerExt {
             showResults = visible;
         }
     }
-
-	@Override
-	public IBattleManager getBattleManager() {
-		return battleManager;
-	}
 }
