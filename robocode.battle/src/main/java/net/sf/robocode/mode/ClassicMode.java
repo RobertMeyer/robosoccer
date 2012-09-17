@@ -90,6 +90,10 @@ public class ClassicMode implements IMode {
 		return null;
 	}
 	
+	public String removeCustomObject(String name) {
+		return name;
+	}
+	
 	@Override
 	public String addModeRobots(String selectedRobots) {
 		// Don't need to add any extra robots for classic mode

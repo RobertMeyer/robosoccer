@@ -1,11 +1,9 @@
 package net.sf.robocode.mode;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.CustomObject;
@@ -182,18 +180,21 @@ public class SoccerMode extends ClassicMode implements IMode {
 		return roundOver;
 	}
 	
-	@Override
+	/*@Override
 	public List<CustomObject> createCustomObjects() {
 		List<CustomObject> objs = new ArrayList<CustomObject>(); 
-		//objs.add(new CustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10));
+		CustomObject obj = new CustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 100, 100);
+		objs.add(obj);
 		return objs;
 	}
 	
 	@Override
 	public void updateCustomObjects(List<CustomObject> objects) {
-		/*for (CustomObject obj: objects) {
-			obj.setTranslate(obj.getTranslateX() + 1, obj.getTranslateY() + 1);
-		}*/
-	}
+		for (CustomObject obj: objects) {
+			AffineTransform at = obj.getTranslate();
+			//obj.setTranslate(at.getTranslateX() + 1, at.getTranslateY());
+		}
+		
+	}*/
 	
 }

@@ -6,36 +6,49 @@ import robocode.control.snapshot.ICustomObjectSnapshot;
 
 import net.sf.robocode.battle.CustomObject;
 
-public final class CustomObjectSnapshot implements ICustomObjectSnapshot{
+public final class CustomObjectSnapshot implements ICustomObjectSnapshot {
 	private AffineTransform at;
 	private String name;
 	private String filename;
-	
+	private boolean hide;
+	private float alpha;
+
 	public CustomObjectSnapshot() {
-		
+
 	}
-	
+
 	public CustomObjectSnapshot(CustomObject co) {
 		this.at = new AffineTransform();
-		this.at.translate(co.getTranslateX(), co.getTranslateY());
-		this.at.rotate(co.getRotation());
+		this.at = co.getAffineTransform();
 		this.name = co.getName();
 		this.filename = co.getFilename();
+		this.hide = co.getHide();
+		this.alpha = co.getAlpha();
+	}
+
+	@Override
+	public boolean getHide() {
+		return this.hide;
 	}
 
 	@Override
 	public String getFilename() {
-		return filename;
-	}
-	
-	@Override
-	public String getName() {
-		return name;
+		return this.filename;
 	}
 
 	@Override
-	public AffineTransform getMatrix() {
-		return AffineTransform.getTranslateInstance(at.getTranslateX(), at.getTranslateY());
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public AffineTransform getAffineTransform() {
+		return this.at;
+	}
+
+	@Override
+	public float getAlpha() {
+		return this.alpha;
 	}
 
 }

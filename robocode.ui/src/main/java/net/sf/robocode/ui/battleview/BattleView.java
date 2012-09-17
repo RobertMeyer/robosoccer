@@ -447,10 +447,17 @@ public class BattleView extends Canvas {
     		if (image == null) {
     			image = addImage(snap.getName(), snap.getFilename());
     		}
-			AffineTransform at = snap.getMatrix();
-    		image.setTransform(at);
-    		image.paint(g);
+			AffineTransform at = snap.getAffineTransform();
+			image.setTransform(at);
     		
+    		Composite oldState = g.getComposite();
+    		AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, snap.getAlpha());
+    		g.setComposite(alphaComposite);
+    		
+    		if (!snap.getHide())
+    			image.paint(g);	
+    		
+    		g.setComposite(oldState);
     	}
     }
 
@@ -471,32 +478,6 @@ public class BattleView extends Canvas {
 		customImage.put(name, img);
 
 		return (img != null) ? img : null;
-	}
-	
-	/* Added already created RenderImage to HashMap
-	 * 
-	 * @param String name - key name
-	 * @param RenderImage img - already created render object
-	 */
-	private RenderImage addImage(String name, RenderImage img) {
-		if (img != null) {
-			customImage.put(name,  img);
-			return img;
-		}
-		return null;
-	}
-	
-	/* Removes a given key from HashMap
-	 * 
-	 * @param String name - key to remove
-	 * 
-	 * @return Deleted RenderImage
-	 */
-	private RenderImage removeImage(String name) {
-		if (customImage.containsKey(name)) {
-			return customImage.remove(name);
-		}
-		return null;
 	}
     
     private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {

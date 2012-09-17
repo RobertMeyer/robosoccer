@@ -100,7 +100,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -111,7 +110,6 @@ import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.*;
@@ -942,5 +940,13 @@ public final class Battle extends BaseBattle {
 	 		CustomObject obj = new CustomObject(name, filename);
 	 		obj.setTranslate(x, y);
 	 		customObject.add(obj);
+	 	}
+	 	
+	 	public void removeCustomObject(String name) {
+	 		for (CustomObject obj : customObject) {
+	 			if (obj.getName() == name) {
+	 				customObject.remove(obj);
+	 			}
+	 		}
 	 	}
 }
