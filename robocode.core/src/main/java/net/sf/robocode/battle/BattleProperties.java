@@ -254,8 +254,17 @@ public class BattleProperties implements Serializable {
 	}
 
 	public void setInitialPositions(String initialPositions) {
+		if(initialPositions!=null)
+		{
 		this.initialPositions = initialPositions; 
-		props.setProperty(BATTLE_INITIAL_POSITIONS, "" + initialPositions);
+
+		}
+	}
+	
+	public void setInitialPositionToNull()
+	{
+		this.initialPositions=null;
+
 	}
 	
 	/**
