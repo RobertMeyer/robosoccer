@@ -25,6 +25,7 @@ public final class HitItemEvent extends Event {
 	private final static int DEFAULT_PRIORITY = 15;
 	
 	private final String robotName;
+	private final String itemName;
 	private final double energy;
 	private final boolean isDestroyable;
 	private final boolean isEquippable;
@@ -39,8 +40,9 @@ public final class HitItemEvent extends Event {
 	 * @param isEquippable {@code true} if the item hit is equippable;
 	 * 				{@code false} otherwise
 	 */
-	private HitItemEvent(String name, double energy, boolean isDestroyable, boolean isEquippable) {
+	private HitItemEvent(String name, String itemName, double energy, boolean isDestroyable, boolean isEquippable) {
 		this.robotName = name;
+		this.itemName = itemName;
 		this.energy = energy;
 		this.isDestroyable = isDestroyable;
 		this.isEquippable = isEquippable;
@@ -53,6 +55,15 @@ public final class HitItemEvent extends Event {
 	 */
 	public String getName() {
 		return robotName;
+	}
+	
+	/**
+	 * Returns the name of the item hit.
+	 * 
+	 * @return the name of the item hit
+	 */
+	public String getItemName() {
+		return itemName;
 	}
 	
 	/**
@@ -114,7 +125,7 @@ public final class HitItemEvent extends Event {
 		public int sizeOf(RbSerializer serializer, Object object) {
 			HitItemEvent obj = (HitItemEvent) object;
 
-			return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.robotName) + RbSerializer.SIZEOF_DOUBLE
+			return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.robotName) + serializer.sizeOf(obj.itemName) + RbSerializer.SIZEOF_DOUBLE
 					+ 2 * RbSerializer.SIZEOF_BOOL;
 		}
 		
@@ -122,6 +133,7 @@ public final class HitItemEvent extends Event {
 			HitItemEvent obj = (HitItemEvent) object;
 			
 			serializer.serialize(buffer, obj.robotName);
+			serializer.serialize(buffer, obj.itemName);
 			serializer.serialize(buffer, obj.energy);
 			serializer.serialize(buffer, obj.isDestroyable);
 			serializer.serialize(buffer, obj.isEquippable);
@@ -129,11 +141,12 @@ public final class HitItemEvent extends Event {
 		
 		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
 			String robotName = serializer.deserializeString(buffer);
+			String itemName = serializer.deserializeString(buffer);
 			double energy = buffer.getDouble();
 			boolean isDestroyable = serializer.deserializeBoolean(buffer);
 			boolean isEquippable = serializer.deserializeBoolean(buffer);
 			
-			return new HitItemEvent(robotName, energy, isDestroyable, isEquippable);
+			return new HitItemEvent(robotName, itemName, energy, isDestroyable, isEquippable);
 		}
 	}
 }
