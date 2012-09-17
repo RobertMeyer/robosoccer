@@ -31,6 +31,7 @@ public class NewBattleModeTab extends JPanel {
 		new SoccerMode(),
 		new ZombieMode(),
 		new FlagMode(),
+		new RicochetMode(),
 		new ItemMode()
 	};
 	
