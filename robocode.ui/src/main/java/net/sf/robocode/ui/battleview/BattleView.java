@@ -228,7 +228,8 @@ public class BattleView extends Canvas {
 
         // Initialize ground image
         if (drawGround) {
-        	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+        	if(battleManager.getBattleProperties().getBattleMode() 
+        			instanceof SoccerMode) {
         		createSoccerField();
         	} else {
         		createGroundImage();

@@ -81,12 +81,6 @@ public class ClassicMode implements IMode {
 	public void scorePoints() {
 		// TODO Auto-generated method stub	
 	}
-
-	@Override
-	public String addModeRobots(String selectedRobots) {
-		// Don't need to add any extra robots for classic mode
-		return selectedRobots;
-	}
 	
 	/**
 	 * Sets the starting positions for all robot objects.
