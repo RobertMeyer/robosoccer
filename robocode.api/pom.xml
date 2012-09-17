@@ -81,8 +81,8 @@
                             <docfilessubdirs>true</docfilessubdirs>
                             <doctitle>
                         <![CDATA[<h1>Robocode ${project.version} API</h1>]]>
-
 							</doctitle>
+
 							<use>false</use>
 							<doclet>ydoc.doclets.YStandard</doclet>
 							<docletPath>${yDoc.path}/lib/ydoc.jar:${yDoc.path}/lib/class2svg.jar:${yDoc.path}/resources</docletPath>
@@ -108,5 +108,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
->>>>>>> Added some initial testing work.
 </project>

@@ -97,6 +97,7 @@ public class BattleManager implements IBattleManager {
     private String battleFilename;
     private String battlePath;
     private int pauseCount = 0;
+    public Boolean effectAreaOn = false;
     private final AtomicBoolean isManagedTPS = new AtomicBoolean(false);
 
     public BattleManager(ISettingsManager properties, IRepositoryManager repositoryManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher battleEventDispatcher, IRecordManager recordManager) {
