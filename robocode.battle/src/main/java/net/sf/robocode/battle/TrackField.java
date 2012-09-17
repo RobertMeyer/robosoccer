@@ -4,6 +4,11 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Area;
 
+/**
+ * Class that stores Track Data
+ * @author Taso s4231811
+ *
+ */
 public class TrackField {
 	
 	// Area of the road of the Track

@@ -8,6 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * Toolbar for the track editor
+ * @author Taso s4231811
+ *
+ */
 @SuppressWarnings("serial")
 public class EditBar extends JToolBar{
 	

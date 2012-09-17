@@ -7,6 +7,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+/**
+ * Main Frame for the track editor
+ * @author Taso s4231811
+ *
+ */
 @SuppressWarnings("serial")
 public class EditorFrame extends JFrame{
 	
