@@ -16,8 +16,16 @@ import robocode.control.RobotSpecification;
 
 public class SoccerMode extends ClassicMode implements IMode {
 	
+	/* Bounds for the goal - possibly to be altered at a later date */
+	public static final double GOALXMIN = 200;
+	public static final double GOALXMAX = 700;
+	public static final double GOALYMIN = 200;
+	public static final double GOALYMAX = 450;
+	
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
+	
+	private boolean roundOver = false;
 	
 	private final String description = "Robocode soccer.";
 	
@@ -49,6 +57,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public double[][] computeInitialPositions(String initialPositions,
 			BattleRules battleRules, int robotsCount) {
 		double[][] initialRobotPositions = null;
+		roundOver = false;
 		
 		int count = (robotsCount % 2 == 0 ? robotsCount : robotsCount - 1);
 		
@@ -150,7 +159,23 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public void updateRobotScans(List<RobotPeer> robotPeers) {
 		// Scan after moved all
         for (RobotPeer robotPeer : robotPeers) {
+        	if (robotPeer.isBall()) {
+        		double x = robotPeer.getX();
+        		double y = robotPeer.getY();
+        		if ((x < GOALXMIN) || (x > GOALXMAX)
+						&& ((y < GOALYMAX) || (y > GOALYMIN))) {
+					roundOver = true;
+				} else {
+					roundOver = false;
+				}
+        	}
             robotPeer.performScan(ball);
         }
 	}
+	
+	@Override
+	public boolean isRoundOver(int endTimer, int time) {
+		return roundOver;
+	}
+	
 }
