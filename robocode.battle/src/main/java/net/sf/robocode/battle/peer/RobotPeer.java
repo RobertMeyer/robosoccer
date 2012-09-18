@@ -1180,6 +1180,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     if (otherRobot.energy == 0) {
                         if (otherRobot.isAlive()) {
                             otherRobot.kill();
+                            if (battle.getBattleMode().respawnsOn()) {
+                            	otherRobot.respawn(robots);
+                            }
                             if (!teamFire) {
                                 final double bonus = statistics.scoreRammingKill(otherRobot.getName());
 
@@ -1739,6 +1742,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         updateEnergy(-energy);
 
         setState(RobotState.DEAD);
+    }
+    
+    public void respawn(List<RobotPeer> robots) {
+    	initializeRound(robots, null);
     }
 
     @Override

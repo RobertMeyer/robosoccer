@@ -62,7 +62,6 @@ import robocode.control.snapshot.BulletState;
  * @author Titus Chen (constributor)
  */
 public class BulletPeer {
-
 	private static final int EXPLOSION_LENGTH = 17;
 	private static final int RADIUS = 3;
 	protected final RobotPeer owner;
@@ -197,6 +196,9 @@ public class BulletPeer {
 				if (otherRobot.getEnergy() <= 0) {
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
+						if (owner.battle.getBattleMode().respawnsOn()) {
+                    		otherRobot.respawn(robots);
+                    	}
 						ks.updateKillStreak(owner, otherRobot);
 						if (!teamFire) {
 							final double bonus = owner.getRobotStatistics()
@@ -429,4 +431,5 @@ public class BulletPeer {
 				+ " X" + (int) x + " Y" + (int) y + " H" + heading + " "
 				+ state.toString();
 	}
+
 }

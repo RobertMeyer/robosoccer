@@ -159,9 +159,10 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * In this mode it makes the ball the only element visible to radar.
 	 */
 	@Override
-	public void updateRobotScans(List<RobotPeer> robotPeers) {
+	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-        for (RobotPeer robotPeer : robotPeers) {
+		
+        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
         	if (robotPeer.isBall()) {
         		double x = robotPeer.getX();
         		double y = robotPeer.getY();

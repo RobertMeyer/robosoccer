@@ -309,33 +309,40 @@ public final class Battle extends BaseBattle {
         super.finalizeBattle();
     }
 
-    protected void initialiseItems() {
-        /* Get the item IDs needed for the mode and add them to items */
-        for (String item : this.getBattleMode().getItems()) {
-            try {
-                /* Get the item's class
-                 * Get the classes 'createForMode' method with parameters of type
-                 * IMode and Battle
-                 * Invoke the method as a static method (null means call on no object)
-                 * using this kind of Mode and this Battle
-                 */
-                items.add((ItemDrop) item
-                        .getClass()
-                        .getMethod("createForMode", IMode.class, Battle.class)
-                        .invoke(null, this.getBattleMode(), this));
-            } catch (NoSuchMethodException x) {
-                x.printStackTrace();
-                System.err.printf("Item '%s' has not implemented createForMode."
-                        + "Modify the class so this method is overrided.\n", item);
-            } catch (InvocationTargetException x) {
-                x.printStackTrace();
-                x.getCause();
-            } catch (IllegalAccessException x) {
-                x.printStackTrace();
-                x.getCause();
-            }
-        }
+    @SuppressWarnings("unchecked")
+	protected void initialiseItems() {
+    	/* (team-Telos) Reflection solution: Trying a different way to add them */
+//        /* Get the item IDs needed for the mode and add them to items */
+//        for (String item : this.getBattleMode().getItems()) {
+//            try {
+//                /* Get the item's class
+//                 * Get the classes 'createForMode' method with parameters of type
+//                 * IMode and Battle
+//                 * Invoke the method as a static method (null means call on no object)
+//                 * using this kind of Mode and this Battle
+//                 */
+//                items.add((ItemDrop) item
+//                        .getClass()
+//                        .getMethod("createForMode", IMode.class, Battle.class)
+//                        .invoke(null, this.getBattleMode(), this));
+//            } catch (NoSuchMethodException x) {
+//                x.printStackTrace();
+//                System.err.printf("Item '%s' has not implemented createForMode."
+//                        + "Modify the class so this method is overrided.\n", item);
+//            } catch (InvocationTargetException x) {
+//                x.printStackTrace();
+//                x.getCause();
+//            } catch (IllegalAccessException x) {
+//                x.printStackTrace();
+//                x.getCause();
+//            }
+//        }
 
+    	/* (team-Telos) Create the items */
+    	this.getBattleMode().setItems(this);
+    	items = (List<ItemDrop>) this.getBattleMode().getItems();
+    	
+    	/* Now initialise */
         for (ItemDrop itemDrop : items) {
             itemDrop.initialiseRoundItems(robots, items);
         }
@@ -458,7 +465,11 @@ public final class Battle extends BaseBattle {
         updateRobots();
 
         handleDeadRobots();
-
+        if (getBattleMode().respawnsOn()) {
+        	if (super.getTime() > getBattleMode().turnLimit()) {
+        		shutdownTurn();
+        	}
+        }
         if (isAborted() || oneTeamRemaining()) {
             shutdownTurn();
         }
@@ -641,17 +652,10 @@ public final class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
-
         // Increment mode specific points - TODO -team-Telos
-        scoreModePoints();
+		this.getBattleMode().scoreTurnPoints();
         
-        getBattleMode().updateRobotScans(getRobotsAtRandom());
-       
-    }
-
-    private void scoreModePoints() {
-        // Increment mode specific points
-        this.getBattleMode().scorePoints();
+        getBattleMode().updateRobotScans(robots);
     }
 
     private void handleDeadRobots() {

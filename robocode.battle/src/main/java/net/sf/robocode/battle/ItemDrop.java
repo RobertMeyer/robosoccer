@@ -14,7 +14,8 @@ import robocode.control.RandomFactory;
  * @author s4238358
  *
  * Contributors:
- * @author Brandon Warwick (Team-Telos)
+ * @author Brandon Warwick (team-Telos)
+ * @author Jason Tan (team-Telos)
  */
 public abstract class ItemDrop {
 
@@ -29,9 +30,19 @@ public abstract class ItemDrop {
     protected BattleRules battleRules;
     protected Battle battle;
     protected final BoundingRectangle boundingBox;
+    protected String name;
 
+    /**
+     * Creates a new item with the specified parameters
+     * @param name - class name of item
+     * @param isDestroyable
+     * @param lifespan
+     * @param health
+     * @param isEquippable
+     * @param battle
+     */
     ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle) {
-        this.isDestroyable = isDestroyable;
+    	this.isDestroyable = isDestroyable;
         this.lifespan = lifespan;
         this.health = health;
         this.isEquippable = isEquippable;
@@ -232,14 +243,12 @@ public abstract class ItemDrop {
         }
         return true;
     }
-
+    
     /**
-     * Create a Flag item based on the mode
-     * @param mode The mode to create the Flag for
-     * @param battle The battle for where it is to be placed
-     * @return A new Flag object designed for the mode 'mode'
+     * (team-Telos) Returns a string representation of the item name
+     * @return string representing the name
      */
-    public static ItemDrop createForMode(IMode mode, Battle battle) {
-        return null;
+    public String toString() {
+    	return name;
     }
 }
