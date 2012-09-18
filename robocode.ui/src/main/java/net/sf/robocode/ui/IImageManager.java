@@ -21,7 +21,13 @@ public interface IImageManager {
 
     void initialize();
 
-    Image getGroundTileImage(int index);
+	Image getGroundTileImage(int index);
+	
+	Image getFieldTileImage(int index);
+	
+	RenderImage getCustomImage(String name);
+	
+	RenderImage addCustomImage(String name, String filename);
 
     RenderImage getExplosionRenderImage(int which, int frame);
 

@@ -101,8 +101,6 @@ import static java.lang.Math.round;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -115,7 +113,6 @@ import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.*;
@@ -151,6 +148,9 @@ public final class Battle extends BaseBattle {
 
     private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
 
+    private final IHostManager hostManager;
+    private IRepositoryManager repositoryManager;
+    private final long cpuConstant;
     // Inactivity related items
     private int inactiveTurnCount;
     private double inactivityEnergy;
@@ -158,21 +158,20 @@ public final class Battle extends BaseBattle {
 	private BattleProperties bp;
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+    // Death events
+    private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
+    // Flag specifying if debugging is enabled thru the debug command line option
+    private final boolean isDebugging;
+    // Initial robot start positions (if any)
+    private double[][] initialRobotPositions;
+   
+	private List<CustomObject> customObject = new ArrayList<CustomObject>();
+  
    
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
 
-	// Death events
-    private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
 
-	// Flag specifying if debugging is enabled thru the debug command line option
-	private final boolean isDebugging;
-
-	// Initial robot start positions (if any)
-	private double[][] initialRobotPositions;
-
-	private final IHostManager hostManager;
-	private final long cpuConstant;
 
 
 	// Turn skip related items
@@ -194,12 +193,13 @@ public final class Battle extends BaseBattle {
 
 
 
-	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
+	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
 		super(properties, battleManager, eventDispatcher);
 		isDebugging = System.getProperty("debug", "false").equals("true");
 		this.hostManager = hostManager;
 		this.cpuConstant = cpuManager.getCpuConstant();
 		this.killstreakTracker = new KillstreakTracker(this);
+        this.repositoryManager = repositoryManager;
 	}
 
 	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
@@ -209,131 +209,19 @@ public final class Battle extends BaseBattle {
 				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
 		robotsCount = battlingRobotsList.length;
 		
-		battleMode = (ClassicMode) battleProperties.getBattleMode();
-		computeInitialPositions(battleProperties.getInitialPositions());
-		createPeers(battlingRobotsList);
+        battleMode = (ClassicMode) battleProperties.getBattleMode();
+        
+        initialRobotPositions = this.getBattleMode().computeInitialPositions(
+        		battleProperties.getInitialPositions(), battleRules, 
+        		robotsCount);
+        this.getBattleMode().createPeers(this, battlingRobotsList, hostManager, robots, contestants, this.repositoryManager);
 		bp = battleProperties;
 	}
 
-	private void createPeers(RobotSpecification[] battlingRobotsList) {
-		// create teams
-		Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
-		List<String> teams = new ArrayList<String>();
-		List<String> teamDuplicates = new ArrayList<String>();
-		List<Integer> robotDuplicates = new ArrayList<Integer>();
+   
 
-		// count duplicate robots, enumerate teams, enumerate team members
-		for (RobotSpecification specification : battlingRobotsList) {
-			final String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
+	
 
-			if (countedNames.containsKey(name)) {
-				int value = countedNames.get(name);
-
-				countedNames.put(name, value == 1 ? 3 : value + 1);
-			} else {
-				countedNames.put(name, 1);
-			}
-
-			String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-			if (teamFullName != null) {
-				if (!teams.contains(teamFullName)) {
-					teams.add(teamFullName);
-					String teamName = teamFullName.substring(0, teamFullName.length() - 6);
-
-					if (countedNames.containsKey(teamName)) {
-						int value = countedNames.get(teamName);
-
-						countedNames.put(teamName, value == 1 ? 3 : value + 1);
-					} else {
-						countedNames.put(teamName, 1);
-					}
-				}
-			}
-		}
-
-		Hashtable<String, List<String>> teamMembers = new Hashtable<String, List<String>>();
-
-		// name teams
-		for (int i = teams.size() - 1; i >= 0; i--) {
-			String teamFullName = teams.get(i);
-			String name = teamFullName.substring(0, teamFullName.length() - 6);
-			Integer order = countedNames.get(name);
-			String newTeamName = name;
-
-			if (order > 1) {
-				newTeamName = name + " (" + (order - 1) + ")";
-			}
-			teamDuplicates.add(0, newTeamName);
-			teamMembers.put(teamFullName, new ArrayList<String>());
-			countedNames.put(name, order - 1);
-		}
-
-		// name robots
-		for (int i = battlingRobotsList.length - 1; i >= 0; i--) {
-			RobotSpecification specification = battlingRobotsList[i];
-			String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
-			Integer order = countedNames.get(name);
-			int duplicate = -1;
-
-			String newName = name;
-
-			if (order > 1) {
-				duplicate = (order - 2);
-				newName = name + " (" + (order - 1) + ")";
-			}
-			countedNames.put(name, (order - 1));
-			robotDuplicates.add(0, duplicate);
-
-			String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-			if (teamFullName != null) {
-				List<String> members = teamMembers.get(teamFullName);
-
-				members.add(newName);
-			}
-		}
-
-		// create teams
-		Hashtable<String, TeamPeer> namedTeams = new Hashtable<String, TeamPeer>();
-
-		// create robots
-		for (int i = 0; i < battlingRobotsList.length; i++) {
-			RobotSpecification specification = battlingRobotsList[i];
-			TeamPeer team = null;
-
-			String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-			// The team index and robot index depends on current sizes of the contestant list and robot list
-			int teamIndex = contestants.size();
-			int robotIndex = robots.size();
-
-			if (teamFullName != null) {
-				if (!namedTeams.containsKey(teamFullName)) {
-					String newTeamName = teamDuplicates.get(teams.indexOf(teamFullName));
-
-					team = new TeamPeer(newTeamName, teamMembers.get(teamFullName), teamIndex);
-
-					namedTeams.put(teamFullName, team);
-					contestants.add(team);
-
-				} else {
-					team = namedTeams.get(teamFullName);
-					if (team != null) {
-						teamIndex = team.getTeamIndex();
-					}
-				}
-			}
-			Integer duplicate = robotDuplicates.get(i);
-			// TODO Follow back from here to RobotPeer etc, to 
-			RobotPeer robotPeer = new RobotPeer(this, hostManager, specification, duplicate, team, robotIndex);
-
-			robots.add(robotPeer);
-			if (team == null) {
-				contestants.add(robotPeer);
-			}
-		}
-	}
 
 	public void registerDeathRobot(RobotPeer r) {
 		deathRobots.add(r);
@@ -450,59 +338,55 @@ public final class Battle extends BaseBattle {
 		super.finalizeBattle();
 	}
 	
-	protected void initialiseItems() {
-		System.out.println(this.getBattleMode().getItems().size());
-		/* Get the item IDs needed for the mode and add them to items */
-		for (String itemName : this.getBattleMode().getItems()) {
-			try {
-				/* Get the item's class
-				 * Get the classes 'createForMode' method with parameters of type
-				 * IMode and Battle
-				 * Invoke the method as a static method (null means call on no object)
-				 * using this kind of Mode and this Battle
-				 */
-				String name = "net.sf.robocode.battle." + itemName;
-				Class<ItemDrop> cl = (Class<ItemDrop>) Class.forName(name);
-				
-				Constructor<?>[] co = cl.getConstructors();
-				List<Object> paramList = new ArrayList<Object>();
-				if (name == "Flag"){
-					//TODO add Flag variables
-					//paramList.add(this)
-				} else{
-					paramList.add(this);
-				}
-				Object param[] = paramList.toArray();
-				ItemDrop item = (ItemDrop)co[0].newInstance(param);
-				items.add(item);
-				
-			} catch (InvocationTargetException x) {
-			    x.printStackTrace();
-			    x.getCause();
-			} catch (IllegalAccessException x) {
-			    x.printStackTrace();
-			    x.getCause();
-			} catch (InstantiationException x) {
-				x.printStackTrace();
-				x.getCause();
-			} catch (IllegalArgumentException x) {
-				x.printStackTrace();
-				x.getCause();
-			} catch (ClassNotFoundException x) {
-				x.printStackTrace();
-				x.getCause();
-			}
-		}
-	} 
 	
+@SuppressWarnings("unchecked")
+	protected void initialiseItems() {
+    	/* (team-Telos) Reflection solution: Trying a different way to add them */
+//        /* Get the item IDs needed for the mode and add them to items */
+//        for (String item : this.getBattleMode().getItems()) {
+//            try {
+//                /* Get the item's class
+//                 * Get the classes 'createForMode' method with parameters of type
+//                 * IMode and Battle
+//                 * Invoke the method as a static method (null means call on no object)
+//                 * using this kind of Mode and this Battle
+//                 */
+//                items.add((ItemDrop) item
+//                        .getClass()
+//                        .getMethod("createForMode", IMode.class, Battle.class)
+//                        .invoke(null, this.getBattleMode(), this));
+//            } catch (NoSuchMethodException x) {
+//                x.printStackTrace();
+//                System.err.printf("Item '%s' has not implemented createForMode."
+//                        + "Modify the class so this method is overrided.\n", item);
+//            } catch (InvocationTargetException x) {
+//                x.printStackTrace();
+//                x.getCause();
+//            } catch (IllegalAccessException x) {
+//                x.printStackTrace();
+//                x.getCause();
+//            }
+//        }
+
+    	/* (team-Telos) Create the items */
+    	this.getBattleMode().setItems(this);
+    	items = (List<ItemDrop>) this.getBattleMode().getItems();
+    	
+    	/* Now initialise */
+        for (ItemDrop itemDrop : items) {
+            itemDrop.initialiseRoundItems(robots, items);
+        }
+    }
+    
+
 	@Override
 	protected void preloadRound() {
 		super.preloadRound();
-		
+	
 		/*--ItemController--*/
 		itemControl = new ItemController();
 		itemControl.updateRobots(robots);
-
+	
 		// At this point the unsafe loader thread will now set itself to wait for a notify
 		for (RobotPeer robotPeer : robots) {
 			robotPeer.initializeRound(robots, initialRobotPositions);
@@ -510,62 +394,67 @@ public final class Battle extends BaseBattle {
 			robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
 			robotPeer.println("=========================");
 		}
-		
+	
 		/* Start to initialise all the items */
 		this.initialiseItems();
-		itemCursor = 0;
 		effArea.clear();
+		customObject.clear();
+	
+		List<CustomObject> objs = this.getBattleMode().createCustomObjects();
+		if (objs != null)
+			customObject = objs;
+	
 		//boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {
 			//clear effect area and recreate every round
 			createEffectAreas();
 		}
-
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
 			if (isPaused()) {
 				eventDispatcher.onBattlePaused(new BattlePausedEvent());
 			}
 		}
-
+	
 		computeActiveRobots();
-
+	
 		hostManager.resetThreadManager();
 	}
 
-	@Override
-	protected void initializeRound() {
-		super.initializeRound();
+	  @Override
+	    protected void initializeRound() {
+	        super.initializeRound();
 
-		inactiveTurnCount = 0;
+	        inactiveTurnCount = 0;
 
-		/*--ItemController--*/
-		itemControl.updateRobots(robots);
-		
-		// Start robots
+	        /*--ItemController--*/
+	        itemControl.updateRobots(robots);
 
-		long waitMillis;
-		int waitNanos;
+	        // Start robots
 
-		if (isDebugging) {
-			waitMillis = DEBUG_TURN_WAIT_MILLIS;
-			waitNanos = 0;
-		} else {
-			long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+	        long waitMillis;
+	        int waitNanos;
 
-			waitMillis = waitTime / 1000000;
-			waitNanos = (int) (waitTime % 1000000);
-		}
+	        if (isDebugging) {
+	            waitMillis = DEBUG_TURN_WAIT_MILLIS;
+	            waitNanos = 0;
+	        } else {
+	            long waitTime = Math.min(300 * cpuConstant, 10000000000L);
 
-		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.startRound(waitMillis, waitNanos);
-		}
+	            waitMillis = waitTime / 1000000;
+	            waitNanos = (int) (waitTime % 1000000);
+	        }
 
-		Logger.logMessage(""); // puts in a new-line in the log message
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, itemControl.getItems(), false);
+	        for (RobotPeer robotPeer : getRobotsAtRandom()) {
+	            robotPeer.startRound(waitMillis, waitNanos);
+	        }
 
-		eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
-	}
+	        Logger.logMessage(""); // puts in a new-line in the log message
+
+	        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, customObject, itemControl.getItems(), false);
+
+	        eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
+	    }
 
 	@Override
 	protected void finalizeRound() {
@@ -589,146 +478,145 @@ public final class Battle extends BaseBattle {
 	}
 
 	@Override
-	protected void runTurn() {
-		super.runTurn();
+    protected void runTurn() {
+        super.runTurn();
 
-		loadCommands();
-		
-		/*--ItemController--*/
-		itemControl.updateRobots(robots);
 
-		updateBullets();
+        loadCommands();
 
-		updateRobots();
+        /*--ItemController--*/
+        itemControl.updateRobots(robots);
 
-		handleDeadRobots();
+        updateBullets();
         
         updateEffectAreas();
         
-		if (isAborted() || oneTeamRemaining()) {
-			shutdownTurn();
-		}
+        this.getBattleMode().updateCustomObjects(customObject);
+        
+        updateRobots();
 
-		inactiveTurnCount++;
+        handleDeadRobots();
+        if (getBattleMode().respawnsOn()) {
+        	if (super.getTime() > getBattleMode().turnLimit()) {
+        		shutdownTurn();
+        	}
+        }
+        if (isAborted() || oneTeamRemaining()) {
+            shutdownTurn();
+        }
 
-		computeActiveRobots();
+        inactiveTurnCount++;
 
-		publishStatuses();
-		
-		if (totalTurns % 100 == 0 || totalTurns == 1){
-			if (itemCursor < items.size()){
-				itemControl.spawnRandomItem(items.get(itemCursor));
-				itemCursor++;
-			}
-		}
+        computeActiveRobots();
 
-		// Robot time!
-		wakeupRobots();
-	}
+        publishStatuses();
 
-	@Override
-	protected void shutdownTurn() {
-		if (getEndTimer() == 0) {
-			if (isAborted()) {
-				for (RobotPeer robotPeer : getRobotsAtRandom()) {
-					if (robotPeer.isAlive()) {
-						robotPeer.println("SYSTEM: game aborted.");
-					}
-				}
-			} else if (oneTeamRemaining()) {
-				boolean leaderFirsts = false;
-				TeamPeer winningTeam = null;
+        // Robot time!
+        wakeupRobots();
+    }
 
-				final robocode.RoundEndedEvent roundEndedEvent = new robocode.RoundEndedEvent(getRoundNum(), currentTime,
-						totalTurns); 
+	 @Override
+    protected void shutdownTurn() {
+        if (getEndTimer() == 0) {
+            if (isAborted()) {
+                for (RobotPeer robotPeer : getRobotsAtRandom()) {
+                    if (robotPeer.isAlive()) {
+                        robotPeer.println("SYSTEM: game aborted.");
+                    }
+                }
+            } else if (oneTeamRemaining()) {
+                boolean leaderFirsts = false;
+                TeamPeer winningTeam = null;
 
-				for (RobotPeer robotPeer : getRobotsAtRandom()) {
-					robotPeer.addEvent(roundEndedEvent);
-					if (robotPeer.isAlive()) {
-						if (!robotPeer.isWinner()) {
-							robotPeer.getRobotStatistics().scoreLastSurvivor();
-							robotPeer.setWinner(true);
-							robotPeer.println("SYSTEM: " + robotPeer.getNameForEvent(robotPeer) + " wins the round.");
-							robotPeer.addEvent(new WinEvent());
-							if (robotPeer.getTeamPeer() != null) {
-								if (robotPeer.isTeamLeader()) {
-									leaderFirsts = true;
-								} else {
-									winningTeam = robotPeer.getTeamPeer();
-								}
-							}
-						}
-					}
-				}
-				if (!leaderFirsts && winningTeam != null) {
-					winningTeam.getTeamLeader().getRobotStatistics().scoreFirsts();
-				}
-			}
-		}
+                final robocode.RoundEndedEvent roundEndedEvent = new robocode.RoundEndedEvent(getRoundNum(), currentTime,
+                                                                                              totalTurns);
+                for (RobotPeer robotPeer : getRobotsAtRandom()) {
+                    robotPeer.addEvent(roundEndedEvent);
+                    if (robotPeer.isAlive()) {
+                        if (!robotPeer.isWinner()) {
+                            robotPeer.getRobotStatistics().scoreLastSurvivor();
+                            robotPeer.setWinner(true);
+                            robotPeer.println("SYSTEM: " + robotPeer.getNameForEvent(robotPeer) + " wins the round.");
+                            robotPeer.addEvent(new WinEvent());
+                            if (robotPeer.getTeamPeer() != null) {
+                                if (robotPeer.isTeamLeader()) {
+                                    leaderFirsts = true;
+                                } else {
+                                    winningTeam = robotPeer.getTeamPeer();
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!leaderFirsts && winningTeam != null) {
+                    winningTeam.getTeamLeader().getRobotStatistics().scoreFirsts();
+                }
+            }
+        }
 
-		if (getEndTimer() == 1 && (isAborted() || isLastRound())) {
+        if (getEndTimer() == 1 && (isAborted() || isLastRound())) {
 
-			List<RobotPeer> orderedRobots = new ArrayList<RobotPeer>(robots);
+            List<RobotPeer> orderedRobots = new ArrayList<RobotPeer>(robots);
 
-			Collections.sort(orderedRobots);
-			Collections.reverse(orderedRobots);
+            Collections.sort(orderedRobots);
+            Collections.reverse(orderedRobots);
 
-			for (int rank = 0; rank < robots.size(); rank++) {
-				RobotPeer robotPeer = orderedRobots.get(rank);
+            for (int rank = 0; rank < robots.size(); rank++) {
+                RobotPeer robotPeer = orderedRobots.get(rank);
 
-				robotPeer.getStatistics().setRank(rank + 1);
-				BattleResults resultsForRobot = robotPeer.getStatistics().getFinalResults();
+                robotPeer.getStatistics().setRank(rank + 1);
+                BattleResults resultsForRobot = robotPeer.getStatistics().getFinalResults();
 
-				robotPeer.addEvent(new BattleEndedEvent(isAborted(), resultsForRobot));
-			}
-		}
+                robotPeer.addEvent(new BattleEndedEvent(isAborted(), resultsForRobot));
+            }
+        }
 
-		if (getEndTimer() > 4 * 30) {
-			for (RobotPeer robotPeer : robots) {
-				robotPeer.setHalt(true);
-			}
-		}
+        if (getEndTimer() > 4 * 30) {
+            for (RobotPeer robotPeer : robots) {
+                robotPeer.setHalt(true);
+            }
+        }
 
-		super.shutdownTurn();
-	}
-	@Override
-	protected void finalizeTurn() {
-		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, itemControl.getItems(), true)));
+        super.shutdownTurn();
+    }
+	 
+	 @Override
+    protected void finalizeTurn() {
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, customObject, itemControl.getItems(), true)));
 
-		super.finalizeTurn();
-	}
+        super.finalizeTurn();
+    }
 
-	private BattleResults[] computeBattleResults() {
-		ArrayList<BattleResults> results = new ArrayList<BattleResults>();
+    private BattleResults[] computeBattleResults() {
+        ArrayList<BattleResults> results = new ArrayList<BattleResults>();
 
-		List<ContestantPeer> orderedContestants = new ArrayList<ContestantPeer>(contestants);
+        List<ContestantPeer> orderedContestants = new ArrayList<ContestantPeer>(contestants);
 
-		Collections.sort(orderedContestants);
-		Collections.reverse(orderedContestants);
+        Collections.sort(orderedContestants);
+        Collections.reverse(orderedContestants);
 
-		// noinspection ForLoopReplaceableByForEach
-		for (int i = 0; i < contestants.size(); i++) {
-			results.add(null);
-		}
-		for (int rank = 0; rank < contestants.size(); rank++) {
-			RobotSpecification robotSpec = null;
-			ContestantPeer contestant = orderedContestants.get(rank);
+        // noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < contestants.size(); i++) {
+            results.add(null);
+        }
+        for (int rank = 0; rank < contestants.size(); rank++) {
+            RobotSpecification robotSpec = null;
+            ContestantPeer contestant = orderedContestants.get(rank);
 
-			contestant.getStatistics().setRank(rank + 1);
-			BattleResults battleResults = contestant.getStatistics().getFinalResults();
+            contestant.getStatistics().setRank(rank + 1);
+            BattleResults battleResults = contestant.getStatistics().getFinalResults();
 
-			if (contestant instanceof RobotPeer) {
-				robotSpec = ((RobotPeer) contestant).getRobotSpecification();
-			} else if (contestant instanceof TeamPeer) {
-				robotSpec = ((TeamPeer) contestant).getTeamLeader().getRobotSpecification();
-			}
+            if (contestant instanceof RobotPeer) {
+                robotSpec = ((RobotPeer) contestant).getRobotSpecification();
+            } else if (contestant instanceof TeamPeer) {
+                robotSpec = ((TeamPeer) contestant).getTeamLeader().getRobotSpecification();
+            }
 
-			results.set(rank, new RobotResults(robotSpec, battleResults));
-		}
+            results.set(rank, new RobotResults(robotSpec, battleResults));
+        }
 
-		return results.toArray(new BattleResults[results.size()]);
-	}
-
+        return results.toArray(new BattleResults[results.size()]);
+    }
 	/**
 	 * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
 	 * so that a robot placed before another robot in the list will not gain any benefit when the game
@@ -786,63 +674,54 @@ public final class Battle extends BaseBattle {
 	}
 
 	private void updateRobots() {
-		boolean zap = (inactiveTurnCount > battleRules.getInactivityTime());
+        boolean zap = (inactiveTurnCount > battleRules.getInactivityTime());
 
-		final double zapEnergy = isAborted() ? 5 : zap ? .1 : 0;
+        final double zapEnergy = isAborted() ? 5 : zap ? .1 : 0;
 
-		// Move all bots
-		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), itemControl.getItems(), zapEnergy);
-		}
-		
-		// Increment mode specific points - TODO -team-Telos
-		scoreModePoints();
+        // Move all bots
+        for (RobotPeer robotPeer : getRobotsAtRandom()) {
+            robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
+        }
+        // Increment mode specific points - TODO -team-Telos
+		this.getBattleMode().scoreTurnPoints();
+        
+        getBattleMode().updateRobotScans(robots);
+    }
 
-		// Scan after moved all
-		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performScan(getRobotsAtRandom());
-		}
-	}
-	
-	private void scoreModePoints() {
-		// Increment mode specific points
-		this.getBattleMode().scorePoints();
-	}
+    private void handleDeadRobots() {
 
-	private void handleDeadRobots() {
+        for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
+            // Compute scores for dead robots
+            if (deadRobot.getTeamPeer() == null) {
+                deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+            } else {
+                boolean teammatesalive = false;
 
-		for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
-			// Compute scores for dead robots
-			if (deadRobot.getTeamPeer() == null) {
-				deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
-			} else {
-				boolean teammatesalive = false;
+                for (RobotPeer tm : robots) {
+                    if (tm.getTeamPeer() == deadRobot.getTeamPeer() && tm.isAlive()) {
+                        teammatesalive = true;
+                        break;
+                    }
+                }
+                if (!teammatesalive) {
+                    deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+                }
+            }
 
-				for (RobotPeer tm : robots) {
-					if (tm.getTeamPeer() == deadRobot.getTeamPeer() && tm.isAlive()) {
-						teammatesalive = true;
-						break;
-					}
-				}
-				if (!teammatesalive) {
-					deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
-				}
-			}
+            // Publish death to live robots
+            for (RobotPeer robotPeer : getRobotsAtRandom()) {
+                if (robotPeer.isAlive()) {
+                    robotPeer.addEvent(new RobotDeathEvent(robotPeer.getNameForEvent(deadRobot)));
 
-			// Publish death to live robots
-			for (RobotPeer robotPeer : getRobotsAtRandom()) {
-				if (robotPeer.isAlive()) {
-					robotPeer.addEvent(new RobotDeathEvent(robotPeer.getNameForEvent(deadRobot)));
+                    if (robotPeer.getTeamPeer() == null || robotPeer.getTeamPeer() != deadRobot.getTeamPeer()) {
+                        robotPeer.getRobotStatistics().scoreSurvival();
+                    }
+                }
+            }
+        }
 
-					if (robotPeer.getTeamPeer() == null || robotPeer.getTeamPeer() != deadRobot.getTeamPeer()) {
-						robotPeer.getRobotStatistics().scoreSurvival();
-					}
-				}
-			}
-		}
-
-		deathRobots.clear();
-	}
+        deathRobots.clear();
+    }
 
 	private void publishStatuses() {
 		for (RobotPeer robotPeer : robots) {
@@ -918,115 +797,50 @@ public final class Battle extends BaseBattle {
 		}
 	}
 
-	private int getActiveContestantCount(RobotPeer peer) {
-		int count = 0;
+	 private int getActiveContestantCount(RobotPeer peer) {
+        int count = 0;
 
-		for (ContestantPeer c : contestants) {
-			if (c instanceof RobotPeer && ((RobotPeer) c).isAlive()) {
-				count++;
-			} else if (c instanceof TeamPeer && c != peer.getTeamPeer()) {
-				for (RobotPeer robotPeer : (TeamPeer) c) {
-					if (robotPeer.isAlive()) {
-						count++;
-						break;
-					}
-				}
-			}
-		}
-		return count;
-	}
+        for (ContestantPeer c : contestants) {
+            if (c instanceof RobotPeer && ((RobotPeer) c).isAlive()) {
+                count++;
+            } else if (c instanceof TeamPeer && c != peer.getTeamPeer()) {
+                for (RobotPeer robotPeer : (TeamPeer) c) {
+                    if (robotPeer.isAlive()) {
+                        count++;
+                        break;
+                    }
+                }
+            }
+        }
+        return count;
+    }
 
-	private void computeInitialPositions(String initialPositions) {
-		initialRobotPositions = null;
+	 private boolean oneTeamRemaining() {
+	        if (getActiveRobots() <= 1) {
+	            return true;
+	        }
 
-		if (initialPositions == null || initialPositions.trim().length() == 0) {
-			return;
-		}
+	        boolean found = false;
+	        TeamPeer currentTeam = null;
 
-		List<String> positions = new ArrayList<String>();
+	        for (RobotPeer currentRobot : robots) {
+	            if (currentRobot.isAlive()) {
+	                if (!found) {
+	                    found = true;
+	                    currentTeam = currentRobot.getTeamPeer();
+	                } else {
+	                    if (currentTeam == null && currentRobot.getTeamPeer() == null) {
+	                        return false;
+	                    }
+	                    if (currentTeam != currentRobot.getTeamPeer()) {
+	                        return false;
+	                    }
+	                }
+	            }
+	        }
+	        return true;
+	    }
 
-		Pattern pattern = Pattern.compile("([^,(]*[(][^)]*[)])?[^,]*,?");
-		Matcher matcher = pattern.matcher(initialPositions);
-
-		while (matcher.find()) {
-			String pos = matcher.group();
-
-			if (pos.length() > 0) {
-				positions.add(pos);
-			}
-		}
-
-		if (positions.size() == 0) {
-			return;
-		}
-
-		initialRobotPositions = new double[positions.size()][3];
-
-		String[] coords;
-		double x, y, heading;
-
-		for (int i = 0; i < positions.size(); i++) {
-			coords = positions.get(i).split(",");
-
-			final Random random = RandomFactory.getRandom();
-
-			x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-			y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
-			heading = 2 * Math.PI * random.nextDouble();
-
-			int len = coords.length;
-
-			if (len >= 1) {
-				// noinspection EmptyCatchBlock
-				try {
-					x = Double.parseDouble(coords[0].replaceAll("[\\D]", ""));
-				} catch (NumberFormatException e) {}
-
-				if (len >= 2) {
-					// noinspection EmptyCatchBlock
-					try {
-						y = Double.parseDouble(coords[1].replaceAll("[\\D]", ""));
-					} catch (NumberFormatException e) {}
-
-					if (len >= 3) {
-						// noinspection EmptyCatchBlock
-						try {
-							heading = Math.toRadians(Double.parseDouble(coords[2].replaceAll("[\\D]", "")));
-						} catch (NumberFormatException e) {}
-					}
-				}
-			}
-			initialRobotPositions[i][0] = x;
-			initialRobotPositions[i][1] = y;
-			initialRobotPositions[i][2] = heading;
-		}
-	}
-
-	private boolean oneTeamRemaining() {
-		if (getActiveRobots() <= 1) {
-			return true;
-		}
-
-		boolean found = false;
-		TeamPeer currentTeam = null;
-
-		for (RobotPeer currentRobot : robots) {
-			if (currentRobot.isAlive()) {
-				if (!found) {
-					found = true;
-					currentTeam = currentRobot.getTeamPeer();
-				} else {
-					if (currentTeam == null && currentRobot.getTeamPeer() == null) {
-						return false;
-					}
-					if (currentTeam != currentRobot.getTeamPeer()) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
 
 	// --------------------------------------------------------------------------
 	// Processing and maintaining robot and battle controls
@@ -1154,5 +968,17 @@ public final class Battle extends BaseBattle {
 		    }
 		}
 
-
+	 	public void createCustomObject(String name, String filename, double x, double y) {
+	 		CustomObject obj = new CustomObject(name, filename);
+	 		obj.setTranslate(x, y);
+	 		customObject.add(obj);
+	 	}
+	 	
+	 	public void removeCustomObject(String name) {
+	 		for (CustomObject obj : customObject) {
+	 			if (obj.getName() == name) {
+	 				customObject.remove(obj);
+	 			}
+	 		}
+	 	}
 }

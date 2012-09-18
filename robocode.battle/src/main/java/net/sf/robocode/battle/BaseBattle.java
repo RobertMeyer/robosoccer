@@ -46,7 +46,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
     private int roundNum;
     protected int currentTime;
     protected int totalTurns;
-    private int endTimer;
+    protected int endTimer;
     // TPS (turns per second) calculation stuff
     private int tps;
     private long turnStartTime;
@@ -215,7 +215,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
                     initializeRound();
 
                     runRound();
-
+                    
                     finalizeRound();
 
                     cleanupRound();
@@ -287,11 +287,17 @@ public abstract class BaseBattle implements IBattle, Runnable {
             roundOver = isRoundOver();
 
             finalizeTurn();
+            
         }
     }
 
     protected boolean isRoundOver() {
-        return (endTimer > 5 * TURNS_DISPLAYED_AFTER_ENDING);
+    	roundOver = battleMode.isRoundOver(endTimer, TURNS_DISPLAYED_AFTER_ENDING);
+    	//if (battleMode.getDescription().equals("Robocode soccer.")) {
+    	//	isAborted = roundOver;
+    	//}
+    	return roundOver;
+    			
     }
 
     protected void finalizeRound() {

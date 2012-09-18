@@ -180,6 +180,7 @@ public class BattleManager implements IBattleManager {
 
         Thread battleThread = new Thread(Thread.currentThread().getThreadGroup(), realBattle);
 
+		
         battleThread.setPriority(Thread.NORM_PRIORITY);
         battleThread.setName("Battle Thread");
         realBattle.setBattleThread(battleThread);

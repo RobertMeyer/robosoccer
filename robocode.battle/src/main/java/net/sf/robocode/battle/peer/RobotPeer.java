@@ -350,6 +350,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isHouseRobot() {
 		return statics.isHouseRobot();
 	}
+	
+	public boolean isBall() {
+    	return statics.isBall();
+    }
 
 	public boolean isJuniorRobot() {
 		return statics.isJuniorRobot();
@@ -370,6 +374,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isTeamRobot() {
 		return statics.isTeamRobot();
 	}
+	
+	public boolean isBotzilla() {
+    	return statics.isBotzilla();
+    }
 
 	public String getName() {
 		return statics.getName();
@@ -902,8 +910,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+
 	public void performLoadCommands() {
 		currentCommands = commands.get();
+
 
 		fireBullets(currentCommands.getBullets());
 
@@ -1005,8 +1015,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// Now check for robot collision
 		checkRobotCollision(robots);
 		
-		// Now check for item collision
-		checkItemCollision(items);
+        // Now check for item collision
+        //TODO: checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1057,8 +1067,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected void addTeamMessage(TeamMessage message) {
 		final List<TeamMessage> queue = teamMessages.get();
 
+                   
 		queue.add(message);
 	}
+               
 
 	protected boolean checkDispatchToMember(RobotPeer member, String recipient) {
 		if (member.isAlive()) {
@@ -1133,76 +1145,87 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
-		inCollision = false;
+        inCollision = false;
 
-		for (RobotPeer otherRobot : robots) {
-			if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
-					&& boundingBox.intersects(otherRobot.boundingBox)) {
-				// Bounce back
-				double angle = atan2(otherRobot.x - x, otherRobot.y - y);
+        for (RobotPeer otherRobot : robots) {
+            if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
+                    && boundingBox.intersects(otherRobot.boundingBox)) {
+                // Bounce back
+                double angle = atan2(otherRobot.x - x, otherRobot.y - y);
 
-				double movedx = velocity * sin(bodyHeading);
-				double movedy = velocity * cos(bodyHeading);
+                double movedx = velocity * sin(bodyHeading);
+                double movedy = velocity * cos(bodyHeading);
 
-				boolean atFault;
-				double bearing = normalRelativeAngle(angle - bodyHeading);
+                boolean atFault;
+                double bearing = normalRelativeAngle(angle - bodyHeading);
 
-				if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
-						|| (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
+                if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
+                        || (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
 
-					inCollision = true;
-					atFault = true;
-					velocity = 0;
-					currentCommands.setDistanceRemaining(0);
-					x -= movedx;
-					y -= movedy;
+                    inCollision = true;
+                    atFault = true;
+                    velocity = 0;
+                    currentCommands.setDistanceRemaining(0);
+                    x -= movedx;
+                    y -= movedy;
 
-					boolean teamFire = (teamPeer != null && teamPeer == otherRobot.teamPeer);
+                    boolean teamFire = (teamPeer != null && teamPeer == otherRobot.teamPeer);
 
-					if (!teamFire) {
-						statistics.scoreRammingDamage(otherRobot.getName());
-					}
-					
-					//Use a factor of the armor if it has been changed
-					//This Robot
-					if(getRobotArmor() - 1.0 < 0.00001)
-						this.updateEnergy(-(this.getRamDamage()));
-					else this.updateEnergy(-(this.getRamDamage() * 
-							1/this.getRobotArmor()));
-					
-					// Other Robot
-					if(otherRobot.getRobotArmor() - 1.0 < 0.00001)
-						otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
-					else otherRobot.updateEnergy(-(otherRobot.getRamDamage()/
-							1/otherRobot.getRobotArmor()));
+                    if (!teamFire) {
+                        statistics.scoreRammingDamage(otherRobot.getName());
+                    }
 
-					if (otherRobot.energy == 0) {
-						if (otherRobot.isAlive()) {
-							otherRobot.kill();
-							if (!teamFire) {
-								final double bonus = statistics.scoreRammingKill(otherRobot.getName());
+                    //Use a factor of the armor if it has been changed
+                    //This Robot
+                    if (otherRobot.isBotzilla()) {
+                    	this.updateEnergy(-(this.energy));
+                	} else if (getRobotArmor() - 1.0 < 0.00001) {
+                        this.updateEnergy(-(this.getRamDamage()));
+                    } else {
+                        this.updateEnergy(-(this.getRamDamage()
+                                            * 1 / this.getRobotArmor()));
+                    }
 
-								if (bonus > 0) {
-									println(
-											"SYSTEM: Ram bonus for killing " + this.getNameForEvent(otherRobot) + ": "
-											+ (int) (bonus + .5));
-								}
-							}
-						}
-					}
-					addEvent(
-							new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
-							otherRobot.energy, atFault));
-					otherRobot.addEvent(
-							new HitRobotEvent(getNameForEvent(this),
-							normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false));
-				}
-			}
-		}
-		if (inCollision) {
-			setState(RobotState.HIT_ROBOT);
-		}
-	}
+                    // Other Robot
+                    if (otherRobot.isBotzilla()) {
+                    	//do nothing to Botzilla
+                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
+                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
+                    } else {
+                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()
+                                                  / 1 / otherRobot.getRobotArmor()));
+                    }
+
+                    if (otherRobot.energy == 0) {
+                        if (otherRobot.isAlive()) {
+                            otherRobot.kill();
+                            if (battle.getBattleMode().respawnsOn()) {
+                            	otherRobot.respawn(robots);
+                            }
+                            if (!teamFire) {
+                                final double bonus = statistics.scoreRammingKill(otherRobot.getName());
+
+                                if (bonus > 0) {
+                                    println(
+                                            "SYSTEM: Ram bonus for killing " + this.getNameForEvent(otherRobot) + ": "
+                                            + (int) (bonus + .5));
+                                }
+                            }
+                        }
+                    }
+                    addEvent(
+                            new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
+                                              otherRobot.energy, atFault));
+                    otherRobot.addEvent(
+                            new HitRobotEvent(getNameForEvent(this),
+                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false));
+                }
+            }
+        }
+        if (inCollision) {
+            setState(RobotState.HIT_ROBOT);
+        }
+    }
 
 	protected void checkWallCollision() {
 		boolean hitWall = false;
@@ -1679,6 +1702,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		logMessage(message.toString());
 	}
 
+
+
 	public void updateEnergy(double delta) {
 		if ((!isExecFinishedAndDisabled && !isEnergyDrained) || delta < 0) {
 			setEnergy(energy + delta, true);
@@ -1734,6 +1759,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		setState(RobotState.DEAD);
 	}
+
+    public void respawn(List<RobotPeer> robots) {
+    	initializeRound(robots, null);
+    }
+    
 
 	public void waitForStop() {
 		robotProxy.waitForStopThread();
@@ -1796,6 +1826,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+
 	/**
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
@@ -1822,9 +1853,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 */
 			double newValue = currentValue + (partValue / 100.0);
 
+    
 			attributes.get().put(attribute, newValue);
 		}
 	}
+    
 
 	/**
 	 * Unequips the part equipped to the given slot, if any, and resets all
@@ -1861,6 +1894,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
         return equipment;
     }
+
 	
 	/**
 	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
@@ -1965,131 +1999,135 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public double getMaxVelocity(){
 		return attributes.get().get(RobotAttribute.SPEED) * Rules.MAX_VELOCITY;
 	}
-	
-	/**
-	 * Returns the energy (life) of the robot due to the items it has equipped
-	 * or the bonuses it may have received.
-	 * 
-	 * Note: This is the life at the start of the round (not a constant update)
-	 * 		That is it is the energy factor * 100 (base energy). To find the
-	 * 		current energy: @see getEnergy()
-	 * 
-	 * @return the starting energy of the robot associated with this peer.
-	 */
-	public double getStartingEnergy(){
-		return attributes.get().get(RobotAttribute.ENERGY) * 100;
-	}
-	
-	/**
-	 * Returns the current energy regeneration rate of the robot due to the
-	 * items it has equipped or other bonuses.
-	 * 
-	 * @return The current energy regeneration rate of the robot associated
-	 * 			with this peer.
-	 */
-	public double getEnergyRegen(){
-		return attributes.get().get(RobotAttribute.ENERGY_REGEN);
-	}
-	
-	/**
-	 * Returns the armor of the robot has compared to standard. That is, 1 is
-	 * standard armor, 0.5 would be half armor and 2 would be double armor.
-	 * This reduces the amount of damage taken in battle, compared to normal
-	 * (or increases).  This is caused by the items it has equipped or the
-	 * bonuses it may have received.
-	 * 
-	 * @return the current armor factor of the robot associated with this peer.
-	 */
-	public double getRobotArmor(){
-		return attributes.get().get(RobotAttribute.ARMOR);
-	}
-	
-	/**
-	 * Returns the minimum bullet power of a robots bullet, which is the
-	 * attribute factor * the value of @see Rules.MIN_BULLET_POWER
-	 * 
-	 * This is caused by the items the robot has equipped or other bonuses
-	 * it may have received.
-	 * 
-	 * @return the robots minimum bullet power associated with this peer.
-	 */
-	public double getMinBulletPower(){
-		return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * Rules.MIN_BULLET_POWER;
-	}
-	
-	/**
-	 * Returns the maximum bullet power of a robots bullet, which is the
-	 * attribute factor * the value of @see Rules.MAX_BULLET_POWER
-	 * 
-	 * This is caused by the items the robot has equipped or other bonuses
-	 * it may have received.
-	 * 
-	 * @return the robots maximum bullet power associated with this peer.
-	 */
-	public double getMaxBulletPower(){
-		return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * Rules.MAX_BULLET_POWER;
-	}
-	
-	/**
-	 * Returns the amount the gun will heat for a certain amount of bullet
-	 * power, this may be increased by the effects of equipment or other
-	 * bonuses (or decreased)
-	 * 
-	 * @param bulletPower the energy power of the bullet
-	 * @return the gun heat.
-	 */
-	public double getGunHeat(double bulletPower){
-		return attributes.get().get(RobotAttribute.GUN_HEAT_RATE) *
-				(1 + (bulletPower / 5));
-	}
-	
-	/**
-	 * Returns the bonus the robot gains from ramming another robot due to the
-	 * items equipped or other bonuses it may have received.
-	 * 
-	 * @return robot's ramming attack bonus associated with this peer.
-	 */
-	public double getRamAttack(){
-		return attributes.get().get(RobotAttribute.RAM_ATTACK) * 
-				Rules.ROBOT_HIT_BONUS;
-	}
-	
-	/**
-	 * Returns the damage the robot receives from being hit by another robot,
-	 * due to having items equipped or receiving other bonuses.
-	 * 
-	 * @return the amount of damage this robot takes from being hit by another
-	 * 		robot
-	 */
-	public double getRamDamage(){
-		return attributes.get().get(RobotAttribute.RAM_DEFENSE) *
-				Rules.ROBOT_HIT_DAMAGE;
-	}
-	
-	/**
-	 * Returns the radar turn rate of a robot in degrees due to having items
-	 * equipped or having received other bonuses.
-	 * 
-	 * @return the radar turn rate of the robot in degrees
-	 */
-	public double getRadarTurnRate(){
-		return attributes.get().get(RobotAttribute.RADAR_ANGLE) * Rules.RADAR_TURN_RATE;
-	}
-	
-	/**
-	 * Returns the radar turn rate of a robot in radians due to having items
-	 * equipped or having received other bonuses.
-	 * 
-	 * @return the radar turn rate of the robot in radians
-	 */
-	public double getRadarTurnRateRadians(){
-		return Math.toRadians(getRadarTurnRate());
-	}
+
+    /**
+     * Returns the energy (life) of the robot due to the items it has equipped
+     * or the bonuses it may have received.
+     *
+     * Note: This is the life at the start of the round (not a constant update)
+     * 		That is it is the energy factor * 100 (base energy). To find the
+     * 		current energy: @see getEnergy()
+     *
+     * @return the starting energy of the robot associated with this peer.
+     */
+    public double getStartingEnergy() {
+        return attributes.get().get(RobotAttribute.ENERGY) * 100;
+    }
+
+    /**
+     * Returns the current energy regeneration rate of the robot due to the
+     * items it has equipped or other bonuses.
+     *
+     * @return The current energy regeneration rate of the robot associated
+     * 			with this peer.
+     */
+    public double getEnergyRegen() {
+        return attributes.get().get(RobotAttribute.ENERGY_REGEN);
+    }
+
+    /**
+     * Returns the armor of the robot has compared to standard. That is, 1 is
+     * standard armor, 0.5 would be half armor and 2 would be double armor.
+     * This reduces the amount of damage taken in battle, compared to normal
+     * (or increases).  This is caused by the items it has equipped or the
+     * bonuses it may have received.
+     *
+     * @return the current armor factor of the robot associated with this peer.
+     */
+    public double getRobotArmor() {
+        return attributes.get().get(RobotAttribute.ARMOR);
+    }
+
+    /**
+     * Returns the minimum bullet power of a robots bullet, which is the
+     * attribute factor * the value of @see Rules.MIN_BULLET_POWER
+     *
+     * This is caused by the items the robot has equipped or other bonuses
+     * it may have received.
+     *
+     * @return the robots minimum bullet power associated with this peer.
+     */
+    public double getMinBulletPower() {
+        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * 
+        		Rules.MIN_BULLET_POWER;
+    }
+
+    /**
+     * Returns the maximum bullet power of a robots bullet, which is the
+     * attribute factor * the value of @see Rules.MAX_BULLET_POWER
+     *
+     * This is caused by the items the robot has equipped or other bonuses
+     * it may have received.
+     *
+     * @return the robots maximum bullet power associated with this peer.
+     */
+    public double getMaxBulletPower() {
+        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * 
+        		Rules.MAX_BULLET_POWER;
+    }
+
+    /**
+     * Returns the amount the gun will heat for a certain amount of bullet
+     * power, this may be increased by the effects of equipment or other
+     * bonuses (or decreased)
+     *
+     * @param bulletPower the energy power of the bullet
+     * @return the gun heat.
+     */
+    public double getGunHeat(double bulletPower) {
+        return attributes.get().get(RobotAttribute.GUN_HEAT_RATE)
+                * (1 + (bulletPower / 5));
+    }
+
+    /**
+     * Returns the bonus the robot gains from ramming another robot due to the
+     * items equipped or other bonuses it may have received.
+     *
+     * @return robot's ramming attack bonus associated with this peer.
+     */
+    public double getRamAttack() {
+        return attributes.get().get(RobotAttribute.RAM_ATTACK)
+                * Rules.ROBOT_HIT_BONUS;
+    }
+
+    /**
+     * Returns the damage the robot receives from being hit by another robot,
+     * due to having items equipped or receiving other bonuses.
+     *
+     * @return the amount of damage this robot takes from being hit by another
+     * 		robot
+     */
+    public double getRamDamage() {
+        return attributes.get().get(RobotAttribute.RAM_DEFENSE)
+                * Rules.ROBOT_HIT_DAMAGE;
+    }
+
+    /**
+     * Returns the radar turn rate of a robot in degrees due to having items
+     * equipped or having received other bonuses.
+     *
+     * @return the radar turn rate of the robot in degrees
+     */
+    public double getRadarTurnRate() {
+        return attributes.get().get(RobotAttribute.RADAR_ANGLE) * 
+        		Rules.RADAR_TURN_RATE;
+    }
+
+    /**
+     * Returns the radar turn rate of a robot in radians due to having items
+     * equipped or having received other bonuses.
+     *
+     * @return the radar turn rate of the robot in radians
+     */
+    public double getRadarTurnRateRadians() {
+        return Math.toRadians(getRadarTurnRate());
+    }
 
     /** 
      * Effects
      */
-    public void setEnergyEffect(double newEnergy, boolean resetInactiveTurnCount) {
+    public void setEnergyEffect(double newEnergy, boolean 
+    		resetInactiveTurnCount) {
 		if (resetInactiveTurnCount && (energy != newEnergy)) {
 			battle.resetInactiveTurnCount(energy - newEnergy);
 		}

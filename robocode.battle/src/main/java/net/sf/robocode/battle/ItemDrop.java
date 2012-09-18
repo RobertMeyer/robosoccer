@@ -34,6 +34,7 @@ public abstract	class ItemDrop {
 	protected BattleRules battleRules;
 	protected Battle battle;
 	protected final BoundingRectangle boundingBox;
+	public String name;
 		
 	public ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;

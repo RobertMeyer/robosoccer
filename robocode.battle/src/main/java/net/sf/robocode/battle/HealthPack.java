@@ -10,6 +10,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
 
 public class HealthPack extends ItemDrop {
 
+
 		
 	public HealthPack(Battle battle){
 		super(true, 400, 0, false, battle);
