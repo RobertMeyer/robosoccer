@@ -1,9 +1,10 @@
-package net.sf.robocode.battle;
+package net.sf.robocode.battle.item;
 
 import java.util.List;
 import java.util.Random;
 
 import robocode.control.RandomFactory;
+import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.mode.IMode;
 import robocode.*;

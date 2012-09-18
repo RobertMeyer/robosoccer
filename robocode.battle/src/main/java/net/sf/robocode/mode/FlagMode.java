@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.Flag;
-import net.sf.robocode.battle.ItemDrop;
+import net.sf.robocode.battle.item.Flag;
+import net.sf.robocode.battle.item.ItemDrop;
 
 /**
  * Basic Construct for the CTF mode:

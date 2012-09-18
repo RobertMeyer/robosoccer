@@ -1,6 +1,7 @@
-package net.sf.robocode.battle;
+package net.sf.robocode.battle.item;
 
 import java.util.*;
+
 import net.sf.robocode.battle.peer.*;
 
 /**

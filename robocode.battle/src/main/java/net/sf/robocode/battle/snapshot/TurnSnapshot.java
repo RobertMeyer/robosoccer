@@ -15,8 +15,8 @@ package net.sf.robocode.battle.snapshot;
 
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.ItemDrop;
 import net.sf.robocode.battle.CustomObject;
+import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.EffectArea;

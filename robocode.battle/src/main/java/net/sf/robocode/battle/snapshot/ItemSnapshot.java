@@ -2,7 +2,7 @@ package net.sf.robocode.battle.snapshot;
 
 import robocode.control.snapshot.IDebugProperty;
 import robocode.control.snapshot.IItemSnapshot;
-import net.sf.robocode.battle.ItemDrop;
+import net.sf.robocode.battle.item.ItemDrop;
 
 public class ItemSnapshot implements IItemSnapshot {
 	

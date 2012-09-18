@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.HealthPack;
-import net.sf.robocode.battle.ItemDrop;
+import net.sf.robocode.battle.item.HealthPack;
+import net.sf.robocode.battle.item.ItemDrop;
 
 public class ItemMode extends ClassicMode {
 	

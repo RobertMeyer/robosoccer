@@ -1,4 +1,5 @@
-package net.sf.robocode.battle;
+package net.sf.robocode.battle.item;
+
 
 /**
  * A speed item. Extends item drop

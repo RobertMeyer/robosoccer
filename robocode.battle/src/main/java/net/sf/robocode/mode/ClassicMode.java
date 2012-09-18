@@ -7,7 +7,6 @@ import java.util.Hashtable;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.CustomObject;
-import net.sf.robocode.battle.ItemDrop;
 import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -15,6 +14,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
+import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
