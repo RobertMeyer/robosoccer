@@ -411,4 +411,16 @@ public class ClassicMode implements IMode {
         Collections.shuffle(shuffledList, RandomFactory.getRandom());
         return shuffledList;
     }
+
+	@Override
+	public void setItems() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void scorePoints() {
+		// TODO Auto-generated method stub
+		
+	}
 }
