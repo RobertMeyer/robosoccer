@@ -99,6 +99,9 @@ import static java.lang.Math.round;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -193,7 +196,7 @@ public final class Battle extends BaseBattle {
         
         computeInitialPositions(battleProperties.getInitialPositions());
         
-        battlePeers = new BattlePeers(battlingRobotsList, hostManager, this, rm);
+        battlePeers = new BattlePeers(battlingRobotsList, hostManager, this, repositoryManager);
 		bp = battleProperties;
     }
 
