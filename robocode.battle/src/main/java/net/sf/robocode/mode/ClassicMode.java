@@ -82,16 +82,47 @@ public class ClassicMode implements IMode {
 		// TODO Auto-generated method stub	
 	}
 
+	/**
+	 * Override me if you wish to use the CustomObjectAPI.
+	 * 
+	 * This function will get called once a frame, you can perform
+	 * functions like moving the image around the battle, changing
+	 * scale, changing alpha level, so on.
+	 * 
+	 * Loop over the given ArrayList of objects and perform logic
+	 * on them. To find an object your after look at getName() function.
+	 * 
+	 * @param customObject - an ArrayList of all customObjects
+	 */
 	public void updateCustomObjects(List<CustomObject> customObject) {
 		
 	}
 	
+	/**
+	 * Override me if you wish to use the CustomObjectAPI.
+	 * 
+	 * This function should create new CustomObjects which should
+	 * be stored in a ArrayList<CustomObject> and returned.
+	 * 
+	 * The returned list will represent all the custom objects in
+	 * the scene to be rendered.
+	 * 
+	 * example:- 
+	 * 		// Create ArrayList
+	 * 		List<CustomObject> objs = new ArrayList<CustomObject>(); 
+	 * 		// Create a new object at (100,100) which will render a flag
+	 *		CustomObject obj = new CustomObject("flag", 
+	 *		"/net/sf/robocode/ui/images/flag.png", 100, 100);
+	 *		// Set Alpha blending to fade 50%
+	 *		obj.setAlpha(0.5f);
+	 *		// Add object to ArrayList
+	 *		objs.add(obj);
+	 *		return objs;
+	 * 
+	 * @return a ArrayList<CustomObjects> which are added to the scene.
+	 */
 	public List<CustomObject> createCustomObjects() {
 		return null;
-	}
-	
-	public String removeCustomObject(String name) {
-		return name;
 	}
 	
 	@Override

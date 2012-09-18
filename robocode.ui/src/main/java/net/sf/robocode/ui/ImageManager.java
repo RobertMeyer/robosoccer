@@ -22,7 +22,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import robocode.CustomEvent;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.gfx.ImageUtil;
 import net.sf.robocode.ui.gfx.RenderImage;
@@ -150,13 +149,22 @@ public class ImageManager implements IImageManager {
         return image;
     }
     
+    /**
+     * This method loads in a image from a given file path. 
+     * 
+     * @param String name - Key name for hashmap.
+     * @param String filename - path to file.
+     */
     @SuppressWarnings("unused")
 	public RenderImage addCustomImage(String name, String filename) {
+    	// Check if already cached
     	if (customImageCache.containsKey(name)) {
     		getCustomImage(name);
     	}
+    	// Load image into memory
     	RenderImage img = new RenderImage(getImage(filename));
     	
+    	// Check to see valid image
     	if(img != null) {
     		customImageCache.put(name, img);
     		return img;
@@ -165,6 +173,11 @@ public class ImageManager implements IImageManager {
     	return null;
     }
     
+    /**
+     * Returns a custom image from cache.
+     * 
+     * @param String name - Name of key to return.
+     */
     public RenderImage getCustomImage(String name) {
     	if (customImageCache.containsKey(name)) {
     		return customImageCache.get(name);

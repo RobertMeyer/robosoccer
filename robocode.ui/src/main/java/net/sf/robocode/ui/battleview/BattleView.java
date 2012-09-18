@@ -98,6 +98,7 @@ public class BattleView extends Canvas {
     private IGraphicsProxy[] robotGraphics;
     private IBattleManager battleManager;
 
+    // Hold current custom images to be rendered.
     private HashMap<String, RenderImage> customImage;
     
     public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
@@ -436,32 +437,44 @@ public class BattleView extends Canvas {
         int battleFieldHeight = battleField.getHeight();
     }
     
-    /* Draws all active images in the scene.
+    /**
+     * Draws all active images in the scene.
      *  
      * @param Grahpics2D g - rendering context used to
      * render goodies to the screen
      */
     private void drawImages(Graphics2D g, ITurnSnapshot snapShot) {
+    	// Loop through each CustomObjectSnapshot and render to screen
     	for (ICustomObjectSnapshot snap : snapShot.getCustomObjects()) {
+    		// Load image from cache
     		RenderImage image = customImage.get(snap.getName());
+    		// Check if image exists in Cache
     		if (image == null) {
+    			// Load image into cache
     			image = addImage(snap.getName(), snap.getFilename());
     		}
+    		// Setup matrix transform of image
 			AffineTransform at = snap.getAffineTransform();
 			image.setTransform(at);
     		
+			// Keep old alpha level state
     		Composite oldState = g.getComposite();
-    		AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, snap.getAlpha());
+    		// Setup new alpha level state
+    		AlphaComposite alphaComposite = AlphaComposite.
+    				getInstance(AlphaComposite.SRC_OVER, snap.getAlpha());
     		g.setComposite(alphaComposite);
     		
+    		// Render to screen
     		if (!snap.getHide())
     			image.paint(g);	
     		
+    		// Restore old alpha state
     		g.setComposite(oldState);
     	}
     }
 
-    /* Loads image in from given filename, puts RenderImage in
+    /**
+     * Loads image in from given filename, puts RenderImage in
      * Hashmap<String, RenderImage>. Once added it will get rendered
      * each frame update.
      * 
