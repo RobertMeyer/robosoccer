@@ -1,6 +1,7 @@
 package net.sf.robocode.mode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Hashtable;
 
@@ -330,14 +331,30 @@ public class ClassicMode implements IMode {
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
 	 * Useful for making some robots invisible to radar.
 	 */
-	public void updateRobotScans(List<RobotPeer> robotPeers) {
+	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-        for (RobotPeer robotPeer : robotPeers) {
-            robotPeer.performScan(robotPeers);
+        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
+            robotPeer.performScan(getRobotsAtRandom(robots));
         }
 	}
 	
 	public boolean shouldRicochet() {
 		return false;
 	}
+
+	 /**
+     * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
+     * so that a robot placed before another robot in the list will not gain any benefit when the game
+     * checks if a robot has won, is dead, etc.
+     * This method was introduced as two equal robots like sample.RamFire got different scores even
+     * though the code was exactly the same.
+     *
+     * @return a list of robot peers.
+     */
+    protected List<RobotPeer> getRobotsAtRandom(List<RobotPeer> robots) {
+        List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(robots);
+
+        Collections.shuffle(shuffledList, RandomFactory.getRandom());
+        return shuffledList;
+    }
 }
