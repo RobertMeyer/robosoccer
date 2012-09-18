@@ -21,7 +21,8 @@ public class ItemController {
      * Constructor
      */
     public ItemController() {
-        printf("Item Controller initialising");
+		// Print disabled due to failing tests
+    	//printf("Item Controller initialising");
     }
 
     /**

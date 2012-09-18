@@ -156,11 +156,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * Perform scan dictates the scanning behaviour of robots. One parameter
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
 	 * Useful for making some robots invisible to radar.
+	 * In this mode it makes the ball the only element visible to radar.
 	 */
 	@Override
-	public void updateRobotScans(List<RobotPeer> robotPeers) {
+	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-        for (RobotPeer robotPeer : robotPeers) {
+		
+        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
         	if (robotPeer.isBall()) {
         		double x = robotPeer.getX();
         		double y = robotPeer.getY();

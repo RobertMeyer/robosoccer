@@ -12,6 +12,7 @@ public class HealthPack extends ItemDrop {
     public HealthPack(boolean isDestroyable, int lifespan, int health, boolean isEquippable) {
         super(isDestroyable, lifespan, health, isEquippable, null);
         System.out.println("Health Pack");
+        this.name = "Health Pack";
     }
 
     public void doItemEffect(RobotPeer robot) {
