@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
-import net.sf.robocode.battle.*;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
