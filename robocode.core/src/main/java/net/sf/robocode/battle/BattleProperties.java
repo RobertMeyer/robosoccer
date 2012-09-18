@@ -254,7 +254,17 @@ public class BattleProperties implements Serializable {
 	}
 
 	public void setInitialPositions(String initialPositions) {
+		if(initialPositions!=null)
+		{
 		this.initialPositions = initialPositions; 
+
+		}
+	}
+	
+	public void setInitialPositionToNull()
+	{
+		this.initialPositions=null;
+
 	}
 	
 	/**
@@ -317,7 +327,7 @@ public class BattleProperties implements Serializable {
 		hideEnemyNames = Boolean.parseBoolean(props.getProperty(BATTLE_HIDE_ENEMY_NAMES, "false"));
 		numRounds = Integer.parseInt(props.getProperty(BATTLE_NUMROUNDS, "10"));
 		selectedRobots = props.getProperty(BATTLE_SELECTEDROBOTS, "");
-		initialPositions = props.getProperty(BATTLE_INITIAL_POSITIONS, "");
+		initialPositions = props.getProperty(BATTLE_INITIAL_POSITIONS,"" );
 	}
 
 }

@@ -1,10 +1,12 @@
 package net.sf.robocode.mode;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.CustomObject;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -101,7 +103,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 			IRepositoryManager repositoryManager) {
 		Hashtable<String, Integer> duplicates = new Hashtable<String, Integer>();
 		int teamSize = battle.getRobotsCount() / 2;
-		
 		// Counts the number of duplicates for each robot being used.
 		for(int i = 0; i < battle.getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
@@ -113,6 +114,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 				duplicates.put(name, 1);
 			}
 		}
+		
+		battle.createCustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
 		
 		// Create teams 1 and 2.
 		TeamPeer team1 = new TeamPeer("Team 1", null, 0);
@@ -143,7 +146,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 		BallPeer ball = new BallPeer(battle, hostManager, ballSpec, 0, ballTeam, robots.size());
 		this.ball = new ArrayList<RobotPeer>();
 		this.ball.add(ball);
-		System.out.println(ball.getName());
 
 		ballTeam.add(ball);
 		contestants.add(ballTeam);
@@ -154,11 +156,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * Perform scan dictates the scanning behaviour of robots. One parameter
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
 	 * Useful for making some robots invisible to radar.
+	 * In this mode it makes the ball the only element visible to radar.
 	 */
 	@Override
-	public void updateRobotScans(List<RobotPeer> robotPeers) {
+	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-        for (RobotPeer robotPeer : robotPeers) {
+		
+        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
         	if (robotPeer.isBall()) {
         		double x = robotPeer.getX();
         		double y = robotPeer.getY();
@@ -177,6 +181,23 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public boolean isRoundOver(int endTimer, int time) {
 		return roundOver;
 	}
+	
+	/*@Override
+	public List<CustomObject> createCustomObjects() {
+		List<CustomObject> objs = new ArrayList<CustomObject>(); 
+		CustomObject obj = new CustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 100, 100);
+		objs.add(obj);
+		return objs;
+	}
+	
+	@Override
+	public void updateCustomObjects(List<CustomObject> objects) {
+		for (CustomObject obj: objects) {
+			AffineTransform at = obj.getTranslate();
+			//obj.setTranslate(at.getTranslateX() + 1, at.getTranslateY());
+		}
+		
+	}*/
 	
 	@Override
 	public void setGuiOptions() {

@@ -3,6 +3,7 @@ package net.sf.robocode.mode;
 import java.util.Hashtable;
 import java.util.List;
 import javax.swing.JPanel;
+
 import robocode.BattleRules;
 
 /**
@@ -47,24 +48,22 @@ public interface IMode {
 	public Hashtable<String, Object> getRulesPanelValues();
 	
 	/**
-	 * Returns a list of String of the item to 
-	 * spawn in the beginning of the round
-	 * @return list of items
+	 * Returns true if robots are to respawn instantly on death
+	 * @return boolean representing respawns on or off
 	 */
-	public List<String> getItems();
+	public boolean respawnsOn();
 	
 	/**
-	 * Create a list of Strings representing the items to
-	 * spawn in the beginning of the round
+	 * Returns the turn number each round will end on.  Automatically enabled
+	 * when respawns are.  Default set to 9000 turns (5 mins at 30 TPS)
+	 * Note: You do not have to implement this if respawns are on unless
+	 * you want to change the turn limit.
+	 * @return the turn number that each round will end on if respawns are
+	 * enabled
 	 */
-	public void setItems();
-	
-	/**
-	 * Increments the score specific to the different modes
-	 */
-	public void scorePoints();
+	public int turnLimit();
 
- 	/* Add's mode specific robots to the list of selected robots.
+ 	/** Add's mode specific robots to the list of selected robots.
 	 * 
 	 * @param current list of selected robots in the form: 
 	 * "robots.myRobot*,robots.yourRobot*"...

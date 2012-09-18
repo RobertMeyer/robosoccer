@@ -1,21 +1,25 @@
 package net.sf.robocode.mode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Hashtable;
+
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.CustomObject;
+import net.sf.robocode.battle.ItemDrop;
+import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
-import net.sf.robocode.battle.*;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
-import robocode.BattleRules;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 
@@ -68,22 +72,87 @@ public class ClassicMode implements IMode {
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns a list of ItemDrop's to 
+	 * spawn in the beginning of the round
+	 * @return List of items
 	 */
-	public List<String> getItems() {
-		return new ArrayList<String>();
+	public List<? extends ItemDrop> getItems() {
+		return new ArrayList<ItemDrop>();
 	}
 	
-	@Override
-	public void setItems() {
+	/**
+	 * Create a list of ItemDrop's to
+	 * spawn in the beginning of the round
+	 * @param battle The Battle to add the items to
+	 */
+	public void setItems(Battle battle) {
 		/* No items needed for Classic Mode */
 	}
 
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub	
+	/**
+	 * Increments the score for the mode per turn
+	 */
+	public void scoreTurnPoints() {
+		/* ClassicMode does not need a score method, optional for overriding */
 	}
 
+	/**
+	 * Override me if you wish to use the CustomObjectAPI.
+	 * 
+	 * This function will get called once a frame, you can perform
+	 * functions like moving the image around the battle, changing
+	 * scale, changing alpha level, so on.
+	 * 
+	 * Loop over the given ArrayList of objects and perform logic
+	 * on them. To find an object your after look at getName() function.
+	 * 
+	 * @param customObject - an ArrayList of all customObjects
+	 */
+	public void updateCustomObjects(List<CustomObject> customObject) {
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean respawnsOn() {
+		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int turnLimit() {
+		return 5*30*60; // 9000 turns is the default
+	}
+	
+	/**
+	 * Override me if you wish to use the CustomObjectAPI.
+	 * 
+	 * This function should create new CustomObjects which should
+	 * be stored in a ArrayList<CustomObject> and returned.
+	 * 
+	 * The returned list will represent all the custom objects in
+	 * the scene to be rendered.
+	 * 
+	 * example:- 
+	 * 		// Create ArrayList
+	 * 		List<CustomObject> objs = new ArrayList<CustomObject>(); 
+	 * 		// Create a new object at (100,100) which will render a flag
+	 *		CustomObject obj = new CustomObject("flag", 
+	 *		"/net/sf/robocode/ui/images/flag.png", 100, 100);
+	 *		// Set Alpha blending to fade 50%
+	 *		obj.setAlpha(0.5f);
+	 *		// Add object to ArrayList
+	 *		objs.add(obj);
+	 *		return objs;
+	 * 
+	 * @return a ArrayList<CustomObjects> which are added to the scene.
+	 */
+	public List<CustomObject> createCustomObjects() {
+		return null;
+	}
+	
 	@Override
 	public String addModeRobots(String selectedRobots) {
 		// Don't need to add any extra robots for classic mode
@@ -313,16 +382,37 @@ public class ClassicMode implements IMode {
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
 	 * Useful for making some robots invisible to radar.
 	 */
-	public void updateRobotScans(List<RobotPeer> robotPeers) {
+	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-        for (RobotPeer robotPeer : robotPeers) {
-            robotPeer.performScan(robotPeers);
+        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
+            robotPeer.performScan(getRobotsAtRandom(robots));
         }
+	}
+
+
+	public boolean shouldRicochet() {
+		return false;
 	}
 
 	public boolean isRoundOver(int endTimer, int time) {
 		return (endTimer > 5 * time);
 	}
+
+	 /**
+     * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
+     * so that a robot placed before another robot in the list will not gain any benefit when the game
+     * checks if a robot has won, is dead, etc.
+     * This method was introduced as two equal robots like sample.RamFire got different scores even
+     * though the code was exactly the same.
+     *
+     * @return a list of robot peers.
+     */
+    protected List<RobotPeer> getRobotsAtRandom(List<RobotPeer> robots) {
+        List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(robots);
+
+        Collections.shuffle(shuffledList, RandomFactory.getRandom());
+        return shuffledList;
+    }
 	
 	/**
 	 * Initialises the GuiOptions object with the visibility options
