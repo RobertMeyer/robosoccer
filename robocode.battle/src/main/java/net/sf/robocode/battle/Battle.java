@@ -190,6 +190,7 @@ public final class Battle extends BaseBattle {
 
         battleMode = (ClassicMode) battleProperties.getBattleMode();
         
+        this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, 
         		robotsCount);

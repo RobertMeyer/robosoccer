@@ -178,4 +178,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 		return roundOver;
 	}
 	
+	@Override
+	public void setGuiOptions() {
+		super.uiOptions = new GuiOptions(false, false);
+	}
 }

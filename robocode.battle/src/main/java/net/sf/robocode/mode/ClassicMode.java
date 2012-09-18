@@ -27,6 +27,8 @@ import robocode.control.RobotSpecification;
  */
 public class ClassicMode implements IMode {
 	
+	public GuiOptions uiOptions;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -320,5 +322,22 @@ public class ClassicMode implements IMode {
 
 	public boolean isRoundOver(int endTimer, int time) {
 		return (endTimer > 5 * time);
+	}
+	
+	/**
+	 * Initialises the GuiOptions object with the visibility options
+	 * applicable to this mode.
+	 */
+	public void setGuiOptions() {
+		uiOptions = new GuiOptions(true, true);
+	}
+	
+	/**
+	 * Getter method for the GuiOptions object associated with this
+	 * mode.
+	 * @return GuiOptions object associated with this mode.
+	 */
+	public GuiOptions getGuiOptions() {
+		return uiOptions;
 	}
 }

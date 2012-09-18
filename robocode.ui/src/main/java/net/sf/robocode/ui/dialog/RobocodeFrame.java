@@ -890,8 +890,14 @@ public class RobocodeFrame extends JFrame {
         }
 
         @Override
-        public void onRoundStarted(final RoundStartedEvent event) {	
-            if (event.getRound() == 0) {
+        public void onRoundStarted(final RoundStartedEvent event) {
+        	// Clear previous buttons from robotButtonsPanel
+        	robotButtonsPanel.removeAll();
+        	robotButtons.clear();
+        	robotButtonsPanel.repaint();
+        	
+            if (event.getRound() == 0 &&
+            		battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
                 getRobotButtonsPanel().removeAll();
 
                 final List<IRobotSnapshot> robots = Arrays.asList(event
