@@ -99,8 +99,6 @@ import static java.lang.Math.round;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -142,6 +140,7 @@ public final class Battle extends BaseBattle {
 
     private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
     private final IHostManager hostManager;
+    private IRepositoryManager repositoryManager;
     private final long cpuConstant;
     // Inactivity related items
     private int inactiveTurnCount;
@@ -173,16 +172,18 @@ public final class Battle extends BaseBattle {
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
 
-    public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
+    public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
         super(properties, battleManager, eventDispatcher);
         isDebugging = System.getProperty("debug", "false").equals("true");
         this.hostManager = hostManager;
         this.cpuConstant = cpuManager.getCpuConstant();
+        this.repositoryManager = repositoryManager;
         this.killstreakTracker = new KillstreakTracker(this);
     }
 
-    public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager rm) {
+    public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
         isPaused = paused;
+        this.repositoryManager = repositoryManager;
         battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
                                                battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
                                                battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
@@ -473,7 +474,6 @@ public final class Battle extends BaseBattle {
 
                 final robocode.RoundEndedEvent roundEndedEvent = new robocode.RoundEndedEvent(getRoundNum(), currentTime,
                                                                                               totalTurns);
-
                 for (RobotPeer robotPeer : getRobotsAtRandom()) {
                     robotPeer.addEvent(roundEndedEvent);
                     if (robotPeer.isAlive()) {
@@ -630,11 +630,9 @@ public final class Battle extends BaseBattle {
 
         // Increment mode specific points - TODO -team-Telos
         scoreModePoints();
-
-        // Scan after moved all
-        for (RobotPeer robotPeer : getRobotsAtRandom()) {
-            robotPeer.performScan(getRobotsAtRandom());
-        }
+        
+        getBattleMode().updateRobotScans(getRobotsAtRandom());
+       
     }
 
     private void scoreModePoints() {

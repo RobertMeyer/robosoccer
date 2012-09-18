@@ -21,6 +21,8 @@ package net.sf.robocode.ui;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+
+import robocode.CustomEvent;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.gfx.ImageUtil;
 import net.sf.robocode.ui.gfx.RenderImage;
@@ -44,6 +46,8 @@ public class ImageManager implements IImageManager {
     private HashMap<Integer, RenderImage> robotBodyImageCache;
     private HashMap<Integer, RenderImage> robotGunImageCache;
     private HashMap<Integer, RenderImage> robotRadarImageCache;
+    private HashMap<String, RenderImage> customImageCache;
+	private Image[] soccerField;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -55,26 +59,34 @@ public class ImageManager implements IImageManager {
 
         // Reset image cache
         groundImages = new Image[9];
+		soccerField = new Image[130];
         explosionRenderImages = null;
         debriseRenderImage = null;
         bodyImage = null;
         gunImage = null;
         radarImage = null;
         healthImage = null;
+        customImageCache = new RenderCache<String, RenderImage>();
         robotBodyImageCache = new RenderCache<Integer, RenderImage>();
         robotGunImageCache = new RenderCache<Integer, RenderImage>();
         robotRadarImageCache = new RenderCache<Integer, RenderImage>();
 
 
         // Read images into the cache
-        getBodyImage();
-        getGunImage();
-        getRadarImage();
-        getExplosionRenderImage(0, 0);
-        getHealthImage();
-    }
+		getBodyImage();
+		getGunImage();
+		getRadarImage();
+		getExplosionRenderImage(0, 0);
+	}
+	
+	public Image getFieldTileImage(int index) {
+		if (soccerField[index] == null) {
+			soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/field_tile-" + index + ".png");
+		}
+		return soccerField[index];
+	}
 
-    @Override
+	@Override
     public Image getGroundTileImage(int index) {
         if (groundImages[index] == null) {
             groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
@@ -137,7 +149,29 @@ public class ImageManager implements IImageManager {
         }
         return image;
     }
-
+    
+    @SuppressWarnings("unused")
+	public RenderImage addCustomImage(String name, String filename) {
+    	if (customImageCache.containsKey(name)) {
+    		getCustomImage(name);
+    	}
+    	RenderImage img = new RenderImage(getImage(filename));
+    	
+    	if(img != null) {
+    		customImageCache.put(name, img);
+    		return img;
+    	}
+    	
+    	return null;
+    }
+    
+    public RenderImage getCustomImage(String name) {
+    	if (customImageCache.containsKey(name)) {
+    		return customImageCache.get(name);
+    	}
+    	return null;
+    }	
+    
     /**
      * Gets the body image
      * Loads from disk if necessary.
@@ -183,7 +217,7 @@ public class ImageManager implements IImageManager {
         }
         return healthImage;
     }
-
+    
     @Override
     public RenderImage getColoredBodyRenderImage(Integer color) {
         RenderImage img = robotBodyImageCache.get(color);
