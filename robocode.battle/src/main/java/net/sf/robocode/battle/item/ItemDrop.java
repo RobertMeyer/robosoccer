@@ -184,7 +184,7 @@ public abstract	class ItemDrop {
 		
 	}
 	
-	public void initialiseRoundItems(List<RobotPeer> robots, List<ItemDrop> items){
+	public void addRandomItem(List<RobotPeer> robots, List<ItemDrop> items){
 		boolean valid = false;
 		
 		if (!valid) {
@@ -204,7 +204,7 @@ public abstract	class ItemDrop {
 		//System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
-	public boolean initialiseNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){
+	public boolean addNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){
 		this.xLocation = x;
 		this.yLocation = y;
 		if (validSpotRobot(robots)) {

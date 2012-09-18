@@ -40,7 +40,7 @@ public class ItemController {
 	 * @return boolean if spawn was successful
 	 */
 	public boolean spawnItem(ItemDrop item, double x, double y) {
-		if(item.initialiseNewItem(currentRobots,battleItems,x,y)){
+		if(item.addNewItem(currentRobots,battleItems,x,y)){
 			battleItems.add(item);
 			return true;
 		}
@@ -53,7 +53,7 @@ public class ItemController {
 	 */
 	
 	public void spawnRandomItem(ItemDrop item){
-		item.initialiseRoundItems(currentRobots, battleItems);
+		item.addRandomItem(currentRobots, battleItems);
 		battleItems.add(item);
 	}
 	

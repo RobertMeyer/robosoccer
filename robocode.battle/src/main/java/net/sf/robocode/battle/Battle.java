@@ -373,11 +373,6 @@ public final class Battle extends BaseBattle {
     	/* (team-Telos) Create the items */
     	this.getBattleMode().setItems(this);
     	items = (List<ItemDrop>) this.getBattleMode().getItems();
-    	
-    	/* Now initialise */
-        for (ItemDrop itemDrop : items) {
-            itemDrop.initialiseRoundItems(robots, items);
-        }
     }
     
 
@@ -423,40 +418,40 @@ public final class Battle extends BaseBattle {
 		hostManager.resetThreadManager();
 	}
 
-	  @Override
-	    protected void initializeRound() {
-	        super.initializeRound();
+	@Override
+    protected void initializeRound() {
+        super.initializeRound();
 
-	        inactiveTurnCount = 0;
+        inactiveTurnCount = 0;
 
-	        /*--ItemController--*/
-	        itemControl.updateRobots(robots);
+        /*--ItemController--*/
+        itemControl.updateRobots(robots);
 
-	        // Start robots
+        // Start robots
 
-	        long waitMillis;
-	        int waitNanos;
+        long waitMillis;
+        int waitNanos;
 
-	        if (isDebugging) {
-	            waitMillis = DEBUG_TURN_WAIT_MILLIS;
-	            waitNanos = 0;
-	        } else {
-	            long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+        if (isDebugging) {
+            waitMillis = DEBUG_TURN_WAIT_MILLIS;
+            waitNanos = 0;
+        } else {
+            long waitTime = Math.min(300 * cpuConstant, 10000000000L);
 
-	            waitMillis = waitTime / 1000000;
-	            waitNanos = (int) (waitTime % 1000000);
-	        }
+            waitMillis = waitTime / 1000000;
+            waitNanos = (int) (waitTime % 1000000);
+        }
 
-	        for (RobotPeer robotPeer : getRobotsAtRandom()) {
-	            robotPeer.startRound(waitMillis, waitNanos);
-	        }
+        for (RobotPeer robotPeer : getRobotsAtRandom()) {
+            robotPeer.startRound(waitMillis, waitNanos);
+        }
 
-	        Logger.logMessage(""); // puts in a new-line in the log message
+        Logger.logMessage(""); // puts in a new-line in the log message
 
-	        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, customObject, itemControl.getItems(), false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, customObject, itemControl.getItems(), false);
 
-	        eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
-	    }
+        eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
+    }
 
 	@Override
 	protected void finalizeRound() {
@@ -512,6 +507,13 @@ public final class Battle extends BaseBattle {
         computeActiveRobots();
 
         publishStatuses();
+        
+		if (totalTurns % 100 == 0 || totalTurns == 1){
+			if (itemCursor < items.size()){
+				itemControl.spawnRandomItem(items.get(itemCursor));
+				itemCursor++;
+			}
+		}
 
         // Robot time!
         wakeupRobots();
