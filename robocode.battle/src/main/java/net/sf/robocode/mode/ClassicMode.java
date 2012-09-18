@@ -361,6 +361,10 @@ public class ClassicMode implements IMode {
         }
 	}
 
+
+	public boolean shouldRicochet() {
+		return false;
+	}
 	public boolean isRoundOver(int endTimer, int time) {
 		return (endTimer > 5 * time);
 	}

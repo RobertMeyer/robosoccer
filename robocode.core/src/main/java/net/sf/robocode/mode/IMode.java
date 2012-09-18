@@ -3,6 +3,7 @@ package net.sf.robocode.mode;
 import java.util.Hashtable;
 import java.util.List;
 import javax.swing.JPanel;
+
 import robocode.BattleRules;
 
 /**
@@ -63,8 +64,9 @@ public interface IMode {
 	 * Increments the score specific to the different modes
 	 */
 	public void scorePoints();
+	
 
- 	/* Add's mode specific robots to the list of selected robots.
+ 	/** Add's mode specific robots to the list of selected robots.
 	 * 
 	 * @param current list of selected robots in the form: 
 	 * "robots.myRobot*,robots.yourRobot*"...
