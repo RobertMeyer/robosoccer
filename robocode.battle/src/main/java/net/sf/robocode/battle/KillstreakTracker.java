@@ -32,8 +32,9 @@ public class KillstreakTracker {
 			killstreakRobots.put(victim, 0);
 		}
 
-		killer.println("Killstreak is now " + newKillstreak);
-		victim.println("Killstreak reset to 0");
+		// Print disabled due to failing tests
+		//killer.println("Killstreak is now " + newKillstreak);
+		//victim.println("Killstreak reset to 0");
 		callKillstreaks();
 	}
 

@@ -18,6 +18,7 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.SerializableOptions;
@@ -36,46 +37,48 @@ import java.util.*;
  * @author Pavel Savara (contributor)
  * @since 1.6.1
  */
+
 public final class TurnSnapshot implements java.io.Serializable, IXmlSerializable, ITurnSnapshot {
 
 	private static final long serialVersionUID = 1L;
 
-	/** List of snapshots for the robots participating in the battle */
-	private List<IRobotSnapshot> robots;
-
-	/** List of snapshots for the bullets that are currently on the battlefield */
-	private List<IBulletSnapshot> bullets;
-	
-	/** List of snapshots for the items that are currently on the battlefield */
-	//TODO expand this use
-	private List<IItemSnapshot> items;
-
-	/** Current TPS (turns per second) */
-	private int tps;
+    /** List of snapshots for the robots participating in the battle */
+    private List<IRobotSnapshot> robots;
+    /** List of snapshots for the bullets that are currently on the battlefield */
+    private List<IBulletSnapshot> bullets;
+    /** List of snapshots for the items that are currently on the battlefield */
+    //TODO expand this use
+    private List<IItemSnapshot> items;
+    /** List of snapshots of effect areas */
+	private List<IEffectAreaSnapshot> effArea;
+	        
 
 	/** Current round in the battle */
 	private int round;
 
 	/** Current turn in the battle round */
 	private int turn;
+	/** Current TPS (turns per second) */
+    private int tps;
 
 	/**
 	 * Creates a snapshot of a battle turn that must be filled out with data later.
 	 */
 	public TurnSnapshot() {}
 
-	/**
-	 * Creates a snapshot of a battle turn.
-	 *
-	 * @param battle the battle to make a snapshot of.
-	 * @param battleRobots the robots participating in the battle.
-	 * @param battleBullets the current bullet on the battlefield.
-	 * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
-	 *                    {@code false} otherwise.
-	 */
-	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<ItemDrop> battleItems, boolean readoutText) {
+	 /**
+     * Creates a snapshot of a battle turn.
+     *
+     * @param battle the battle to make a snapshot of.
+     * @param battleRobots the robots participating in the battle.
+     * @param battleBullets the current bullet on the battlefield.
+     * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
+     *                    {@code false} otherwise.
+     */
+    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<ItemDrop> battleItems, boolean readoutText) {
 		robots = new ArrayList<IRobotSnapshot>();
 		bullets = new ArrayList<IBulletSnapshot>();
+		effArea = new ArrayList<IEffectAreaSnapshot>();
 		items = new ArrayList<IItemSnapshot>();
 
 		for (RobotPeer robotPeer : battleRobots) {
@@ -91,6 +94,9 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 			items.add(new ItemSnapshot(item));
 		}
 
+		for (EffectArea effectArea : effectAreas) {
+			effArea.add(new EffectAreaSnapshot(effectArea));
+		}
 		tps = battle.getTPS();
 		turn = battle.getTime();
 		round = battle.getRoundNum();
@@ -100,13 +106,14 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	public String toString() {
 		return this.round + "/" + turn + " (" + this.robots.size() + ")";
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRobotSnapshot[] getRobots() {
 		return robots.toArray(new IRobotSnapshot[robots.size()]);
 	}
+ 
 
 	@Override
 	public IItemSnapshot[] getItems() {
@@ -142,12 +149,19 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		return round;
 	}
 
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public int getTurn() {
 		return turn;
 	}
+
+	public IEffectAreaSnapshot[] getEffectAreas() {
+		return effArea.toArray(new IEffectAreaSnapshot[effArea.size()]);
+	}
+	
+
 
 	/**
 	 * {@inheritDoc}

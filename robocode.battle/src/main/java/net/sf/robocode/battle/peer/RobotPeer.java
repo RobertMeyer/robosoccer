@@ -67,9 +67,25 @@ package net.sf.robocode.battle.peer;
 
 
 import static net.sf.robocode.io.Logger.logMessage;
+
+import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import static java.lang.Math.*;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.battle.ItemDrop;
+import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -1839,12 +1855,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 	
-	/**
-	 * @return a collection of all equipment parts equipped to the robot
-	 */
-	public Collection<EquipmentPart> getEquipment() {
-		return equipment.get().values();
-	}
+	 /**
+     * @return a collection of all equipment parts equipped to the robot
+     */
+    public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+        return equipment;
+    }
 	
 	/**
 	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
@@ -2070,27 +2086,54 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return Math.toRadians(getRadarTurnRate());
 	}
 
-	public int compareTo(ContestantPeer cp) {
-		double myScore = statistics.getTotalScore();
-		double hisScore = cp.getStatistics().getTotalScore();
+    /** 
+     * Effects
+     */
+    public void setEnergyEffect(double newEnergy, boolean resetInactiveTurnCount) {
+		if (resetInactiveTurnCount && (energy != newEnergy)) {
+			battle.resetInactiveTurnCount(energy - newEnergy);
+		}
+		energy = newEnergy;
+		if (energy < .01) {
+			energy = 0;
+			ExecCommands localCommands = commands.get();
 
-		if (statistics.isInRound()) {
-			myScore += statistics.getCurrentScore();
-			hisScore += cp.getStatistics().getCurrentScore();
+			localCommands.setDistanceRemaining(0);
+			localCommands.setBodyTurnRemaining(0);
 		}
-		if (myScore < hisScore) {
-			return -1;
-		}
-		if (myScore > hisScore) {
-			return 1;
-		}
-		return 0;
-	}
-
-	@Override
-	public String toString() {
-		return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
-				+ (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
 	}
 	
+	public void setVelocityEffect(double v)
+	{
+		velocity = v;
+	}
+	
+	public void setGunHeatEffect(double g)
+	{
+		gunHeat = g;
+	}
+	
+    @Override
+    public int compareTo(ContestantPeer cp) {
+        double myScore = statistics.getTotalScore();
+        double hisScore = cp.getStatistics().getTotalScore();
+
+        if (statistics.isInRound()) {
+            myScore += statistics.getCurrentScore();
+            hisScore += cp.getStatistics().getCurrentScore();
+        }
+        if (myScore < hisScore) {
+            return -1;
+        }
+        if (myScore > hisScore) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
+                + (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
+    }
 }

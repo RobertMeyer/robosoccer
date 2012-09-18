@@ -18,15 +18,6 @@ public class ItemController {
 	
 	//Boolean to display console output
 	private boolean debugMessage = true;
-
-	
-	/**
-	 * Constructor
-	 */
-	public ItemController() {
-		printf("Item Controller initialising");
-	}
-	
 	/**
 	 * Updates robot list used for collision detection
 	 * @param robots - List of robots on battlefield
@@ -34,6 +25,11 @@ public class ItemController {
 	public void updateRobots(List<RobotPeer> robots){
 		currentRobots = robots;
 	}
+    /**
+     * Constructor
+     */
+    public ItemController() {
+    }
 
 	/**
 	 * Calls item initialiser to attempt spawn of item

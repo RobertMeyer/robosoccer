@@ -49,10 +49,12 @@ public final class BallPeer extends RobotPeer {
         }
 
 		if (velocity >= 0) {
-			return Math.max(velocity - Rules.DECELERATION, Math.min(goalVel, velocity + Rules.ACCELERATION));
+			return Math.max(velocity - getRobotDeceleration(), Math.min(
+					goalVel, velocity + getRobotAcceleration()));
 		}
 		// else
-		return Math.max(velocity - Rules.ACCELERATION, Math.min(goalVel, velocity + maxDecel(-velocity)));
+		return Math.max(velocity - getRobotAcceleration(), 
+				Math.min(goalVel, velocity + maxDecel(-velocity)));
 	}
 	
 	protected void updateHeading() {

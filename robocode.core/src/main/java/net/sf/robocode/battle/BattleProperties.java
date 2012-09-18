@@ -54,7 +54,7 @@ public class BattleProperties implements Serializable {
 	private String initialPositions;
 	private IMode battleMode;
 	private Hashtable<String, Object> modeRules;
-
+	private Boolean effectAreaOn = false;
 	private final Properties props = new Properties();
 
 	/**
@@ -255,6 +255,7 @@ public class BattleProperties implements Serializable {
 
 	public void setInitialPositions(String initialPositions) {
 		this.initialPositions = initialPositions; 
+		props.setProperty(BATTLE_INITIAL_POSITIONS, "" + initialPositions);
 	}
 	
 	/**
@@ -280,6 +281,22 @@ public class BattleProperties implements Serializable {
 		return modeRules;
 	}
 	
+	/** 
+	 * Get whether effect area is on
+	 * @return whether effect area is on
+	 */
+	public Boolean getEffectArea() {
+		return this.effectAreaOn;
+	}
+
+	 /**
+	  * Set effect area
+	  */
+	
+	public void setEffectArea(Boolean b) {
+		effectAreaOn = b;
+	}
+	
 	/**
 	 * Set the selected mode rules as a Hashtable
 	 * @param selectedModeRulesValues
@@ -301,7 +318,7 @@ public class BattleProperties implements Serializable {
 		hideEnemyNames = Boolean.parseBoolean(props.getProperty(BATTLE_HIDE_ENEMY_NAMES, "false"));
 		numRounds = Integer.parseInt(props.getProperty(BATTLE_NUMROUNDS, "10"));
 		selectedRobots = props.getProperty(BATTLE_SELECTEDROBOTS, "");
-		initialPositions = props.getProperty(BATTLE_INITIAL_POSITIONS, "");
+		initialPositions = props.getProperty(BATTLE_INITIAL_POSITIONS,"" );
 	}
 
 }

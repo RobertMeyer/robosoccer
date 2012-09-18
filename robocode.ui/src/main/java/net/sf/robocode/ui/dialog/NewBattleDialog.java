@@ -45,6 +45,7 @@ import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
 @SuppressWarnings("serial")
 public class NewBattleDialog extends JDialog implements WizardListener {
 
+
     private final static int MAX_ROBOTS = 256; // 64;
     private final static int MIN_ROBOTS = 1;
     private final EventHandler eventHandler = new EventHandler();
@@ -300,4 +301,5 @@ public class NewBattleDialog extends JDialog implements WizardListener {
             }
         }
     }
+
 }

@@ -105,6 +105,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private IScoreSnapshot robotScoreSnapshot;
     
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
+    
+    private double scanRadius;
 
     /**
      * Creates a snapshot of a robot that must be filled out with data later.
@@ -136,6 +138,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
         gunHeat = robot.getGunHeat();
 
         equipment = robot.getEquipment();
+        
+        scanRadius = robot.getRadarScanRadius();
         
         bodyHeading = robot.getBodyHeading();
         gunHeading = robot.getGunHeading();
@@ -200,6 +204,14 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
 		return equipment;
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getScanRadius(){
+    	return scanRadius;
+    }
     
     /**
      * {@inheritDoc}

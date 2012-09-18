@@ -96,6 +96,13 @@
 package net.sf.robocode.battle;
 
 
+
+import static java.lang.Math.round;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -107,6 +114,7 @@ import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.*;
+import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
@@ -141,14 +149,31 @@ import java.util.regex.Pattern;
  */
 public final class Battle extends BaseBattle {
 
-	private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
+    private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
+
+    // Inactivity related items
+    private int inactiveTurnCount;
+    private double inactivityEnergy;
+    // Objects in the battle
+	private BattleProperties bp;
+	//List of effect areas
+	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+   
+    // kill streak tracker
+    private KillstreakTracker killstreakTracker;
+
+	// Death events
+    private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
+
+	// Flag specifying if debugging is enabled thru the debug command line option
+	private final boolean isDebugging;
+
+	// Initial robot start positions (if any)
+	private double[][] initialRobotPositions;
 
 	private final IHostManager hostManager;
 	private final long cpuConstant;
 
-	// Inactivity related items
-	private int inactiveTurnCount;
-	private double inactivityEnergy;
 
 	// Turn skip related items
 	private boolean parallelOn;
@@ -166,35 +191,28 @@ public final class Battle extends BaseBattle {
 	private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private int activeRobots;
-	
-	
 
-	// Death events
-	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
 
-	// Flag specifying if debugging is enabled thru the debug command line option
-	private final boolean isDebugging;
-
-	// Initial robot start positions (if any)
-	private double[][] initialRobotPositions;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
 		super(properties, battleManager, eventDispatcher);
 		isDebugging = System.getProperty("debug", "false").equals("true");
 		this.hostManager = hostManager;
 		this.cpuConstant = cpuManager.getCpuConstant();
+		this.killstreakTracker = new KillstreakTracker(this);
 	}
 
-	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused) {
+	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
 		isPaused = paused;
 		battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
 				battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
-				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames());
+				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
 		robotsCount = battlingRobotsList.length;
 		
-		battleMode = battleProperties.getBattleMode();
+		battleMode = (ClassicMode) battleProperties.getBattleMode();
 		computeInitialPositions(battleProperties.getInitialPositions());
 		createPeers(battlingRobotsList);
+		bp = battleProperties;
 	}
 
 	private void createPeers(RobotSpecification[] battlingRobotsList) {
@@ -356,7 +374,17 @@ public final class Battle extends BaseBattle {
 	public int getActiveRobots() {
 		return activeRobots;
 	}
-
+	
+	/**
+     * Gets the killstreak Tracker
+     * @return Returns the KillstreakTracker for this battle
+     */
+    
+    public KillstreakTracker getKillstreakTracker() {
+    	return killstreakTracker;
+    }
+	
+	
 	@Override
 	public void cleanup() {
 
@@ -434,7 +462,6 @@ public final class Battle extends BaseBattle {
 				 * using this kind of Mode and this Battle
 				 */
 				String name = "net.sf.robocode.battle." + itemName;
-				System.out.println(name);
 				Class<ItemDrop> cl = (Class<ItemDrop>) Class.forName(name);
 				
 				Constructor<?>[] co = cl.getConstructors();
@@ -447,7 +474,6 @@ public final class Battle extends BaseBattle {
 				}
 				Object param[] = paramList.toArray();
 				ItemDrop item = (ItemDrop)co[0].newInstance(param);
-				System.out.println(item.getXLocation());
 				items.add(item);
 				
 			} catch (InvocationTargetException x) {
@@ -488,6 +514,12 @@ public final class Battle extends BaseBattle {
 		/* Start to initialise all the items */
 		this.initialiseItems();
 		itemCursor = 0;
+		effArea.clear();
+		//boolean switch to switch off effect areas
+		if (battleManager.getBattleProperties().getEffectArea()) {
+			//clear effect area and recreate every round
+			createEffectAreas();
+		}
 
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
@@ -530,8 +562,7 @@ public final class Battle extends BaseBattle {
 		}
 
 		Logger.logMessage(""); // puts in a new-line in the log message
-
-		final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, items, false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, itemControl.getItems(), false);
 
 		eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
 	}
@@ -571,7 +602,9 @@ public final class Battle extends BaseBattle {
 		updateRobots();
 
 		handleDeadRobots();
-
+        
+        updateEffectAreas();
+        
 		if (isAborted() || oneTeamRemaining()) {
 			shutdownTurn();
 		}
@@ -660,7 +693,7 @@ public final class Battle extends BaseBattle {
 	}
 	@Override
 	protected void finalizeTurn() {
-		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, items, true)));
+		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, itemControl.getItems(), true)));
 
 		super.finalizeTurn();
 	}
@@ -759,7 +792,7 @@ public final class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), itemControl.getItems(), zapEnergy);
 		}
 		
 		// Increment mode specific points - TODO -team-Telos
@@ -1054,19 +1087,72 @@ public final class Battle extends BaseBattle {
 	}
 
 
-	private class SendInteractiveEventCommand extends Command {
-		public final Event event;
+    private class SendInteractiveEventCommand extends Command {
 
-		SendInteractiveEventCommand(Event event) {
-			this.event = event;
-		}
+        public final Event event;
 
-		public void execute() {
-			for (RobotPeer robotPeer : robots) {
-				if (robotPeer.isInteractiveRobot()) {
-					robotPeer.addEvent(event);
+        SendInteractiveEventCommand(Event event) {
+            this.event = event;
+        }
+
+        @Override
+        public void execute() {
+            for (RobotPeer robotPeer : robots) {
+                if (robotPeer.isInteractiveRobot()) {
+                    robotPeer.addEvent(event);
+                }
+            }
+        }
+    }
+    
+
+	private void createEffectAreas(){
+		int tileWidth = 64;
+		int tileHeight = 64;
+		double xCoord, yCoord;
+		final int NUM_HORZ_TILES = bp.getBattlefieldWidth() / tileWidth + 1;
+		final int NUM_VERT_TILES = bp.getBattlefieldHeight() / tileHeight + 1;
+		int numEffectAreasModifier = 100000; // smaller the number -> more effect areas
+		int numEffectAreas = (int) round((bp.getBattlefieldWidth()*bp.getBattlefieldHeight()/numEffectAreasModifier));
+		Random effectAreaR = new Random();
+		int effectAreaRandom;
+		
+		while(numEffectAreas > 0){
+			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
+				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+					effectAreaRandom = effectAreaR.nextInt(51) + 1; //The 51 is the modifier for the odds of the tile appearing
+					if(effectAreaRandom == 10){
+						xCoord = x * tileWidth;
+						yCoord = bp.getBattlefieldHeight() - (y * tileHeight);
+						EffectArea effectArea = new EffectArea(xCoord, yCoord, tileWidth, tileHeight, 0);
+						effArea.add(effectArea);
+						numEffectAreas--;
+					}
 				}
 			}
 		}
 	}
+	
+	 private void updateEffectAreas() { 
+		    //update robots with effect areas
+		    for (EffectArea effAreas : effArea) {
+		        int collided = 0;
+		        for (RobotPeer r : robots) {
+		            //for all effect areas, check if all robots collide
+		            if (effAreas.collision(r)) {
+		                if (effAreas.getActiveEffect() == 0)
+		                {
+		                    //if collide, give a random effect
+		                    Random effR = new Random();
+		                    collided = effR.nextInt(3) + 1;
+		                    effAreas.setActiveEffect(collided);
+		                }
+		                //handle effect
+		                effAreas.handleEffect(r);
+		            }
+		        }
+		    }
+		}
+
+
 }

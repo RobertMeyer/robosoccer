@@ -29,13 +29,7 @@ public interface ITurnSnapshot {
 	 * @return a list of snapshots for the robots participating in the battle. 
 	 */
 	IRobotSnapshot[] getRobots();
-	/**
-	 * Returns a list of snapshots for the robots participating in the battle. 
-	 *
-	 * @return a list of snapshots for the robots participating in the battle. 
-	 */
-	IRobotSnapshot[] getRobots();
-	
+
 	
 	IItemSnapshot[] getItems();
 
@@ -52,6 +46,8 @@ public interface ITurnSnapshot {
      * @return the current TPS (turns per second) rate.
      */
     int getTPS();
+
+	IEffectAreaSnapshot[] getEffectAreas();
 
     /**
      * Returns the current round of the battle.
@@ -77,24 +73,6 @@ public interface ITurnSnapshot {
      */
     IScoreSnapshot[] getSortedTeamScores();
 
-	/**
-	 * Returns an array of indexed scores grouped by teams that can be used to determine the score
-	 * for the individual team based on the team index.
-	 *
-	 * @return an array of indexed IScoreSnapshots, where each index matches an index of a specific team.
-	 * 
-	 * @see #getSortedTeamScores()
-	 */
-	IScoreSnapshot[] getIndexedTeamScores();
-    /**
-     * Returns an array of indexed scores grouped by teams that can be used to determine the score
-     * for the individual team based on the team index.
-     *
-     * @return an array of indexed IScoreSnapshots, where each index matches an index of a specific team.
-     *
-     * @see #getSortedTeamScores()
-     */
-    IScoreSnapshot[] getIndexedTeamScores();
 	/**
 	 * Returns an array of indexed scores grouped by teams that can be used to determine the score
 	 * for the individual team based on the team index.

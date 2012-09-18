@@ -199,7 +199,7 @@ public abstract	class ItemDrop {
 				}
 			}
 		}
-		System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
+		//System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	public boolean initialiseNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){
