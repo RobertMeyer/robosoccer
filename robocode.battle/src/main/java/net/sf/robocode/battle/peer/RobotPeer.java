@@ -1012,7 +1012,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         checkRobotCollision(robots);
 
         // Now check for item collision
-        checkItemCollision(items);
+        //TODO: checkItemCollision(items);
 
         // Scan false means robot did not call scan() manually.
         // But if we're moving, scan
@@ -1880,7 +1880,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     }
 
     /**
-     * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
+     * Returns the speed of a bullet given a specific bullet power measured in 
+     * pixels/turn.
      *
      * @param bulletPower the energy power of the bullet.
      * @return bullet speed in pixels/turn
@@ -1933,8 +1934,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
      */
     public double getGunTurnRate() {
         // Avoid multiplying doubles if it is not needed
-        if (attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001) {
-            return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
+        if (attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 
+        		< 0.00001) {
+            return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * 
+            		Rules.GUN_TURN_RATE;
         } else {
             return Rules.GUN_TURN_RATE;
         }
@@ -2032,7 +2035,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
      * @return the robots minimum bullet power associated with this peer.
      */
     public double getMinBulletPower() {
-        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * Rules.MIN_BULLET_POWER;
+        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * 
+        		Rules.MIN_BULLET_POWER;
     }
 
     /**
@@ -2045,7 +2049,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
      * @return the robots maximum bullet power associated with this peer.
      */
     public double getMaxBulletPower() {
-        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * Rules.MAX_BULLET_POWER;
+        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * 
+        		Rules.MAX_BULLET_POWER;
     }
 
     /**
@@ -2091,7 +2096,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
      * @return the radar turn rate of the robot in degrees
      */
     public double getRadarTurnRate() {
-        return attributes.get().get(RobotAttribute.RADAR_ANGLE) * Rules.RADAR_TURN_RATE;
+        return attributes.get().get(RobotAttribute.RADAR_ANGLE) * 
+        		Rules.RADAR_TURN_RATE;
     }
 
     /**
@@ -2107,7 +2113,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     /** 
      * Effects
      */
-    public void setEnergyEffect(double newEnergy, boolean resetInactiveTurnCount) {
+    public void setEnergyEffect(double newEnergy, boolean 
+    		resetInactiveTurnCount) {
 		if (resetInactiveTurnCount && (energy != newEnergy)) {
 			battle.resetInactiveTurnCount(energy - newEnergy);
 		}

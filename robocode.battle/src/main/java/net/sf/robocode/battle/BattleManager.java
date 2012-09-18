@@ -174,12 +174,13 @@ public class BattleManager implements IBattleManager {
 
         Battle realBattle = Container.createComponent(Battle.class);
 
-        realBattle.setup(battlingRobotsList, battleProperties, isPaused());
+        realBattle.setup(battlingRobotsList, battleProperties, isPaused(), repositoryManager);
 
         battle = realBattle;
 
         Thread battleThread = new Thread(Thread.currentThread().getThreadGroup(), realBattle);
 
+		
         battleThread.setPriority(Thread.NORM_PRIORITY);
         battleThread.setName("Battle Thread");
         realBattle.setBattleThread(battleThread);

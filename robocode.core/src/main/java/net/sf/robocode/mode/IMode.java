@@ -3,6 +3,7 @@ package net.sf.robocode.mode;
 import java.util.Hashtable;
 import java.util.List;
 import javax.swing.JPanel;
+
 import robocode.BattleRules;
 
 /**
@@ -30,6 +31,11 @@ public interface IMode {
 	public String getDescription();
 	
 	/**
+	 * Add's mode specific robots to the list of selected robots.
+	 * 
+	 * @param current list of selected robots in the form: 
+	 * "robots.myRobot*,robots.yourRobot*"...
+	 * @return list of selected robots plus any modeSpecific robots appended.
 	 * The rules panel to be displayed in the Battle dialog / Modes tab.
 	 * @return JPanel the panel for this mode's rules
 	 */

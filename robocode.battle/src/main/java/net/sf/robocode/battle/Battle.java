@@ -99,8 +99,6 @@ import static java.lang.Math.round;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -112,6 +110,7 @@ import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.*;
+import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
@@ -140,6 +139,7 @@ public final class Battle extends BaseBattle {
 
     private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
     private final IHostManager hostManager;
+    private IRepositoryManager repositoryManager;
     private final long cpuConstant;
     // Inactivity related items
     private int inactiveTurnCount;
@@ -166,21 +166,23 @@ public final class Battle extends BaseBattle {
     // Flag specifying if debugging is enabled thru the debug command line option
     private final boolean isDebugging;
     // Initial robot start positions (if any)
-    private double[][] initialRobotPositions;
+    protected double[][] initialRobotPositions;
    
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
 
-    public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
+    public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
         super(properties, battleManager, eventDispatcher);
         isDebugging = System.getProperty("debug", "false").equals("true");
         this.hostManager = hostManager;
         this.cpuConstant = cpuManager.getCpuConstant();
+        this.repositoryManager = repositoryManager;
         this.killstreakTracker = new KillstreakTracker(this);
     }
 
-    public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused) {
+    public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
         isPaused = paused;
+        this.repositoryManager = repositoryManager;
         battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
                                                battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
                                                battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
@@ -188,129 +190,11 @@ public final class Battle extends BaseBattle {
 
         battleMode = (ClassicMode) battleProperties.getBattleMode();
         
-        computeInitialPositions(battleProperties.getInitialPositions());
-        createPeers(battlingRobotsList);
+        initialRobotPositions = this.getBattleMode().computeInitialPositions(
+        		battleProperties.getInitialPositions(), battleRules, 
+        		robotsCount);
+        this.getBattleMode().createPeers(this, battlingRobotsList, hostManager, robots, contestants, this.repositoryManager);
 		bp = battleProperties;
-    }
-
-    private void createPeers(RobotSpecification[] battlingRobotsList) {
-        // create teams
-        Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
-        List<String> teams = new ArrayList<String>();
-        List<String> teamDuplicates = new ArrayList<String>();
-        List<Integer> robotDuplicates = new ArrayList<Integer>();
-
-        // count duplicate robots, enumerate teams, enumerate team members
-        for (RobotSpecification specification : battlingRobotsList) {
-            final String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
-
-            if (countedNames.containsKey(name)) {
-                int value = countedNames.get(name);
-
-                countedNames.put(name, value == 1 ? 3 : value + 1);
-            } else {
-                countedNames.put(name, 1);
-            }
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            if (teamFullName != null) {
-                if (!teams.contains(teamFullName)) {
-                    teams.add(teamFullName);
-                    String teamName = teamFullName.substring(0, teamFullName.length() - 6);
-
-                    if (countedNames.containsKey(teamName)) {
-                        int value = countedNames.get(teamName);
-
-                        countedNames.put(teamName, value == 1 ? 3 : value + 1);
-                    } else {
-                        countedNames.put(teamName, 1);
-                    }
-                }
-            }
-        }
-
-        Hashtable<String, List<String>> teamMembers = new Hashtable<String, List<String>>();
-
-        // name teams
-        for (int i = teams.size() - 1; i >= 0; i--) {
-            String teamFullName = teams.get(i);
-            String name = teamFullName.substring(0, teamFullName.length() - 6);
-            Integer order = countedNames.get(name);
-            String newTeamName = name;
-
-            if (order > 1) {
-                newTeamName = name + " (" + (order - 1) + ")";
-            }
-            teamDuplicates.add(0, newTeamName);
-            teamMembers.put(teamFullName, new ArrayList<String>());
-            countedNames.put(name, order - 1);
-        }
-
-        // name robots
-        for (int i = battlingRobotsList.length - 1; i >= 0; i--) {
-            RobotSpecification specification = battlingRobotsList[i];
-            String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
-            Integer order = countedNames.get(name);
-            int duplicate = -1;
-
-            String newName = name;
-
-            if (order > 1) {
-                duplicate = (order - 2);
-                newName = name + " (" + (order - 1) + ")";
-            }
-            countedNames.put(name, (order - 1));
-            robotDuplicates.add(0, duplicate);
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            if (teamFullName != null) {
-                List<String> members = teamMembers.get(teamFullName);
-
-                members.add(newName);
-            }
-        }
-
-        // create teams
-        Hashtable<String, TeamPeer> namedTeams = new Hashtable<String, TeamPeer>();
-
-        // create robots
-        for (int i = 0; i < battlingRobotsList.length; i++) {
-            RobotSpecification specification = battlingRobotsList[i];
-            TeamPeer team = null;
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            // The team index and robot index depends on current sizes of the contestant list and robot list
-            int teamIndex = contestants.size();
-            int robotIndex = robots.size();
-
-            if (teamFullName != null) {
-                if (!namedTeams.containsKey(teamFullName)) {
-                    String newTeamName = teamDuplicates.get(teams.indexOf(teamFullName));
-
-                    team = new TeamPeer(newTeamName, teamMembers.get(teamFullName), teamIndex);
-
-                    namedTeams.put(teamFullName, team);
-                    contestants.add(team);
-
-                } else {
-                    team = namedTeams.get(teamFullName);
-                    if (team != null) {
-                        teamIndex = team.getTeamIndex();
-                    }
-                }
-            }
-            Integer duplicate = robotDuplicates.get(i);
-            // TODO Follow back from here to RobotPeer etc, to
-            RobotPeer robotPeer = new RobotPeer(this, hostManager, specification, duplicate, team, robotIndex);
-            
-            robots.add(robotPeer);
-            if (team == null) {
-                contestants.add(robotPeer);
-            }
-        }
     }
 
     public void registerDeathRobot(RobotPeer r) {
@@ -609,7 +493,6 @@ public final class Battle extends BaseBattle {
 
                 final robocode.RoundEndedEvent roundEndedEvent = new robocode.RoundEndedEvent(getRoundNum(), currentTime,
                                                                                               totalTurns);
-
                 for (RobotPeer robotPeer : getRobotsAtRandom()) {
                     robotPeer.addEvent(roundEndedEvent);
                     if (robotPeer.isAlive()) {
@@ -763,14 +646,10 @@ public final class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
-
-        // (team-Telos) Increment mode specific points
-        this.getBattleMode().scoreTurnPoints();
-
-        // Scan after moved all
-        for (RobotPeer robotPeer : getRobotsAtRandom()) {
-            robotPeer.performScan(getRobotsAtRandom());
-        }
+        // Increment mode specific points - TODO -team-Telos
+		this.getBattleMode().scoreTurnPoints();
+        
+        getBattleMode().updateRobotScans(getRobotsAtRandom());
     }
 
     private void handleDeadRobots() {
@@ -899,76 +778,7 @@ public final class Battle extends BaseBattle {
         }
         return count;
     }
-
-    private void computeInitialPositions(String initialPositions) {
-        initialRobotPositions = null;
-
-        if (initialPositions == null || initialPositions.trim().length() == 0) {
-            return;
-        }
-
-        List<String> positions = new ArrayList<String>();
-
-        Pattern pattern = Pattern.compile("([^,(]*[(][^)]*[)])?[^,]*,?");
-        Matcher matcher = pattern.matcher(initialPositions);
-
-        while (matcher.find()) {
-            String pos = matcher.group();
-
-            if (pos.length() > 0) {
-                positions.add(pos);
-            }
-        }
-
-        if (positions.isEmpty()) {
-            return;
-        }
-
-        initialRobotPositions = new double[positions.size()][3];
-
-        String[] coords;
-        double x, y, heading;
-
-        for (int i = 0; i < positions.size(); i++) {
-            coords = positions.get(i).split(",");
-
-            final Random random = RandomFactory.getRandom();
-
-            x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-            y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
-            heading = 2 * Math.PI * random.nextDouble();
-
-            int len = coords.length;
-
-            if (len >= 1) {
-                // noinspection EmptyCatchBlock
-                try {
-                    x = Double.parseDouble(coords[0].replaceAll("[\\D]", ""));
-                } catch (NumberFormatException e) {
-                }
-
-                if (len >= 2) {
-                    // noinspection EmptyCatchBlock
-                    try {
-                        y = Double.parseDouble(coords[1].replaceAll("[\\D]", ""));
-                    } catch (NumberFormatException e) {
-                    }
-
-                    if (len >= 3) {
-                        // noinspection EmptyCatchBlock
-                        try {
-                            heading = Math.toRadians(Double.parseDouble(coords[2].replaceAll("[\\D]", "")));
-                        } catch (NumberFormatException e) {
-                        }
-                    }
-                }
-            }
-            initialRobotPositions[i][0] = x;
-            initialRobotPositions[i][1] = y;
-            initialRobotPositions[i][2] = heading;
-        }
-    }
-
+    
     private boolean oneTeamRemaining() {
         if (getActiveRobots() <= 1) {
             return true;
