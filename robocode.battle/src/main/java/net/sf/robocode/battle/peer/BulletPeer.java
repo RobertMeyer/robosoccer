@@ -251,7 +251,9 @@ public class BulletPeer {
 				|| (x + RADIUS >= battleRules.getBattlefieldWidth())
 				|| (y + RADIUS >= battleRules.getBattlefieldHeight())) {
 			// check if bullet should ricochet
-			if (owner.battle.getBattleMode().shouldRicochet()) {
+			if (owner.battle.getBattleMode().shouldRicochet(this.power,
+					Rules.MIN_BULLET_POWER)) {
+				this.power = this.power / 2; // reduce power for the ricochet
 				// the following checks which wall (top/bottom/side) the bullet
 				// is hitting and adjusts the heading accordingly
 				if (y - RADIUS <= 0

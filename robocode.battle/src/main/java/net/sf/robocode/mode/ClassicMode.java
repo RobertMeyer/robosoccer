@@ -258,7 +258,7 @@ public class ClassicMode implements IMode {
 		return (endTimer > 5 * time);
 	}
 
-	public boolean shouldRicochet() {
+	public boolean shouldRicochet(double power, double minBulletPower) {
 		return false;
 	}
 
