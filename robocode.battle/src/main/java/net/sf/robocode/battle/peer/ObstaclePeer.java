@@ -53,7 +53,7 @@ import static java.lang.Math.sin;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.item.BoundingRectangle;
 
 
 /**

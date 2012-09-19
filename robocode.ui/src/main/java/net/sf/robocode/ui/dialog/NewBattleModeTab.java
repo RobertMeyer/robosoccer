@@ -28,8 +28,10 @@ public class NewBattleModeTab extends JPanel {
 		new SlowMode(), 
 		new DifferentWeapons(), 
 		new RaceMode(),
+		new SoccerMode(),
 		new ZombieMode(),
 		new FlagMode(),
+		new RicochetMode(),
 		new ItemMode(),
 		new ObstacleMode()
 	};
