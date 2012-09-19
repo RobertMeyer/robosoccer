@@ -185,15 +185,15 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     }
 
     public String getName() {
-        return name;
+        return teamName;
     }
 
     public String getShortName() {
-        return shortName;
+        return teamName;
     }
 
     public String getVeryShortName() {
-        return veryShortName;
+        return teamName;
     }
 
     public String getFullClassName() {
