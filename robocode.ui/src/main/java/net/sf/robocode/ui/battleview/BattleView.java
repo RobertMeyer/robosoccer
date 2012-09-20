@@ -26,7 +26,6 @@ import static java.lang.Math.*;
 import java.util.HashMap;
 import java.util.Random;
 
-import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
@@ -45,6 +44,7 @@ import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
+import robocode.control.snapshot.ICustomObjectSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
@@ -98,6 +98,7 @@ public class BattleView extends Canvas {
 	private IGraphicsProxy[] robotGraphics;
     private IBattleManager battleManager;
 
+    // Hold current custom images to be rendered.
     private HashMap<String, RenderImage> customImage;
 
 	public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
@@ -232,6 +233,7 @@ public class BattleView extends Canvas {
 		smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
 		smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
 
+<<<<<<< HEAD
         // Custom image initialisation
         /* Check to see if game mode is of your instace, then add all your images
          * with addCustomImage(String name, String filename, Double x, Double y).
@@ -246,6 +248,14 @@ public class BattleView extends Canvas {
 
 		// Initialize ground image
 		if (drawGround) {
+=======
+        // Scale font
+        smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
+        smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
+        
+        // Initialize ground image
+        if (drawGround) {
+>>>>>>> origin/master
         	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
@@ -360,16 +370,30 @@ public class BattleView extends Canvas {
 		// Draw ground
 		drawGround(g);
 
+<<<<<<< HEAD
         // Draw custom
         drawImages(g);
+=======
+        // Draw ground
+        drawGround(g);
+>>>>>>> origin/master
 
 		if (snapShot != null) {
 			// Draw scan arcs
 			drawScanArcs(g, snapShot);
 
             drawEffectAreas(g, snapShot);
+<<<<<<< HEAD
 			// Draw robots
 			drawRobots(g, snapShot);
+=======
+            
+            // Draw custom
+            drawImages(g, snapShot);
+            
+            // Draw robots
+            drawRobots(g, snapShot);
+>>>>>>> origin/master
 
 			// Draw robot (debug) paintings
 			drawRobotPaint(g, snapShot);
@@ -442,23 +466,58 @@ public class BattleView extends Canvas {
 
 	//TODO Update graphic display of item
     private void drawItems(Graphics2D g, ITurnSnapshot snapShot) {
+<<<<<<< HEAD
 		double x, y;
 		AffineTransform at;
 		int battleFieldHeight = battleField.getHeight();
 	}
 	
     /* Draws all active images in the scene.
+=======
+        double x, y;
+        AffineTransform at;
+        int battleFieldHeight = battleField.getHeight();
+    }
+    
+    /**
+     * Draws all active images in the scene.
+>>>>>>> origin/master
      *  
      * @param Grahpics2D g - rendering context used to
      * render goodies to the screen
      */
-    private void drawImages(Graphics2D g) {
-    	for (RenderImage image : customImage.values()) {
-    		image.paint(g);
+    private void drawImages(Graphics2D g, ITurnSnapshot snapShot) {
+    	// Loop through each CustomObjectSnapshot and render to screen
+    	for (ICustomObjectSnapshot snap : snapShot.getCustomObjects()) {
+    		// Load image from cache
+    		RenderImage image = customImage.get(snap.getName());
+    		// Check if image exists in Cache
+    		if (image == null) {
+    			// Load image into cache
+    			image = addImage(snap.getName(), snap.getFilename());
+    		}
+    		// Setup matrix transform of image
+			AffineTransform at = snap.getAffineTransform();
+			image.setTransform(at);
+    		
+			// Keep old alpha level state
+    		Composite oldState = g.getComposite();
+    		// Setup new alpha level state
+    		AlphaComposite alphaComposite = AlphaComposite.
+    				getInstance(AlphaComposite.SRC_OVER, snap.getAlpha());
+    		g.setComposite(alphaComposite);
+    		
+    		// Render to screen
+    		if (!snap.getHide())
+    			image.paint(g);	
+    		
+    		// Restore old alpha state
+    		g.setComposite(oldState);
     	}
     }
 
-    /* Loads image in from given filename, puts RenderImage in
+    /**
+     * Loads image in from given filename, puts RenderImage in
      * Hashmap<String, RenderImage>. Once added it will get rendered
      * each frame update.
      * 
@@ -469,65 +528,12 @@ public class BattleView extends Canvas {
      * 
      * @return newly added RenderImage
      */
-	private RenderImage addImage(String name, String filename, double x,
-			double y) {
+	private RenderImage addImage(String name, String filename) {
 		RenderImage img = new RenderImage(imageManager.addCustomImage(name,
 				filename));
-		img.setTransform(AffineTransform.getTranslateInstance(x, y));
 		customImage.put(name, img);
 
 		return (img != null) ? img : null;
-	}
-	
-	/* Added already created RenderImage to HashMap
-	 * 
-	 * @param String name - key name
-	 * @param RenderImage img - already created render object
-	 */
-	private RenderImage addImage(String name, RenderImage img) {
-		if (img != null) {
-			customImage.put(name,  img);
-			return img;
-		}
-		return null;
-	}
-
-	/* Sets the object at key name x,y coords
-	 * @param String name - key to be fetched
-	 * @param double x - x position
-	 * @param double y - y position
-	 */
-	private void setImagePosition(String name, double x, double y) {
-		if (customImage.containsKey(name)) {
-			customImage.get(name).setTransform(
-					AffineTransform.getTranslateInstance(x, y));
-		}
-	}
-
-	/*	Sets the rotation of a given key.
-	 * 
-	 *  @param String name - key of RenderImage
-	 *  @param double degrees - degree to rotate to
-	 */
-	private void setImageRotation(String name, double degrees) {
-		if (customImage.containsKey(name)) {
-			customImage.get(name).setTransform(
-					AffineTransform.getRotateInstance(Utils
-							.normalAbsoluteAngle(degrees)));
-		}
-	}
-	
-	/* Removes a given key from HashMap
-	 * 
-	 * @param String name - key to remove
-	 * 
-	 * @return Deleted RenderImage
-	 */
-	private RenderImage removeImage(String name) {
-		if (customImage.containsKey(name)) {
-			return customImage.remove(name);
-		}
-		return null;
 	}
     
 	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {

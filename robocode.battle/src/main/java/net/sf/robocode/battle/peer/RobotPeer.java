@@ -83,16 +83,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.BoundingRectangle;
-import net.sf.robocode.battle.ItemDrop;
 import net.sf.robocode.battle.EffectArea;
+import net.sf.robocode.battle.item.BoundingRectangle;
+import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
 import net.sf.robocode.host.events.EventQueue;
 import net.sf.robocode.host.proxies.IHostingRobotProxy;
 import net.sf.robocode.io.Logger;
-import static net.sf.robocode.io.Logger.logMessage;
 import net.sf.robocode.peer.*;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
@@ -139,16 +138,22 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
-    public static final int WIDTH = 40,
+	public static final int
+			WIDTH = 40,
 			HEIGHT = 40;
-    protected static final int HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
+
+	protected static final int
+			HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
+
 	protected static final int MAX_SKIPPED_TURNS = 30;
 	protected static final int MAX_SKIPPED_TURNS_WITH_IO = 240;
+
 	protected Battle battle;
 	protected RobotStatistics statistics;
 	protected final TeamPeer teamPeer;
 	protected final RobotSpecification robotSpecification;
+
 	protected IHostingRobotProxy robotProxy;
 	protected AtomicReference<RobotStatus> status = new AtomicReference<RobotStatus>();
 	protected AtomicReference<ExecCommands> commands = new AtomicReference<ExecCommands>();
@@ -157,17 +162,21 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			new ArrayList<TeamMessage>());
 	protected AtomicReference<List<BulletStatus>> bulletUpdates = new AtomicReference<List<BulletStatus>>(
 			new ArrayList<BulletStatus>());
+
 	// thread is running
 	protected final AtomicBoolean isRunning = new AtomicBoolean(false);
+
 	protected final StringBuilder battleText = new StringBuilder(1024);
 	protected final StringBuilder proxyText = new StringBuilder(1024);
 	protected RobotStatics statics;
 	protected BattleRules battleRules;
+
 	// for battle thread, during robots processing
 	protected ExecCommands currentCommands;
 	protected double lastHeading;
 	protected double lastGunHeading;
 	protected double lastRadarHeading;
+
 	protected double energy;
 	protected double velocity;
 	protected double bodyHeading;
@@ -177,24 +186,34 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double x;
 	protected double y;
 	protected int skippedTurns;
+
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
+
 	protected boolean isIORobot;
 	protected boolean isPaintEnabled;
 	protected boolean sgPaintEnabled;
+
 	// waiting for next tick
 	protected final AtomicBoolean isSleeping = new AtomicBoolean(false);
 	protected final AtomicBoolean halt = new AtomicBoolean(false);
+
 	protected boolean isExecFinishedAndDisabled;
 	protected boolean isEnergyDrained;
 	protected boolean isWinner;
 	protected boolean inCollision;
 	protected boolean isOverDriving;
+
 	protected RobotState state;
 	protected final Arc2D scanArc;
 	protected final BoundingRectangle boundingBox;
 	protected final RbSerializer rbSerializer;
+
 	public int frozen = 0;
+
+	
+	// item inventory
+	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
 
 	/**
 	 * An association of values to every RobotAttribute, such that game
@@ -208,7 +227,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	protected AtomicReference<Map<RobotAttribute, Double>> attributes =
 			new AtomicReference<Map<RobotAttribute, Double>>(
-            new HashMap<RobotAttribute, Double>());
+					new HashMap<RobotAttribute, Double>()
+			);
+
 	/**
 	 * Keeps track of the equipment parts equipped to slots to prevent multiple
 	 * parts being equipped to the same slot.
@@ -218,8 +239,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	protected AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment =
 			new AtomicReference<Map<EquipmentSlot, EquipmentPart>>(
-            new HashMap<EquipmentSlot, EquipmentPart>());
-
+					new HashMap<EquipmentSlot, EquipmentPart>()
+			);
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
@@ -269,7 +290,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
 	}
 
-    @Override
 	public void println(String s) {
 		synchronized (proxyText) {
 			battleText.append(s);
@@ -308,12 +328,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-    @Override
 	public RobotStatistics getRobotStatistics() {
 		return statistics;
 	}
 
-    @Override
 	public ContestantStatistics getStatistics() {
 		return statistics;
 	}
@@ -325,6 +343,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// -------------------
 	// statics
 	// -------------------
+
 	public boolean isDroid() {
 		return statics.isDroid();
 	}
@@ -360,12 +379,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isTeamRobot() {
 		return statics.isTeamRobot();
 	}
-
-    public boolean isBotzilla() {
+	
+	public boolean isBotzilla() {
     	return statics.isBotzilla();
     }
 
-    @Override
 	public String getName() {
 		return statics.getName();
 	}
@@ -382,17 +400,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return statics.getVeryShortName();
 	}
 
-    @Override
 	public int getRobotIndex() {
 		return statics.getRobotIndex();
 	}
 
-    @Override
 	public int getTeamIndex() {
 		return statics.getTeamIndex();
 	}
 
-    @Override
 	public int getContestantIndex() {
 		return getTeamIndex() >= 0 ? getTeamIndex() : getRobotIndex();
 	}
@@ -400,7 +415,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// -------------------
 	// status
 	// -------------------
-    @Override
+
 	public void setPaintEnabled(boolean enabled) {
 		isPaintEnabled = enabled;
 	}
@@ -409,7 +424,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return isPaintEnabled;
 	}
 
-    @Override
 	public void setSGPaintEnabled(boolean enabled) {
 		sgPaintEnabled = enabled;
 	}
@@ -784,6 +798,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
     @Override
+
 	public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions) {
 		boolean valid = false;
 		if (initialRobotPositions != null) {
@@ -800,7 +815,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				valid = validSpot(robots);
 			}
 		}
-
 		if (!valid) {
 			final Random random = RandomFactory.getRandom();
 
@@ -828,13 +842,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 200;
 		} else if (statics.isDroid()) {
 			energy = 120;
-        } else if (statics.isHouseRobot()) {
+		} else if (statics.isHouseRobot()){
 			energy = 500;
 			//TODO: Change to actual starting spots [Team Awesome]
 			x = 0;
 			y = 0;
-		} else if (statics.isFreezeRobot()){
-			energy = 600;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -882,7 +894,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return true;
 	}
 
-    @Override
 	public void startRound(long waitMillis, int waitNanos) {
 		Logger.logMessage(".", false);
 
@@ -920,9 +931,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-    @Override
+
 	public void performLoadCommands() {
 		currentCommands = commands.get();
+
 
 		fireBullets(currentCommands.getBullets());
 
@@ -940,10 +952,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	protected void fireBullets(List<BulletCommand> bulletCommands) {
-		if (isFreezeRobot()) {
-			return;
-		}
-		
 		BulletPeer newBullet = null;
 
 		for (BulletCommand bulletCmd : bulletCommands) {
@@ -961,12 +969,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 * or very close too.  This is to avoid unnecessary double
 			 * multiplication, which was causing some bugs.
 			 */
-            if ((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen())
-                    - 1.0 < 0.00001) {
+			if((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
+					1.0 < 0.00001){
 				firePower = min(energy,
 						min(max(bulletCmd.getPower(), Rules.MIN_BULLET_POWER),
 								Rules.MAX_BULLET_POWER));
-            } else {
+			}
+			else{
 				firePower = min(energy, min(max(bulletCmd.getPower(), 
 						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
 			}
@@ -993,7 +1002,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-    @Override
 	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
@@ -1036,7 +1044,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// Now check for robot collision
 		checkRobotCollision(robots);
 		
-		// Now check for item collision
+        // Now check for item collision
         //TODO: checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
@@ -1056,7 +1064,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-    @Override
 	public void performScan(List<RobotPeer> robots) {
 		if (isDead()) {
 			return;
@@ -1089,8 +1096,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected void addTeamMessage(TeamMessage message) {
 		final List<TeamMessage> queue = teamMessages.get();
 
+                   
 		queue.add(message);
 	}
+               
 
 	protected boolean checkDispatchToMember(RobotPeer member, String recipient) {
 		if (member.isAlive()) {
@@ -1124,29 +1133,43 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return otherRobot.getName();
 	}
 	
-    private void checkItemCollision(List<ItemDrop> items) {
+	// check for, add, remove items
+	private boolean checkForItem(ItemDrop item){
+		return this.itemsList.contains(item);
+	}
+	
+	private void addItem(ItemDrop item){
+		this.itemsList.add(item);
+	}
+	
+	private void removeItem(ItemDrop item){
+		this.itemsList.remove(item);
+	}
+
+	
+	private void checkItemCollision(List<ItemDrop> items){
 		inCollision = false;
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		
-        for (ItemDrop item : items) {
-            if (!(item == null) && boundingBox.intersects(item.getBoundingBox())) {
+		for (ItemDrop item : items){
+			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
 				inCollision = true;
-                if (item.getHealth() > 0) {
-                    if (item.getIsDestroyable()) {
+				if (item.getHealth() > 0){
+					if (item.getIsDestroyable()){
 						item.setHealth(item.getHealth() - 20);
 					}
 				}
-                if (item.getHealth() <= 0) {
+				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
-				//addEvent(new HitItemEvent());
+				item.doItemEffect(this);
 			}
 		}
-        for (ItemDrop item : itemsDestroyed) {
+		for (ItemDrop item : itemsDestroyed){
 			items.remove(item);
 		}
-        if (inCollision) {
-			setState(RobotState.HIT_ITEM);
+		if (inCollision){
+			//setState(RobotState.HIT_ITEM);
 		}
 	}
 
@@ -1202,45 +1225,48 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                                                   / 1 / otherRobot.getRobotArmor()));
                     }
 
-					if (otherRobot.energy == 0) {
-						if (otherRobot.isAlive()) {
-							otherRobot.kill();
-							if (!teamFire) {
-								final double bonus = statistics.scoreRammingKill(otherRobot.getName());
 
-								if (bonus > 0) {
-									println(
-											"SYSTEM: Ram bonus for killing " + this.getNameForEvent(otherRobot) + ": "
-											+ (int) (bonus + .5));
-								}
-							}
-						}
-					}
-					
-					
-					if (otherRobot.isFreezeRobot()) {
-						setState(RobotState.FROZEN);
-						frozen = 100;
-					}
-					
-					if (this.isFreezeRobot()) {
-						otherRobot.setState(RobotState.FROZEN);
-						otherRobot.frozen = 100;
-					}
-									
-					addEvent(
-							new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
-							otherRobot.energy, atFault));
-					otherRobot.addEvent(
-							new HitRobotEvent(getNameForEvent(this),
-							normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false));
-				}
-			}
-		}
-		if (inCollision) {
-			setState(RobotState.HIT_ROBOT);
-		}
-	}
+                    if (otherRobot.energy == 0) {
+                        if (otherRobot.isAlive()) {
+                            otherRobot.kill();
+                            if (battle.getBattleMode().respawnsOn()) {
+                            	otherRobot.respawn(robots);
+                            }
+                            
+        					if (otherRobot.isFreezeRobot()) {
+        						setState(RobotState.FROZEN);
+        						frozen = 100;
+        					}
+        					
+        					if (this.isFreezeRobot()) {
+        						otherRobot.setState(RobotState.FROZEN);
+        						otherRobot.frozen = 100;
+        					}
+                            
+                            if (!teamFire) {
+                                final double bonus = statistics.scoreRammingKill(otherRobot.getName());
+
+                                if (bonus > 0) {
+                                    println(
+                                            "SYSTEM: Ram bonus for killing " + this.getNameForEvent(otherRobot) + ": "
+                                            + (int) (bonus + .5));
+                                }
+                            }
+                        }
+                    }
+                    addEvent(
+                            new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
+                                              otherRobot.energy, atFault));
+                    otherRobot.addEvent(
+                            new HitRobotEvent(getNameForEvent(this),
+                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false));
+                }
+            }
+        }
+        if (inCollision) {
+            setState(RobotState.HIT_ROBOT);
+        }
+    }
 
 	protected void checkWallCollision() {
 		boolean hitWall = false;
@@ -1329,7 +1355,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?
-    @Override
 	public void addEvent(Event event) {
 		if (isRunning()) {
 			final EventQueue queue = events.get();
@@ -1354,8 +1379,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				radarHeading += currentCommands.getGunTurnRemaining();
 				if (currentCommands.isAdjustRadarForGunTurn()) {
 					currentCommands.setRadarTurnRemaining(
-                            currentCommands.getRadarTurnRemaining()
-                            - currentCommands.getGunTurnRemaining());
+							currentCommands.getRadarTurnRemaining() - 
+							currentCommands.getGunTurnRemaining());
 				}
 				currentCommands.setGunTurnRemaining(0);
 			} else {
@@ -1374,8 +1399,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				radarHeading += currentCommands.getGunTurnRemaining();
 				if (currentCommands.isAdjustRadarForGunTurn()) {
 					currentCommands.setRadarTurnRemaining(
-                            currentCommands.getRadarTurnRemaining()
-                            - currentCommands.getGunTurnRemaining());
+							currentCommands.getRadarTurnRemaining() - 
+							currentCommands.getGunTurnRemaining());
 				}
 				currentCommands.setGunTurnRemaining(0);
 			} else {
@@ -1477,7 +1502,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						getRadarTurnRemaining() - getRadarTurnRateRadians());
 			}
 		} else if (currentCommands.getRadarTurnRemaining() < 0) {
-            if (currentCommands.getRadarTurnRemaining() > -getRadarTurnRateRadians()) {
+			if (currentCommands.getRadarTurnRemaining() > - getRadarTurnRateRadians()) {
 				radarHeading += currentCommands.getRadarTurnRemaining();
 				currentCommands.setRadarTurnRemaining(0);
 			} else {
@@ -1574,7 +1599,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			velocityIncrement = Math.max(velocity - getRobotAcceleration(), 
 					Math.min(goalVel, velocity + maxDecel(-velocity)));
 		}
-        return battle.getBattleMode().modifyVelocity(velocityIncrement, battle.getBattleRules());
+		return battle.getBattleMode().modifyVelocity(velocityIncrement);
 	}
 
 	protected double getMaxVelocity(double distance) {
@@ -1596,7 +1621,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		double decelTime = speed / getRobotDeceleration();
 		double accelTime = (1 - decelTime);
 		
-        return Math.min(1, decelTime) * getRobotDeceleration() + Math.max(0, accelTime) * getRobotAcceleration();
+		return Math.min(1, decelTime) * getRobotDeceleration() + Math.max
+				(0, accelTime) * getRobotAcceleration();
 	}
 
 	protected void updateGunHeat() {
@@ -1642,7 +1668,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
 						otherRobot.getVelocity(), otherRobot.isFrozen());
-
 				addEvent(event);
 			}
 		}
@@ -1667,18 +1692,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-    @Override
 	public void setRunning(boolean value) {
 		isRunning.set(value);
 	}
 
-    @Override
 	public void drainEnergy() {
 		setEnergy(0, true);
 		isEnergyDrained = true;
 	}
 
-    @Override
 	public void punishBadBehavior(BadBehavior badBehavior) {
 		kill(); // Bug fix [2828479] - Missed onRobotDeath events
 
@@ -1720,6 +1742,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		logMessage(message.toString());
 	}
 
+
+
 	public void updateEnergy(double delta) {
 		if ((!isExecFinishedAndDisabled && !isEnergyDrained) || delta < 0) {
 			setEnergy(energy + delta, true);
@@ -1740,12 +1764,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-    @Override
 	public void setWinner(boolean newWinner) {
 		isWinner = newWinner;
 	}
 
-    @Override
 	public void kill() {
 		battle.resetInactiveTurnCount(10.0);
 		if (isAlive()) {
@@ -1778,7 +1800,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		setState(RobotState.DEAD);
 	}
 
-    @Override
+    public void respawn(List<RobotPeer> robots) {
+    	initializeRound(robots, null);
+    }
+    
 	public void waitForStop() {
 		robotProxy.waitForStopThread();
 	}
@@ -1786,7 +1811,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * Clean things up removing all references to the robot.
 	 */
-    @Override
 	public void cleanup() {
 		battle = null;
 
@@ -1823,7 +1847,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return commands.get().getDebugProperties();
 	}
 
-    @Override
 	public void publishStatus(long currentTurn) {
 
 		final ExecCommands currentCommands = commands.get();
@@ -1849,7 +1872,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @param partName the name of the part to equip
 	 * @see Equipment
 	 */
-    @Override
 	public void equip(String partName) {
 		EquipmentPart part = Equipment.getPart(partName);
 
@@ -1868,11 +1890,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 * effectiveness for easy multiplication).
 			 */
 			double newValue = currentValue + (partValue / 100.0);
-
 			attributes.get().put(attribute, newValue);
 		}
 	}
-
+    
 	/**
 	 * Unequips the part equipped to the given slot, if any, and resets all
 	 * attributes provided by the part.
@@ -1902,12 +1923,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 	
-	/**
-	 * @return a collection of all equipment parts equipped to the robot
-	 */
+	 /**
+     * @return a collection of all equipment parts equipped to the robot
+     */
     public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
         return equipment;
-	}
+    }
 	
 	/**
 	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
@@ -1927,9 +1948,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * 
 	 * @return The acceleration of the robot associated with this peer.
 	 */
-    public double getRobotAcceleration() {
-        return attributes.get().get(RobotAttribute.ACCELERATION)
-                * Rules.ACCELERATION;
+	public double getRobotAcceleration(){
+		return attributes.get().get(RobotAttribute.ACCELERATION) * 
+				Rules.ACCELERATION;
 	}
 	
 	/**
@@ -1938,9 +1959,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * 
 	 * @return The deceleration of the robot associated with this peer.
 	 */
-    public double getRobotDeceleration() {
-        return attributes.get().get(RobotAttribute.DECELERATION)
-                * Rules.DECELERATION;
+	public double getRobotDeceleration(){
+		return attributes.get().get(RobotAttribute.DECELERATION) *
+				Rules.DECELERATION;
 	}
 	
 	/**
@@ -1949,9 +1970,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * 
 	 * @return The scan radius of the robot associated with this peer.
 	 */
-    public double getRadarScanRadius() {
-        return attributes.get().get(RobotAttribute.SCAN_RADIUS)
-                * Rules.RADAR_SCAN_RADIUS;
+	public double getRadarScanRadius(){
+		return attributes.get().get(RobotAttribute.SCAN_RADIUS) *
+				Rules.RADAR_SCAN_RADIUS;
 	}
 	
 	/**
@@ -1961,13 +1982,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return The turning rate of the gun of the robot associated with this
 	 * 			peer in degrees.
 	 */
-    public double getGunTurnRate() {
+	public double getGunTurnRate(){
 		// Avoid multiplying doubles if it is not needed
-        if (attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001) {
+		if(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001){
 			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
-        } else {
-            return Rules.GUN_TURN_RATE;
 		}
+		else return Rules.GUN_TURN_RATE;
 	}
 	
 	/**
@@ -1977,7 +1997,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return The turning rate of the gun of the robot associated with this
 	 * 			peer in radians.
 	 */
-    public double getGunTurnRateRadians() {
+	public double getGunTurnRateRadians(){
 		return Math.toRadians(getGunTurnRate());
 	}
 	
@@ -1988,9 +2008,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return The turning rate of the robot associated with this peer in
 	 * 			degrees
 	 */
-    public double getMaxTurnRate() {
-        return attributes.get().get(RobotAttribute.ROBOT_TURN_ANGLE)
-                * Rules.MAX_TURN_RATE;
+	public double getMaxTurnRate(){
+		return attributes.get().get(RobotAttribute.ROBOT_TURN_ANGLE) *
+				Rules.MAX_TURN_RATE;
 	}
 	
 	/**
@@ -2000,7 +2020,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return The turning rate of the robot associated with this peer in
 	 * 			radians
 	 */
-    public double getMaxTurnRateRadians() {
+	public double getMaxTurnRateRadians(){
 		return Math.toRadians(getMaxTurnRate());
 	}
 	
@@ -2010,20 +2030,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * 
 	 * @return the speed (velocity) of the robot associated with this peer.
 	 */
-    public double getMaxVelocity() {
+	public double getMaxVelocity(){
 		return attributes.get().get(RobotAttribute.SPEED) * Rules.MAX_VELOCITY;
 	}
-	
-	/**
-	 * Returns the energy (life) of the robot due to the items it has equipped
-	 * or the bonuses it may have received.
-	 * 
-	 * Note: This is the life at the start of the round (not a constant update)
-	 * 		That is it is the energy factor * 100 (base energy). To find the
-	 * 		current energy: @see getEnergy()
-	 * 
-	 * @return the starting energy of the robot associated with this peer.
-	 */
+
+    /**
+     * Returns the energy (life) of the robot due to the items it has equipped
+     * or the bonuses it may have received.
+     *
+     * Note: This is the life at the start of the round (not a constant update)
+     * 		That is it is the energy factor * 100 (base energy). To find the
+     * 		current energy: @see getEnergy()
+     *
+     * @return the starting energy of the robot associated with this peer.
+     */
     public double getStartingEnergy() {
 		return attributes.get().get(RobotAttribute.ENERGY) * 100;
 	}
@@ -2062,30 +2082,32 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the robots minimum bullet power associated with this peer.
 	 */
     public double getMinBulletPower() {
-		return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * Rules.MIN_BULLET_POWER;
-	}
-	
-	/**
-	 * Returns the maximum bullet power of a robots bullet, which is the
-	 * attribute factor * the value of @see Rules.MAX_BULLET_POWER
-	 * 
-	 * This is caused by the items the robot has equipped or other bonuses
-	 * it may have received.
-	 * 
-	 * @return the robots maximum bullet power associated with this peer.
-	 */
+        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * 
+        		Rules.MIN_BULLET_POWER;
+    }
+
+    /**
+     * Returns the maximum bullet power of a robots bullet, which is the
+     * attribute factor * the value of @see Rules.MAX_BULLET_POWER
+     *
+     * This is caused by the items the robot has equipped or other bonuses
+     * it may have received.
+     *
+     * @return the robots maximum bullet power associated with this peer.
+     */
     public double getMaxBulletPower() {
-		return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * Rules.MAX_BULLET_POWER;
-	}
-	
-	/**
-	 * Returns the amount the gun will heat for a certain amount of bullet
-	 * power, this may be increased by the effects of equipment or other
-	 * bonuses (or decreased)
-	 * 
-	 * @param bulletPower the energy power of the bullet
-	 * @return the gun heat.
-	 */
+        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) * 
+        		Rules.MAX_BULLET_POWER;
+    }
+
+    /**
+     * Returns the amount the gun will heat for a certain amount of bullet
+     * power, this may be increased by the effects of equipment or other
+     * bonuses (or decreased)
+     *
+     * @param bulletPower the energy power of the bullet
+     * @return the gun heat.
+     */
     public double getGunHeat(double bulletPower) {
         return attributes.get().get(RobotAttribute.GUN_HEAT_RATE)
                 * (1 + (bulletPower / 5));
@@ -2121,15 +2143,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the radar turn rate of the robot in degrees
 	 */
     public double getRadarTurnRate() {
-		return attributes.get().get(RobotAttribute.RADAR_ANGLE) * Rules.RADAR_TURN_RATE;
-	}
-	
-	/**
-	 * Returns the radar turn rate of a robot in radians due to having items
-	 * equipped or having received other bonuses.
-	 * 
-	 * @return the radar turn rate of the robot in radians
-	 */
+        return attributes.get().get(RobotAttribute.RADAR_ANGLE) * 
+        		Rules.RADAR_TURN_RATE;
+    }
+
+    /**
+     * Returns the radar turn rate of a robot in radians due to having items
+     * equipped or having received other bonuses.
+     *
+     * @return the radar turn rate of the robot in radians
+     */
     public double getRadarTurnRateRadians() {
 		return Math.toRadians(getRadarTurnRate());
 	}
@@ -2137,7 +2160,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     /** 
      * Effects
      */
-    public void setEnergyEffect(double newEnergy, boolean resetInactiveTurnCount) {
+    public void setEnergyEffect(double newEnergy, boolean 
+    		resetInactiveTurnCount) {
 		if (resetInactiveTurnCount && (energy != newEnergy)) {
 			battle.resetInactiveTurnCount(energy - newEnergy);
 		}

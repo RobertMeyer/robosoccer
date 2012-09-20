@@ -1,10 +1,13 @@
 package net.sf.robocode.mode;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.CustomObject;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -16,8 +19,16 @@ import robocode.control.RobotSpecification;
 
 public class SoccerMode extends ClassicMode implements IMode {
 	
+	/* Bounds for the goal - possibly to be altered at a later date */
+	public static final double GOALXMIN = 200;
+	public static final double GOALXMAX = 700;
+	public static final double GOALYMIN = 200;
+	public static final double GOALYMAX = 450;
+	
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
+	
+	private boolean roundOver = false;
 	
 	private final String description = "Robocode soccer.";
 	
@@ -49,6 +60,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public double[][] computeInitialPositions(String initialPositions,
 			BattleRules battleRules, int robotsCount) {
 		double[][] initialRobotPositions = null;
+		roundOver = false;
 		
 		int count = (robotsCount % 2 == 0 ? robotsCount : robotsCount - 1);
 		
@@ -86,15 +98,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createPeers(Battle battle,
+	public void createPeers(BattlePeers peers,
 			RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			List<RobotPeer> robots, List<ContestantPeer> contestants,
 			IRepositoryManager repositoryManager) {
 		Hashtable<String, Integer> duplicates = new Hashtable<String, Integer>();
-		int teamSize = battle.getRobotsCount() / 2;
-		
+		int teamSize = peers.getBattle().getRobotsCount() / 2;
 		// Counts the number of duplicates for each robot being used.
-		for(int i = 0; i < battle.getRobotsCount(); i++) {
+		for(int i = 0; i < peers.getBattle().getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
 			String name = spec.getName();
 			
@@ -105,40 +115,41 @@ public class SoccerMode extends ClassicMode implements IMode {
 			}
 		}
 		
+		peers.getBattle().createCustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
+		
 		// Create teams 1 and 2.
 		TeamPeer team1 = new TeamPeer("Team 1", null, 0);
 		TeamPeer team2 = new TeamPeer("Team 2", null, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
 		
-		contestants.add(team1);
-		contestants.add(team2);
+		peers.addContestant(team1);
+		peers.addContestant(team2);
 		
-		for(int j = 0; j < battle.getRobotsCount(); j++) {
+		for(int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
 			RobotSpecification spec = battlingRobotsList[j];
 			RobotPeer robot = null;
 			
 			if(j < teamSize) {
-				robot = new RobotPeer(battle, hostManager, spec, 
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
 						duplicates.get(spec.getName()), team1, j);
 			} else {
-				robot = new RobotPeer(battle, hostManager, spec, 
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
 						duplicates.get(spec.getName()), team2, j);
 			}
 			
-			robots.add(robot);
+			peers.addRobot(robot);
 		}
 		
 		// Create the ball robot and add it to the appropriate peer lists/team.
 		RobotSpecification ballSpec = 
 				repositoryManager.loadSelectedRobots("soccer.BallBot*")[0];
-		BallPeer ball = new BallPeer(battle, hostManager, ballSpec, 0, ballTeam, robots.size());
+		BallPeer ball = new BallPeer(peers.getBattle(), hostManager, ballSpec, 0, ballTeam, peers.getRobots().size());
 		this.ball = new ArrayList<RobotPeer>();
 		this.ball.add(ball);
-		System.out.println(ball.getName());
 
 		ballTeam.add(ball);
-		contestants.add(ballTeam);
-		robots.add(ball);
+		peers.addContestant(ballTeam);
+		peers.addRobot(ball);
 	}
 	
 	/**
@@ -148,10 +159,44 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * In this mode it makes the ball the only element visible to radar.
 	 */
 	@Override
-	public void updateRobotScans(List<RobotPeer> robotPeers) {
+	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-        for (RobotPeer robotPeer : robotPeers) {
+		
+        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
+        	if (robotPeer.isBall()) {
+        		double x = robotPeer.getX();
+        		double y = robotPeer.getY();
+        		if ((x < GOALXMIN) || (x > GOALXMAX)
+						&& ((y < GOALYMAX) || (y > GOALYMIN))) {
+					roundOver = true;
+				} else {
+					roundOver = false;
+				}
+        	}
             robotPeer.performScan(ball);
         }
 	}
+	
+	@Override
+	public boolean isRoundOver(int endTimer, int time) {
+		return roundOver;
+	}
+	
+	/*@Override
+	public List<CustomObject> createCustomObjects() {
+		List<CustomObject> objs = new ArrayList<CustomObject>(); 
+		CustomObject obj = new CustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 100, 100);
+		objs.add(obj);
+		return objs;
+	}
+	
+	@Override
+	public void updateCustomObjects(List<CustomObject> objects) {
+		for (CustomObject obj: objects) {
+			AffineTransform at = obj.getTranslate();
+			//obj.setTranslate(at.getTranslateX() + 1, at.getTranslateY());
+		}
+		
+	}*/
+	
 }

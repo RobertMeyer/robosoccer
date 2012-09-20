@@ -1,4 +1,5 @@
-package net.sf.robocode.battle;
+package net.sf.robocode.battle.item;
+
 
 /**
  * A speed item. Extends item drop
@@ -9,10 +10,10 @@ public class SpeedItem extends ItemDrop {
 
     public SpeedItem(boolean isDestroyable, int lifespan, int health, boolean isEquippable) {
         super(isDestroyable, lifespan, health, isEquippable, null);
-        System.out.println("Speed Item");
+   //     System.out.println("Speed Item");
+        this.name = "SpeedItem";
     }
 
-    @Override
     public void doItemEffect() {
         return;
     }

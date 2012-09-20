@@ -12,7 +12,8 @@
 package net.sf.robocode.battle.peer;
 
 import java.util.List;
-import net.sf.robocode.battle.ItemDrop;
+
+import net.sf.robocode.battle.item.ItemDrop;
 import robocode.Event;
 
 /**

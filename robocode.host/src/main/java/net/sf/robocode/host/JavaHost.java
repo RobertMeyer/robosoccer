@@ -120,6 +120,7 @@ public class JavaHost implements IHost {
 		boolean isFreezeRobot = false;
         boolean isBall = false;
         boolean isBotzilla = false;
+        boolean isZombie = false;
         
 		if (Droid.class.isAssignableFrom(robotClass)) {
 			isDroid = true;
@@ -147,21 +148,25 @@ public class JavaHost implements IHost {
         
         if (IBotzilla.class.isAssignableFrom(robotClass)) {
         	isBotzilla = true;
-		}
+        }   
+        
+        if (IZombie.class.isAssignableFrom(robotClass)) {
+        	isZombie = true;
+        }
 
-		if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
-			// in this case we make sure that robot don't waste time
-			if (checkMethodOverride(robotClass, Robot.class, "getInteractiveEventListener")
-					|| checkMethodOverride(robotClass, Robot.class, "onKeyPressed", KeyEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onKeyReleased", KeyEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onKeyTyped", KeyEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onMouseClicked", MouseEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onMouseEntered", MouseEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onMouseExited", MouseEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onMousePressed", MouseEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onMouseReleased", MouseEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onMouseMoved", MouseEvent.class)
-					|| checkMethodOverride(robotClass, Robot.class, "onMouseDragged", MouseEvent.class)
+        if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
+            // in this case we make sure that robot don't waste time
+            if (checkMethodOverride(robotClass, Robot.class, "getInteractiveEventListener")
+                    || checkMethodOverride(robotClass, Robot.class, "onKeyPressed", KeyEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onKeyReleased", KeyEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onKeyTyped", KeyEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onMouseClicked", MouseEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onMouseEntered", MouseEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onMouseExited", MouseEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onMousePressed", MouseEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onMouseReleased", MouseEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onMouseMoved", MouseEvent.class)
+                    || checkMethodOverride(robotClass, Robot.class, "onMouseDragged", MouseEvent.class)
                     || checkMethodOverride(robotClass, Robot.class, "onMouseWheelMoved", MouseWheelEvent.class)) {
 				isInteractiveRobot = true;
 			}
@@ -170,46 +175,45 @@ public class JavaHost implements IHost {
 		if (IPaintRobot.class.isAssignableFrom(robotClass)) {
 			if (checkMethodOverride(robotClass, Robot.class, "getPaintEventListener")
                     || checkMethodOverride(robotClass, Robot.class, "onPaint", Graphics2D.class)) {
-				isPaintRobot = true;
-			}
-		}
+                isPaintRobot = true;
+            }
+        }
 
-		if (Robot.class.isAssignableFrom(robotClass) && !isAdvancedRobot) {
-			isStandardRobot = true;
-		}
+        if (Robot.class.isAssignableFrom(robotClass) && !isAdvancedRobot) {
+            isStandardRobot = true;
+        }
 
-		if (IJuniorRobot.class.isAssignableFrom(robotClass)) {
-			isJuniorRobot = true;
-			if (isAdvancedRobot) {
-				throw new AccessControlException(
-						robotRepositoryItem.getFullClassName()
-								+ ": Junior robot should not implement IAdvancedRobot interface.");
-			}
-		}
+        if (IJuniorRobot.class.isAssignableFrom(robotClass)) {
+            isJuniorRobot = true;
+            if (isAdvancedRobot) {
+                throw new AccessControlException(
+                        robotRepositoryItem.getFullClassName()
+                        + ": Junior robot should not implement IAdvancedRobot interface.");
+            }
+        }
 
-		if (IBasicRobot.class.isAssignableFrom(robotClass)) {
-			if (!(isAdvancedRobot || isJuniorRobot)) {
-				isStandardRobot = true;
-			}
-		}
-		return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-				isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isBotzilla);
-	}
+        if (IBasicRobot.class.isAssignableFrom(robotClass)) {
+            if (!(isAdvancedRobot || isJuniorRobot)) {
+                isStandardRobot = true;
+            }
+        }
+        return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
+                             isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isBotzilla, isZombie);
+    	}
 
-	private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {
-		if (knownBase.isAssignableFrom(robotClass)) {
-			final Method getInteractiveEventListener;
+    private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {
+        if (knownBase.isAssignableFrom(robotClass)) {
+            final Method getInteractiveEventListener;
 
-			try {
-				getInteractiveEventListener = robotClass.getMethod(name, parameterTypes);
-			} catch (NoSuchMethodException e) {
-				return false;
-			}
-			if (getInteractiveEventListener.getDeclaringClass().equals(knownBase)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
+            try {
+                getInteractiveEventListener = robotClass.getMethod(name, parameterTypes);
+            } catch (NoSuchMethodException e) {
+                return false;
+            }
+            if (getInteractiveEventListener.getDeclaringClass().equals(knownBase)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
