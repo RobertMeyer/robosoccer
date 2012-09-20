@@ -430,4 +430,7 @@ public class ClassicMode implements IMode {
 	public GuiOptions getGuiOptions() {
 		return uiOptions;
 	}
+
+	public void getRobots(List<RobotPeer> robots) {
+	}
 }
