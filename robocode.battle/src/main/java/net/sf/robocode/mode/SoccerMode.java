@@ -21,11 +21,12 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/* Bounds for the goal - possibly to be altered at a later date */
 	public static final double GOALXMIN = 200;
 	public static final double GOALXMAX = 700;
-	public static final double GOALYMIN = 200;
-	public static final double GOALYMAX = 450;
+	public static final double GOALYMIN = 250;
+	public static final double GOALYMAX = 400;
 	
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
+	private List<RobotPeer> robots;
 	
 	private boolean roundOver = false;
 	
@@ -50,6 +51,12 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 */
 	public String getDescription() {
 		return description;
+	}
+	
+	
+	@Override
+	public void getRobots(List<RobotPeer> robots) {
+		this.robots = robots;
 	}
 
 	/**
@@ -166,7 +173,7 @@ public class SoccerMode extends ClassicMode implements IMode {
         	if (robotPeer.isBall()) {
         		double x = robotPeer.getX();
         		double y = robotPeer.getY();
-        		if ((x < GOALXMIN) || (x > GOALXMAX)
+        		if (((x < GOALXMIN) || (x > GOALXMAX))
 						&& ((y < GOALYMAX) || (y > GOALYMIN))) {
 					roundOver = true;
 				} else {
@@ -179,7 +186,14 @@ public class SoccerMode extends ClassicMode implements IMode {
 	
 	@Override
 	public boolean isRoundOver(int endTimer, int time) {
-		return roundOver;
+		if (roundOver) {
+			for (RobotPeer robotPeer : robots) {
+				if (!(robotPeer.isBall())) {
+					robotPeer.kill();
+				}
+			}
+		}
+		return endTimer > 5*time;
 	}
 	
 	/*@Override
