@@ -298,9 +298,18 @@ public class RobocodeFrame extends JFrame {
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container
                     .getComponent(BattleButton.class);
+            
+            final ControlButton btn2 = net.sf.robocode.core.Container.
+            		getComponent(ControlButton.class);
+            
             btn.attach();
+            btn2.attach();
+            
             sidePanel.add(btn, BorderLayout.SOUTH);
             sidePanel.add(box, BorderLayout.NORTH);
+            
+            //Disabled temporarily until we can place it nicely
+            //sidePanel.add(btn2, BorderLayout.NORTH);
         }
         return sidePanel;
     }

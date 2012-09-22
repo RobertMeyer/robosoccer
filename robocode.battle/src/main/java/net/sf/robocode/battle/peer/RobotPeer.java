@@ -142,6 +142,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public static final int
 			WIDTH = 40,
 			HEIGHT = 40;
+	
+	//dimensions for botzilla
+	public static final int
+			BZ_WIDTH = WIDTH*2,
+			BZ_HEIGHT = HEIGHT*2;
 
 	protected static final int
 			HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
@@ -1310,7 +1315,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public void updateBoundingBox() {
-		boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+		if (isBotzilla()) {
+			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
+		} else {
+			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+		}
 	}
 
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?

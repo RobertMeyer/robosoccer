@@ -166,6 +166,9 @@ public final class Battle extends BaseBattle {
     private final boolean isDebugging;
     // Initial robot start positions (if any)
     private double[][] initialRobotPositions;
+    //Check for Botzilla
+    private Boolean botzillaActive;
+    private int botzillaSpawnTime = 40;
    
 	private List<CustomObject> customObject = new ArrayList<CustomObject>();
   
@@ -403,7 +406,9 @@ public final class Battle extends BaseBattle {
 	@Override
     protected void initializeRound() {
         super.initializeRound();
-
+        
+        botzillaActive = false;
+        
         inactiveTurnCount = 0;
 
         /*--ItemController--*/
@@ -668,11 +673,33 @@ public final class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
+        
+        if (getTotalTurns() >= botzillaSpawnTime &&
+        		battleMode.toString() == "Botzilla Mode" &&
+        		!botzillaActive) {
+        	addBotzilla();
+        }
+        
         // Increment mode specific points - TODO -team-Telos
 		this.getBattleMode().scoreTurnPoints();
         
         getBattleMode().updateRobotScans(peers.getRobots());
     }
+	
+	private void addBotzilla() {
+		System.out.println("BOTZILLA JUST APPEARED");
+		botzillaActive = true;
+		
+//		RobotPeer robotPeer = new RobotPeer(this,
+//				hostManager,
+//				RobotSpecification robotSpecification,
+//				robotDuplicates.get(i),
+//				null,
+//				robots.size());
+//		
+//		robots.add(robotPeer);
+//		contestants.add(robotPeer);
+	}
 
     private void handleDeadRobots() {
 
