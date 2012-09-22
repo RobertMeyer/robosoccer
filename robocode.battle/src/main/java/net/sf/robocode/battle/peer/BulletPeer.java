@@ -217,7 +217,7 @@ public class BulletPeer {
 				}
 				
 				//do not give energy bonus for shooting Botzilla
-				if (otherRobot.isBotzilla()) {
+				if (!otherRobot.isBotzilla()) {
 					owner.updateEnergy(Rules.getBulletHitBonus(power));
 				}
 				

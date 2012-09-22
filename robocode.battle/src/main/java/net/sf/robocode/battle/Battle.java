@@ -674,11 +674,11 @@ public final class Battle extends BaseBattle {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
         
-        if (getTotalTurns() >= botzillaSpawnTime &&
+       /* if (getTotalTurns() >= botzillaSpawnTime &&
         		battleMode.toString() == "Botzilla Mode" &&
         		!botzillaActive) {
         	addBotzilla();
-        }
+        }*/
         
         // Increment mode specific points - TODO -team-Telos
 		this.getBattleMode().scoreTurnPoints();
