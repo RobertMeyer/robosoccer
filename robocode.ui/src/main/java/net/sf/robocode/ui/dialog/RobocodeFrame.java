@@ -24,6 +24,7 @@
 package net.sf.robocode.ui.dialog;
 
 import net.sf.robocode.battle.BattleManager;
+import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.recording.IRecordManager;
 import net.sf.robocode.settings.ISettingsManager;
@@ -38,6 +39,8 @@ import net.sf.robocode.version.Version;
 import robocode.control.events.*;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
+import net.sf.robocode.mode.IMode;
+import net.sf.robocode.mode.TimerMode;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -60,6 +63,9 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class RobocodeFrame extends JFrame {
 
+	private int TimerCount = 1;
+	private int UserSetTime = 0;
+	private int Counter = 1;
     private final static int MAX_TPS = 10000;
     private final static int MAX_TPS_SLIDER_VALUE = 61;
     private final static int UPDATE_TITLE_INTERVAL = 500; // milliseconds
@@ -900,6 +906,7 @@ public class RobocodeFrame extends JFrame {
 
         @Override
         public void onRoundStarted(final RoundStartedEvent event) {	
+        	Counter = 0;
             if (event.getRound() == 0) {
                 getRobotButtonsPanel().removeAll();
 
@@ -998,9 +1005,18 @@ public class RobocodeFrame extends JFrame {
             tps = event.getTurnSnapshot().getTPS();
             currentRound = event.getTurnSnapshot().getRound();
             currentTurn = event.getTurnSnapshot().getTurn();
-
+            
             // Only update every half second to spare CPU cycles
             if ((System.currentTimeMillis() - lastTitleUpdateTime) >= UPDATE_TITLE_INTERVAL) {
+            	
+            	//Create counter if it is in Timer Mode.
+            	if (battleManager.getBattleProperties().getBattleMode().toString() ==  "Timer Mode") {
+	            	TimerCount = TimerCount + 1;
+	            	if (TimerCount == 3) {
+	            		TimerCount = 0;
+	            		Counter = Counter + 1;
+	            	}
+            	}
                 updateTitle();
             }
         }
@@ -1023,7 +1039,13 @@ public class RobocodeFrame extends JFrame {
                     title.append(", Round ");
                     title.append(currentRound + 1).append(" of ")
                             .append(numberOfRounds);
-
+                    
+                    //Display counter if it is in Timer Mode
+                    if (battleManager.getBattleProperties().getBattleMode().toString() ==  "Timer Mode") {
+	                    title.append(", Timer ");
+	                    title.append("(" + Counter + ")");
+                    }
+                    
                     if (!isBattlePaused) {
                         boolean dispTps = properties.getOptionsViewTPS();
                         boolean dispFps = properties.getOptionsViewFPS();
