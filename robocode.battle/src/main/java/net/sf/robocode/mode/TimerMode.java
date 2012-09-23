@@ -23,26 +23,28 @@ public class TimerMode extends ClassicMode {
         return description;
     }
     
-    public JPanel getRulesPanel(){
-    	if(modePanel == null){
-    		modePanel = new setTimePanel();
-    	}
-    	return modePanel;
-    }
-    
 	private class setTimePanel extends JPanel {
 		public setTimePanel() {
 			setTime = new JTextField(2);
 			add(new JLabel("Input Time (in seconds):"), BorderLayout.NORTH);
 			add(setTime);
 		}
+		
+		public Hashtable<String, Object> getValues() {
+			Hashtable<String, Object> values = new Hashtable<String, Object>();
+			values.put("timer", setTime.getText());
+			return values;
+		}
 	}
 	
-	public int getTime() {
-		int time = Integer.parseInt(setTime.getText());
-		return time;
+	public Hashtable<String, Object> getRulesPanelValues() {
+		return modePanel.getValues();
 	}
 	
-	
-	
+    public JPanel getRulesPanel(){
+    	if(modePanel == null){
+    		modePanel = new setTimePanel();
+    	}
+    	return modePanel;
+    }
 }
