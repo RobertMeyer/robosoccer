@@ -23,6 +23,7 @@
  */
 package net.sf.robocode.ui.dialog;
 
+import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
@@ -63,9 +64,10 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class RobocodeFrame extends JFrame {
 
-	private int TimerCount = 1;
-	private int UserSetTime = 0;
-	private int Counter = 1;
+	private int timerCount = 1;
+	private Hashtable<String, Object> setTimeHashTable;
+	private int counter = 1;
+	private String userSetTime;
     private final static int MAX_TPS = 10000;
     private final static int MAX_TPS_SLIDER_VALUE = 61;
     private final static int UPDATE_TITLE_INTERVAL = 500; // milliseconds
@@ -906,7 +908,7 @@ public class RobocodeFrame extends JFrame {
 
         @Override
         public void onRoundStarted(final RoundStartedEvent event) {	
-        	Counter = 0;
+        	counter = 0;
             if (event.getRound() == 0) {
                 getRobotButtonsPanel().removeAll();
 
@@ -1011,10 +1013,17 @@ public class RobocodeFrame extends JFrame {
             	
             	//Create counter if it is in Timer Mode.
             	if (battleManager.getBattleProperties().getBattleMode().toString() ==  "Timer Mode") {
-	            	TimerCount = TimerCount + 1;
-	            	if (TimerCount == 3) {
-	            		TimerCount = 0;
-	            		Counter = Counter + 1;
+	            	timerCount = timerCount + 1;
+	            	if (timerCount == 3) {
+	            		timerCount = 0;
+	            		counter = counter + 1;
+	            		//Retrieve user specified time
+	            		setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+	            		userSetTime = (String) setTimeHashTable.get("timer");
+	            		
+	            		if (counter == Integer.parseInt(userSetTime)) {
+	            			
+	            		}
 	            	}
             	}
                 updateTitle();
@@ -1043,7 +1052,7 @@ public class RobocodeFrame extends JFrame {
                     //Display counter if it is in Timer Mode
                     if (battleManager.getBattleProperties().getBattleMode().toString() ==  "Timer Mode") {
 	                    title.append(", Timer ");
-	                    title.append("(" + Counter + ")");
+	                    title.append("(" + counter + ")");
                     }
                     
                     if (!isBattlePaused) {
