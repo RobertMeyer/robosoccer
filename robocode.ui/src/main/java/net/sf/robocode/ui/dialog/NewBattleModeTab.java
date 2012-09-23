@@ -33,7 +33,8 @@ public class NewBattleModeTab extends JPanel {
 		new FlagMode(),
 		new RicochetMode(),
 		new ItemMode(),
-		new Botzilla()
+		new Botzilla(),
+		new TimerMode()
 	};
 	
 	public NewBattleModeTab() {
