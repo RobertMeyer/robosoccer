@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.battle.snapshot.ObstacleSnapshot;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
@@ -45,6 +46,7 @@ import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.ICustomObjectSnapshot;
+import robocode.control.snapshot.IObstacleSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
@@ -349,9 +351,6 @@ public class BattleView extends Canvas {
 
         // Draw ground
         drawGround(g);
-        
-        // Draw obstacles
-        drawObstacles(g);
 
         if (snapShot != null) {
             // Draw scan arcs
@@ -378,6 +377,9 @@ public class BattleView extends Canvas {
 
             // Draw all text
             drawText(g, snapShot);
+            
+            // Draw obstacles
+            drawObstacles(g, snapShot);
         }
 
         // Restore the graphics state
@@ -413,9 +415,12 @@ public class BattleView extends Canvas {
         }
     }
     
-    private void drawObstacles(Graphics2D g) {
-        g.setColor(Color.green);
-        g.fillRect(0, 0, 100, 100);        
+    private void drawObstacles(Graphics2D g, ITurnSnapshot snapShot) {
+    	for (IObstacleSnapshot obstacleSnapshot : snapShot.getObstacles()) {
+	        g.setColor(Color.green);
+	        //getX() and getY() returns double, convert to int (or change getX/Y() to return int instead)
+	        g.fillRect((int) obstacleSnapshot.getX(), (int) obstacleSnapshot.getY(), 50, 50);
+    	}
     }
 
     private void drawBorder(Graphics2D g) {

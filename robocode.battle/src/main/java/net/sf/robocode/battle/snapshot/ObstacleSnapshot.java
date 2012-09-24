@@ -69,10 +69,10 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	 * @param bullet the bullet to make a snapshot of.
 	 */
 	public ObstacleSnapshot(ObstaclePeer obstacle) {
-		//x = obstacle.getX();
-		//y = obstacle.getY();
+		x = obstacle.getX();
+		y = obstacle.getY();
 
-		//color = bullet.getColor();
+		//color = obstacle.getColor();
 
 		//obstacleId = bullet.getBulletId();
 

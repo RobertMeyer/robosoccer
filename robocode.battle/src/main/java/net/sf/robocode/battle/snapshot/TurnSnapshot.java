@@ -18,6 +18,7 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.CustomObject;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.serialization.IXmlSerializable;
@@ -81,7 +82,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
      *                    {@code false} otherwise.
      */
 
-    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<CustomObject> customObjects, List<ItemDrop> battleItems, boolean readoutText) {
+    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<CustomObject> customObjects, List<ItemDrop> battleItems, List<ObstaclePeer> battleObstacle, boolean readoutText) {
         robots = new ArrayList<IRobotSnapshot>();
         bullets = new ArrayList<IBulletSnapshot>();
         items = new ArrayList<IItemSnapshot>();
@@ -103,6 +104,11 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 			items.add(new ItemSnapshot(item));
 		}
 
+		//Add list of obstacle to the arraylist
+		for (ObstaclePeer obstaclePeer: battleObstacle) {
+			obstacles.add(new ObstacleSnapshot(obstaclePeer));
+		}
+		
 		for (EffectArea effectArea : effectAreas) {
 			effArea.add(new EffectAreaSnapshot(effectArea));
 		}
