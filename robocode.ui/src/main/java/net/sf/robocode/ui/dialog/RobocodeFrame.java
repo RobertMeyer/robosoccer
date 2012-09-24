@@ -23,9 +23,6 @@
  */
 package net.sf.robocode.ui.dialog;
 
-import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.BattleManager;
-import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.recording.IRecordManager;
 import net.sf.robocode.settings.ISettingsManager;
@@ -40,8 +37,6 @@ import net.sf.robocode.version.Version;
 import robocode.control.events.*;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-import net.sf.robocode.mode.IMode;
-import net.sf.robocode.mode.TimerMode;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -1022,7 +1017,7 @@ public class RobocodeFrame extends JFrame {
 	            		userSetTime = (String) setTimeHashTable.get("timer");
 	            		
 	            		if (counter == Integer.parseInt(userSetTime)) {
-	            			
+	            			battleManager.getTopRobot();
 	            		}
 	            	}
             	}
