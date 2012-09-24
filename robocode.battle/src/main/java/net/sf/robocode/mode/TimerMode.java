@@ -2,6 +2,8 @@ package net.sf.robocode.mode;
 
 import java.awt.BorderLayout;
 import java.util.Hashtable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,7 +14,7 @@ public class TimerMode extends ClassicMode {
 	private JTextField setTime; 
 	private setTimePanel modePanel;
 	private final String title = "Timer Mode";
-    private final String description = "This mode ends each match with the given time";
+    private final String description = "This mode ends each match with the given time (Default - 30 Seconds)";
 
     
     public String toString() {
@@ -32,7 +34,14 @@ public class TimerMode extends ClassicMode {
 		
 		public Hashtable<String, Object> getValues() {
 			Hashtable<String, Object> values = new Hashtable<String, Object>();
-			values.put("timer", setTime.getText());
+			Pattern pattern = Pattern.compile("[0-9]*");
+			Matcher match = pattern.matcher(setTime.getText());
+			boolean isInt = match.matches();
+			if (isInt) {
+				values.put("timer", setTime.getText());
+			}else{
+				values.put("timer", "30");
+			}
 			return values;
 		}
 	}
