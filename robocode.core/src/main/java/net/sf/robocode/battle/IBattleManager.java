@@ -11,8 +11,6 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-import java.util.List;
-
 import robocode.Event;
 
 /**
@@ -50,7 +48,6 @@ public interface IBattleManager extends IBattleManagerBase {
 
     /**
      * Sends an interactive event for the robot.
-     * @param <RobotPeer>
      *
      * @param event the interactive event that has occurred to the robot.
      */
