@@ -162,6 +162,8 @@ public final class Battle extends BaseBattle {
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
     // Death events
     private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
+    // For retrieval of robot in timer mode
+    private List<RobotPeer> robotList;
     // Flag specifying if debugging is enabled thru the debug command line option
     private final boolean isDebugging;
     // Initial robot start positions (if any)
@@ -249,6 +251,11 @@ public final class Battle extends BaseBattle {
 			inactiveTurnCount = 0;
 		}
 	}
+	
+	//Get list of robots
+	public List<RobotPeer> getRobotList(){
+		return robotList;
+	}
 
 	/**
 	 * Gets the activeRobots.
@@ -291,7 +298,6 @@ public final class Battle extends BaseBattle {
 		if (parallelOn) {
 			// how could robots share CPUs ?
 			double parallelConstant = peers.getRobots().size() / Runtime.getRuntime().availableProcessors();
-
 			// four CPUs can't run two single threaded robot faster than two CPUs
 			if (parallelConstant < 1) {
 				parallelConstant = 1;
@@ -413,7 +419,10 @@ public final class Battle extends BaseBattle {
 
         /*--ItemController--*/
         itemControl.updateRobots(peers.getRobots());
-
+        
+        //Put list of robots into robotList
+        robotList = peers.getRobots();
+        
         // Start robots
 
         long waitMillis;
