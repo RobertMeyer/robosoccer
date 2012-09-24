@@ -29,7 +29,8 @@ public class RobotType implements Serializable {
 	transient public static final RobotType PAINTING = new RobotType(64);
 	transient public static final RobotType HOUSE = new RobotType(128);
 	transient public static final RobotType BALL = new RobotType(256);
-  transient public static final RobotType BOTZILLA = new RobotType(256);
+	transient public static final RobotType BOTZILLA = new RobotType(512);
+	transient public static final RobotType ZOMBIE = new RobotType(1024);
 	
 
 	private int code;
@@ -48,7 +49,8 @@ public class RobotType implements Serializable {
 			boolean isDroid,
 			boolean isHouse,
 			boolean isBall,
-      boolean isBotzilla
+			boolean isBotzilla,
+			boolean isZombie
 			) {
 		this.code = 0;
 		if (isJuniorRobot) {
@@ -78,9 +80,12 @@ public class RobotType implements Serializable {
 		if (isBall) {
 			code += BALL.getCode();
 		}
-    if (isBotzilla) {
-          code += BOTZILLA.getCode();
-    }
+	    if (isBotzilla) {
+	    	code += BOTZILLA.getCode();
+	    }
+		if (isZombie) {
+			code += ZOMBIE.getCode();
+		}
 	}
 
 	public int getCode() {
@@ -127,9 +132,13 @@ public class RobotType implements Serializable {
 		return (code & BALL.code) != 0;
 	}
 
-  public boolean isBotzilla() {
-        return (code & BOTZILLA.code) != 0;
-  }
+	public boolean isBotzilla() {
+		return (code & BOTZILLA.code) != 0;
+	}
+	
+	public boolean isZombie() {
+		return (code & ZOMBIE.code) != 0;
+	}
 
 	@Override
 	public int hashCode() {

@@ -232,6 +232,7 @@ public class Database {
     }
 
     public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
+    	System.out.println(selectedRobots);
         List<IRepositoryItem> result = new ArrayList<IRepositoryItem>();
         StringTokenizer tokenizer = new StringTokenizer(selectedRobots, ",");
 

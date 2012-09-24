@@ -54,8 +54,10 @@
 package net.sf.robocode.battle;
 
 import java.io.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
@@ -419,6 +421,15 @@ public class BattleManager implements IBattleManager {
             }
         }
     }
+    
+    //Eliminate all robots except the top health robot
+	@Override
+	public void getTopRobot() {
+		List<RobotPeer> robotList = ((Battle) battle).getRobotList();
+		for(int i=0; i < robotList.size(); i++){
+			
+		}
+	}
 
     /**
      * Steps for a single turn, then goes back to paused
