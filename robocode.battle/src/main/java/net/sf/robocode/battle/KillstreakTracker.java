@@ -17,23 +17,16 @@ public class KillstreakTracker {
 	}
 
 	public void updateKillStreak(RobotPeer killer, RobotPeer victim) {
-		if (killstreakRobots.size() == 0) {
-			for (RobotPeer robot : battle.getRobotList()) {
-				killstreakRobots.put(robot, 0);
-			}
-			System.out.println("size of killstreakRobots = " + killstreakRobots.size());
-		}
-		
+		int newKillstreak;
 		if (enableKillstreaks == false) {
 			return;
 		}
 		
-		int newKillstreak;
 		if (killstreakRobots.containsKey(killer)) {
 			newKillstreak = killstreakRobots.get(killer);
 			newKillstreak++;
-
 			killstreakRobots.put(killer, newKillstreak);
+			
 		} else {
 			newKillstreak = 1;
 			killstreakRobots.put(killer, 1);
