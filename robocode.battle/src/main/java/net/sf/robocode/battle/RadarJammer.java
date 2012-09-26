@@ -10,7 +10,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
  * Spawns a series of bullets that don't effect the caller
  **/
 public class RadarJammer {
-	private final int JAM_TIME = 300;
+	private final int JAM_TIME = 400;
 	
 	/**
 	 * Constructor for the airstrike being called

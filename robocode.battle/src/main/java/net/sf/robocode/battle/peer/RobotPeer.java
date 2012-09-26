@@ -2205,9 +2205,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @param isScannable the isScannable to set
 	 */
 	public void setScannable(boolean isScannable) {
+		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}
 	
+	/**
+	 * Enables the RadarJamming ability for jamTime amount of turns. Robots who
+	 * call this are unscannable for this duration
+	 * 
+	 * @param jamTime
+	 *            the amount of time to block other robot's radars
+	 */
 	public void enableRadarJammer(int jamTime) {
 		setScannable(false);
 		radarJammerTimeout = battle.getTotalTurns() + jamTime;
