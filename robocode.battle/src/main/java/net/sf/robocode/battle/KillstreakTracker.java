@@ -10,13 +10,17 @@ public class KillstreakTracker {
 
 	private Map<RobotPeer, Integer> killstreakRobots = new TreeMap<RobotPeer, Integer>();
 	private Battle battle;
-	public static boolean enableKillstreaks = true;
+	public static boolean enableKillstreaks = false;
 
 	public KillstreakTracker(Battle b) {
 		battle = b;
 	}
 
-	public void updateKillStreak(RobotPeer killer, RobotPeer victim) {		
+	public void updateKillStreak(RobotPeer killer, RobotPeer victim) {	
+		if (enableKillstreaks == false) {
+			return;
+		}
+		
 		int newKillstreak;
 		if (killstreakRobots.containsKey(killer)) {
 			newKillstreak = killstreakRobots.get(killer);
@@ -39,10 +43,6 @@ public class KillstreakTracker {
 	}
 
 	private void callKillstreaks() {
-		if (enableKillstreaks == false) {
-			return;
-		}
-
 		for ( RobotPeer robot : killstreakRobots.keySet()) {
 
 			switch (killstreakRobots.get(robot)) {
@@ -54,7 +54,7 @@ public class KillstreakTracker {
 		}
 	}
 	
-	public void enableKillstreaks() {
-		enableKillstreaks = true;
+	public static void enableKillstreaks(boolean b) {
+		enableKillstreaks = b;
 	}
 }

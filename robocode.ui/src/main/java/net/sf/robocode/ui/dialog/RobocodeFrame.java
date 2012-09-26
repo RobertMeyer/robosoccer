@@ -90,6 +90,7 @@ public class RobocodeFrame extends JFrame {
     private JButton replayButton;
     private JSlider tpsSlider;
     private EffectAreaCheckbox box;
+    private KillstreakCheckbox ksBox;
     private JLabel tpsLabel;
     private boolean iconified;
     private boolean exitOnClose = true;
@@ -103,6 +104,7 @@ public class RobocodeFrame extends JFrame {
     private final MenuBar menuBar;
     final List<RobotButton> robotButtons = new ArrayList<RobotButton>();
     final List<IFullScreenListener> fullScreenListeners = new ArrayList<IFullScreenListener>();
+	private JPanel sideBooleans;
 
     public RobocodeFrame(ISettingsManager properties,
                          IWindowManager windowManager, IRobotDialogManager dialogManager,
@@ -120,6 +122,7 @@ public class RobocodeFrame extends JFrame {
         this.battleView = battleView;
         this.menuBar = menuBar;
         box = new EffectAreaCheckbox(battleManager.getBattleProperties());
+        ksBox = new KillstreakCheckbox(battleManager.getBattleProperties());
         menuBar.setup(this);
         initialize();
     }
@@ -298,6 +301,12 @@ public class RobocodeFrame extends JFrame {
         if (sidePanel == null) {
             sidePanel = new JPanel();
             sidePanel.setLayout(new BorderLayout());
+            
+            sideBooleans = new JPanel();
+            sideBooleans.setLayout(new GridLayout(2,1));
+            sideBooleans.add(box);
+            sideBooleans.add(ksBox);            
+           
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container
                     .getComponent(BattleButton.class);
@@ -309,7 +318,7 @@ public class RobocodeFrame extends JFrame {
             btn2.attach();
             
             sidePanel.add(btn, BorderLayout.SOUTH);
-            sidePanel.add(box, BorderLayout.NORTH);
+            sidePanel.add(sideBooleans, BorderLayout.NORTH);
             
             //Disabled temporarily until we can place it nicely
             //sidePanel.add(btn2, BorderLayout.NORTH);
