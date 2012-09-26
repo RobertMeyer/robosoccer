@@ -829,6 +829,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//TODO: Change to actual starting spots [Team Awesome]
 			x = 0;
 			y = 0;
+		} else if (statics.isBotzilla()){
+			energy = 500;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1177,11 +1179,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     if (!teamFire) {
                         statistics.scoreRammingDamage(otherRobot.getName());
                     }
-
+                               
                     //Use a factor of the armor if it has been changed
                     //This Robot
-                    if (otherRobot.isBotzilla()) {
-                    	this.updateEnergy(-(this.energy));
+                    if (isBotzilla()) {
+                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
                 	} else if (getRobotArmor() - 1.0 < 0.00001) {
                         this.updateEnergy(-(this.getRamDamage()));
                     } else {
@@ -1189,9 +1191,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                                             * 1 / this.getRobotArmor()));
                     }
 
+                    
+                    
                     // Other Robot
                     if (otherRobot.isBotzilla()) {
-                    	//do nothing to Botzilla
+                    	updateEnergy(-(energy + 1));
                     } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
                         otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
                     } else {
@@ -1290,7 +1294,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					: ((getBattleFieldHeight() - HALF_HEIGHT_OFFSET < y) ? getBattleFieldHeight() - HALF_HEIGHT_OFFSET : y);
 
 			// Update energy, but do not reset inactiveTurnCount
-			if (statics.isAdvancedRobot()) {
+			if (isBotzilla()) {
+				// Do nothing
+			} else if (statics.isAdvancedRobot()) {
 				setEnergy(energy - Rules.getWallHitDamage(velocity), false);
 			}
 

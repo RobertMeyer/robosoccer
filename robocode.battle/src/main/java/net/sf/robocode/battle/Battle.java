@@ -167,8 +167,16 @@ public final class Battle extends BaseBattle {
     // Initial robot start positions (if any)
     private double[][] initialRobotPositions;
     //Check for Botzilla
+    private int currentTurn;
     private Boolean botzillaActive;
     private int botzillaSpawnTime = 40;
+<<<<<<< HEAD
+=======
+    RobotPeer botzillaPeer;
+    RobotSpecification botzilla;
+   
+	private List<CustomObject> customObject = new ArrayList<CustomObject>();
+>>>>>>> Added botzilla mode functionality
   
    
     // kill streak tracker
@@ -206,6 +214,17 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 		
         battleMode = (ClassicMode) battleProperties.getBattleMode();
+        //TODO Just testing spawning any bot for now
+        final RobotSpecification[] temp = repositoryManager.getSpecifications();
+        for(int i = 0; i < temp.length; i++) {
+        	String className = temp[i].getClassName();
+        	if(className.equals("sampleex.Botzilla")) {
+        		botzilla = temp[i];
+        		break;
+        	}
+        }
+
+        botzillaActive = false;
         
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
@@ -292,8 +311,9 @@ public final class Battle extends BaseBattle {
 		for (int i = 4; i >= 0; i--) { // Make sure it is run
 			System.gc();
 		}
+		
 	}
-
+	
 	@Override
 	protected void initializeBattle() {
 		super.initializeBattle();
@@ -330,6 +350,7 @@ public final class Battle extends BaseBattle {
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.cleanup();
 		}
+		
 		hostManager.resetThreadManager();
 
 		super.finalizeBattle();
@@ -374,11 +395,12 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void preloadRound() {
 		super.preloadRound();
-	
+		//TODO reset currentTurn
+		currentTurn = 0;
+		
 		/*--ItemController--*/
 		itemControl = new ItemController();
 		itemControl.updateRobots(peers.getRobots());
-	
 		// At this point the unsafe loader thread will now set itself to wait for a notify
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.initializeRound(peers.getRobots(), initialRobotPositions);
@@ -417,8 +439,6 @@ public final class Battle extends BaseBattle {
     protected void initializeRound() {
         super.initializeRound();
         
-        botzillaActive = false;
-        
         inactiveTurnCount = 0;
 
         /*--ItemController--*/
@@ -456,7 +476,11 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void finalizeRound() {
 		super.finalizeRound();
-
+		
+		if(botzillaActive) {
+			removeBotzilla();
+		}
+		
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.waitForStop();
 			robotPeer.getRobotStatistics().generateTotals();
@@ -469,6 +493,13 @@ public final class Battle extends BaseBattle {
 
 	@Override
 	protected void initializeTurn() {
+		//TODO check if this works
+        if (currentTurn == botzillaSpawnTime &&
+        		battleMode.toString() == "Botzilla Mode" &&
+        		!botzillaActive) {
+        	addBotzilla();
+        }
+        
 		super.initializeTurn();
 
 		eventDispatcher.onTurnStarted(new TurnStartedEvent());
@@ -477,7 +508,6 @@ public final class Battle extends BaseBattle {
 	@Override
     protected void runTurn() {
         super.runTurn();
-
 
         loadCommands();
 
@@ -514,9 +544,11 @@ public final class Battle extends BaseBattle {
 				itemCursor++;
 			}
 		}
-
+		
+		 currentTurn++;
         // Robot time!
         wakeupRobots();
+        
     }
 
 	 @Override
@@ -687,6 +719,7 @@ public final class Battle extends BaseBattle {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
         
+<<<<<<< HEAD
         if (getTotalTurns() >= botzillaSpawnTime &&
         		battleMode.toString() == "Botzilla Mode" &&
         		!botzillaActive) {
@@ -694,24 +727,42 @@ public final class Battle extends BaseBattle {
         }
         
         // Increment mode specific points - TODO -team-Telos
+=======
+        // Increment mode specific points - TODO -team-Telos
+>>>>>>> Added botzilla mode functionality
 		this.getBattleMode().scoreTurnPoints();
         
         getBattleMode().updateRobotScans(peers.getRobots());
     }
 	
+	private void removeBotzilla() {
+		botzillaActive = false;
+        peers.removeBotzilla();
+        botzillaPeer.cleanup();
+        robotsCount--;
+	}
+	
 	private void addBotzilla() {
 		System.out.println("BOTZILLA JUST APPEARED");
 		botzillaActive = true;
 		
-//		RobotPeer robotPeer = new RobotPeer(this,
-//				hostManager,
-//				RobotSpecification robotSpecification,
-//				robotDuplicates.get(i),
-//				null,
-//				robots.size());
-//		
-//		robots.add(robotPeer);
-//		contestants.add(robotPeer);
+		botzillaPeer = new RobotPeer(this,
+				hostManager,
+				botzilla,
+				0,
+				null,
+				getRobotsCount());
+		robotsCount++;
+		peers.addRobot(botzillaPeer);
+		peers.addContestant(botzillaPeer);
+		botzillaPeer.initializeRound(peers.getRobots() , null);
+		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+
+        final long waitMillis = waitTime / 1000000;
+        final int waitNanos = (int) (waitTime % 1000000);
+		botzillaPeer.startRound(waitMillis, waitNanos);
+		// TODO make appear and running
+		
 	}
 
     private void handleDeadRobots() {

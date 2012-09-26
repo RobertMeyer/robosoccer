@@ -185,8 +185,12 @@ public class BattlePeers {
 		contestants.add(peer);
 	}
 	
+	public void removeBotzilla() {
+		robots.remove(robots.size() - 1);
+		contestants.remove(robots.size() - 1);
+	}
+	
 	public void cleanup() {
-
 		if (contestants != null) {
 			contestants.clear();
 			contestants = null;
