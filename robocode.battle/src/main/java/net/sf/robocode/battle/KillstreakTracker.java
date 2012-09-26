@@ -55,8 +55,8 @@ public class KillstreakTracker {
 		}
 
 		/* Print disabled due to failing tests */
-		killer.println("SYSTEM: Killstreak is now " + newKillstreak);
-		victim.println("SYSTEM: Killstreak reset to 0");
+		killer.println("KILLSTREAK: Killstreak is now " + newKillstreak);
+		victim.println("KILLSTREAK: Killstreak reset to 0");
 		callKillstreak(killer);
 	}
 

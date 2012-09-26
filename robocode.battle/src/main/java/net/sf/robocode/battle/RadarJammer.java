@@ -1,7 +1,6 @@
 package net.sf.robocode.battle;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
@@ -22,6 +21,6 @@ public class RadarJammer {
 	 */
 	public RadarJammer(RobotPeer robotPeer, Battle battle) {
 		robotPeer.enableRadarJammer(JAM_TIME);
-		robotPeer.println("SYSTEM: Called a RadarJammer!");
+		robotPeer.println("KILLSTREAK: Called a RadarJammer! Robot will be unscannable for " + JAM_TIME + " turns" );
 	}
 }

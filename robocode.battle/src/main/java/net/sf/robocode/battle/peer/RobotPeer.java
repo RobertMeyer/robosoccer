@@ -2205,6 +2205,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @param isScannable the isScannable to set
 	 */
 	public void setScannable(boolean isScannable) {
+		if (isScannable) {
+			this.println("KILLSTREAK: Radar Jammer expired");
+		}
 		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}

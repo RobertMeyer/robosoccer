@@ -30,7 +30,7 @@ public class AirStrike {
 			bullet.setHeading(1.57);
 			battle.addBullet(bullet);
 		}
-		robotPeer.println("SYSTEM: Called an Airstrike!");
+		robotPeer.println("KILLSTREAK: Called an Airstrike!");
 
 	}
 }
