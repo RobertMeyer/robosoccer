@@ -10,7 +10,7 @@ public class KillstreakTracker {
 
 	private Map<RobotPeer, Integer> killstreakRobots = new TreeMap<RobotPeer, Integer>();
 	private Battle battle;
-	public static boolean enableKillstreaks = false;
+	public static boolean enableKillstreaks = true;
 
 	public KillstreakTracker(Battle b) {
 		battle = b;
@@ -48,7 +48,6 @@ public class KillstreakTracker {
 			switch (killstreakRobots.get(robot)) {
 			case 5:
 				new AirStrike(robot, battle);
-				robot.println("Called an Airstrike!");
 				break;
 			}
 
