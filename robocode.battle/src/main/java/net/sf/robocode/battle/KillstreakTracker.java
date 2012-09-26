@@ -1,14 +1,14 @@
 package net.sf.robocode.battle;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import net.sf.robocode.battle.peer.RobotPeer;
 
 
 public class KillstreakTracker {
 
-	private Map<RobotPeer, Integer> killstreakRobots = new TreeMap<RobotPeer, Integer>();
+	private Map<RobotPeer, Integer> killstreakRobots = new HashMap<RobotPeer, Integer>();
 	private Battle battle;
 	public static boolean enableKillstreaks = false;
 
@@ -16,7 +16,14 @@ public class KillstreakTracker {
 		battle = b;
 	}
 
-	public void updateKillStreak(RobotPeer killer, RobotPeer victim) {	
+	public void updateKillStreak(RobotPeer killer, RobotPeer victim) {
+		if (killstreakRobots.size() == 0) {
+			for (RobotPeer robot : battle.getRobotList()) {
+				killstreakRobots.put(robot, 0);
+			}
+			System.out.println("size of killstreakRobots = " + killstreakRobots.size());
+		}
+		
 		if (enableKillstreaks == false) {
 			return;
 		}
@@ -36,9 +43,9 @@ public class KillstreakTracker {
 			killstreakRobots.put(victim, 0);
 		}
 
-		// Print disabled due to failing tests
-		//killer.println("Killstreak is now " + newKillstreak);
-		//victim.println("Killstreak reset to 0");
+		/* Print disabled due to failing tests */
+		killer.println("SYSTEM: Killstreak is now " + newKillstreak);
+		victim.println("SYSTEM: Killstreak reset to 0");
 		callKillstreaks();
 	}
 
