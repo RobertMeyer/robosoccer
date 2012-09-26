@@ -217,7 +217,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
-	
+	private boolean isScannable = true;
 
 	/**
 	 * An association of values to every RobotAttribute, such that game
@@ -564,6 +564,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// -----------
 
 	ByteBuffer bidirectionalBuffer;
+
+	private int radarJammerTimeout;
 
 	public void setupBuffer(ByteBuffer bidirectionalBuffer) {
 		this.bidirectionalBuffer = bidirectionalBuffer;
@@ -991,6 +993,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
 			return;
+		}
+		
+		// check radar jamming robots for timeout
+		if ((!isScannable) && (battle.getTotalTurns() >= radarJammerTimeout)) {
+			setScannable(true);
 		}
 
 		setState(RobotState.ACTIVE);
@@ -2183,4 +2190,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
                 + (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
     }
+
+	/**
+	 * @return the isScannable
+	 */
+	public boolean isScannable() {
+		return isScannable;
+	}
+
+	/**
+	 * @param isScannable the isScannable to set
+	 */
+	public void setScannable(boolean isScannable) {
+		this.isScannable = isScannable;
+	}
+	
+	public void enableRadarJammer(int jamTime) {
+		setScannable(false);
+		radarJammerTimeout = battle.getTotalTurns() + jamTime;
+	}
 }
