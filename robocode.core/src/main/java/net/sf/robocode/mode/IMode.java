@@ -63,7 +63,14 @@ public interface IMode {
 	 */
 	public int turnLimit();
 
- 	/** Add's mode specific robots to the list of selected robots.
+	public void setItems();
+	
+	/**
+	 * Increments the score specific to the different modes
+	 */
+	public void scorePoints();
+
+ 	/* Add's mode specific robots to the list of selected robots.
 	 * 
 	 * @param current list of selected robots in the form: 
 	 * "robots.myRobot*,robots.yourRobot*"...

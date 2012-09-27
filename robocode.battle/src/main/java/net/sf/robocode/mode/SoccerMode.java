@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.peer.BallPeer;
-import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.host.IHostManager;
@@ -49,12 +48,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 */
 	public String getDescription() {
 		return description;
-	}
-	
-	
-	@Override
-	public void getRobots(List<RobotPeer> robots) {
-		this.robots = robots;
 	}
 
 	/**
@@ -102,14 +95,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createPeers(Battle battle,
+	public void createPeers(BattlePeers peers,
 			RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			List<RobotPeer> robots, List<ContestantPeer> contestants,
 			IRepositoryManager repositoryManager) {
 		Hashtable<String, Integer> duplicates = new Hashtable<String, Integer>();
-		int teamSize = battle.getRobotsCount() / 2;
+		int teamSize = peers.getBattle().getRobotsCount() / 2;
 		// Counts the number of duplicates for each robot being used.
-		for(int i = 0; i < battle.getRobotsCount(); i++) {
+		for(int i = 0; i < peers.getBattle().getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
 			String name = spec.getName();
 			
@@ -125,34 +117,35 @@ public class SoccerMode extends ClassicMode implements IMode {
 		TeamPeer team2 = new TeamPeer("Team 2", null, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
 		
-		contestants.add(team1);
-		contestants.add(team2);
+		peers.addContestant(team1);
+		peers.addContestant(team2);
 		
-		for(int j = 0; j < battle.getRobotsCount(); j++) {
+		for(int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
 			RobotSpecification spec = battlingRobotsList[j];
 			RobotPeer robot = null;
 			
 			if(j < teamSize) {
-				robot = new RobotPeer(battle, hostManager, spec, 
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
 						duplicates.get(spec.getName()), team1, j);
 			} else {
-				robot = new RobotPeer(battle, hostManager, spec, 
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
 						duplicates.get(spec.getName()), team2, j);
 			}
 			
-			robots.add(robot);
+			peers.addRobot(robot);
 		}
 		
 		// Create the ball robot and add it to the appropriate peer lists/team.
 		RobotSpecification ballSpec = 
 				repositoryManager.loadSelectedRobots("soccer.BallBot*")[0];
-		BallPeer ball = new BallPeer(battle, hostManager, ballSpec, 0, ballTeam, robots.size());
+		BallPeer ball = new BallPeer(peers.getBattle(), hostManager, ballSpec, 0, ballTeam, peers.getRobots().size());
 		this.ball = new ArrayList<RobotPeer>();
 		this.ball.add(ball);
 
 		ballTeam.add(ball);
-		contestants.add(ballTeam);
-		robots.add(ball);
+		peers.addContestant(ballTeam);
+		peers.addRobot(ball);
+		robots = peers.getRobots();
 	}
 	
 	/**

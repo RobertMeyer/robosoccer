@@ -7,8 +7,6 @@
  *******************************************************************************/
 package robocode;
 
-import java.awt.Color;
-
 import robocode.Robot;
 
 /**
@@ -22,76 +20,86 @@ import robocode.Robot;
  */
 public class SoldierRobot extends Robot {
 	
-	Color pause = new Color(255, 0, 0); //red
-	Color advance = new Color(0, 255, 0); //green
-	Color retreat = new Color(255, 255, 0); //yellow
+	public final int PAUSE = 1;
+	public final int ADVANCE = 2;
+	public final int RETREAT = 3;
+	public final int ATTACK = 4;
+	public final int INCREASE_POWER = 5;
+	public final int DECREASE_POWER = 6;
+	public final int TAUNT = 7;
 	
-	Color attack = new Color(0,0,0);
-	
-	Color taunt = new Color(255, 20, 147); //deep pink
-	
-	private Color bodyColor = null;
-	private Color gunColor = null;
-	private Color radarColor = null;
-	
+	private int tactic = 0;
 	private double power = 1.5;
 	
+	public int getTactic() {
+		return tactic;
+	}
+
+	public void setTactic(int tactic) {
+		this.tactic = tactic;
+	}
+	
+	/**
+	 * Passes information to the tactic methods on scan.
+	 * When writing your own onScannedRobot for your own SoldierRobot,
+	 * you should put super.onScannedRobot early in the method, so that
+	 * ScannedRobotEvents can still be passed.
+	 */
+	public void onScannedRobot(ScannedRobotEvent e) {
+		switch (tactic) {
+			case ADVANCE:
+				advance(e);
+				break;
+				
+			case RETREAT:
+				retreat(e);
+				break;
+				
+			case ATTACK:
+				attack(e);
+				break;
+		}
+	}
 	
 	/**
 	 * Stop everything.
 	 */
 	public void pause() {
-		bodyColor = pause;
-		setColors(bodyColor, gunColor, radarColor);
-		
 		stop();
 	}
 	
 	/**
 	 * Find an enemy and approach them.
 	 */
-	public void advance() {
-		bodyColor = advance;
-		setColors(bodyColor, gunColor, radarColor);
-		
-		//detect enemy
-		//need to take event data, prevent onScannedRobot from doing it's thing
-		//move forward
+	public void advance(ScannedRobotEvent e) {
+		turnRight(e.getBearing());
+		while(true) ahead(1);
 	}
 	
 	/**
 	 * Back away.
 	 */
-	public void retreat() {
-		bodyColor = retreat;
-		setColors(bodyColor, gunColor, radarColor);
-		
+	public void retreat(ScannedRobotEvent e) {
+		turnRight(e.getBearing());
 		while(true) back(1);
 	}
 	
 	/**
 	 * Find an enemy and fire at them!
 	 */
-	public void attack() {
-		
-		setColors(attack, gunColor, radarColor);
-		
-		//detect enemy
-		//need to take event data, prevent onScannedRobot from doing it's thing
-		//shoot at them - use power variable
-		
-		setColors(bodyColor, gunColor, radarColor);
-		
+	public void attack(ScannedRobotEvent e) {
+		turnGunRight(getHeading() - getGunHeading() + e.getBearing());
+		fire(power);
 	}
 	
 	/**
 	 * Increase the power of the robot's shots.
 	 */
 	public void increasePower() {
-		//for gun color, use saturation: color(sat, sat, sat)
-		
-		if (power <= 2.5) {
+		if (power < 2.5) {
 			power += 0.5;
+		} else {
+			power = 3.0;
 		}
 	}
 	
@@ -99,10 +107,10 @@ public class SoldierRobot extends Robot {
 	 * Decrease the power of your shots to save power.
 	 */
 	public void decreasePower() {
-		//for gun color, use saturation: color(sat, sat, sat)
-		
-		if (power > 0.5) {
+		if (power > 1.0) {
 			power -= 0.5;
+		} else {
+			power = 0.5;
 		}
 	}
 	
@@ -110,13 +118,11 @@ public class SoldierRobot extends Robot {
 	 * Degrade your enemies by taunting them.
 	 */
 	public void taunt() {
-		bodyColor = taunt;
-		setColors(bodyColor, gunColor, radarColor);
-		
     	for (int i = 0; i < 360; i++) {
     		turnRadarRight(1);
     		turnGunRight(1);
     		turnLeft(1);
     	}
 	}
+	
 }
