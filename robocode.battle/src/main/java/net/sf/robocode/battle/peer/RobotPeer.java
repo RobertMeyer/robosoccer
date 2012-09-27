@@ -2162,6 +2162,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
     @Override
     public int compareTo(ContestantPeer cp) {
+    	if(cp.getStatistics() != null) {
         double myScore = statistics.getTotalScore();
         double hisScore = cp.getStatistics().getTotalScore();
 
@@ -2175,7 +2176,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         if (myScore > hisScore) {
             return 1;
         }
+    	}
         return 0;
+    	
     }
 
     @Override
