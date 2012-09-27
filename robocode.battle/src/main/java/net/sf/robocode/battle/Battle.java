@@ -228,6 +228,14 @@ public final class Battle extends BaseBattle {
 	public int getRobotsCount() {
 		return robotsCount;
 	}
+	
+	public List<IRenderable> getCustomObject(){
+		return customObject;
+	}
+	
+	public ItemController getItemControl(){
+		return itemControl;
+	}
 
 	public boolean isDebugging() {
 		return isDebugging;

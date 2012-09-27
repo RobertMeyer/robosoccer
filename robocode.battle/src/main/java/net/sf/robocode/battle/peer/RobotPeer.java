@@ -142,11 +142,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public static final int
 			WIDTH = 40,
 			HEIGHT = 40;
-	
-	//dimensions for botzilla
-	public static final int
-			BZ_WIDTH = WIDTH*2,
-			BZ_HEIGHT = HEIGHT*2;
 
 	protected static final int
 			HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
@@ -218,6 +213,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
 	private boolean isScannable = true;
+	
 
 	/**
 	 * An association of values to every RobotAttribute, such that game
@@ -564,7 +560,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// -----------
 
 	ByteBuffer bidirectionalBuffer;
-
+	
 	private int radarJammerTimeout;
 
 	public void setupBuffer(ByteBuffer bidirectionalBuffer) {
@@ -994,11 +990,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isDead()) {
 			return;
 		}
-		
-		// check radar jamming robots for timeout
-		if ((!isScannable) && (battle.getTotalTurns() >= radarJammerTimeout)) {
-			setScannable(true);
-		} 
 
 		setState(RobotState.ACTIVE);
 
@@ -1322,11 +1313,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public void updateBoundingBox() {
-		if (isBotzilla()) {
-			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
-		} else {
-			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
-		}
+		boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
 	}
 
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?
@@ -1640,9 +1627,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				double angle = atan2(dx, dy);
 				double dist = Math.hypot(dx, dy);
 
-				if (!otherRobot.isScannable()) {
-					return;
-				}
 				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
 						otherRobot.getVelocity());
@@ -2193,8 +2177,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
                 + (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
     }
-
-	/**
+    
+    /**
 	 * @return the isScannable
 	 */
 	public boolean isScannable() {
@@ -2211,7 +2195,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}
-	
+
 	/**
 	 * Enables the RadarJamming ability for jamTime amount of turns. Robots who
 	 * call this are unscannable for this duration
