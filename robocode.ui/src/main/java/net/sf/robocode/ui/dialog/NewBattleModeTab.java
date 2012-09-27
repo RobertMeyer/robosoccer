@@ -19,6 +19,7 @@ public class NewBattleModeTab extends JPanel {
 	
 	private DefaultListModel modeListModel;
 	
+	private JPanel currentModePanel;
 	private JPanel currentModeRulesPanel;
 	
 	private IMode modes[] = { 
@@ -57,12 +58,16 @@ public class NewBattleModeTab extends JPanel {
 		modeList.setModel(modeListModel());
 		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
+		currentModePanel = new JPanel();
+		currentModePanel.setLayout(new GridLayout(2, 1, 5, 5));
 		currentModeRulesPanel = new JPanel();
 		
-		setLayout(new GridLayout(3,1,5,5));
+		
+		setLayout(new GridLayout(1,3,10,10));
 		setBorder(BorderFactory.createEtchedBorder());
 		add(getModeList());
-		add(getDescriptionLabel());
+		currentModePanel.add(getDescriptionLabel());
+		add(currentModePanel);
 		
 	}
 	
@@ -77,13 +82,13 @@ public class NewBattleModeTab extends JPanel {
 	public void updateModePanel() {
 		description.setText(getSelectedMode().getDescription());
 		if(currentModeRulesPanel != null){
-			remove(currentModeRulesPanel);
+			currentModePanel.remove(currentModeRulesPanel);
 		}
 		
 		currentModeRulesPanel = getSelectedMode().getRulesPanel();
 		
 		if(currentModeRulesPanel != null){
-			add(currentModeRulesPanel);
+			currentModePanel.add(currentModeRulesPanel);
 		}
 		repaint();
 	}
