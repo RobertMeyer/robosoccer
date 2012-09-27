@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Hashtable;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.CustomObject;
+import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.ItemDrop;
 import robocode.BattleRules;
 import java.util.Random;
@@ -31,7 +31,7 @@ import robocode.control.RobotSpecification;
  */
 public class ClassicMode implements IMode {
 	
-	public GuiOptions uiOptions;
+	protected GuiOptions uiOptions;
 	
 	/**
 	 * {@inheritDoc}
@@ -108,7 +108,7 @@ public class ClassicMode implements IMode {
 	 * 
 	 * @param customObject - an ArrayList of all customObjects
 	 */
-	public void updateCustomObjects(List<CustomObject> customObject) {
+	public void updateCustomObjects(List<IRenderable> customObject) {
 		
 	}
 	
@@ -149,7 +149,7 @@ public class ClassicMode implements IMode {
 	 * 
 	 * @return a ArrayList<CustomObjects> which are added to the scene.
 	 */
-	public List<CustomObject> createCustomObjects() {
+	public List<IRenderable> createCustomObjects() {
 		return null;
 	}
 	

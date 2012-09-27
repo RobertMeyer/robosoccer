@@ -1,10 +1,14 @@
 package net.sf.robocode.battle.snapshot;
 
+import java.awt.Color;
 import java.awt.geom.AffineTransform;
 
-import robocode.control.snapshot.ICustomObjectSnapshot;
+import robocode.control.snapshot.IRenderableSnapshot;
+import robocode.control.snapshot.RenderableType;
 
-import net.sf.robocode.battle.CustomObject;
+import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.RenderImage;
+import net.sf.robocode.battle.RenderString;
 
 /**
  * This implements the ICustomObjectSnapshot interface.
@@ -14,19 +18,21 @@ import net.sf.robocode.battle.CustomObject;
  * @author Benjamin Evenson @ Team-G1
  *
  */
-public final class CustomObjectSnapshot implements ICustomObjectSnapshot {
+public final class RenderableSnapshot implements IRenderableSnapshot {
 	private AffineTransform at;
 	private String name;
 	private String filename;
 	private boolean hide;
 	private float alpha;
+	private RenderableType type;
+	private Color colour;
 
 	/**
 	 * Default Constructor
 	 * 
 	 * do nothing?
 	 */
-	public CustomObjectSnapshot() {
+	public RenderableSnapshot() {
 
 	}
 
@@ -35,13 +41,18 @@ public final class CustomObjectSnapshot implements ICustomObjectSnapshot {
 	 * 
 	 * @param co - CustomObject used to create a snapshot
 	 */
-	public CustomObjectSnapshot(CustomObject co) {
+	public RenderableSnapshot(IRenderable co) {
 		this.at = new AffineTransform();
 		this.at = co.getAffineTransform();
 		this.name = co.getName();
-		this.filename = co.getFilename();
 		this.hide = co.getHide();
 		this.alpha = co.getAlpha();
+		this.type = co.getType();
+		this.colour = co.getColor();
+		if (this.type == RenderableType.SPRITE)
+			this.filename = ((RenderImage)co).getFilename();
+		else
+			this.filename = ((RenderString)co).getName();
 	}
 
 	/**
@@ -82,6 +93,22 @@ public final class CustomObjectSnapshot implements ICustomObjectSnapshot {
 	@Override
 	public float getAlpha() {
 		return this.alpha;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public RenderableType getType() {
+		return this.type;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Color getColour() {
+		return this.colour;
 	}
 
 }

@@ -17,7 +17,8 @@ import java.io.IOException;
 import java.util.*;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.CustomObject;
+import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.RenderImage;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.EffectArea;
@@ -49,7 +50,7 @@ public final class TurnSnapshot implements java.io.Serializable,
     private List<IItemSnapshot> items;
     /** List of snapshots of effect areas */
 	private List<IEffectAreaSnapshot> effArea;
-	private List<ICustomObjectSnapshot> customObj;
+	private List<IRenderableSnapshot> customObj;
     /** Current TPS (turns per second) */
     private int tps;
     /** Current round in the battle */
@@ -72,12 +73,12 @@ public final class TurnSnapshot implements java.io.Serializable,
      * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
      *                    {@code false} otherwise.
      */
-    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<CustomObject> customObjects,boolean readoutText) {
+    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<IRenderable> customObjects,boolean readoutText) {
         robots = new ArrayList<IRobotSnapshot>();
         bullets = new ArrayList<IBulletSnapshot>();
         items = new ArrayList<IItemSnapshot>();
 		effArea = new ArrayList<IEffectAreaSnapshot>();
-		customObj = new ArrayList<ICustomObjectSnapshot>();
+		customObj = new ArrayList<IRenderableSnapshot>();
         
         for (RobotPeer robotPeer : battleRobots) {
             robots.add(new RobotSnapshot(robotPeer, readoutText));
@@ -91,8 +92,8 @@ public final class TurnSnapshot implements java.io.Serializable,
 			effArea.add(new EffectAreaSnapshot(effectArea));
 		}
         
-        for (CustomObject customObject : customObjects) {
-        	customObj.add(new CustomObjectSnapshot(customObject));
+        for (IRenderable customObject : customObjects) {
+        	customObj.add(new RenderableSnapshot(customObject));
         }
         
         tps = battle.getTPS();
@@ -127,8 +128,8 @@ public final class TurnSnapshot implements java.io.Serializable,
 	}
 	
 	@Override
-	public ICustomObjectSnapshot[] getCustomObjects() {
-		return customObj.toArray(new ICustomObjectSnapshot[customObj.size()]);
+	public IRenderableSnapshot[] getCustomObjects() {
+		return customObj.toArray(new IRenderableSnapshot[customObj.size()]);
 	}
 	
     /**

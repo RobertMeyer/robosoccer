@@ -1,12 +1,10 @@
 package net.sf.robocode.mode;
 
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.CustomObject;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -122,8 +120,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 			}
 		}
 		
-		battle.createCustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
-		
 		// Create teams 1 and 2.
 		TeamPeer team1 = new TeamPeer("Team 1", null, 0);
 		TeamPeer team2 = new TeamPeer("Team 2", null, 1);
@@ -196,21 +192,35 @@ public class SoccerMode extends ClassicMode implements IMode {
 		return endTimer > 5*time;
 	}
 	
-	/*@Override
-	public List<CustomObject> createCustomObjects() {
-		List<CustomObject> objs = new ArrayList<CustomObject>(); 
-		CustomObject obj = new CustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 100, 100);
+/*	@Override
+	public List<IRenderable> createCustomObjects() {
+		List<IRenderable> objs = new ArrayList<IRenderable>(); 
+		RenderString obj = new RenderString("flag", "Testing");
+		obj.setTranslate(300, 300);
+		obj.setColour(Color.BLUE);
+		obj.setScale(10, 10);
 		objs.add(obj);
 		return objs;
 	}
 	
+	private int counter = 0; 
+	
 	@Override
-	public void updateCustomObjects(List<CustomObject> objects) {
-		for (CustomObject obj: objects) {
-			AffineTransform at = obj.getTranslate();
-			//obj.setTranslate(at.getTranslateX() + 1, at.getTranslateY());
-		}
-		
+	public void updateCustomObjects(List<IRenderable> objects) {
+		counter += System.currentTimeMillis();
+		Iterator<IRenderable> itr = objects.iterator();
+		while (itr.hasNext()) {
+			IRenderable obj = (IRenderable)itr.next();
+			if (obj.getType() == RenderableType.SPRITE_STRING) {
+				float pi = 3.14f;
+				float freq = 10.0f;
+				RenderString objs = (RenderString)obj;
+				objs.setAlpha((float)(0.5*(1+Math.sin(2*pi*freq*counter))));
+				
+			}
+			//obj.toggleHide();
+			//itr.remove();
+		}	
 	}*/
 	
 	@Override

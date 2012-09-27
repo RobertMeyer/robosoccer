@@ -1,14 +1,16 @@
 package net.sf.robocode.battle;
 
+import java.awt.Color;
 import java.awt.geom.AffineTransform;
+
+import robocode.control.snapshot.RenderableType;
 
 /**
  * This interface defines all the methods in a CustomObject.
  * 
  * @author Benjamin Evenson @ Team-G1
  */
-public interface ICustomObject {
-	
+public interface IRenderable {
 	/**
 	 * Modifies the position of the object.
 	 * 
@@ -117,9 +119,39 @@ public interface ICustomObject {
 	public AffineTransform getAffineTransform();
 	
 	/**
+	 * Returns the type of renderable.
+	 * 
+	 * @return a RenderType enum of type of renderable.
+	 */
+	public RenderableType getType();
+	
+	/**
+	 * Returns the name of the object.
+	 * 
+	 * @return a string representation of name.
+	 */
+	public String getName();
+	
+	/**
 	 * Returns a string representation of a Object.
 	 * 
 	 * @return a string representation of object.
 	 */
 	public String toString();
+	
+	/**
+	 * Sets the colour of the renderable.
+	 * 
+	 * @param col - a Java.Color representation of a colour.
+	 */
+	public void setColour(Color col);
+	
+	/**
+	 * Returns the Java.color of renderable
+	 * 
+	 * @return a Java.Color representation of renderable.
+	 */
+	public Color getColor();
+	
+	
 }

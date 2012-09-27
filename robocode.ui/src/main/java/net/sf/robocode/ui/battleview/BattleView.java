@@ -44,10 +44,11 @@ import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
-import robocode.control.snapshot.ICustomObjectSnapshot;
+import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
+import robocode.control.snapshot.RenderableType;
 
 
 /**
@@ -489,31 +490,61 @@ public class BattleView extends Canvas {
      */
     private void drawImages(Graphics2D g, ITurnSnapshot snapShot) {
     	// Loop through each CustomObjectSnapshot and render to screen
-    	for (ICustomObjectSnapshot snap : snapShot.getCustomObjects()) {
-    		// Load image from cache
-    		RenderImage image = customImage.get(snap.getName());
-    		// Check if image exists in Cache
-    		if (image == null) {
-    			// Load image into cache
-    			image = addImage(snap.getName(), snap.getFilename());
-    		}
-    		// Setup matrix transform of image
-			AffineTransform at = snap.getAffineTransform();
-			image.setTransform(at);
-    		
-			// Keep old alpha level state
-    		Composite oldState = g.getComposite();
-    		// Setup new alpha level state
-    		AlphaComposite alphaComposite = AlphaComposite.
-    				getInstance(AlphaComposite.SRC_OVER, snap.getAlpha());
-    		g.setComposite(alphaComposite);
-    		
-    		// Render to screen
-    		if (!snap.getHide())
-    			image.paint(g);	
-    		
-    		// Restore old alpha state
-    		g.setComposite(oldState);
+    	for (IRenderableSnapshot snap : snapShot.getCustomObjects()) {
+			if (snap.getType() == RenderableType.SPRITE) {
+				// Load image from cache
+				RenderImage image = customImage.get(snap.getName());
+				// Check if image exists in Cache
+				if (image == null) {
+					// Load image into cache
+					image = addImage(snap.getName(), snap.getFilename());
+				}
+				// Setup matrix transform of image
+				AffineTransform at = snap.getAffineTransform();
+				image.setTransform(at);
+				
+				Color oldColour = g.getColor();
+				
+				if (snap.getColour() != null) {
+					g.setColor(snap.getColour());
+				}
+
+				// Keep old alpha level state
+				Composite oldState = g.getComposite();
+				// Setup new alpha level state
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, snap.getAlpha());
+				g.setComposite(alphaComposite);
+
+				// Render to screen
+				if (!snap.getHide())
+					image.paint(g);
+
+				// Restore old alpha state
+				g.setColor(oldColour);
+				g.setComposite(oldState);
+			} else if (snap.getType() == RenderableType.SPRITE_STRING) {
+				AffineTransform at = snap.getAffineTransform();
+				AffineTransform oldAt = g.getTransform();
+				g.setTransform(at);
+				// Keep old alpha level state
+				Composite oldState = g.getComposite();
+				// Setup new alpha level state
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, snap.getAlpha());
+				g.setComposite(alphaComposite);
+				
+				Color oldColour = g.getColor();
+				g.setColor(snap.getColour());
+			
+				if (!snap.getHide())
+					g.drawString(snap.getFilename(), 0, 0);
+				
+				// Restore old state
+				g.setColor(oldColour);
+				g.setComposite(oldState);
+				g.setTransform(oldAt);
+			}
     	}
     }
 

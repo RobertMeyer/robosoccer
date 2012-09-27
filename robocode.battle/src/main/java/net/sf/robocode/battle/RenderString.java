@@ -1,78 +1,64 @@
 package net.sf.robocode.battle;
 
+import java.awt.Color;
 import java.awt.geom.AffineTransform;
 
-/**
- * This implements the ICustomObject interface, which represents
- * a custom object within robocode.
- * 
- * @author Benjamin Evenson @ Team-G1
- *
- */
-public class CustomObject implements ICustomObject {
+import robocode.control.snapshot.RenderableType;
+
+public class RenderString implements IRenderable {
 	private AffineTransform at;
 	private double rotation;
 	private float alpha;
 	private String name;
-	private String filename;
+	private String text;
 	private boolean hide;
-
+	private RenderableType type;
+	private Color colour;
+	
 	/**
-	 * Constructs a new CustomObject with given parameters.
+	 * Constructs a new RenderString with given parameters.
 	 * 
 	 * @param name - Key used for hashmap(Must be Unique).
-	 * @param filename - Path to image file.
+	 * @param text - text that will be rendered.
 	 */
-	public CustomObject(String name, String filename) {
+	public RenderString(String name, String text) {
 		this.at = new AffineTransform();
 		this.name = name;
-		this.filename = filename;
+		this.text = text;
 		this.hide = false;
 		this.alpha = 1.0f;
 		this.rotation = 0.0f;
+		this.colour = Color.WHITE;
+		this.type = RenderableType.SPRITE_STRING;
 	}
-
+	
 	/**
-	 * Constructs a new CustomObject with given parameters.
+	 * Constructs a new RenderString with given parameters.
 	 * 
 	 * @param name - Key used for hashmap(Must be Unique).
-	 * @param filename - Path to image file.
+	 * @param text - text that will be rendered.
 	 * @param x - x position.
 	 * @param y - y position.
 	 */
-	public CustomObject(String name, String filename, double x, double y) {
-		this.name = name;
-		this.filename = filename;
+	public RenderString(String name, String text, double x, double y) {
 		this.at = new AffineTransform();
 		setTranslate(x, y);
-		this.hide = false;
-		this.alpha = 1.0f;
-		this.rotation = 0.0f;
-	}
-
-	/**
-	 * Constructs a new CustomObject with given parameters.
-	 * 
-	 * @param name - Key used for hashmap(Must be Unique).
-	 * @param filename - Path to image file.
-	 * @param at - AffineTransform for object.
-	 */
-	public CustomObject(String name, String filename, AffineTransform at) {
 		this.name = name;
-		this.filename = filename;
-		this.at = at;
-		this.alpha = 1.0f;
+		this.text = text;
 		this.hide = false;
+		this.alpha = 1.0f;
 		this.rotation = 0.0f;
+		this.colour = Color.WHITE;
+		this.type = RenderableType.SPRITE_STRING;
 	}
-
+	
 	/**
 	 * Gets the key of object, used in HashMap.
 	 * 
 	 * @return a string of object key.
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	/**
@@ -80,8 +66,17 @@ public class CustomObject implements ICustomObject {
 	 * 
 	 * @return a string to file.
 	 */
-	public String getFilename() {
-		return filename;
+	public String getText() {
+		return this.text;
+	}
+	
+	/**
+	 * Set text to be rendered to screen.
+	 * 
+	 * @param text - a string of text
+	 */
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	/**
@@ -198,7 +193,7 @@ public class CustomObject implements ICustomObject {
 	 */
 	@Override
 	public AffineTransform getAffineTransform() {
-		return at;
+		return this.at;
 	}
 	
 	/**
@@ -207,8 +202,32 @@ public class CustomObject implements ICustomObject {
 	@Override
 	public String toString() {
 		return  "Key: " + this.name + " " +
-				"File Path: " + this.filename + " " +
+				"Text: " + this.text + " " +
 				"Position: " + getTranslate().getTranslateX() + " "
 				+ getTranslate().getTranslateY();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public RenderableType getType() {
+		return this.type;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setColour(Color col) {
+		this.colour = col;		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Color getColor() {
+		return this.colour;
 	}
 }

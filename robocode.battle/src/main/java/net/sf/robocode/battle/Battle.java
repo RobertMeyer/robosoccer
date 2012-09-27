@@ -96,7 +96,6 @@
 package net.sf.robocode.battle;
 
 import static java.lang.Math.round;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
@@ -156,7 +155,7 @@ public final class Battle extends BaseBattle {
     private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
-	private List<CustomObject> customObject = new ArrayList<CustomObject>();
+	private List<IRenderable> customObject = new ArrayList<IRenderable>();
     private int activeRobots;
     /* List of items that are going to be dropped */
     private List<ItemDrop> items = new ArrayList<ItemDrop>();
@@ -371,7 +370,7 @@ public final class Battle extends BaseBattle {
 		effArea.clear();
 		customObject.clear();
 		
-		List<CustomObject> objs = this.getBattleMode().createCustomObjects();
+		List<IRenderable> objs = this.getBattleMode().createCustomObjects();
 		if (objs != null)
 			customObject = objs;
 		
@@ -943,13 +942,13 @@ public final class Battle extends BaseBattle {
 		}
 
 	 	public void createCustomObject(String name, String filename, double x, double y) {
-	 		CustomObject obj = new CustomObject(name, filename);
+	 		RenderImage obj = new RenderImage(name, filename);
 	 		obj.setTranslate(x, y);
 	 		customObject.add(obj);
 	 	}
 	 	
 	 	public void removeCustomObject(String name) {
-	 		for (CustomObject obj : customObject) {
+	 		for (IRenderable obj : customObject) {
 	 			if (obj.getName() == name) {
 	 				customObject.remove(obj);
 	 			}
