@@ -1037,6 +1037,10 @@ public class RobocodeFrame extends JFrame {
 	            			battleManager.getTopRobot();
 	            			counter = 0;
 	            		}
+	            		
+	            		if (counter > Integer.parseInt(userSetTime)) {
+	            			counter = 0;
+	            		}
 	            	}
             	}
             	//Create counter if it is in Elimination Mode.
