@@ -63,6 +63,9 @@ public class RobocodeFrame extends JFrame {
 	private Hashtable<String, Object> setTimeHashTable;
 	private int counter = 1;
 	private String userSetTime;
+	private int eliminateCounter;
+	private String eliminate;
+	private Hashtable<String, Object> setEliminateHashTable;
     private final static int MAX_TPS = 10000;
     private final static int MAX_TPS_SLIDER_VALUE = 61;
     private final static int UPDATE_TITLE_INTERVAL = 500; // milliseconds
@@ -1035,6 +1038,26 @@ public class RobocodeFrame extends JFrame {
 	            		}
 	            	}
             	}
+            	//Create counter if it is in Elimination Mode.
+            	if (battleManager.getBattleProperties().getBattleMode().toString() == "Elimination Mode") {
+            		timerCount = timerCount + 1;
+            		if (eliminateCounter == 0) {
+                		//Retrieve user specified time
+                		setEliminateHashTable  = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+                		eliminate = (String) setEliminateHashTable.get("eliminate");
+            			eliminateCounter = Integer.parseInt(eliminate);
+            		}
+            		
+            		if (timerCount == 2) {
+            			timerCount = 0;
+            			eliminateCounter = eliminateCounter - 1;
+            			
+                		if (eliminateCounter == 0) {
+                			battleManager.eliminateWeakestRobot();
+                		}
+            		}
+            		
+            	}            	
                 updateTitle();
             }
         }
@@ -1063,6 +1086,11 @@ public class RobocodeFrame extends JFrame {
 	                    title.append(", Timer ");
 	                    title.append("(" + counter + ")");
                     }
+                    
+                    //Display count if it is in Elimination Mode
+                    if (battleManager.getBattleProperties().getBattleMode().toString() == "Elimination Mode") {
+                    	title.append(", (Elimination in " + eliminateCounter + ")");
+                    }                   
                     
                     if (!isBattlePaused) {
                         boolean dispTps = properties.getOptionsViewTPS();
