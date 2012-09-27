@@ -5,17 +5,17 @@ import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
  * Callable ability (used by killstreak tracker. Instantiate one with the robot
- * who calls the airstrike, and the battle it is in to call the airstrike.
- * Spawns a series of bullets that don't effect the caller
+ * who calls the RadarJammer, and the battle it is in to enable the jam.
+ * Blocks the caller from other robot's radars for JAM_TIME amount of time
  **/
 public class RadarJammer {
 	private final int JAM_TIME = 400;
 	
 	/**
-	 * Constructor for the airstrike being called
+	 * Constructor for the RadarJammer being called
 	 * 
 	 * @param robotPeer
-	 *            The robot calling the airstrike
+	 *            The robot calling the RadarJammer
 	 * @param battle
 	 *            The battle that robot is part of
 	 */
