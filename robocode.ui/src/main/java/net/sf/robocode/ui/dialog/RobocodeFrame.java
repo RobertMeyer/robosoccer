@@ -920,6 +920,10 @@ public class RobocodeFrame extends JFrame {
         	robotButtons.clear();
         	robotButtonsPanel.repaint();
         	
+        	//Reset counter for Timer and Elimination Mode
+        	counter = 0;
+        	eliminateCounter = 0;
+        	
             if (event.getRound() == 0 &&
             		battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
                 getRobotButtonsPanel().removeAll();
