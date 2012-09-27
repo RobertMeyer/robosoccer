@@ -59,7 +59,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class RobocodeFrame extends JFrame {
 
-	private int timerCount = 1;
+	private int timerCount = 0;
 	private Hashtable<String, Object> setTimeHashTable;
 	private int counter = 1;
 	private String userSetTime;
@@ -1026,7 +1026,7 @@ public class RobocodeFrame extends JFrame {
             	//Create counter if it is in Timer Mode.
             	if (battleManager.getBattleProperties().getBattleMode().toString() ==  "Timer Mode") {
 	            	timerCount = timerCount + 1;
-	            	if (timerCount == 3) {
+	            	if (timerCount == 2) {
 	            		timerCount = 0;
 	            		counter = counter + 1;
 	            		//Retrieve user specified time
@@ -1035,6 +1035,7 @@ public class RobocodeFrame extends JFrame {
 	            		
 	            		if (counter == Integer.parseInt(userSetTime)) {
 	            			battleManager.getTopRobot();
+	            			counter = 0;
 	            		}
 	            	}
             	}
