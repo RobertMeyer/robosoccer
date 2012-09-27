@@ -370,7 +370,7 @@ public final class Battle extends BaseBattle {
 		effArea.clear();
 		customObject.clear();
 		
-		List<IRenderable> objs = this.getBattleMode().createCustomObjects();
+		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null)
 			customObject = objs;
 		
@@ -461,7 +461,7 @@ public final class Battle extends BaseBattle {
         
         updateEffectAreas();
         
-        this.getBattleMode().updateCustomObjects(customObject);
+        this.getBattleMode().updateRenderables(customObject);
         
         updateRobots();
 

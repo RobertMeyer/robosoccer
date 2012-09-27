@@ -108,7 +108,7 @@ public class ClassicMode implements IMode {
 	 * 
 	 * @param customObject - an ArrayList of all customObjects
 	 */
-	public void updateCustomObjects(List<IRenderable> customObject) {
+	public void updateRenderables(List<IRenderable> renderables) {
 		
 	}
 	
@@ -149,7 +149,7 @@ public class ClassicMode implements IMode {
 	 * 
 	 * @return a ArrayList<CustomObjects> which are added to the scene.
 	 */
-	public List<IRenderable> createCustomObjects() {
+	public List<IRenderable> createRenderables() {
 		return null;
 	}
 	
