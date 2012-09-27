@@ -1046,10 +1046,10 @@ public class RobocodeFrame extends JFrame {
             	//Create counter if it is in Elimination Mode.
             	if (battleManager.getBattleProperties().getBattleMode().toString() == "Elimination Mode") {
             		timerCount = timerCount + 1;
+            		//Retrieve user specified time
+            		setEliminateHashTable  = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+            		eliminate = (String) setEliminateHashTable.get("eliminate");
             		if (eliminateCounter == 0) {
-                		//Retrieve user specified time
-                		setEliminateHashTable  = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
-                		eliminate = (String) setEliminateHashTable.get("eliminate");
             			eliminateCounter = Integer.parseInt(eliminate);
             		}
             		
@@ -1060,6 +1060,10 @@ public class RobocodeFrame extends JFrame {
                 		if (eliminateCounter == 0) {
                 			battleManager.eliminateWeakestRobot();
                 		}
+            		}
+            		
+            		if (eliminateCounter > Integer.parseInt(eliminate)) {
+            			eliminateCounter = Integer.parseInt(eliminate);
             		}
             		
             	}            	
