@@ -7,7 +7,7 @@ import java.util.Hashtable;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
-import net.sf.robocode.battle.CustomObject;
+import net.sf.robocode.battle.IRenderable;
 import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -19,8 +19,6 @@ import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.security.HiddenAccess;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 
@@ -31,6 +29,8 @@ import robocode.control.RobotSpecification;
  *
  */
 public class ClassicMode implements IMode {
+	
+	protected GuiOptions uiOptions;
 	
 	/**
 	 * {@inheritDoc}
@@ -94,14 +94,6 @@ public class ClassicMode implements IMode {
 	public void scoreTurnPoints() {
 		/* ClassicMode does not need a score method, optional for overriding */
 	}
-
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean respawnsOn() {
-		return false;
-	}
 	
 	/**
 	 * Override me if you wish to use the CustomObjectAPI.
@@ -115,8 +107,15 @@ public class ClassicMode implements IMode {
 	 * 
 	 * @param customObject - an ArrayList of all customObjects
 	 */
-	public void updateCustomObjects(List<CustomObject> customObject) {
+	public void updateRenderables(List<IRenderable> renderables) {
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean respawnsOn() {
+		return false;
 	}
 	
 	/**
@@ -142,7 +141,7 @@ public class ClassicMode implements IMode {
 	 * 
 	 * @return a ArrayList<CustomObjects> which are added to the scene.
 	 */
-	public List<CustomObject> createCustomObjects() {
+	public List<IRenderable> createRenderables() {
 		return null;
 	}
 	
@@ -177,7 +176,7 @@ public class ClassicMode implements IMode {
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
         }
-
+        
         List<String> positions = new ArrayList<String>();
 
         Pattern pattern = Pattern.compile("([^,(]*[(][^)]*[)])?[^,]*,?");
@@ -292,5 +291,22 @@ public class ClassicMode implements IMode {
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
+	}
+
+	/**
+	 * Initialises the GuiOptions object with the visibility options
+	 * applicable to this mode.
+	 */
+	public void setGuiOptions() {
+		uiOptions = new GuiOptions(true, true);
+	}
+	
+	/**
+	 * Getter method for the GuiOptions object associated with this
+	 * mode.
+	 * @return GuiOptions object associated with this mode.
+	 */
+	public GuiOptions getGuiOptions() {
+		return uiOptions;
 	}
 }

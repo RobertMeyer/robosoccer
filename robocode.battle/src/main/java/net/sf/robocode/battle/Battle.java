@@ -98,13 +98,11 @@ package net.sf.robocode.battle;
 
 
 import static java.lang.Math.round;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
-
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -128,8 +126,6 @@ import robocode.control.snapshot.ITurnSnapshot;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,6 +156,8 @@ public final class Battle extends BaseBattle {
 	private BattleProperties bp;
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+	private List<IRenderable> customObject = new ArrayList<IRenderable>();
+    private int activeRobots;
     // Death events
     private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
     // For retrieval of robot in timer mode
@@ -171,8 +169,6 @@ public final class Battle extends BaseBattle {
     //Check for Botzilla
     private Boolean botzillaActive;
     private int botzillaSpawnTime = 40;
-   
-	private List<CustomObject> customObject = new ArrayList<CustomObject>();
   
    
     // kill streak tracker
@@ -191,7 +187,6 @@ public final class Battle extends BaseBattle {
 	// Objects in the battle
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
-	private int activeRobots;
 	private BattlePeers peers;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -212,6 +207,7 @@ public final class Battle extends BaseBattle {
 		
         battleMode = (ClassicMode) battleProperties.getBattleMode();
         
+        this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, 
         		robotsCount);
@@ -388,7 +384,7 @@ public final class Battle extends BaseBattle {
 		effArea.clear();
 		customObject.clear();
 	
-		List<CustomObject> objs = this.getBattleMode().createCustomObjects();
+		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null)
 			customObject = objs;
 	
@@ -484,7 +480,7 @@ public final class Battle extends BaseBattle {
         
         updateEffectAreas();
         
-        this.getBattleMode().updateCustomObjects(customObject);
+        this.getBattleMode().updateRenderables(customObject);
         
         updateRobots();
 
@@ -990,17 +986,4 @@ public final class Battle extends BaseBattle {
 	    }
 	}
 
- 	public void createCustomObject(String name, String filename, double x, double y) {
- 		CustomObject obj = new CustomObject(name, filename);
- 		obj.setTranslate(x, y);
- 		customObject.add(obj);
- 	}
- 	
- 	public void removeCustomObject(String name) {
- 		for (CustomObject obj : customObject) {
- 			if (obj.getName() == name) {
- 				customObject.remove(obj);
- 			}
- 		}
- 	}
 }

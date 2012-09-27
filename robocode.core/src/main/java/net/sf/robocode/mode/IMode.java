@@ -77,4 +77,17 @@ public interface IMode {
 	 * @return list of selected robots plus any modeSpecific robots appended.
 	 */
 	public String addModeRobots(String selectedRobots);
+
+	/**
+	 * Initialises the GuiOptions object with the visibility options
+	 * applicable to this mode.
+	 */
+	public void setGuiOptions();
+	
+	/**
+	 * Getter method for the GuiOptions object associated with this
+	 * mode.
+	 * @return GuiOptions object associated with this mode.
+	 */
+	public GuiOptions getGuiOptions();
 }

@@ -49,7 +49,7 @@ public interface ITurnSnapshot {
 
 	IEffectAreaSnapshot[] getEffectAreas();
 	
-	ICustomObjectSnapshot[] getCustomObjects();
+	IRenderableSnapshot[] getCustomObjects();
 
     /**
      * Returns the current round of the battle.

@@ -84,7 +84,7 @@ public class RobotSelectionPanel extends WizardPanel {
 	private boolean onlyShowInJar;
 	private boolean ignoreTeamRobots;
 	private String preSelectedRobots;
-	private final List<AvailableRobotsPanel.ItemWrapper> selectedRobots = new ArrayList<AvailableRobotsPanel.ItemWrapper>();
+	protected final List<AvailableRobotsPanel.ItemWrapper> selectedRobots = new ArrayList<AvailableRobotsPanel.ItemWrapper>();
 	private boolean showNumRoundsPanel;
 	private final ISettingsManager properties;
 	private final IRepositoryManager repositoryManager;
@@ -727,5 +727,13 @@ public class RobotSelectionPanel extends WizardPanel {
 					+ " and " + maxRobots + " robots.");
 		}
 		instructionsLabel.setVisible(true);
+	}
+	
+	/**
+	 * Returns the currently selected list of robots.
+	 * @return List of currently selected robots.
+	 */
+	public List<AvailableRobotsPanel.ItemWrapper> getRobotsList() {
+		return selectedRobots;
 	}
 }
