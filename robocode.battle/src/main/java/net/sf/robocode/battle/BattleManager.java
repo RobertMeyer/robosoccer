@@ -54,8 +54,11 @@
 package net.sf.robocode.battle;
 
 import java.io.*;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
@@ -419,6 +422,41 @@ public class BattleManager implements IBattleManager {
             }
         }
     }
+    
+    //Eliminate all robots except the top health robot
+	@Override
+	public void getTopRobot() {
+		List<RobotPeer> robotList = ((Battle) battle).getRobotList();
+		double currentRobotEnergy = 0;
+		double topRobotEnergy = 0;
+		int topRobotIndex = 0;
+		for(int i=0; i < robotList.size(); i++){
+			if(i == 0){
+				topRobotEnergy = robotList.get(i).getEnergy();
+				topRobotIndex= i;
+			}
+			if(i > 0){
+				currentRobotEnergy = robotList.get(i).getEnergy();
+				if(topRobotEnergy == currentRobotEnergy){
+					Random random = new Random();
+					int ranNum = random.nextInt(5);
+					if(ranNum >= 3){
+						robotList.get(i).kill();
+					}else{
+						robotList.get(topRobotIndex).kill();
+						topRobotIndex = i;
+						topRobotEnergy = robotList.get(i).getEnergy();
+					}
+				}else if(topRobotEnergy > currentRobotEnergy){
+					robotList.get(i).kill();
+				}else{
+					robotList.get(topRobotIndex).kill();
+					topRobotIndex = i;
+					topRobotEnergy = robotList.get(i).getEnergy();
+				}
+			}
+		}
+	}
 
     /**
      * Steps for a single turn, then goes back to paused

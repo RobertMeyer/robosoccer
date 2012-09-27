@@ -28,6 +28,8 @@ public class Module extends BaseModule {
         Container.cache.addComponent(BattleButton.class);
         Container.cache.addComponent(BattleView.class);
         Container.cache.addComponent(BattleDialog.class);
+        Container.cache.addComponent(ControlButton.class);
+        Container.cache.addComponent(ControlDialog.class);
         Container.cache.addComponent(IImageManager.class, ImageManager.class);
         Container.cache.addComponent(IRobotDialogManager.class, RobotDialogManager.class);
         Container.cache.addComponent(IWindowManagerExt.class, WindowManager.class);

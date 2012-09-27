@@ -51,6 +51,8 @@ public interface IBattleManager extends IBattleManagerBase {
      *
      * @param event the interactive event that has occurred to the robot.
      */
+    void getTopRobot();
+    
     void sendInteractiveEvent(Event event);
 
     void startNewBattle(BattleProperties battleProperties, boolean waitTillOver, boolean enableCLIRecording);

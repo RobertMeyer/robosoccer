@@ -21,7 +21,13 @@ public class RicochetMode extends ClassicMode {
 	 * accordingly, currently just returns true
 	 */
 	@Override
-	public boolean shouldRicochet() {
-		return true;
+	public boolean shouldRicochet(double power, double minBulletPower) {
+		if (power / 2 >= minBulletPower) {
+			// only ricochet if the bullet still meets the minBulletPower rule
+			// after power is halved
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
