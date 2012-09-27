@@ -93,6 +93,17 @@ public abstract	class ItemDrop {
 	public void setYLocation(double yLocation) {
 		this.yLocation = yLocation;
 	}
+	
+	/**
+	 * Update the location to a random x-coordinate and y-coordinate
+	 * @author - Brandon Warwick (team-Telos)
+	 */
+	public void updateToRandomLocation() {
+		final Random random = RandomFactory.getRandom();
+		
+		this.xLocation = ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width);
+		this.yLocation = ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height);
+	}
 
 	/**
 	 * Returns the width of the item
@@ -188,10 +199,9 @@ public abstract	class ItemDrop {
 		boolean valid = false;
 		
 		if (!valid) {
-			final Random random = RandomFactory.getRandom();
+			
 			for (int j = 0; j < 1000; j++) {
-				this.xLocation = ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width);
-				this.yLocation = ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height);
+				this.updateToRandomLocation();
 				this.setBoundingBox();
 
 				if (validSpotRobot(robots)) {
