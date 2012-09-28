@@ -244,9 +244,6 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     }
     
     public int getTeamSize() {
-    	if (teamSize == 0) {
-    		teamSize = 1;
-    	}
     	return teamSize;
     }
 
