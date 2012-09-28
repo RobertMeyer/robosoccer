@@ -70,14 +70,14 @@ public class KillstreakTracker {
 
 		/* check the killers new killstreak */
 		switch (killstreakRobots.get(robot)) {
-		case 1:
-			new RobotFreeze(robot, battle);
-			break;
 		case 3:
 			new RadarJammer(robot, battle);
 			break;
 		case 5:
 			new AirStrike(robot, battle);
+			break;
+		case 7:
+			new RobotFreeze(robot, battle);
 			break;
 		}
 	}

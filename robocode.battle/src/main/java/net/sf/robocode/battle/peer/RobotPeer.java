@@ -2251,7 +2251,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @param isFrozen the isFrozen to set
 	 */
 	 public void setFrozen(boolean isFrozen) {
-		if (isScannable) {
+		if (!isFrozen) {
 			this.println("KILLSTREAK: Freeze expired");
 		}
 		this.isFrozen = isFrozen;

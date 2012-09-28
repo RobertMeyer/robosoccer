@@ -4,18 +4,18 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
- * Callable ability (used by killstreak tracker. Instantiate one with the robot
- * who calls the RadarJammer, and the battle it is in to enable the jam.
- * Blocks the caller from other robot's radars for JAM_TIME amount of time
+ * Callable ability (used by killstreak tracker). Instantiate one with the robot
+ * who calls the RobotFreeze, and the battle it is in to enable the freeze.
+ * Locks all other robots from moving for FREEZE_TIME amount of turns
  **/
 public class RobotFreeze {
 	private final int FREEZE_TIME = 400;
 	
 	/**
-	 * Constructor for the RadarJammer being called
+	 * Constructor for the RobotFreeze being called
 	 * 
 	 * @param robotPeer
-	 *            The robot calling the RadarJammer
+	 *            The robot calling the RobotFreeze
 	 * @param battle
 	 *            The battle that robot is part of
 	 */
