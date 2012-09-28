@@ -992,6 +992,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isDead()) {
 			return;
 		}
+		
+		// check radar jamming robots for timeout
+		if ((!isScannable) && (battle.getTotalTurns() >= radarJammerTimeout)) {
+			setScannable(true);
+		} 
+
 
 		setState(RobotState.ACTIVE);
 
@@ -1633,6 +1639,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				double angle = atan2(dx, dy);
 				double dist = Math.hypot(dx, dy);
 
+
+				// block the scan if the robot is jamming UAV
+				if (!otherRobot.isScannable()) {
+					return;
+				}
 				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
 						otherRobot.getVelocity());
