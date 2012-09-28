@@ -76,6 +76,9 @@ public class KillstreakTracker {
 		case 5:
 			new AirStrike(robot, battle);
 			break;
+		case 7:
+			new RobotFreeze(robot, battle);
+			break;
 		}
 	}
 

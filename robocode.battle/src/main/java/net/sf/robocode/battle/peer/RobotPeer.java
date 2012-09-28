@@ -563,6 +563,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	private int radarJammerTimeout;
 
+	private boolean isFrozen;
+
+	private int frozenTimeout;
+
 	public void setupBuffer(ByteBuffer bidirectionalBuffer) {
 		this.bidirectionalBuffer = bidirectionalBuffer;
 	}
@@ -992,6 +996,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isDead()) {
 			return;
 		}
+		
+		// check radar jamming robots for timeout
+		if ((!isScannable) && (battle.getTotalTurns() >= radarJammerTimeout)) {
+			setScannable(true);
+		} 
+		
+		// check if a frozen robot can move again
+		if (isFrozen() && (battle.getTotalTurns() >= frozenTimeout)) {
+			setFrozen(false);
+		}
 
 		setState(RobotState.ACTIVE);
 
@@ -1009,7 +1023,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		updateGunHeading();
 		updateRadarHeading();
-		updateMovement();
+		
+		// do not move frozen robots
+		if (!isFrozen()) {
+			updateMovement();
+		}
 
 		// At this point, robot has turned then moved.
 		// We could be touching a wall or another bot...
@@ -1633,6 +1651,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				double angle = atan2(dx, dy);
 				double dist = Math.hypot(dx, dy);
 
+
+				// block the scan if the robot is jamming UAV
+				if (!otherRobot.isScannable()) {
+					return;
+				}
 				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
 						otherRobot.getVelocity());
@@ -2215,5 +2238,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void enableRadarJammer(int jamTime) {
 		setScannable(false);
 		radarJammerTimeout = battle.getTotalTurns() + jamTime;
+	}
+
+	/**
+	 * @return the isFrozen
+	 */
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+
+	/**
+	 * @param isFrozen the isFrozen to set
+	 */
+	 public void setFrozen(boolean isFrozen) {
+		if (!isFrozen) {
+			this.println("KILLSTREAK: Freeze expired");
+		}
+		this.isFrozen = isFrozen;
+	}
+	 
+	/**
+	 * Freezes the robot for freezeTime amount of turns
+	 * 
+	 * @param freezeTime
+	 *            the amount of time to freeze the robot
+	 */
+	public void enableFreeze(int freezeTime) {
+		setFrozen(true);
+		frozenTimeout = battle.getTotalTurns() + freezeTime;
 	}
 }
