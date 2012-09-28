@@ -1,6 +1,7 @@
 package net.sf.robocode.ui.dialog;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import net.sf.robocode.mode.*;
 import java.awt.*;
@@ -53,26 +54,40 @@ public class NewBattleModeTab extends JPanel {
 	}
 	
 	private void initialize() {
+		JPanel modePanel = new JPanel();
+		JPanel descriptionPanel = new JPanel();
 		
 		modeList = new ModeList(this);
 		modeList.setModel(modeListModel());
 		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		modeList.setSelectedIndex(0);
+		modeList.setBorder(BorderFactory.createLineBorder(Color.gray));
 		
 		currentModePanel = new JPanel();
 		currentModePanel.setLayout(new GridLayout(2, 1, 5, 5));
 		currentModeRulesPanel = new JPanel();
 		
-		
-		setLayout(new GridLayout(1,3,10,10));
-		setBorder(BorderFactory.createEtchedBorder());
-		add(getModeList());
+		modePanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
+		modePanel.setBorder(getTitledBorder("Available Modes"));
+		modePanel.add(getModeList());
 		currentModePanel.add(getDescriptionLabel());
-		add(currentModePanel);
+		descriptionPanel.setBorder(getTitledBorder("Mode Description"));
+		descriptionPanel.add(getCurrentModePanel());
 		
+		add(modePanel);
+		add(descriptionPanel);
 	}
 	
 	private JList getModeList() {
 		return modeList;
+	}
+	
+	private Border getTitledBorder(String title) {
+		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title);
+	}
+	
+	private JPanel getCurrentModePanel() {
+		return currentModePanel;
 	}
 	
 	public JLabel getDescriptionLabel() {
