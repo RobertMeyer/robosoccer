@@ -244,7 +244,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     }
     
     public int getTeamSize() {
-    	return teamSize;
+    	return teamSize; 
     }
 
     static ISerializableHelper createHiddenSerializer() {
