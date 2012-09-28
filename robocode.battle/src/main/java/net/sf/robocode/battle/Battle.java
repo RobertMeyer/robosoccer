@@ -172,8 +172,6 @@ public final class Battle extends BaseBattle {
     private int botzillaSpawnTime = 40;
     RobotPeer botzillaPeer;
     RobotSpecification botzilla;
-   
-	private List<CustomObject> customObject = new ArrayList<CustomObject>();
   
    
     // kill streak tracker
@@ -635,7 +633,8 @@ public final class Battle extends BaseBattle {
         for (int rank = 0; rank < peers.getContestants().size(); rank++) {
             RobotSpecification robotSpec = null;
             ContestantPeer contestant = orderedContestants.get(rank);
-
+            
+            System.out.println(contestant.getName());
             contestant.getStatistics().setRank(rank + 1);
             BattleResults battleResults = contestant.getStatistics().getFinalResults();
 
@@ -716,7 +715,7 @@ public final class Battle extends BaseBattle {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
         
-        if (getTotalTurns() >= botzillaSpawnTime &&
+        if (currentTurn >= botzillaSpawnTime &&
         		battleMode.toString() == "Botzilla Mode" &&
         		!botzillaActive) {
         	addBotzilla();
