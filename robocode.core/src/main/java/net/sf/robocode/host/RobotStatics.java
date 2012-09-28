@@ -49,6 +49,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final String teamName;
     private final int robotIndex;
     private final int teamIndex;
+    private int teamSize;
 
     public RobotStatics(RobotSpecification robotSpecification, int duplicate, boolean isLeader, BattleRules rules, String teamName, List<String> teamMembers, int robotIndex, int teamIndex) {
         IRobotRepositoryItem specification = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(
@@ -91,6 +92,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
                     list.add(mate);
                 }
             }
+            teamSize = teamMembers.size();
             teammates = list.toArray(new String[]{});
             this.teamName = teamName;
         } else {
@@ -239,6 +241,13 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 
     public int getTeamIndex() {
         return teamIndex;
+    }
+    
+    public int getTeamSize() {
+    	if (teamSize == 0) {
+    		teamSize = 1;
+    	}
+    	return teamSize;
     }
 
     static ISerializableHelper createHiddenSerializer() {
