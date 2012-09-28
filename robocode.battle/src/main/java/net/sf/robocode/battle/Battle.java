@@ -170,13 +170,10 @@ public final class Battle extends BaseBattle {
     private int currentTurn;
     private Boolean botzillaActive;
     private int botzillaSpawnTime = 40;
-<<<<<<< HEAD
-=======
     RobotPeer botzillaPeer;
     RobotSpecification botzilla;
    
 	private List<CustomObject> customObject = new ArrayList<CustomObject>();
->>>>>>> Added botzilla mode functionality
   
    
     // kill streak tracker
@@ -719,7 +716,6 @@ public final class Battle extends BaseBattle {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
         
-<<<<<<< HEAD
         if (getTotalTurns() >= botzillaSpawnTime &&
         		battleMode.toString() == "Botzilla Mode" &&
         		!botzillaActive) {
@@ -727,9 +723,6 @@ public final class Battle extends BaseBattle {
         }
         
         // Increment mode specific points - TODO -team-Telos
-=======
-        // Increment mode specific points - TODO -team-Telos
->>>>>>> Added botzilla mode functionality
 		this.getBattleMode().scoreTurnPoints();
         
         getBattleMode().updateRobotScans(peers.getRobots());
