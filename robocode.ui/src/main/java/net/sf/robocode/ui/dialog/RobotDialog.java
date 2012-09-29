@@ -47,7 +47,7 @@ public class RobotDialog extends JFrame {
     private JTabbedPane tabbedPane;
     private ConsoleScrollPane consoleScrollPane;
     private ConsoleScrollPane propertiesScrollPane;
-    private ConsoleScrollPane commanderScrollPane;
+    private CommanderScrollPane commanderScrollPane;
     private JPanel robotDialogContentPane;
     private JPanel buttonPanel;
     private JButton okButton;
@@ -268,9 +268,9 @@ public class RobotDialog extends JFrame {
      *
      * @return the Commander scroll pane
      */
-    private ConsoleScrollPane getCommanderScrollPane() {
+    private CommanderScrollPane getCommanderScrollPane() {
         if (commanderScrollPane == null) {
-            commanderScrollPane = new ConsoleScrollPane();
+            commanderScrollPane = new CommanderScrollPane();
         }
         return commanderScrollPane;
     }
