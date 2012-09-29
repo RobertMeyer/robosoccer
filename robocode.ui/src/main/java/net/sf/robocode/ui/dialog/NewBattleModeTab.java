@@ -37,7 +37,8 @@ public class NewBattleModeTab extends JPanel {
 		new ItemMode(),
 		new Botzilla(),
 		new TimerMode(),
-		new EliminationMode()
+		new EliminationMode(),
+		new SharingMode()
 	};
 	
 	public NewBattleModeTab() {
