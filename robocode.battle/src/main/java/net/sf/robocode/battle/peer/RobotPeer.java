@@ -214,7 +214,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
 	private boolean isScannable = true;
 	
-
+	//For calculation of team's total energy (Team energy sharing mode)
+	private TeamPeer teamList;
 	/**
 	 * An association of values to every RobotAttribute, such that game
 	 * mechanics can be uniquely determined for each robot based on a variety
@@ -274,6 +275,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			teamMembers = team.getMemberNames();
 			isTeamLeader = team.size() == 1; // That is current team size, more might follow later. First robot is leader
 			teamIndex = team.getTeamIndex();
+			teamList = team;
 		}
 
 		// Default all attributes to 1.0, such that all game mechanics are
@@ -1754,6 +1756,26 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			localCommands.setDistanceRemaining(0);
 			localCommands.setBodyTurnRemaining(0);
 		}
+	}
+	
+	//Get total team energy for team energy sharing mode
+	public int getTotalTeamEnergy(int teamIndex, int teamSize){
+		int totalTeamEnergy = 0;
+		for (int i=0; i < teamSize; i++){
+			if (teamList.getTeamIndex() == teamIndex){
+				totalTeamEnergy += teamList.get(i).getEnergy();
+			}
+		}
+		//System.out.println("(Team: "+ teamIndex + ") (Team Size: " + teamSize + ") (Energy: " + totalTeamEnergy +")");
+		return totalTeamEnergy;
+	}
+	
+	//Assign robots energy based on the distributed team energy
+	public void distributeEnergy(){
+		int totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
+		int distribute = totalTeamEnergy / statics.getTeamSize();
+		energy = distribute;
+		System.out.println(energy);
 	}
 
 	public void setWinner(boolean newWinner) {
