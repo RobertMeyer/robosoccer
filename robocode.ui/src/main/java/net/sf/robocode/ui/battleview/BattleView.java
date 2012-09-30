@@ -44,15 +44,11 @@ import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
-import robocode.control.snapshot.ICustomObjectSnapshot;
+import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
-import robocode.util.Utils;
-
-import java.util.ArrayList;
-
-import java.io.*;
+import robocode.control.snapshot.RenderableType;
 
 
 /**
@@ -254,8 +250,6 @@ public class BattleView extends Canvas {
 		final int NUM_HORZ_TILES = battleField.getWidth() / groundTileWidth + 1;
 		final int NUM_VERT_TILES = battleField.getHeight() / groundTileHeight + 1;
 		
-		int counter = 129;
-		
 		int groundWidth = (int) (battleField.getWidth() * scale);
 		int groundHeight = (int) (battleField.getHeight() * scale);
 
@@ -266,15 +260,66 @@ public class BattleView extends Canvas {
 		groundGfx.setRenderingHints(renderingHints);
 
 		groundGfx.setTransform(AffineTransform.getScaleInstance(scale, scale));
+	
 
-		for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
-			for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
-				Image img = imageManager.getFieldTileImage(counter--);
+		for (int y = NUM_VERT_TILES-1; y >= 0; y--) {
+			for (int x = NUM_HORZ_TILES-1; x >= 0; x--) {
+				Image img = imageManager.getFieldTileImage(0);
 				if (img != null) {
 					groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
-				}
+				}			
 			}
 		}
+		
+		RenderImage img = imageManager.addCustomImage("line", "/net/sf/robocode/ui/images/ground/soccer_field/line.png");
+		
+		// No Z-Buffer so have to render in order??
+		for (int y = NUM_VERT_TILES-1; y >= 0; y--) {
+			for (int x = NUM_HORZ_TILES-1; x >= 0; x--) {
+				
+				if (x == 0) {
+					AffineTransform newAt = AffineTransform.getTranslateInstance(32, y * groundTileHeight);
+					newAt.rotate(Math.toRadians(270));
+					img.setTransform(newAt);
+					img.paint(groundGfx);
+				}
+				
+				if (x == NUM_HORZ_TILES-1) {
+					AffineTransform newAt = AffineTransform.getTranslateInstance(battleField.getWidth() - 32, y * groundTileHeight);
+					newAt.rotate(Math.toRadians(90));
+					img.setTransform(newAt);
+					img.paint(groundGfx);
+				}
+				
+				if (y == 0) {
+					AffineTransform newAt = AffineTransform.getTranslateInstance(x * groundTileWidth, groundTileHeight/2);
+					img.setTransform(newAt);
+					img.paint(groundGfx);
+				}
+				
+				if (y == NUM_VERT_TILES-1) {
+					AffineTransform newAt = AffineTransform.getTranslateInstance(x * groundTileWidth, battleField.getHeight() - 32);
+					newAt.rotate(Math.toRadians(180));
+					img.setTransform(newAt);
+					img.paint(groundGfx);
+				}
+			}
+			AffineTransform newAt = AffineTransform.getTranslateInstance((battleField.getWidth()/2) - 17, y * groundTileWidth);
+			newAt.rotate(Math.toRadians(90));
+			img.setTransform(newAt);
+			img.paint(groundGfx);
+		}
+		
+		// Render Goals
+		img = imageManager.addCustomImage("goal", "/net/sf/robocode/ui/images/ground/soccer_field/goal.png");
+		AffineTransform newAt = AffineTransform.getTranslateInstance(120, battleField.getHeight()/2);
+		img.setTransform(newAt);
+		img.paint(groundGfx);
+		
+		newAt = AffineTransform.getTranslateInstance(battleField.getWidth() - 122, battleField.getHeight()/2);
+		newAt.rotate(Math.toRadians(180));
+		img.setTransform(newAt);
+		img.paint(groundGfx);	
 	}
 
     private void createGroundImage() {
@@ -445,31 +490,61 @@ public class BattleView extends Canvas {
      */
     private void drawImages(Graphics2D g, ITurnSnapshot snapShot) {
     	// Loop through each CustomObjectSnapshot and render to screen
-    	for (ICustomObjectSnapshot snap : snapShot.getCustomObjects()) {
-    		// Load image from cache
-    		RenderImage image = customImage.get(snap.getName());
-    		// Check if image exists in Cache
-    		if (image == null) {
-    			// Load image into cache
-    			image = addImage(snap.getName(), snap.getFilename());
-    		}
-    		// Setup matrix transform of image
-			AffineTransform at = snap.getAffineTransform();
-			image.setTransform(at);
-    		
-			// Keep old alpha level state
-    		Composite oldState = g.getComposite();
-    		// Setup new alpha level state
-    		AlphaComposite alphaComposite = AlphaComposite.
-    				getInstance(AlphaComposite.SRC_OVER, snap.getAlpha());
-    		g.setComposite(alphaComposite);
-    		
-    		// Render to screen
-    		if (!snap.getHide())
-    			image.paint(g);	
-    		
-    		// Restore old alpha state
-    		g.setComposite(oldState);
+    	for (IRenderableSnapshot snap : snapShot.getCustomObjects()) {
+			if (snap.getType() == RenderableType.SPRITE) {
+				// Load image from cache
+				RenderImage image = customImage.get(snap.getName());
+				// Check if image exists in Cache
+				if (image == null) {
+					// Load image into cache
+					image = addImage(snap.getName(), snap.getFilename());
+				}
+				// Setup matrix transform of image
+				AffineTransform at = snap.getAffineTransform();
+				image.setTransform(at);
+				
+				Color oldColour = g.getColor();
+				
+				if (snap.getColour() != null) {
+					g.setColor(snap.getColour());
+				}
+
+				// Keep old alpha level state
+				Composite oldState = g.getComposite();
+				// Setup new alpha level state
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, snap.getAlpha());
+				g.setComposite(alphaComposite);
+
+				// Render to screen
+				if (!snap.getHide())
+					image.paint(g);
+
+				// Restore old alpha state
+				g.setColor(oldColour);
+				g.setComposite(oldState);
+			} else if (snap.getType() == RenderableType.SPRITE_STRING) {
+				AffineTransform at = snap.getAffineTransform();
+				AffineTransform oldAt = g.getTransform();
+				g.setTransform(at);
+				// Keep old alpha level state
+				Composite oldState = g.getComposite();
+				// Setup new alpha level state
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, snap.getAlpha());
+				g.setComposite(alphaComposite);
+				
+				Color oldColour = g.getColor();
+				g.setColor(snap.getColour());
+			
+				if (!snap.getHide())
+					g.drawString(snap.getFilename(), 0, 0);
+				
+				// Restore old state
+				g.setColor(oldColour);
+				g.setComposite(oldState);
+				g.setTransform(oldAt);
+			}
     	}
     }
 

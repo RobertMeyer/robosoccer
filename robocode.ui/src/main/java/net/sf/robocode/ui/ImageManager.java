@@ -58,7 +58,7 @@ public class ImageManager implements IImageManager {
 
         // Reset image cache
         groundImages = new Image[9];
-		soccerField = new Image[130];
+		soccerField = new Image[2];
         explosionRenderImages = null;
         debriseRenderImage = null;
         bodyImage = null;
@@ -80,7 +80,12 @@ public class ImageManager implements IImageManager {
 	
 	public Image getFieldTileImage(int index) {
 		if (soccerField[index] == null) {
-			soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/field_tile-" + index + ".png");
+			switch (index) {
+			case 0: soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/grass_tile.png");
+					break;
+			case 1: soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/line.png");
+					break;
+			}
 		}
 		return soccerField[index];
 	}

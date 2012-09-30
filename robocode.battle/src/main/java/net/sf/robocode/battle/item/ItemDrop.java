@@ -8,6 +8,7 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.mode.IMode;
 import robocode.*;
+import net.sf.robocode.battle.RenderImage;
 
 /**
  * Abstract class for item/powerup drops
@@ -36,6 +37,7 @@ public abstract	class ItemDrop {
 	protected Battle battle;
 	protected final BoundingRectangle boundingBox;
 	public String name;
+	protected String imageName;
 		
 	public ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;
@@ -211,7 +213,8 @@ public abstract	class ItemDrop {
 				}
 			}
 		}
-		//System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
+		this.battle.getCustomObject().add(new RenderImage(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
+		System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	public boolean addNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){

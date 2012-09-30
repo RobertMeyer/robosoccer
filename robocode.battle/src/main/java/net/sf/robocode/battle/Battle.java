@@ -98,13 +98,11 @@ package net.sf.robocode.battle;
 
 
 import static java.lang.Math.round;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
-
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -128,8 +126,6 @@ import robocode.control.snapshot.ITurnSnapshot;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,6 +156,8 @@ public final class Battle extends BaseBattle {
 	private BattleProperties bp;
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+	private List<IRenderable> customObject = new ArrayList<IRenderable>();
+    private int activeRobots;
     // Death events
     private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
     // For retrieval of robot in timer mode
@@ -169,10 +167,11 @@ public final class Battle extends BaseBattle {
     // Initial robot start positions (if any)
     private double[][] initialRobotPositions;
     //Check for Botzilla
+    private int currentTurn;
     private Boolean botzillaActive;
     private int botzillaSpawnTime = 40;
-   
-	private List<CustomObject> customObject = new ArrayList<CustomObject>();
+    RobotPeer botzillaPeer;
+    RobotSpecification botzilla;
   
    
     // kill streak tracker
@@ -191,7 +190,6 @@ public final class Battle extends BaseBattle {
 	// Objects in the battle
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
-	private int activeRobots;
 	private BattlePeers peers;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -211,7 +209,19 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 		
         battleMode = (ClassicMode) battleProperties.getBattleMode();
+        //TODO Just testing spawning any bot for now
+        final RobotSpecification[] temp = repositoryManager.getSpecifications();
+        for(int i = 0; i < temp.length; i++) {
+        	String className = temp[i].getClassName();
+        	if(className.equals("sampleex.Botzilla")) {
+        		botzilla = temp[i];
+        		break;
+        	}
+        }
+
+        botzillaActive = false;
         
+        this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, 
         		robotsCount);
@@ -231,6 +241,14 @@ public final class Battle extends BaseBattle {
 
 	public int getRobotsCount() {
 		return robotsCount;
+	}
+	
+	public List<IRenderable> getCustomObject(){
+		return customObject;
+	}
+	
+	public ItemController getItemControl(){
+		return itemControl;
 	}
 
 	public boolean isDebugging() {
@@ -288,8 +306,9 @@ public final class Battle extends BaseBattle {
 		for (int i = 4; i >= 0; i--) { // Make sure it is run
 			System.gc();
 		}
+		
 	}
-
+	
 	@Override
 	protected void initializeBattle() {
 		super.initializeBattle();
@@ -326,6 +345,7 @@ public final class Battle extends BaseBattle {
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.cleanup();
 		}
+		
 		hostManager.resetThreadManager();
 
 		super.finalizeBattle();
@@ -370,11 +390,12 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void preloadRound() {
 		super.preloadRound();
-	
+		//TODO reset currentTurn
+		currentTurn = 0;
+		
 		/*--ItemController--*/
 		itemControl = new ItemController();
 		itemControl.updateRobots(peers.getRobots());
-	
 		// At this point the unsafe loader thread will now set itself to wait for a notify
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.initializeRound(peers.getRobots(), initialRobotPositions);
@@ -388,7 +409,7 @@ public final class Battle extends BaseBattle {
 		effArea.clear();
 		customObject.clear();
 	
-		List<CustomObject> objs = this.getBattleMode().createCustomObjects();
+		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null)
 			customObject = objs;
 	
@@ -412,8 +433,6 @@ public final class Battle extends BaseBattle {
 	@Override
     protected void initializeRound() {
         super.initializeRound();
-        
-        botzillaActive = false;
         
         inactiveTurnCount = 0;
 
@@ -452,7 +471,11 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void finalizeRound() {
 		super.finalizeRound();
-
+		
+		if(botzillaActive) {
+			removeBotzilla();
+		}
+		
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.waitForStop();
 			robotPeer.getRobotStatistics().generateTotals();
@@ -465,6 +488,13 @@ public final class Battle extends BaseBattle {
 
 	@Override
 	protected void initializeTurn() {
+		//TODO check if this works
+        if (currentTurn == botzillaSpawnTime &&
+        		battleMode.toString() == "Botzilla Mode" &&
+        		!botzillaActive) {
+        	addBotzilla();
+        }
+        
 		super.initializeTurn();
 
 		eventDispatcher.onTurnStarted(new TurnStartedEvent());
@@ -473,7 +503,6 @@ public final class Battle extends BaseBattle {
 	@Override
     protected void runTurn() {
         super.runTurn();
-
 
         loadCommands();
 
@@ -484,7 +513,7 @@ public final class Battle extends BaseBattle {
         
         updateEffectAreas();
         
-        this.getBattleMode().updateCustomObjects(customObject);
+        this.getBattleMode().updateRenderables(customObject);
         
         updateRobots();
 
@@ -510,9 +539,11 @@ public final class Battle extends BaseBattle {
 				itemCursor++;
 			}
 		}
-
+		
+		 currentTurn++;
         // Robot time!
         wakeupRobots();
+        
     }
 
 	 @Override
@@ -602,7 +633,8 @@ public final class Battle extends BaseBattle {
         for (int rank = 0; rank < peers.getContestants().size(); rank++) {
             RobotSpecification robotSpec = null;
             ContestantPeer contestant = orderedContestants.get(rank);
-
+            
+            System.out.println(contestant.getName());
             contestant.getStatistics().setRank(rank + 1);
             BattleResults battleResults = contestant.getStatistics().getFinalResults();
 
@@ -683,7 +715,7 @@ public final class Battle extends BaseBattle {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
         
-        if (getTotalTurns() >= botzillaSpawnTime &&
+        if (currentTurn >= botzillaSpawnTime &&
         		battleMode.toString() == "Botzilla Mode" &&
         		!botzillaActive) {
         	addBotzilla();
@@ -695,19 +727,34 @@ public final class Battle extends BaseBattle {
         getBattleMode().updateRobotScans(peers.getRobots());
     }
 	
+	private void removeBotzilla() {
+		botzillaActive = false;
+        peers.removeBotzilla();
+        botzillaPeer.cleanup();
+        robotsCount--;
+	}
+	
 	private void addBotzilla() {
 		System.out.println("BOTZILLA JUST APPEARED");
 		botzillaActive = true;
 		
-//		RobotPeer robotPeer = new RobotPeer(this,
-//				hostManager,
-//				RobotSpecification robotSpecification,
-//				robotDuplicates.get(i),
-//				null,
-//				robots.size());
-//		
-//		robots.add(robotPeer);
-//		contestants.add(robotPeer);
+		botzillaPeer = new RobotPeer(this,
+				hostManager,
+				botzilla,
+				0,
+				null,
+				getRobotsCount());
+		robotsCount++;
+		peers.addRobot(botzillaPeer);
+		peers.addContestant(botzillaPeer);
+		botzillaPeer.initializeRound(peers.getRobots() , null);
+		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+
+        final long waitMillis = waitTime / 1000000;
+        final int waitNanos = (int) (waitTime % 1000000);
+		botzillaPeer.startRound(waitMillis, waitNanos);
+		// TODO make appear and running
+		
 	}
 
     private void handleDeadRobots() {
@@ -990,17 +1037,4 @@ public final class Battle extends BaseBattle {
 	    }
 	}
 
- 	public void createCustomObject(String name, String filename, double x, double y) {
- 		CustomObject obj = new CustomObject(name, filename);
- 		obj.setTranslate(x, y);
- 		customObject.add(obj);
- 	}
- 	
- 	public void removeCustomObject(String name) {
- 		for (CustomObject obj : customObject) {
- 			if (obj.getName() == name) {
- 				customObject.remove(obj);
- 			}
- 		}
- 	}
 }

@@ -492,8 +492,8 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     }
     
     @Override
-    public boolean isBotzilla() {
-    	return robotType.isBotzilla();
+    public boolean isBotzillaBot() {
+    	return robotType.isBotzillaBot();
     }
 
     @Override

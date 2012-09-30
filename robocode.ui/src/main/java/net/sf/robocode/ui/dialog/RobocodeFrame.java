@@ -59,10 +59,13 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class RobocodeFrame extends JFrame {
 
-	private int timerCount = 1;
+	private int timerCount = 0;
 	private Hashtable<String, Object> setTimeHashTable;
 	private int counter = 1;
 	private String userSetTime;
+	private int eliminateCounter;
+	private String eliminate;
+	private Hashtable<String, Object> setEliminateHashTable;
     private final static int MAX_TPS = 10000;
     private final static int MAX_TPS_SLIDER_VALUE = 61;
     private final static int UPDATE_TITLE_INTERVAL = 500; // milliseconds
@@ -90,6 +93,7 @@ public class RobocodeFrame extends JFrame {
     private JButton replayButton;
     private JSlider tpsSlider;
     private EffectAreaCheckbox box;
+    private KillstreakCheckbox ksBox;
     private JLabel tpsLabel;
     private boolean iconified;
     private boolean exitOnClose = true;
@@ -103,6 +107,7 @@ public class RobocodeFrame extends JFrame {
     private final MenuBar menuBar;
     final List<RobotButton> robotButtons = new ArrayList<RobotButton>();
     final List<IFullScreenListener> fullScreenListeners = new ArrayList<IFullScreenListener>();
+	private JPanel sideBooleans;
 
     public RobocodeFrame(ISettingsManager properties,
                          IWindowManager windowManager, IRobotDialogManager dialogManager,
@@ -120,6 +125,7 @@ public class RobocodeFrame extends JFrame {
         this.battleView = battleView;
         this.menuBar = menuBar;
         box = new EffectAreaCheckbox(battleManager.getBattleProperties());
+        ksBox = new KillstreakCheckbox(battleManager.getBattleProperties());
         menuBar.setup(this);
         initialize();
     }
@@ -298,6 +304,12 @@ public class RobocodeFrame extends JFrame {
         if (sidePanel == null) {
             sidePanel = new JPanel();
             sidePanel.setLayout(new BorderLayout());
+            
+            sideBooleans = new JPanel();
+            sideBooleans.setLayout(new GridLayout(2,1));
+            sideBooleans.add(box);
+            sideBooleans.add(ksBox);            
+           
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container
                     .getComponent(BattleButton.class);
@@ -309,7 +321,7 @@ public class RobocodeFrame extends JFrame {
             btn2.attach();
             
             sidePanel.add(btn, BorderLayout.SOUTH);
-            sidePanel.add(box, BorderLayout.NORTH);
+            sidePanel.add(sideBooleans, BorderLayout.NORTH);
             
             //Disabled temporarily until we can place it nicely
             //sidePanel.add(btn2, BorderLayout.NORTH);
@@ -902,9 +914,18 @@ public class RobocodeFrame extends JFrame {
         }
 
         @Override
-        public void onRoundStarted(final RoundStartedEvent event) {	
+        public void onRoundStarted(final RoundStartedEvent event) {
+        	// Clear previous buttons from robotButtonsPanel
+        	robotButtonsPanel.removeAll();
+        	robotButtons.clear();
+        	robotButtonsPanel.repaint();
+        	
+        	//Reset counter for Timer and Elimination Mode
         	counter = 0;
-            if (event.getRound() == 0) {
+        	eliminateCounter = 0;
+        	
+            if (event.getRound() == 0 &&
+            		battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
                 getRobotButtonsPanel().removeAll();
 
                 final List<IRobotSnapshot> robots = Arrays.asList(event
@@ -1009,7 +1030,7 @@ public class RobocodeFrame extends JFrame {
             	//Create counter if it is in Timer Mode.
             	if (battleManager.getBattleProperties().getBattleMode().toString() ==  "Timer Mode") {
 	            	timerCount = timerCount + 1;
-	            	if (timerCount == 3) {
+	            	if (timerCount == 2) {
 	            		timerCount = 0;
 	            		counter = counter + 1;
 	            		//Retrieve user specified time
@@ -1018,9 +1039,38 @@ public class RobocodeFrame extends JFrame {
 	            		
 	            		if (counter == Integer.parseInt(userSetTime)) {
 	            			battleManager.getTopRobot();
+	            			counter = 0;
+	            		}
+	            		
+	            		if (counter > Integer.parseInt(userSetTime)) {
+	            			counter = 0;
 	            		}
 	            	}
             	}
+            	//Create counter if it is in Elimination Mode.
+            	if (battleManager.getBattleProperties().getBattleMode().toString() == "Elimination Mode") {
+            		timerCount = timerCount + 1;
+            		//Retrieve user specified time
+            		setEliminateHashTable  = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+            		eliminate = (String) setEliminateHashTable.get("eliminate");
+            		if (eliminateCounter == 0) {
+            			eliminateCounter = Integer.parseInt(eliminate);
+            		}
+            		
+            		if (timerCount == 2) {
+            			timerCount = 0;
+            			eliminateCounter = eliminateCounter - 1;
+            			
+                		if (eliminateCounter == 0) {
+                			battleManager.eliminateWeakestRobot();
+                		}
+            		}
+            		
+            		if (eliminateCounter > Integer.parseInt(eliminate)) {
+            			eliminateCounter = Integer.parseInt(eliminate);
+            		}
+            		
+            	}            	
                 updateTitle();
             }
         }
@@ -1049,6 +1099,11 @@ public class RobocodeFrame extends JFrame {
 	                    title.append(", Timer ");
 	                    title.append("(" + counter + ")");
                     }
+                    
+                    //Display count if it is in Elimination Mode
+                    if (battleManager.getBattleProperties().getBattleMode().toString() == "Elimination Mode") {
+                    	title.append(", (Elimination in " + eliminateCounter + ")");
+                    }                   
                     
                     if (!isBattlePaused) {
                         boolean dispTps = properties.getOptionsViewTPS();

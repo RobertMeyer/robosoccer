@@ -29,7 +29,7 @@ public class SoldierRobot extends Robot {
 	public final int TAUNT = 7;
 	
 	private int tactic = 0;
-	private double power = 1.5;
+	protected double power = 1.5;
 	
 	public int getTactic() {
 		return tactic;
