@@ -1,15 +1,11 @@
 package net.sf.robocode.mode;
 
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
-import net.sf.robocode.battle.CustomObject;
 import net.sf.robocode.battle.peer.BallPeer;
-import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.host.IHostManager;
@@ -22,11 +18,12 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/* Bounds for the goal - possibly to be altered at a later date */
 	public static final double GOALXMIN = 200;
 	public static final double GOALXMAX = 700;
-	public static final double GOALYMIN = 200;
-	public static final double GOALYMAX = 450;
+	public static final double GOALYMIN = 250;
+	public static final double GOALYMAX = 400;
 	
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
+	private List<RobotPeer> robots;
 	
 	private boolean roundOver = false;
 	
@@ -115,8 +112,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 			}
 		}
 		
-		peers.getBattle().createCustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
-		
 		// Create teams 1 and 2.
 		TeamPeer team1 = new TeamPeer("Team 1", null, 0);
 		TeamPeer team2 = new TeamPeer("Team 2", null, 1);
@@ -150,6 +145,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 		ballTeam.add(ball);
 		peers.addContestant(ballTeam);
 		peers.addRobot(ball);
+		robots = peers.getRobots();
 	}
 	
 	/**
@@ -166,7 +162,7 @@ public class SoccerMode extends ClassicMode implements IMode {
         	if (robotPeer.isBall()) {
         		double x = robotPeer.getX();
         		double y = robotPeer.getY();
-        		if ((x < GOALXMIN) || (x > GOALXMAX)
+        		if (((x < GOALXMIN) || (x > GOALXMAX))
 						&& ((y < GOALYMAX) || (y > GOALYMIN))) {
 					roundOver = true;
 				} else {
@@ -179,24 +175,49 @@ public class SoccerMode extends ClassicMode implements IMode {
 	
 	@Override
 	public boolean isRoundOver(int endTimer, int time) {
-		return roundOver;
+		if (roundOver) {
+			for (RobotPeer robotPeer : robots) {
+				if (!(robotPeer.isBall())) {
+					robotPeer.kill();
+				}
+			}
+		}
+		return endTimer > 5*time;
 	}
 	
-	/*@Override
-	public List<CustomObject> createCustomObjects() {
-		List<CustomObject> objs = new ArrayList<CustomObject>(); 
-		CustomObject obj = new CustomObject("flag", "/net/sf/robocode/ui/images/flag.png", 100, 100);
+/*	@Override
+	public List<IRenderable> createCustomObjects() {
+		List<IRenderable> objs = new ArrayList<IRenderable>(); 
+		RenderString obj = new RenderString("flag", "Testing");
+		obj.setTranslate(300, 300);
+		obj.setColour(Color.BLUE);
+		obj.setScale(10, 10);
 		objs.add(obj);
 		return objs;
 	}
 	
+	private int counter = 0; 
+	
 	@Override
-	public void updateCustomObjects(List<CustomObject> objects) {
-		for (CustomObject obj: objects) {
-			AffineTransform at = obj.getTranslate();
-			//obj.setTranslate(at.getTranslateX() + 1, at.getTranslateY());
-		}
-		
+	public void updateCustomObjects(List<IRenderable> objects) {
+		counter += System.currentTimeMillis();
+		Iterator<IRenderable> itr = objects.iterator();
+		while (itr.hasNext()) {
+			IRenderable obj = (IRenderable)itr.next();
+			if (obj.getType() == RenderableType.SPRITE_STRING) {
+				float pi = 3.14f;
+				float freq = 10.0f;
+				RenderString objs = (RenderString)obj;
+				objs.setAlpha((float)(0.5*(1+Math.sin(2*pi*freq*counter))));
+				
+			}
+			//obj.toggleHide();
+			//itr.remove();
+		}	
 	}*/
 	
+	@Override
+	public void setGuiOptions() {
+		super.uiOptions = new GuiOptions(false, false);
+	}
 }

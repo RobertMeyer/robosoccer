@@ -1,6 +1,7 @@
 package net.sf.robocode.ui.dialog;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import net.sf.robocode.mode.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class NewBattleModeTab extends JPanel {
 	
 	private DefaultListModel modeListModel;
 	
+	private JPanel currentModePanel;
 	private JPanel currentModeRulesPanel;
 	
 	private IMode modes[] = { 
@@ -34,7 +36,9 @@ public class NewBattleModeTab extends JPanel {
 		new RicochetMode(),
 		new ItemMode(),
 		new Botzilla(),
-		new TimerMode()
+		new TimerMode(),
+		new EliminationMode(),
+		new SharingMode()
 	};
 	
 	public NewBattleModeTab() {
@@ -51,22 +55,40 @@ public class NewBattleModeTab extends JPanel {
 	}
 	
 	private void initialize() {
+		JPanel modePanel = new JPanel();
+		JPanel descriptionPanel = new JPanel();
 		
 		modeList = new ModeList(this);
 		modeList.setModel(modeListModel());
 		modeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		modeList.setSelectedIndex(0);
+		modeList.setBorder(BorderFactory.createLineBorder(Color.gray));
 		
+		currentModePanel = new JPanel();
+		currentModePanel.setLayout(new GridLayout(2, 1, 5, 5));
 		currentModeRulesPanel = new JPanel();
 		
-		setLayout(new GridLayout(3,1,5,5));
-		setBorder(BorderFactory.createEtchedBorder());
-		add(getModeList());
-		add(getDescriptionLabel());
+		modePanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
+		modePanel.setBorder(getTitledBorder("Available Modes"));
+		modePanel.add(getModeList());
+		currentModePanel.add(getDescriptionLabel());
+		descriptionPanel.setBorder(getTitledBorder("Mode Description"));
+		descriptionPanel.add(getCurrentModePanel());
 		
+		add(modePanel);
+		add(descriptionPanel);
 	}
 	
 	private JList getModeList() {
 		return modeList;
+	}
+	
+	private Border getTitledBorder(String title) {
+		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title);
+	}
+	
+	private JPanel getCurrentModePanel() {
+		return currentModePanel;
 	}
 	
 	public JLabel getDescriptionLabel() {
@@ -76,13 +98,13 @@ public class NewBattleModeTab extends JPanel {
 	public void updateModePanel() {
 		description.setText(getSelectedMode().getDescription());
 		if(currentModeRulesPanel != null){
-			remove(currentModeRulesPanel);
+			currentModePanel.remove(currentModeRulesPanel);
 		}
 		
 		currentModeRulesPanel = getSelectedMode().getRulesPanel();
 		
 		if(currentModeRulesPanel != null){
-			add(currentModeRulesPanel);
+			currentModePanel.add(currentModeRulesPanel);
 		}
 		repaint();
 	}

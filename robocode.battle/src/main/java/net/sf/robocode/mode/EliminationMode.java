@@ -9,12 +9,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class TimerMode extends ClassicMode {
+public class EliminationMode extends ClassicMode {
 	
 	private JTextField setTime; 
-	private setTimePanel modePanel;
-	private final String title = "Timer Mode";
-    private final String description = "This mode ends each match with the given time (Default - 30 Seconds)";
+	private setEliminationPanel modePanel;
+	private final String title = "Elimination Mode";
+    private final String description = "This mode eliminates the weakest robot every few seconds (Default - 5 Seconds)";
 
     
     public String toString() {
@@ -25,10 +25,10 @@ public class TimerMode extends ClassicMode {
         return description;
     }
     
-	private class setTimePanel extends JPanel {
-		public setTimePanel() {
+	private class setEliminationPanel extends JPanel {
+		public setEliminationPanel() {
 			setTime = new JTextField(2);
-			add(new JLabel("Input Time (in seconds):"), BorderLayout.NORTH);
+			add(new JLabel("Input Elimination Time (in seconds):"), BorderLayout.NORTH);
 			add(setTime);
 		}
 		
@@ -38,9 +38,9 @@ public class TimerMode extends ClassicMode {
 			Matcher match = pattern.matcher(setTime.getText());
 			boolean isInt = match.matches();
 			if (isInt) {
-				values.put("timer", setTime.getText());
+				values.put("eliminate", setTime.getText());
 			}else{
-				values.put("timer", "30");
+				values.put("eliminate", "5");
 			}
 			return values;
 		}
@@ -52,7 +52,7 @@ public class TimerMode extends ClassicMode {
 	
     public JPanel getRulesPanel(){
     	if(modePanel == null){
-    		modePanel = new setTimePanel();
+    		modePanel = new setEliminationPanel();
     	}
     	return modePanel;
     }

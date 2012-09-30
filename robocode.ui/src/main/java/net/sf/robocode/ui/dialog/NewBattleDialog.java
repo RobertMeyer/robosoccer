@@ -60,12 +60,15 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private RobotSelectionPanel robotSelectionPanel;
 	private final IBattleManager battleManager;
 	private final ISettingsManager settingsManager;
+	
+	private IWindowManager window;
 
 	public NewBattleDialog(IWindowManager windowManager,
 			IBattleManager battleManager, ISettingsManager settingsManager) {
 		super(windowManager.getRobocodeFrame(), true);
 		this.battleManager = battleManager;
 		this.settingsManager = settingsManager;
+		this.window = windowManager;
 	}
 
 	public void setup(BattleProperties battleProperties, boolean openBattle) {
@@ -110,6 +113,8 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		if (selectedMode == null) {
 			selectedMode = new ClassicMode();
 		}
+		
+		
 
 		battleProperties.setSelectedRobots(getRobotSelectionPanel()
 				.getSelectedRobotsAsString());
@@ -125,13 +130,26 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		battleProperties.setBattleMode(selectedMode);
 		battleProperties.setInitialPositions(SetRobotPositionString());
 
-		// Dispose this dialog before starting the battle due to pause/resume
-		// battle state
-		dispose();
-
-		// Start new battle after the dialog has been disposed and hence has
-		// called resumeBattle()
-		battleManager.startNewBattle(battleProperties, false, false);
+		// Display soccer mode team selection dialog
+		if (selectedMode instanceof SoccerMode) {
+			
+			final SoccerTeamSelectDialog teamSelect = new SoccerTeamSelectDialog(window);
+			teamSelect.setup(getRobotSelectionPanel().getRobotsList());
+			battleProperties.setSelectedRobots(teamSelect.getSelectedRobotsAsString());
+			
+			dispose();
+			
+			battleManager.startNewBattle(battleProperties, false, false);
+		} else {
+		
+			// Dispose this dialog before starting the battle due to pause/resume
+			// battle state
+			dispose();
+	
+			// Start new battle after the dialog has been disposed and hence has
+			// called resumeBattle()
+			battleManager.startNewBattle(battleProperties, false, false);
+		}
 	}
 
 	private String SetRobotPositionString() {

@@ -38,7 +38,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final boolean isDroid;
     private final boolean isHouseRobot;
     private final boolean isBall;
-    private final boolean isBotzilla;
+    private final boolean isBotzillaBot;
     private final String name;
     private final String shortName;
     private final String veryShortName;
@@ -49,6 +49,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final String teamName;
     private final int robotIndex;
     private final int teamIndex;
+    private int teamSize;
 
     public RobotStatics(RobotSpecification robotSpecification, int duplicate, boolean isLeader, BattleRules rules, String teamName, List<String> teamMembers, int robotIndex, int teamIndex) {
         IRobotRepositoryItem specification = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(
@@ -79,7 +80,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isDroid = specification.isDroid();
         this.isHouseRobot = specification.isHouseRobot();
         this.isBall = specification.isBall();
-        this.isBotzilla = specification.isBotzilla();
+        this.isBotzillaBot = specification.isBotzillaBot();
         this.isTeamLeader = isLeader;
         this.battleRules = rules;
 
@@ -91,6 +92,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
                     list.add(mate);
                 }
             }
+            teamSize = teamMembers.size();
             teammates = list.toArray(new String[]{});
             this.teamName = teamName;
         } else {
@@ -122,7 +124,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.teamIndex = teamIndex;
         this.isHouseRobot = false;
         this.isBall = isBall;
-        this.isBotzilla = false;
+        this.isBotzillaBot = false;
     }
 
     RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
@@ -150,7 +152,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.teamIndex = teamIndex;
         this.isHouseRobot = isHouseRobot;
         this.isBall = isBall;
-        this.isBotzilla = isBotzilla;
+        this.isBotzillaBot = isBotzilla;
     }
 
     public String getAnnonymousName() {
@@ -198,7 +200,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     }
 
 	public boolean isBotzilla() {
-		return isBotzilla;
+		return isBotzillaBot;
 	}
 
     public String getName() {
@@ -239,6 +241,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 
     public int getTeamIndex() {
         return teamIndex;
+    }
+    
+    public int getTeamSize() {
+    	return teamSize; 
     }
 
     static ISerializableHelper createHiddenSerializer() {
