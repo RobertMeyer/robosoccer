@@ -154,8 +154,7 @@ public class FlagMode extends ClassicMode {
     @Override
 	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
-    	objects.add(new RenderImage("Flag", imageFile, flag.getXLocation(),
-    			flag.battle.getBattleRules().getBattlefieldHeight() - flag.getYLocation()));
+    	objects.add(new RenderImage("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
     	
     	return objects;
     }
