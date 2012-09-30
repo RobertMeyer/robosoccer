@@ -34,7 +34,7 @@ public abstract	class ItemDrop {
 	protected double health;
 	protected boolean isEquippable;
 	protected BattleRules battleRules;
-	public Battle battle;
+	protected Battle battle;
 	protected final BoundingRectangle boundingBox;
 	public String name;
 	protected String imageName;
