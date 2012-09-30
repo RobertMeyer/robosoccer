@@ -76,7 +76,14 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 
     @Override
     public int getColumnCount() {
-        return 12;
+    	// Team - Telos addition FIXME
+    	/*
+    	 * Hard coded at present, need to make this happen only in
+    	 *  CTF mode
+    	 *  
+    	 *  was 12, but with flag it is now 13
+    	 */
+        return 13;
     }
 
     @Override
@@ -108,14 +115,22 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 
             case 8:
                 return "Ram Bonus";
-
+                
             case 9:
-                return " 1sts ";
+            	// Team - Telos addition FIXME
+            	/*
+            	 * Hard coded at present, need to make this happen only in
+            	 *  CTF mode
+            	 */
+            	return "Flag Score";
 
             case 10:
-                return " 2nds ";
+                return " 1sts ";
 
             case 11:
+                return " 2nds ";
+
+            case 12:
                 return " 3rds ";
 
             default:
@@ -185,12 +200,20 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
                 return "" + (int) (statistics.getRamDamageBonus() + 0.5);
 
             case 9:
+            	// Team - Telos addition FIXME
+            	/*
+            	 * Hard coded at present, need to make this happen only in
+            	 *  CTF mode
+            	 */
+            	return "" + (int) (statistics.getFlagScore() + 0.5);
+            	
+            case 10:
                 return "" + statistics.getFirsts();
 
-            case 10:
+            case 11:
                 return "" + statistics.getSeconds();
 
-            case 11:
+            case 12:
                 return "" + statistics.getThirds();
 
             default:

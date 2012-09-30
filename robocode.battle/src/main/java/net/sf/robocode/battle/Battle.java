@@ -410,8 +410,9 @@ public final class Battle extends BaseBattle {
 		customObject.clear();
 	
 		List<IRenderable> objs = this.getBattleMode().createRenderables();
-		if (objs != null)
+		if (objs != null) {
 			customObject = objs;
+		}
 	
 		//boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {

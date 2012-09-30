@@ -31,7 +31,7 @@ public class FlagMode extends ClassicMode {
     /* The actual flag we need */
     private Flag flag;
     
-    /* Location of the file TODO */
+    /* Location of the file */
     private String imageFile = "/net/sf/robocode/ui/images/flag.png";
     
     /* List of CustomObjects used */
@@ -155,7 +155,6 @@ public class FlagMode extends ClassicMode {
 	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
     	objects.add(new RenderImage("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
-    	
     	return objects;
     }
     
@@ -190,7 +189,7 @@ public class FlagMode extends ClassicMode {
     		/* Update since last update */
 			this.turnsSinceLastFlagUpdate++;
     	}  else {
-			/* With a robot so set the location to be the carrier */
+			/* With a robot, so set the location to be the carrier */
 			for (IRenderable obj: objects) {
 				if (obj.getName() == "Flag") {
 				    obj.setTranslate(flag.getCarrier().getX(), flag.getCarrier().getY());
