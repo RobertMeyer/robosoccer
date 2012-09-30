@@ -277,15 +277,13 @@ public class ClassicMode implements IMode {
         return shuffledList;
     }
 
+    /**
+     * Create items for the specific mode
+     */
 	@Override
 	public void setItems() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub
 	}
 
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,

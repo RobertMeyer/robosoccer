@@ -228,7 +228,11 @@ public class RobotStatistics implements ContestantStatistics {
     public double getCurrentRammingKillBonus() {
         return rammingKillBonus;
     }
-
+    
+    public double getCurrentFlagScore() {
+    	return flagScore;
+    }
+    
     public void scoreSurvival() {
         if (isActive) {
             survivalScore += 50;
