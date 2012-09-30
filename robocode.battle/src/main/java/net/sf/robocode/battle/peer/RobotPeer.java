@@ -1815,11 +1815,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			battle.addBullet(fake);
 		}
 		updateEnergy(-energy);
+		
 
 		setState(RobotState.DEAD);
 	}
 
     public void respawn(List<RobotPeer> robots) {
+    	this.battle.getBattleMode().onRespawnDeath(this);
     	initializeRound(robots, null);
     }
     
