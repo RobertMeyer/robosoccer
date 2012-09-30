@@ -201,8 +201,6 @@ public final class Battle extends BaseBattle {
 		this.killstreakTracker = new KillstreakTracker(this);
         this.repositoryManager = repositoryManager;
         
-        setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
-        botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn"));
 	}
 
 	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
@@ -233,6 +231,11 @@ public final class Battle extends BaseBattle {
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
         
 		bp = battleProperties;
+		
+		if (battleMode.toString() == "Botzilla Mode") {
+        	setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+        	botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn"));
+        }
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
