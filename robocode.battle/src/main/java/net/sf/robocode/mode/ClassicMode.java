@@ -119,6 +119,13 @@ public class ClassicMode implements IMode {
 	}
 	
 	/**
+	 * Called after the death of a robot that is about to respawn
+	 */
+	public void onRespawnDeath(RobotPeer robot) {
+		
+	}
+	
+	/**
 	 * Override me if you wish to use the CustomObjectAPI.
 	 * 
 	 * This function should create new CustomObjects which should

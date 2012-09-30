@@ -8,6 +8,7 @@ import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.RenderImage;
 import net.sf.robocode.battle.item.Flag;
 import net.sf.robocode.battle.item.ItemDrop;
+import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
  * Basic Construct for the CTF mode:
@@ -140,6 +141,17 @@ public class FlagMode extends ClassicMode {
     public boolean respawnsOn() {
     	return true;
     }
+    
+    /**
+     * On the death of a robot that is going to respawn, drop the flag if they're
+     * the carrier
+     */
+    public void onRespawnDeath(RobotPeer robot) {
+		if (robot == flag.getCarrier()) {
+			/* The carrier so drop the flag */
+			flag.setCarrier(null);
+		}
+	}
     
     /**
      * Rounds will last 2 mins at 30 turns per second (3600 turns)
