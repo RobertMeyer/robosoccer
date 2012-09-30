@@ -23,6 +23,7 @@ public class Flag extends ItemDrop {
      * @param robot
      */
     public void setCarrier(RobotPeer robot) {
+    	System.out.printf("Carrier: %s at %f %f\nFlag: %f %f\n", robot.toString(), robot.getX(), robot.getY(), this.getXLocation(), this.getYLocation());
     	this.carrier = robot;
     }
 
@@ -36,6 +37,6 @@ public class Flag extends ItemDrop {
     
     @Override
     public void doItemEffect(RobotPeer robot) {
-    	// TODO (team-Telos)
+    	this.setCarrier(robot);
     }
 }

@@ -118,7 +118,7 @@ public class FlagMode extends ClassicMode {
     @Override
     public void setItems(Battle battle) {
     	/* Add the flag to the items */
-    	flag = new Flag(false, Integer.MAX_VALUE, 0.0, true, battle, null);
+    	flag = new Flag(false, Integer.MAX_VALUE, 100, true, battle, null);
         items.add(flag);
     }
 
@@ -154,7 +154,8 @@ public class FlagMode extends ClassicMode {
     @Override
 	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
-    	objects.add(new RenderImage("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
+    	objects.add(new RenderImage("Flag", imageFile, flag.getXLocation(),
+    			flag.battle.getBattleRules().getBattlefieldHeight() - flag.getYLocation()));
     	
     	return objects;
     }

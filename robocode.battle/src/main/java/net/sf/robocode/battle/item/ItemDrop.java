@@ -34,7 +34,7 @@ public abstract	class ItemDrop {
 	protected double health;
 	protected boolean isEquippable;
 	protected BattleRules battleRules;
-	protected Battle battle;
+	public Battle battle;
 	protected final BoundingRectangle boundingBox;
 	public String name;
 	protected String imageName;
@@ -78,6 +78,7 @@ public abstract	class ItemDrop {
 	 */
 	public void setXLocation(double xLocation) {
 		this.xLocation = xLocation;
+		setBoundingBox();
 	}
 
 	/**
@@ -94,6 +95,7 @@ public abstract	class ItemDrop {
 	 */
 	public void setYLocation(double yLocation) {
 		this.yLocation = yLocation;
+		setBoundingBox();
 	}
 	
 	/**

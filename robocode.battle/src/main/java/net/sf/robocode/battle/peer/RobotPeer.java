@@ -1041,7 +1041,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		checkRobotCollision(robots);
 		
         // Now check for item collision
-        //TODO: checkItemCollision(items);
+        checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1159,6 +1159,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					itemsDestroyed.add(item);
 				}
 				item.doItemEffect(this);
+				item.setXLocation(-50);
+				item.setYLocation(-50);
 			}
 		}
 		for (ItemDrop item : itemsDestroyed){
