@@ -306,7 +306,10 @@ public class RobotStatistics implements ContestantStatistics {
         return 0;
     }
 
-    public void scoreRobotDeath(int enemiesRemaining) {
+    public void scoreRobotDeath(int enemiesRemaining, Boolean botzillaActive) {
+    	if (botzillaActive) {
+    		enemiesRemaining--;
+    	}
         switch (enemiesRemaining) {
             case 0:
                 if (!robotPeer.isWinner()) {
