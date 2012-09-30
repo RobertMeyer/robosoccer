@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.CustomObject;
+import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.RenderImage;
 import net.sf.robocode.battle.item.Flag;
 import net.sf.robocode.battle.item.ItemDrop;
 
@@ -34,7 +35,7 @@ public class FlagMode extends ClassicMode {
     private String imageFile;
     
     /* List of CustomObjects used */
-    List<CustomObject> objects = new ArrayList<CustomObject>();
+    List<IRenderable> objects = new ArrayList<IRenderable>();
     
     /* The current turn since last flag update */
     private int turnsSinceLastFlagUpdate;
@@ -154,9 +155,9 @@ public class FlagMode extends ClassicMode {
      * Add the Flag to the board
      */
     @Override
-	public List<CustomObject> createCustomObjects() {    	
+	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
-    	objects.add(new CustomObject("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
+    	objects.add(new RenderImage("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
     	
     	return objects;
     }
@@ -171,7 +172,7 @@ public class FlagMode extends ClassicMode {
      * If the Flag is with a robot, keep the Flag attached to the Robot.
      */
     @Override
-	public void updateCustomObjects(List<CustomObject> customObject) {
+    public void updateRenderables(List<IRenderable> customObject) {
 		/* Check if the flag is with a robot */
     	if (flag.getCarrier() == null) {
     		/* Not with a robot so check to see if it should be moved */
@@ -180,7 +181,7 @@ public class FlagMode extends ClassicMode {
     			flag.updateToRandomLocation();
     			
     			/* Only one item but for future */
-    			for (CustomObject obj: objects) {
+    			for (IRenderable obj: objects) {
     				if (obj.getName() == "Flag") {
     				    obj.setTranslate(flag.getXLocation(), flag.getYLocation());
     				}
@@ -190,7 +191,7 @@ public class FlagMode extends ClassicMode {
     			this.turnsSinceLastFlagUpdate++;
     		} else {
     			/* With a robot so set the location to be the carrier */
-    			for (CustomObject obj: objects) {
+    			for (IRenderable obj: objects) {
     				if (obj.getName() == "Flag") {
     				    obj.setTranslate(flag.getCarrier().getX(), flag.getCarrier().getY());
     				}
