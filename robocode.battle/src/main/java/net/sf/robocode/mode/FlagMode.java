@@ -32,7 +32,7 @@ public class FlagMode extends ClassicMode {
     private Flag flag;
     
     /* Location of the file TODO */
-    private String imageFile;
+    private String imageFile = "/net/sf/robocode/ui/images/flag.png";
     
     /* List of CustomObjects used */
     List<IRenderable> objects = new ArrayList<IRenderable>();
@@ -40,7 +40,7 @@ public class FlagMode extends ClassicMode {
     /* The current turn since last flag update */
     private int turnsSinceLastFlagUpdate;
     /* How often the Flag should be moved */
-    private final int UPDATE_FLAG_TURNS = 100;
+    private final int UPDATE_FLAG_TURNS = 500;
 
     /**
      *
@@ -97,11 +97,6 @@ public class FlagMode extends ClassicMode {
         return this.timeLimit;
     }
 
-    @Override
-    public double modifyVelocity(double velocityIncrement) {
-        // Maybe upon pick up flag make slightly slower.
-        return 0;
-    }
 
     @Override
     public String toString() {
@@ -132,7 +127,9 @@ public class FlagMode extends ClassicMode {
      */
     @Override
     public void scoreTurnPoints() {
-    	flag.getCarrier().getRobotStatistics().scoreFlag();
+    	if (flag.getCarrier() != null) {
+    		flag.getCarrier().getRobotStatistics().scoreFlag();
+    	}
     }
     
     /**
@@ -187,19 +184,21 @@ public class FlagMode extends ClassicMode {
     				}
     			}	
     			
-    			/* Update since last update */
-    			this.turnsSinceLastFlagUpdate++;
-    		} else {
-    			/* With a robot so set the location to be the carrier */
-    			for (IRenderable obj: objects) {
-    				if (obj.getName() == "Flag") {
-    				    obj.setTranslate(flag.getCarrier().getX(), flag.getCarrier().getY());
-    				}
-    			}
-    			
-    			/* Set update since last update to 0 */
     			this.turnsSinceLastFlagUpdate = 0;
     		}
-    	}
+    		
+    		/* Update since last update */
+			this.turnsSinceLastFlagUpdate++;
+    	}  else {
+			/* With a robot so set the location to be the carrier */
+			for (IRenderable obj: objects) {
+				if (obj.getName() == "Flag") {
+				    obj.setTranslate(flag.getCarrier().getX(), flag.getCarrier().getY());
+				}
+			}
+			
+			/* Set update since last update to 0 */
+			this.turnsSinceLastFlagUpdate = 0;
+		}
 	}
 }
