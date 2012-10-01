@@ -31,7 +31,7 @@ import robocode.control.RobotSpecification;
  *
  */
 public class ClassicMode implements IMode {
-	
+	int numObstacles = 0;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -68,6 +68,11 @@ public class ClassicMode implements IMode {
 	
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
+	}
+	
+	public int setNumObstacles() {
+		numObstacles = 0;
+		return numObstacles;
 	}
 	
 	/**

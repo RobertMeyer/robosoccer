@@ -17,4 +17,10 @@ public class ObstacleMode extends ClassicMode {
     public String getDescription() {
         return "A mode with obstacles that robots have to avoid.";
     }
+    
+    @Override
+    public int setNumObstacles() {
+		numObstacles = 2;
+		return numObstacles;
+	}
 }

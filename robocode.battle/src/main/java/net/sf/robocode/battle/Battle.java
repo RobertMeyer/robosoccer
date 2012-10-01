@@ -198,6 +198,7 @@ public final class Battle extends BaseBattle {
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+    private int numObstacles;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
 		super(properties, battleManager, eventDispatcher);
@@ -216,14 +217,16 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 
         battleMode = (ClassicMode) battleProperties.getBattleMode();
-
+        
+        bp = battleProperties;
+        numObstacles = battleMode.setNumObstacles();
+        generateObstacles(numObstacles);
+        
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules,
         		robotsCount);
 
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
-
-		bp = battleProperties;
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
@@ -247,8 +250,13 @@ public final class Battle extends BaseBattle {
 	}
 
 	//Generates a list of obstacles at the start of the battle
-	private void generateObstacles() {
-
+	private void generateObstacles(int num) {
+		Random randomGen = new Random();
+		for (int i = 0; i < num; i++) {
+			obstacles.add(new ObstaclePeer(this, battleRules, i));
+			obstacles.get(i).setX(randomGen.nextDouble() * bp.getBattlefieldWidth());
+			obstacles.get(i).setY(randomGen.nextDouble() * bp.getBattlefieldHeight());
+		}
 
 	}
 
