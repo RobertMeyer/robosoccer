@@ -11,7 +11,7 @@ import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
 import robocode.BattleRules;
-import robocode.control.RobotSpecification;
+import robocode.control.RobotSpecification;;
 
 public class SoccerMode extends ClassicMode implements IMode {
 	
@@ -185,31 +185,28 @@ public class SoccerMode extends ClassicMode implements IMode {
 		return endTimer > 5*time;
 	}
 	
-/*	@Override
-	public List<IRenderable> createCustomObjects() {
+	/*@Override
+	public List<IRenderable> createRenderables() {
 		List<IRenderable> objs = new ArrayList<IRenderable>(); 
-		RenderString obj = new RenderString("flag", "Testing");
-		obj.setTranslate(300, 300);
-		obj.setColour(Color.BLUE);
-		obj.setScale(10, 10);
+		RenderObject obj = new RenderObject ("flag", "/net/sf/robocode/ui/images/flag.png");
+		//obj.setTranslate(robots.get(0).getX(), robots.get(0).getY());	
+		//obj.setColour(Color.BLUE);
 		objs.add(obj);
 		return objs;
 	}
 	
 	private int counter = 0; 
+	private float degree = 0;
 	
 	@Override
-	public void updateCustomObjects(List<IRenderable> objects) {
+	public void updateRenderables(List<IRenderable> objects) {
 		counter += System.currentTimeMillis();
 		Iterator<IRenderable> itr = objects.iterator();
 		while (itr.hasNext()) {
 			IRenderable obj = (IRenderable)itr.next();
-			if (obj.getType() == RenderableType.SPRITE_STRING) {
-				float pi = 3.14f;
-				float freq = 10.0f;
-				RenderString objs = (RenderString)obj;
-				objs.setAlpha((float)(0.5*(1+Math.sin(2*pi*freq*counter))));
-				
+			if (obj.getType() == RenderableType.SPRITE) {
+				RenderObject objs = (RenderObject)obj;
+				objs.setTranslate(robots.get(0).getBoundingBox().getCenterX(), robots.get(0).getBoundingBox().getCenterY());				
 			}
 			//obj.toggleHide();
 			//itr.remove();
