@@ -62,8 +62,8 @@ import net.sf.robocode.battle.item.BoundingRectangle;
 public class ObstaclePeer {
 
 	// Use width and height of the background squares
-	public final static int WIDTH = 64;
-    public final static int HEIGHT = 64;
+	public final static int WIDTH = 32;
+    public final static int HEIGHT = 32;
     protected BattleRules battleRules;
     protected Battle battle;
     protected final BoundingRectangle boundingBox;
@@ -76,6 +76,7 @@ public class ObstaclePeer {
 		this.battle = battle;
 		this.battleRules = battleRules;
 		this.boundingBox = new BoundingRectangle();
+		updateBoundingBox();
 	}
 
 	public void setX(double x) {
@@ -95,7 +96,7 @@ public class ObstaclePeer {
     }
 	
     public void updateBoundingBox() {
-        boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+        boundingBox.setRect(x - WIDTH / 2, y - HEIGHT / 2, WIDTH, HEIGHT);
     }
 	
     public BoundingRectangle getBoundingBox() {

@@ -20,7 +20,7 @@ public class ObstacleMode extends ClassicMode {
     
     @Override
     public int setNumObstacles() {
-		numObstacles = 2;
+		numObstacles = 10;
 		return numObstacles;
 	}
 }

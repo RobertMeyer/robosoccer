@@ -1238,40 +1238,25 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {
         boolean hitObstacle = false;
-        double fixx = 0, fixy = 0;
         double angle = 0;
+        double movedx = velocity * sin(bodyHeading);
+        double movedy = velocity * cos(bodyHeading);
         
         for (ObstaclePeer obstacle : obstacles) {
-            if (!(obstacle == null) && boundingBox.intersects(obstacle.getBoundingBox())) {
-                hitObstacle = true;
-                
-                if (x > obstacle.getX() - (ObstaclePeer.WIDTH / 2) - HALF_WIDTH_OFFSET) {
-                    fixx = obstacle.getX() - (ObstaclePeer.WIDTH / 2) - HALF_WIDTH_OFFSET - x;
-                    angle = normalRelativeAngle(PI / 2 - bodyHeading);
-                }
-
-                if (x < obstacle.getX() + (ObstaclePeer.WIDTH / 2) + HALF_WIDTH_OFFSET) {
-                    fixx = obstacle.getX() + (ObstaclePeer.WIDTH / 2) + HALF_WIDTH_OFFSET - x;
-                    angle = normalRelativeAngle(3 * PI / 2 - bodyHeading);
-                }
-
-                if (y > obstacle.getY() - (ObstaclePeer.HEIGHT / 2) - HALF_HEIGHT_OFFSET) {
-                    fixy = obstacle.getY() - (ObstaclePeer.HEIGHT / 2) - HALF_HEIGHT_OFFSET - y;
-                    angle = normalRelativeAngle(-bodyHeading);
-                }
-
-                if (y < obstacle.getY() + (ObstaclePeer.HEIGHT / 2) + HALF_HEIGHT_OFFSET) {
-                    fixy = obstacle.getY() + (ObstaclePeer.HEIGHT / 2) + HALF_HEIGHT_OFFSET - y;
-                    angle = normalRelativeAngle(PI - bodyHeading);
-                }
-                //addEvent(new HitItemEvent());
+        	obstacle.updateBoundingBox();
+        	
+            if (!(obstacle == null)) {
+            	if (obstacle.getBoundingBox().intersects(boundingBox)) {
+            		hitObstacle = true;
+        		}
             }
         }
-
+        
         if (hitObstacle) {
         	addEvent(new HitWallEvent(angle));
-        	x += fixx;
-            y += fixy;
+        	velocity = 0;
+        	x -= movedx;
+            y -= movedy;
 
         	updateBoundingBox();
             setState(RobotState.HIT_WALL);

@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.ObstacleSnapshot;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
@@ -419,7 +420,9 @@ public class BattleView extends Canvas {
     	for (IObstacleSnapshot obstacleSnapshot : snapShot.getObstacles()) {
 	        g.setColor(Color.green);
 	        //getX() and getY() returns double, convert to int (or change getX/Y() to return int instead)
-	        g.fillRect((int) obstacleSnapshot.getX(), (int) obstacleSnapshot.getY(), 50, 50);
+	        g.fillRect((int)(obstacleSnapshot.getX() - ObstaclePeer.WIDTH/2),
+	        		(int)(battleField.getHeight() - obstacleSnapshot.getY() - ObstaclePeer.HEIGHT/2),
+	        		ObstaclePeer.WIDTH, ObstaclePeer.HEIGHT);
     	}
     }
 
