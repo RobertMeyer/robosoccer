@@ -8,7 +8,7 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.mode.IMode;
 import robocode.*;
-import net.sf.robocode.battle.RenderImage;
+import net.sf.robocode.battle.RenderObject;
 
 /**
  * Abstract class for item/powerup drops
@@ -213,7 +213,7 @@ public abstract	class ItemDrop {
 				}
 			}
 		}
-		this.battle.getCustomObject().add(new RenderImage(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
+		this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
 		System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
