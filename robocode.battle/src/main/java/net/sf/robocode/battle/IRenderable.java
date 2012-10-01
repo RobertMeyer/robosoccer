@@ -30,6 +30,20 @@ public interface IRenderable {
 	public AffineTransform getTranslate();
 	
 	/**
+	 * Returns the translation on x.
+	 * 
+	 * @return double representation of x position.
+	 */
+	public double getTranslateX();
+	
+	/**
+	 * Returns the translation on y.
+	 * 
+	 * @return double representation of y position.
+	 */
+	public double getTranslateY();
+	
+	/**
 	 * Modifies the rotation of the object.
 	 * 
 	 * In Degrees.
@@ -44,6 +58,13 @@ public interface IRenderable {
 	 * @return a degree representation of the angle.
 	 */
 	public double getRotationDegree();
+	
+	/**
+	 * Returns the current rotation in radian.
+	 * 
+	 * @return a degree representation of the angle.
+	 */
+	public double getRotationRadian();
 	
 	/**
 	 * Returns the current AffineTransform of rotation.

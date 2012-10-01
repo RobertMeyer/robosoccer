@@ -400,11 +400,11 @@ public class BattleView extends Canvas {
 
             drawEffectAreas(g, snapShot);
             
-            // Draw custom
-            drawImages(g, snapShot);
-            
             // Draw robots
             drawRobots(g, snapShot);
+            
+            // Draw custom
+            drawImages(g, snapShot);
 
             // Draw robot (debug) paintings
             drawRobotPaint(g, snapShot);
@@ -500,7 +500,11 @@ public class BattleView extends Canvas {
 					image = addImage(snap.getName(), snap.getFilename());
 				}
 				// Setup matrix transform of image
-				AffineTransform at = snap.getAffineTransform();
+				AffineTransform at = AffineTransform.getTranslateInstance(
+						snap.getX(), battleField.getHeight() - snap.getY());
+				at.rotate(snap.getRotation());
+				at.scale(snap.getScaleX(), snap.getScaleY());
+				at.shear(snap.getShearX(), snap.getShearY());
 				image.setTransform(at);
 				
 				Color oldColour = g.getColor();
@@ -524,9 +528,14 @@ public class BattleView extends Canvas {
 				g.setColor(oldColour);
 				g.setComposite(oldState);
 			} else if (snap.getType() == RenderableType.SPRITE_STRING) {
-				AffineTransform at = snap.getAffineTransform();
+				AffineTransform at = AffineTransform.getTranslateInstance(
+						snap.getX(), battleField.getHeight() - snap.getY());
+				at.rotate(snap.getRotation());
+				at.scale(snap.getScaleX(), snap.getScaleY());
+				at.shear(snap.getShearX(), snap.getShearY());
 				AffineTransform oldAt = g.getTransform();
 				g.setTransform(at);
+				System.out.println(snap.getX() + "\n");
 				// Keep old alpha level state
 				Composite oldState = g.getComposite();
 				// Setup new alpha level state
