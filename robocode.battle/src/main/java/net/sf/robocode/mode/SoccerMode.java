@@ -7,16 +7,18 @@ import java.util.List;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.SoccerTeamPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
+import robocode.BattleResults;
 import robocode.BattleRules;
 import robocode.control.RobotSpecification;;
 
 public class SoccerMode extends ClassicMode implements IMode {
 	
 	/* Bounds for the goal - possibly to be altered at a later date */
-	public static final double GOALXMIN = 200;
+	public static final double GOALXMIN = 100;
 	public static final double GOALXMAX = 700;
 	public static final double GOALYMIN = 250;
 	public static final double GOALYMAX = 400;
@@ -24,6 +26,17 @@ public class SoccerMode extends ClassicMode implements IMode {
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;
+	
+	/*This stores the width and height of the playing field, plus the current
+	 * x coordinate of the ball bot.
+	 */
+	private double width;
+	private double height;
+	private double ballX;
+	
+	/*TeamPeers for the two soccer teams*/
+	private SoccerTeamPeer team1;
+	private SoccerTeamPeer team2;
 	
 	private boolean roundOver = false;
 	
@@ -63,8 +76,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
 		initialRobotPositions = new double[(count + 1)][3];
  		
- 		double height = battleRules.getBattlefieldHeight();
- 		double width = battleRules.getBattlefieldWidth();
+ 		height = battleRules.getBattlefieldHeight();
+ 		width = battleRules.getBattlefieldWidth();
  		
  		int teamSize = count / 2;
  		
@@ -113,8 +126,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 		}
 		
 		// Create teams 1 and 2.
-		TeamPeer team1 = new TeamPeer("Team 1", null, 0);
-		TeamPeer team2 = new TeamPeer("Team 2", null, 1);
+		team1 = new SoccerTeamPeer("Team 1", null, 0);
+		team2 = new SoccerTeamPeer("Team 2", null, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
 		
 		peers.addContestant(team1);
@@ -160,9 +173,9 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
         for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
         	if (robotPeer.isBall()) {
-        		double x = robotPeer.getX();
+        		ballX = robotPeer.getX();
         		double y = robotPeer.getY();
-        		if (((x < GOALXMIN) || (x > GOALXMAX))
+        		if (((ballX < GOALXMIN) || (ballX > GOALXMAX))
 						&& ((y < GOALYMAX) || (y > GOALYMIN))) {
 					roundOver = true;
 				} else {
@@ -171,6 +184,15 @@ public class SoccerMode extends ClassicMode implements IMode {
         	}
             robotPeer.performScan(ball);
         }
+	}
+	
+	@Override
+	public void scoreTurnPoints() {
+		if (ballX < width/2) {
+			team1.getStatistics().incrementScore();
+		} else {
+			team2.getStatistics().incrementScore();
+		}
 	}
 	
 	@Override
@@ -215,6 +237,21 @@ public class SoccerMode extends ClassicMode implements IMode {
 	
 	@Override
 	public void setGuiOptions() {
-		super.uiOptions = new GuiOptions(false, false);
+		super.uiOptions = new GuiOptions(true, false);
+	}
+	
+	@Override 
+	public BattleResults[] getFinalResults() {
+		List<BattleResults> results = new ArrayList<BattleResults>();
+		double team1Score = team1.getStatistics().getTotalScore();
+		double team2Score = team2.getStatistics().getTotalScore();
+		if (team1Score > team2Score) {
+			results.add(team1.getStatistics().getFinalResults());
+			results.add(team2.getStatistics().getFinalResults());
+		} else {
+			results.add(team2.getStatistics().getFinalResults());
+			results.add(team1.getStatistics().getFinalResults());
+		}
+		return results.toArray(new BattleResults[results.size()]);
 	}
 }

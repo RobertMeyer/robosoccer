@@ -453,6 +453,9 @@ public final class Battle extends BaseBattle {
 			robotPeer.waitForStop();
 			robotPeer.getRobotStatistics().generateTotals();
 		}
+        
+        // Increment mode specific points - TODO -team-Telos
+		this.getBattleMode().scoreTurnPoints();
 
 		bullets.clear();
 
@@ -684,9 +687,6 @@ public final class Battle extends BaseBattle {
         		!botzillaActive) {
         	addBotzilla();
         }
-        
-        // Increment mode specific points - TODO -team-Telos
-		this.getBattleMode().scoreTurnPoints();
         
         getBattleMode().updateRobotScans(peers.getRobots());
     }

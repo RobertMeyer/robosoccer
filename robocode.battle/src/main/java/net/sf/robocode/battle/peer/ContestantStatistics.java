@@ -62,4 +62,6 @@ public interface ContestantStatistics {
     BattleResults getFinalResults();
 
     void setRank(int rank);
+
+	void incrementScore();
 }
