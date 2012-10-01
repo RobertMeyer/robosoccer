@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 public class Botzilla extends ClassicMode {
 	
 	private JTextField setBotzillaSpawn; 
+	private JTextField setBotzillaModifier;
 	private setBotzillaPanel modePanel;
 	
 	@Override
@@ -27,19 +28,29 @@ public class Botzilla extends ClassicMode {
 	private class setBotzillaPanel extends JPanel {
 		public setBotzillaPanel() {
 			setBotzillaSpawn = new JTextField(2);
-			add(new JLabel("Turn to spawn Botzilla(Default: 40) :"), BorderLayout.NORTH);
+			add(new JLabel("Turn to spawn Botzilla (Default: 750) :"), BorderLayout.NORTH);
 			add(setBotzillaSpawn);
+			setBotzillaModifier = new JTextField(2);
+			add(new JLabel("Amount of turns to wait multiplied by robot count:"), BorderLayout.SOUTH);
+			add(setBotzillaModifier);
 		}
 		
 		public Hashtable<String, Object> getValues() {
 			Hashtable<String, Object> values = new Hashtable<String, Object>();
 			Pattern pattern = Pattern.compile("^\\d+$");
-			Matcher match = pattern.matcher(setBotzillaSpawn.getText());
-			boolean isInt = match.matches();
+			Matcher matchSpawn = pattern.matcher(setBotzillaSpawn.getText());
+			boolean isInt = matchSpawn.matches();
 			if (isInt) {
 				values.put("botzillaSpawn", setBotzillaSpawn.getText());
 			}else{
-				values.put("botzillaSpawn", "40");
+				values.put("botzillaSpawn", "0");
+			}
+			Matcher matchModifier = pattern.matcher(setBotzillaModifier.getText());
+			isInt = matchModifier.matches();
+			if (isInt) {
+				values.put("botzillaModifier", setBotzillaModifier.getText());
+			}else{
+				values.put("botzillaModifier", "0");
 			}
 			return values;
 		}

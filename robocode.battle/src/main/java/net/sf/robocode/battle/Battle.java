@@ -169,7 +169,7 @@ public final class Battle extends BaseBattle {
     //Botzilla specific variables
     private int currentTurn;
     private Boolean botzillaActive;
-    private int botzillaSpawnTime = 40;
+    private int botzillaSpawnTime = 750;
     RobotPeer botzillaPeer;
     RobotSpecification botzilla;
     private Hashtable<String, Object> setTimeHashTable;
@@ -234,7 +234,13 @@ public final class Battle extends BaseBattle {
 		
 		if (battleMode.toString() == "Botzilla Mode") {
         	setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
-        	botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn"));
+			if (Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn"));
+			} else if (Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) * robotsCount;
+			}
+        	
+        	System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
         }
 	}
 
