@@ -185,7 +185,7 @@ public final class Battle extends BaseBattle {
 	/*--ItemController--*/
 	private ItemController itemControl;// = new ItemController(); 
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
-	private int itemCursor;
+	private int itemCursor = 0;
 	
 	// Objects in the battle
 	private int robotsCount;
@@ -533,15 +533,14 @@ public final class Battle extends BaseBattle {
         computeActiveRobots();
 
         publishStatuses();
-        
 		if (totalTurns % 100 == 0 || totalTurns == 1){
 			if (itemCursor < items.size()){
 				itemControl.spawnRandomItem(items.get(itemCursor));
 				itemCursor++;
 			}
 		}
-		
-		 currentTurn++;
+        
+		currentTurn++;
         // Robot time!
         wakeupRobots();
         
