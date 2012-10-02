@@ -232,30 +232,9 @@ public class BattleView extends Canvas {
 		// Scale font
 		smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
 		smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
-
-<<<<<<< HEAD
-        // Custom image initialisation
-        /* Check to see if game mode is of your instace, then add all your images
-         * with addCustomImage(String name, String filename, Double x, Double y).
-         */
-        if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
-        	/* add your images 
-        	 * Example:
-        	 * addCustomImage("flag", "/net/sf/robocode/ui/images/flag.png", 10, 10);
-        	 * setCustomImagePosition("flag", 10,10);
-        	*/
-        }
-
-		// Initialize ground image
-		if (drawGround) {
-=======
-        // Scale font
-        smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
-        smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
         
         // Initialize ground image
         if (drawGround) {
->>>>>>> origin/master
         	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
@@ -370,30 +349,20 @@ public class BattleView extends Canvas {
 		// Draw ground
 		drawGround(g);
 
-<<<<<<< HEAD
-        // Draw custom
-        drawImages(g);
-=======
         // Draw ground
         drawGround(g);
->>>>>>> origin/master
 
 		if (snapShot != null) {
 			// Draw scan arcs
 			drawScanArcs(g, snapShot);
 
             drawEffectAreas(g, snapShot);
-<<<<<<< HEAD
-			// Draw robots
-			drawRobots(g, snapShot);
-=======
             
             // Draw custom
             drawImages(g, snapShot);
             
             // Draw robots
             drawRobots(g, snapShot);
->>>>>>> origin/master
 
 			// Draw robot (debug) paintings
 			drawRobotPaint(g, snapShot);
@@ -466,14 +435,6 @@ public class BattleView extends Canvas {
 
 	//TODO Update graphic display of item
     private void drawItems(Graphics2D g, ITurnSnapshot snapShot) {
-<<<<<<< HEAD
-		double x, y;
-		AffineTransform at;
-		int battleFieldHeight = battleField.getHeight();
-	}
-	
-    /* Draws all active images in the scene.
-=======
         double x, y;
         AffineTransform at;
         int battleFieldHeight = battleField.getHeight();
@@ -481,7 +442,6 @@ public class BattleView extends Canvas {
     
     /**
      * Draws all active images in the scene.
->>>>>>> origin/master
      *  
      * @param Grahpics2D g - rendering context used to
      * render goodies to the screen
