@@ -1,6 +1,6 @@
 package net.sf.robocode.mode;
 
-import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,13 +26,22 @@ public class Botzilla extends ClassicMode {
 	}
 
 	private class setBotzillaPanel extends JPanel {
+		
 		public setBotzillaPanel() {
-			setBotzillaSpawn = new JTextField(2);
-			add(new JLabel("Turn to spawn Botzilla (Default: 750) :"), BorderLayout.NORTH);
-			add(setBotzillaSpawn);
-			setBotzillaModifier = new JTextField(2);
-			add(new JLabel("Amount of turns to wait multiplied by robot count:"), BorderLayout.SOUTH);
-			add(setBotzillaModifier);
+			JPanel rowOne = new JPanel();
+			JPanel rowTwo = new JPanel();
+			
+			setLayout(new GridLayout(2, 1, 0, 5));
+			this.add(rowOne);
+			this.add(rowTwo);
+						
+			setBotzillaSpawn = new JTextField(5);
+			rowOne.add(new JLabel("Turn to spawn Botzilla (Default: 750) :"));
+			rowOne.add(setBotzillaSpawn);
+			
+			setBotzillaModifier = new JTextField(5);
+			rowTwo.add(new JLabel("Amount of turns to wait multiplied by robot count:"));
+			rowTwo.add(setBotzillaModifier);
 		}
 		
 		public Hashtable<String, Object> getValues() {
