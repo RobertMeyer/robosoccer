@@ -18,6 +18,55 @@ public interface IRenderableSnapshot {
 	AffineTransform getAffineTransform();
 	
 	/**
+	 * Returns the x position of object.
+	 * 
+	 * @return a double representation of x position.
+	 */
+	double getX();
+	
+	/**
+	 * Returns the y position of object.
+	 * 
+	 * @return a double representation of y position.
+	 */
+	double getY();
+	
+	/**
+	 * Returns the angle in radians.
+	 * 
+	 * @return a double representation of rotation in radians.
+	 */
+	double getRotation();
+	
+	/**
+	 * Returns the x shear of object.
+	 * 
+	 * @return a double representation of x shear.
+	 */
+	double getShearX();
+	
+	/**
+	 * Returns the y shear of object.
+	 * 
+	 * @return a double representation of y shear.
+	 */
+	double getShearY();
+	
+	/**
+	 * Returns the x scale of object.
+	 * 
+	 * @return a double representation of x scale.
+	 */
+	double getScaleX();
+	
+	/**
+	 * Returns the y scale of object.
+	 * 
+	 * @return a double representation of y scale.
+	 */
+	double getScaleY();
+	
+	/**
 	 * Returns the current state of object.
 	 * 
 	 * @return a boolean of current state of object.

@@ -49,7 +49,7 @@ public class RobotType implements Serializable {
 			boolean isDroid,
 			boolean isHouse,
 			boolean isBall,
-			boolean isBotzilla,
+			boolean isBotzillaBot,
 			boolean isZombie
 			) {
 		this.code = 0;
@@ -80,7 +80,7 @@ public class RobotType implements Serializable {
 		if (isBall) {
 			code += BALL.getCode();
 		}
-	    if (isBotzilla) {
+	    if (isBotzillaBot) {
 	    	code += BOTZILLA.getCode();
 	    }
 		if (isZombie) {
@@ -132,7 +132,7 @@ public class RobotType implements Serializable {
 		return (code & BALL.code) != 0;
 	}
 
-	public boolean isBotzilla() {
+	public boolean isBotzillaBot() {
 		return (code & BOTZILLA.code) != 0;
 	}
 	

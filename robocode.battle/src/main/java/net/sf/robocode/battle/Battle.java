@@ -166,9 +166,13 @@ public final class Battle extends BaseBattle {
     private final boolean isDebugging;
     // Initial robot start positions (if any)
     private double[][] initialRobotPositions;
-    //Check for Botzilla
+    //Botzilla specific variables
+    private int currentTurn;
     private Boolean botzillaActive;
-    private int botzillaSpawnTime = 40;
+    private int botzillaSpawnTime = 750;
+    RobotPeer botzillaPeer;
+    RobotSpecification botzilla;
+    private Hashtable<String, Object> setTimeHashTable;
   
    
     // kill streak tracker
@@ -196,6 +200,7 @@ public final class Battle extends BaseBattle {
 		this.cpuConstant = cpuManager.getCpuConstant();
 		this.killstreakTracker = new KillstreakTracker(this);
         this.repositoryManager = repositoryManager;
+        
 	}
 
 	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
@@ -206,6 +211,17 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 		
         battleMode = (ClassicMode) battleProperties.getBattleMode();
+        //TODO Just testing spawning any bot for now
+        final RobotSpecification[] temp = repositoryManager.getSpecifications();
+        for(int i = 0; i < temp.length; i++) {
+        	String className = temp[i].getClassName();
+        	if(className.equals("sampleex.Botzilla")) {
+        		botzilla = temp[i];
+        		break;
+        	}
+        }
+
+        botzillaActive = false;
         
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
@@ -215,6 +231,17 @@ public final class Battle extends BaseBattle {
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
         
 		bp = battleProperties;
+		
+		if (battleMode.toString() == "Botzilla Mode") {
+        	setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+			if (Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn"));
+			} else if (Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) * robotsCount;
+			}
+        	
+        	System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
+        }
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
@@ -292,8 +319,9 @@ public final class Battle extends BaseBattle {
 		for (int i = 4; i >= 0; i--) { // Make sure it is run
 			System.gc();
 		}
+		
 	}
-
+	
 	@Override
 	protected void initializeBattle() {
 		super.initializeBattle();
@@ -330,6 +358,7 @@ public final class Battle extends BaseBattle {
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.cleanup();
 		}
+		
 		hostManager.resetThreadManager();
 
 		super.finalizeBattle();
@@ -347,11 +376,12 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void preloadRound() {
 		super.preloadRound();
-	
+		//TODO reset currentTurn
+		currentTurn = 0;
+		
 		/*--ItemController--*/
 		itemControl = new ItemController();
 		itemControl.updateRobots(peers.getRobots());
-	
 		// At this point the unsafe loader thread will now set itself to wait for a notify
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.initializeRound(peers.getRobots(), initialRobotPositions);
@@ -390,8 +420,6 @@ public final class Battle extends BaseBattle {
     protected void initializeRound() {
         super.initializeRound();
         
-        botzillaActive = false;
-        
         inactiveTurnCount = 0;
 
         /*--ItemController--*/
@@ -429,7 +457,11 @@ public final class Battle extends BaseBattle {
 	@Override
 	protected void finalizeRound() {
 		super.finalizeRound();
-
+		
+		if(botzillaActive) {
+			removeBotzilla();
+		}
+		
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.waitForStop();
 			robotPeer.getRobotStatistics().generateTotals();
@@ -442,6 +474,13 @@ public final class Battle extends BaseBattle {
 
 	@Override
 	protected void initializeTurn() {
+		//TODO check if this works
+        if (currentTurn == botzillaSpawnTime &&
+        		battleMode.toString() == "Botzilla Mode" &&
+        		!botzillaActive) {
+        	addBotzilla();
+        }
+        
 		super.initializeTurn();
 
 		eventDispatcher.onTurnStarted(new TurnStartedEvent());
@@ -450,7 +489,6 @@ public final class Battle extends BaseBattle {
 	@Override
     protected void runTurn() {
         super.runTurn();
-
 
         loadCommands();
 
@@ -487,9 +525,11 @@ public final class Battle extends BaseBattle {
 				itemCursor++;
 			}
 		}
-
+		
+		 currentTurn++;
         // Robot time!
         wakeupRobots();
+        
     }
 
 	 @Override
@@ -568,7 +608,9 @@ public final class Battle extends BaseBattle {
         ArrayList<BattleResults> results = new ArrayList<BattleResults>();
 
         List<ContestantPeer> orderedContestants = new ArrayList<ContestantPeer>(peers.getContestants());
-
+        
+        System.out.println(orderedContestants.size());
+        
         Collections.sort(orderedContestants);
         Collections.reverse(orderedContestants);
 
@@ -579,7 +621,7 @@ public final class Battle extends BaseBattle {
         for (int rank = 0; rank < peers.getContestants().size(); rank++) {
             RobotSpecification robotSpec = null;
             ContestantPeer contestant = orderedContestants.get(rank);
-
+            
             contestant.getStatistics().setRank(rank + 1);
             BattleResults battleResults = contestant.getStatistics().getFinalResults();
 
@@ -660,7 +702,7 @@ public final class Battle extends BaseBattle {
             robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
         }
         
-        if (getTotalTurns() >= botzillaSpawnTime &&
+        if (currentTurn >= botzillaSpawnTime &&
         		battleMode.toString() == "Botzilla Mode" &&
         		!botzillaActive) {
         	addBotzilla();
@@ -672,19 +714,34 @@ public final class Battle extends BaseBattle {
         getBattleMode().updateRobotScans(peers.getRobots());
     }
 	
+	private void removeBotzilla() {
+		botzillaActive = false;
+        peers.removeBotzilla();
+        //botzillaPeer.cleanup();
+        robotsCount--;
+	}
+	
 	private void addBotzilla() {
 		System.out.println("BOTZILLA JUST APPEARED");
 		botzillaActive = true;
 		
-//		RobotPeer robotPeer = new RobotPeer(this,
-//				hostManager,
-//				RobotSpecification robotSpecification,
-//				robotDuplicates.get(i),
-//				null,
-//				robots.size());
-//		
-//		robots.add(robotPeer);
-//		contestants.add(robotPeer);
+		botzillaPeer = new RobotPeer(this,
+				hostManager,
+				botzilla,
+				0,
+				null,
+				getRobotsCount());
+		robotsCount++;
+		peers.addRobot(botzillaPeer);
+		peers.addContestant(botzillaPeer);
+		botzillaPeer.initializeRound(peers.getRobots() , null);
+		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+
+        final long waitMillis = waitTime / 1000000;
+        final int waitNanos = (int) (waitTime % 1000000);
+		botzillaPeer.startRound(waitMillis, waitNanos);
+		// TODO make appear and running
+		
 	}
 
     private void handleDeadRobots() {
@@ -692,7 +749,7 @@ public final class Battle extends BaseBattle {
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
             // Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
-                deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+                deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
             } else {
                 boolean teammatesalive = false;
 
@@ -703,7 +760,7 @@ public final class Battle extends BaseBattle {
                     }
                 }
                 if (!teammatesalive) {
-                    deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+                    deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
                 }
             }
 

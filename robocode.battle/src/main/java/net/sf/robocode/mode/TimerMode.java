@@ -34,7 +34,7 @@ public class TimerMode extends ClassicMode {
 		
 		public Hashtable<String, Object> getValues() {
 			Hashtable<String, Object> values = new Hashtable<String, Object>();
-			Pattern pattern = Pattern.compile("[0-9]*");
+			Pattern pattern = Pattern.compile("^\\d+$");
 			Matcher match = pattern.matcher(setTime.getText());
 			boolean isInt = match.matches();
 			if (isInt) {

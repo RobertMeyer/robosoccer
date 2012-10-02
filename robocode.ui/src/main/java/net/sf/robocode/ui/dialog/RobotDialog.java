@@ -47,6 +47,7 @@ public class RobotDialog extends JFrame {
     private JTabbedPane tabbedPane;
     private ConsoleScrollPane consoleScrollPane;
     private ConsoleScrollPane propertiesScrollPane;
+    private CommanderScrollPane commanderScrollPane;
     private JPanel robotDialogContentPane;
     private JPanel buttonPanel;
     private JButton okButton;
@@ -200,6 +201,7 @@ public class RobotDialog extends JFrame {
             tabbedPane.setLayout(new BorderLayout());
             tabbedPane.addTab("Console", getConsoleScrollPane());
             tabbedPane.addTab("Properties", getPropertiesScrollPane());
+            tabbedPane.addTab("Commander", getCommanderScrollPane());
             tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
             tabbedPane.addChangeListener(new ChangeListener() {
@@ -260,6 +262,18 @@ public class RobotDialog extends JFrame {
         }
         return propertiesScrollPane;
     }
+    
+    /**
+     * Returns the Commander scroll pane
+     *
+     * @return the Commander scroll pane
+     */
+    private CommanderScrollPane getCommanderScrollPane() {
+        if (commanderScrollPane == null) {
+            commanderScrollPane = new CommanderScrollPane();
+        }
+        return commanderScrollPane;
+    }
 
     /**
      * Returns the console scroll pane
@@ -272,7 +286,7 @@ public class RobotDialog extends JFrame {
         }
         return consoleScrollPane;
     }
-
+    
     /**
      * Returns the button panel
      *
