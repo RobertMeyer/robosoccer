@@ -234,7 +234,7 @@ public final class Battle extends BaseBattle {
 
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
-        		battleProperties.getInitialPositions(), battleRules,
+        		battleProperties.getInitialPositions(), battleRules, this,
         		robotsCount);
 
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
@@ -269,6 +269,10 @@ public final class Battle extends BaseBattle {
 
 	public ItemController getItemControl(){
 		return itemControl;
+	}
+	
+	public List<ObstaclePeer> getObstacleList() {
+		return new ArrayList<ObstaclePeer>(obstacles);
 	}
 
 	public boolean isDebugging() {
@@ -704,7 +708,7 @@ public final class Battle extends BaseBattle {
 
 	private void updateBullets() {
 		for (BulletPeer bullet : getBulletsAtRandom()) {
-			bullet.update(getRobotsAtRandom(), getBulletsAtRandom());
+			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList());
 			if (bullet.getState() == BulletState.INACTIVE) {
 				bullets.remove(bullet);
 			}
