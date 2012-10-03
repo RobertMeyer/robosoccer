@@ -84,6 +84,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.EffectArea;
+import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -1042,7 +1043,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		checkRobotCollision(robots);
 		
         // Now check for item collision
-        //TODO: checkItemCollision(items);
+        checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1147,6 +1148,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private void checkItemCollision(List<ItemDrop> items){
 		inCollision = false;
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
+		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
 		
 		for (ItemDrop item : items){
 			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
@@ -1163,6 +1165,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 		}
 		for (ItemDrop item : itemsDestroyed){
+			for (IRenderable ob : battle.getCustomObject()){
+				if (item.getName().equals(ob.getName())){
+					imagesDestroyed.add(ob);
+				}
+			}
+			for (IRenderable ob : imagesDestroyed){
+				battle.getCustomObject().remove(ob);
+			}
 			items.remove(item);
 		}
 		if (inCollision){

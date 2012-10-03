@@ -520,9 +520,12 @@ public final class Battle extends BaseBattle {
         publishStatuses();
         
 		if (totalTurns % 100 == 0 || totalTurns == 1){
-			if (itemCursor < items.size()){
-				itemControl.spawnRandomItem(items.get(itemCursor));
-				itemCursor++;
+			
+			for (ItemDrop item: items){
+				if (!itemControl.getItems().contains(item)){
+					itemControl.spawnRandomItem(item);
+					break;
+				}
 			}
 		}
 		

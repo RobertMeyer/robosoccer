@@ -50,6 +50,15 @@ public abstract	class ItemDrop {
 	}
 
 	/**
+	 * Returns the name of the item
+	 * @return a string representing the name of the item
+	 */
+	
+	public String getName(){
+		return this.name;
+	}
+	
+	/**
 	 * Returns the bounding box of the item
 	 * @return a bounding box representing the location of the item
 	 */
@@ -71,6 +80,7 @@ public abstract	class ItemDrop {
 	public double getXLocation() {
 		return xLocation;
 	}
+	
 	
 	/**
 	 * Sets a new x-coordinate of the item
@@ -223,6 +233,7 @@ public abstract	class ItemDrop {
 		if (validSpotRobot(robots)) {
 			if (validSpotItem(items)){
 				setBoundingBox();
+				this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
 				return true;
 			}
 			else{
