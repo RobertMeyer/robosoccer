@@ -211,6 +211,7 @@ public final class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 		
         battleMode = (ClassicMode) battleProperties.getBattleMode();
+		System.out.println("Battle mode: " + battleMode.toString());
         //TODO Just testing spawning any bot for now
         final RobotSpecification[] temp = repositoryManager.getSpecifications();
         for(int i = 0; i < temp.length; i++) {

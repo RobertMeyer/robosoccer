@@ -21,6 +21,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import net.sf.robocode.battle.IBattleManager;
+
 /**
  * Pane for Commander controls.
  * Check ConsoleScrollPane if you need to see what this is based off of.
@@ -28,6 +30,8 @@ import javax.swing.*;
  */
 @SuppressWarnings("serial")
 public class CommanderScrollPane extends JPanel {
+	
+    private final IBattleManager battleManager;
 	
 	private JButton pauseButton;
     private JButton advanceButton;
@@ -46,8 +50,9 @@ public class CommanderScrollPane extends JPanel {
     private final static String DECREASE = "DECREASE";
     private final static String TAUNT = "TAUNT";
 	
-    public CommanderScrollPane() {
+    public CommanderScrollPane(IBattleManager battleManager) {
         super();
+        this.battleManager = battleManager;
         
         //Set up layout
         this.setLayout(new GridLayout(3, 4, 10, 10));
@@ -149,7 +154,7 @@ public class CommanderScrollPane extends JPanel {
 			//Note to team: we need a way to pass in the robot that we just clicked.
 			
 			if (arg0.getActionCommand().equals(PAUSE)) {
-				System.out.println("Pause button pressed.");
+                killButtonActionPerformed();
 				//set flag
 				//call pause()
 				
@@ -185,5 +190,12 @@ public class CommanderScrollPane extends JPanel {
 				
 			}
 		}
+    }
+    
+    /**
+     * Is called when the Kill button has been activated
+     */
+    private void killButtonActionPerformed() {
+        battleManager.killRobot(0);
     }
 }
