@@ -253,18 +253,27 @@ public class BulletPeer {
 	}
 
 	private void checkWallCollision() {
+		double ricochetValue = owner.battle.getBattleMode().modifyRicochet(
+				battleRules);
 		// check if bullet is at boundary
 		if ((x - RADIUS <= 0) || (y - RADIUS <= 0)
 				|| (x + RADIUS >= battleRules.getBattlefieldWidth())
 				|| (y + RADIUS >= battleRules.getBattlefieldHeight())) {
 			// check if bullet should ricochet
 			if (owner.battle.getBattleMode().shouldRicochet(this.power,
-					Rules.MIN_BULLET_POWER)) {
-				this.power = this.power / 2; // reduce power for the ricochet
+					Rules.MIN_BULLET_POWER, ricochetValue)) {
+				// reduce power for the ricochet
+				this.power = this.power / ricochetValue;
 				// the following checks which wall (top/bottom/side) the bullet
 				// is hitting and adjusts the heading accordingly
 				if (y - RADIUS <= 0
 						|| y + RADIUS >= battleRules.getBattlefieldHeight()) {
+					// If bullet tries to escape battlefield reposition on the edge
+					if (y - RADIUS < 0) {
+						y = 0 + RADIUS;
+					} else if (y + RADIUS > battleRules.getBattlefieldHeight()) {
+						y = battleRules.getBattlefieldHeight() - RADIUS;
+					}
 					// top/bottom wall
 					if (getHeading() >= Math.PI) {
 						// bullet moving in a right to left direction
@@ -275,6 +284,12 @@ public class BulletPeer {
 					}
 				} else if (x - RADIUS <= 0
 						|| x + RADIUS >= battleRules.getBattlefieldWidth()) {
+					// If bullet tries to escape battlefield reposition on the edge
+					if (x - RADIUS < 0) {
+						x = 0 + RADIUS;
+					} else if (x + RADIUS > battleRules.getBattlefieldWidth()) {
+						x = battleRules.getBattlefieldWidth() - RADIUS;
+					}
 					// side wall
 					setHeading(2 * Math.PI - getHeading());
 				}
