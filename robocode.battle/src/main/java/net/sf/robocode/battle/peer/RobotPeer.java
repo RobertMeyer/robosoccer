@@ -1267,21 +1267,21 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         
         for (ObstaclePeer obstacle : obstacles) {
         	obstacle.updateBoundingBox();
-        	
-            if (!(obstacle == null)) {
-            	if (obstacle.getBoundingBox().intersects(boundingBox)) {
-            		hitObstacle = true;
-        		}
-            }
+
+        	if (!(obstacle == null) && obstacle.getBoundingBox().intersects(boundingBox)) {
+        		hitObstacle = true;
+        		angle = atan2(obstacle.getX() - x, obstacle.getY() - y);
+        	}
         }
-        
+
         if (hitObstacle) {
-        	addEvent(new HitWallEvent(angle));
+        	addEvent(new HitWallEvent(normalRelativeAngle(angle - bodyHeading)));
         	velocity = 0;
         	x -= movedx;
             y -= movedy;
-
+        	
         	updateBoundingBox();
+        	currentCommands.setDistanceRemaining(0);
             setState(RobotState.HIT_WALL);
         }
     }
