@@ -34,6 +34,7 @@ import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.battle.AwtBattleAdaptor;
@@ -316,10 +317,12 @@ public class WindowManager implements IWindowManagerExt {
 
     @Override
     public void showResultsDialog(BattleCompletedEvent event) {
-        final ResultsDialog dialog = Container.getComponent(ResultsDialog.class);
+    	if(battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowResults()) {
+    		final ResultsDialog dialog = Container.getComponent(ResultsDialog.class);
 
-        dialog.setup(event.getSortedResults(), event.getBattleRules().getNumRounds());
-        packCenterShow(dialog, true);
+    		dialog.setup(event.getSortedResults(), event.getBattleRules().getNumRounds());
+    		packCenterShow(dialog, true);
+    	}
     }
 
     @Override

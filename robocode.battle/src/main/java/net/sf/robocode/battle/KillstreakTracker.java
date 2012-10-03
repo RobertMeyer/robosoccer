@@ -55,8 +55,8 @@ public class KillstreakTracker {
 		}
 
 		/* Print disabled due to failing tests */
-		killer.println("SYSTEM: Killstreak is now " + newKillstreak);
-		victim.println("SYSTEM: Killstreak reset to 0");
+		killer.println("KILLSTREAK: Killstreak is now " + newKillstreak);
+		victim.println("KILLSTREAK: Killstreak reset to 0");
 		callKillstreak(killer);
 	}
 
@@ -70,8 +70,14 @@ public class KillstreakTracker {
 
 		/* check the killers new killstreak */
 		switch (killstreakRobots.get(robot)) {
+		case 3:
+			new RadarJammer(robot, battle);
+			break;
 		case 5:
 			new AirStrike(robot, battle);
+			break;
+		case 7:
+			new RobotFreeze(robot, battle);
 			break;
 		}
 	}

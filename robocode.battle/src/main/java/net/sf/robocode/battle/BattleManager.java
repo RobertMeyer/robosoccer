@@ -457,6 +457,22 @@ public class BattleManager implements IBattleManager {
 			}
 		}
 	}
+	
+	//Eliminate the weakest robot
+	@Override
+	public void eliminateWeakestRobot() {
+		List<RobotPeer> robotList = ((Battle) battle).getRobotList();
+		double lowestEnergy = 101;
+		int lowestEnergyIndex = 0;
+		for(int i=0; i < robotList.size(); i++){
+			if(robotList.get(i).getEnergy() <= lowestEnergy && robotList.get(i).getEnergy() != 0)
+			{	
+				lowestEnergyIndex = i;
+				lowestEnergy = robotList.get(i).getEnergy();
+			}
+		}
+		robotList.get(lowestEnergyIndex).kill();
+	}
 
     /**
      * Steps for a single turn, then goes back to paused

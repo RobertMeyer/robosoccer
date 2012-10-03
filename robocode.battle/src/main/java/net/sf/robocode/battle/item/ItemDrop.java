@@ -8,6 +8,7 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.mode.IMode;
 import robocode.*;
+import net.sf.robocode.battle.RenderObject;
 
 /**
  * Abstract class for item/powerup drops
@@ -36,6 +37,7 @@ public abstract	class ItemDrop {
 	protected Battle battle;
 	protected final BoundingRectangle boundingBox;
 	public String name;
+	protected String imageName;
 		
 	public ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;
@@ -92,6 +94,17 @@ public abstract	class ItemDrop {
 	 */
 	public void setYLocation(double yLocation) {
 		this.yLocation = yLocation;
+	}
+	
+	/**
+	 * Update the location to a random x-coordinate and y-coordinate
+	 * @author - Brandon Warwick (team-Telos)
+	 */
+	public void updateToRandomLocation() {
+		final Random random = RandomFactory.getRandom();
+		
+		this.xLocation = ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width);
+		this.yLocation = ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height);
 	}
 
 	/**
@@ -188,10 +201,9 @@ public abstract	class ItemDrop {
 		boolean valid = false;
 		
 		if (!valid) {
-			final Random random = RandomFactory.getRandom();
+			
 			for (int j = 0; j < 1000; j++) {
-				this.xLocation = ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width);
-				this.yLocation = ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height);
+				this.updateToRandomLocation();
 				this.setBoundingBox();
 
 				if (validSpotRobot(robots)) {
@@ -201,7 +213,8 @@ public abstract	class ItemDrop {
 				}
 			}
 		}
-		//System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
+		this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
+		System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	public boolean addNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){
