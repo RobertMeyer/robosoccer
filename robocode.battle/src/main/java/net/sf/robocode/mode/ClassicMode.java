@@ -271,6 +271,7 @@ public class ClassicMode implements IMode {
 	}
 
 	/**
+	 * Checks user input for Ricochet is acceptable
 	 * @param rules Current battle rules
 	 * @return ricochet value as provided by user or 1 if value provided < 1
 	 */

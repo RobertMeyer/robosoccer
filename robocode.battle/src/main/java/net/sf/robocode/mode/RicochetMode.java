@@ -37,8 +37,13 @@ public class RicochetMode extends ClassicMode {
 	
 
 	public double modifyRicochet(BattleRules rules) {
-		double ricochetValue = (double) Double.parseDouble((String) rules
+		double ricochetValue = 1;
+		try {
+			ricochetValue = (double) Double.valueOf((String) rules
 				.getModeRules().get("ricochetModifier"));
+		} catch (NumberFormatException e) {
+			ricochetValue = 1;
+		}
 		if (ricochetValue < 1) {
 			ricochetValue = 1;
 		}
