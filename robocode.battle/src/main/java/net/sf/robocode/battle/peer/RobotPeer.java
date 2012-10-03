@@ -1025,10 +1025,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		updateGunHeading();
 		updateRadarHeading();
+		updateMovement();
 		
 		// do not move frozen robots
-		if (!isFrozen()) {
-			updateMovement();
+		if (isFrozen()) {
+			setVelocityEffect(0.1);
 		}
 
 		// At this point, robot has turned then moved.

@@ -84,7 +84,7 @@ public class RenderString implements IRenderable {
 	 */
 	@Override
 	public void setTranslate(double x, double y) {
-		this.at.translate(x, y);
+		this.at.setToTranslation(x, y);
 	}
 
 	/**
@@ -109,6 +109,22 @@ public class RenderString implements IRenderable {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public double getTranslateX() {
+		return this.at.getTranslateX();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getTranslateY() {
+		return this.at.getTranslateY();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public AffineTransform getRotation() {
 		return AffineTransform.getRotateInstance(Math.toRadians(this.rotation));
 	}
@@ -121,6 +137,14 @@ public class RenderString implements IRenderable {
 		return this.rotation;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getRotationRadian() {
+		return Math.toRadians(this.rotation);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

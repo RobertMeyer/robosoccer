@@ -166,12 +166,13 @@ public final class Battle extends BaseBattle {
     private final boolean isDebugging;
     // Initial robot start positions (if any)
     private double[][] initialRobotPositions;
-    //Check for Botzilla
+    //Botzilla specific variables
     private int currentTurn;
     private Boolean botzillaActive;
-    private int botzillaSpawnTime = 40;
+    private int botzillaSpawnTime = 750;
     RobotPeer botzillaPeer;
     RobotSpecification botzilla;
+    private Hashtable<String, Object> setTimeHashTable;
   
    
     // kill streak tracker
@@ -199,6 +200,7 @@ public final class Battle extends BaseBattle {
 		this.cpuConstant = cpuManager.getCpuConstant();
 		this.killstreakTracker = new KillstreakTracker(this);
         this.repositoryManager = repositoryManager;
+        
 	}
 
 	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
@@ -229,6 +231,17 @@ public final class Battle extends BaseBattle {
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
         
 		bp = battleProperties;
+		
+		if (battleMode.toString() == "Botzilla Mode") {
+        	setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+			if (Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn"));
+			} else if (Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) * robotsCount;
+			}
+        	
+        	System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
+        }
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
@@ -622,7 +635,9 @@ public final class Battle extends BaseBattle {
         ArrayList<BattleResults> results = new ArrayList<BattleResults>();
 
         List<ContestantPeer> orderedContestants = new ArrayList<ContestantPeer>(peers.getContestants());
-
+        
+        System.out.println(orderedContestants.size());
+        
         Collections.sort(orderedContestants);
         Collections.reverse(orderedContestants);
 
@@ -634,7 +649,6 @@ public final class Battle extends BaseBattle {
             RobotSpecification robotSpec = null;
             ContestantPeer contestant = orderedContestants.get(rank);
             
-            System.out.println(contestant.getName());
             contestant.getStatistics().setRank(rank + 1);
             BattleResults battleResults = contestant.getStatistics().getFinalResults();
 
@@ -730,7 +744,7 @@ public final class Battle extends BaseBattle {
 	private void removeBotzilla() {
 		botzillaActive = false;
         peers.removeBotzilla();
-        botzillaPeer.cleanup();
+        //botzillaPeer.cleanup();
         robotsCount--;
 	}
 	
@@ -762,7 +776,7 @@ public final class Battle extends BaseBattle {
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
             // Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
-                deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+                deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
             } else {
                 boolean teammatesalive = false;
 
@@ -773,7 +787,7 @@ public final class Battle extends BaseBattle {
                     }
                 }
                 if (!teammatesalive) {
-                    deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+                    deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
                 }
             }
 

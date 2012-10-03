@@ -20,6 +20,8 @@ public class BattlePeers {
 	private IHostManager hostManager;
 	private IRepositoryManager repositoryManager;
 	private Battle battle;
+	private RobotPeer botzillaRobot;
+	private ContestantPeer botzillaContestant;
 
 	public BattlePeers(Battle battle, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
@@ -177,17 +179,19 @@ public class BattlePeers {
 
 
 	public void addRobot(RobotPeer peer) {
+		botzillaRobot = peer;
 		robots.add(peer);
 	}
 	
 
 	public void addContestant(ContestantPeer peer) {
+		botzillaContestant =  peer;
 		contestants.add(peer);
 	}
 	
 	public void removeBotzilla() {
-		robots.remove(robots.size() - 1);
-		contestants.remove(robots.size() - 1);
+		robots.remove(botzillaRobot);
+		contestants.remove(botzillaContestant);
 		System.out.println("botzilla is totally removed?");
 	}
 	

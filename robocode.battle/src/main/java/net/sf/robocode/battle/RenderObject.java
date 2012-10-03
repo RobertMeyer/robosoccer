@@ -6,13 +6,13 @@ import java.awt.geom.AffineTransform;
 import robocode.control.snapshot.RenderableType;
 
 /**
- * This implements the ICustomObject interface, which represents
+ * This implements the IRenderable interface, which represents
  * a custom object within robocode.
  * 
  * @author Benjamin Evenson @ Team-G1
  *
  */
-public class RenderImage implements IRenderable {
+public class RenderObject implements IRenderable {
 	private AffineTransform at;
 	private double rotation;
 	private float alpha;
@@ -23,12 +23,12 @@ public class RenderImage implements IRenderable {
 	private Color colour;
 
 	/**
-	 * Constructs a new CustomObject with given parameters.
+	 * Constructs a new RenderObject with given parameters.
 	 * 
 	 * @param name - Key used for hashmap(Must be Unique).
 	 * @param filename - Path to image file.
 	 */
-	public RenderImage(String name, String filename) {
+	public RenderObject(String name, String filename) {
 		this.at = new AffineTransform();
 		this.name = name;
 		this.filename = filename;
@@ -40,14 +40,14 @@ public class RenderImage implements IRenderable {
 	}
 
 	/**
-	 * Constructs a new CustomObject with given parameters.
+	 * Constructs a new RenderObject with given parameters.
 	 * 
 	 * @param name - Key used for hashmap(Must be Unique).
 	 * @param filename - Path to image file.
 	 * @param x - x position.
 	 * @param y - y position.
 	 */
-	public RenderImage(String name, String filename, double x, double y) {
+	public RenderObject(String name, String filename, double x, double y) {
 		this.name = name;
 		this.filename = filename;
 		this.at = new AffineTransform();
@@ -60,13 +60,13 @@ public class RenderImage implements IRenderable {
 	}
 
 	/**
-	 * Constructs a new CustomObject with given parameters.
+	 * Constructs a new RenderObject with given parameters.
 	 * 
 	 * @param name - Key used for hashmap(Must be Unique).
 	 * @param filename - Path to image file.
 	 * @param at - AffineTransform for object.
 	 */
-	public RenderImage(String name, String filename, AffineTransform at) {
+	public RenderObject(String name, String filename, AffineTransform at) {
 		this.name = name;
 		this.filename = filename;
 		this.at = at;
@@ -100,7 +100,7 @@ public class RenderImage implements IRenderable {
 	 */
 	@Override
 	public void setTranslate(double x, double y) {
-		this.at.translate(x, y);
+		this.at.setToTranslation(x, y);
 	}
 
 	/**
@@ -112,6 +112,22 @@ public class RenderImage implements IRenderable {
 		this.at.rotate(Math.toRadians(degree));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getTranslateX() {
+		return this.at.getTranslateX();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getTranslateY() {
+		return this.at.getTranslateY();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -137,6 +153,15 @@ public class RenderImage implements IRenderable {
 		return this.rotation;
 	}
 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public double getRotationRadian() {
+		return Math.toRadians(this.rotation);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

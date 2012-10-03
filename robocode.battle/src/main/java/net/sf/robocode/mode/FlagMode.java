@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.IRenderable;
-import net.sf.robocode.battle.RenderImage;
+import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.item.Flag;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -168,7 +168,7 @@ public class FlagMode extends ClassicMode {
     @Override
 	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
-    	objects.add(new RenderImage("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
+    	objects.add(new RenderObject("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
     	return objects;
     }
     

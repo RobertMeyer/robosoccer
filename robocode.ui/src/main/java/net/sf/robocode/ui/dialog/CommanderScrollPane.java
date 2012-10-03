@@ -16,6 +16,9 @@
 package net.sf.robocode.ui.dialog;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 /**
@@ -33,22 +36,44 @@ public class CommanderScrollPane extends JPanel {
     private JButton increasePowerButton;
     private JButton decreasePowerButton;
     private JButton tauntButton;
+    
+    //ActionCommands
+    private final static String PAUSE = "PAUSE";
+    private final static String ADVANCE = "ADVANCE";
+    private final static String RETREAT = "RETREAT";
+    private final static String ATTACK = "ATTACK";
+    private final static String INCREASE = "INCREASE";
+    private final static String DECREASE = "DECREASE";
+    private final static String TAUNT = "TAUNT";
 	
     public CommanderScrollPane() {
         super();
+        
+        //Set up layout
+        this.setLayout(new GridLayout(3, 4, 10, 10));
+        
+        this.add(new JTextField("Movement"));
         this.add(getPauseButton());
-        this.add(getAdvanceButton());
         this.add(getRetreatButton());
+        this.add(getAdvanceButton());
+        
+        this.add(new JTextField("Gun Controls"));
+        this.add(getDecreasePowerButton());
         this.add(getAttackButton());
         this.add(getIncreasePowerButton());
-        this.add(getDecreasePowerButton());
-        this.add(getTauntButton());        
+        
+        this.add(new JTextField("Fun"));
+        this.add(new JPanel());
+        this.add(getTauntButton());
+        this.add(new JPanel());
     }
         
     public JButton getPauseButton() {
     	if (pauseButton == null) {
     		pauseButton = new JButton("PAUSE");
-    		//set button properties here
+    		pauseButton.setActionCommand(PAUSE);
+    		pauseButton.addActionListener(new CommanderButtonListener());
+    		pauseButton.setBackground(new Color(255, 0, 0));
     	}
     	return pauseButton;
     }
@@ -56,7 +81,9 @@ public class CommanderScrollPane extends JPanel {
     public JButton getAdvanceButton() {
     	if (advanceButton == null) {
     		advanceButton = new JButton("ADVANCE");
-    		//set button properties here
+    		advanceButton.setActionCommand(ADVANCE);
+    		advanceButton.addActionListener(new CommanderButtonListener());
+    		advanceButton.setBackground(new Color(0, 255, 0));
     	}
     	return advanceButton;
     }
@@ -64,7 +91,9 @@ public class CommanderScrollPane extends JPanel {
     public JButton getRetreatButton() {
     	if (retreatButton == null) {
     		retreatButton = new JButton("RETREAT");
-    		//set button properties here
+    		retreatButton.setActionCommand(RETREAT);
+    		retreatButton.addActionListener(new CommanderButtonListener());
+    		retreatButton.setBackground(new Color(255, 255, 0));
     	}
     	return retreatButton;
     }
@@ -72,23 +101,33 @@ public class CommanderScrollPane extends JPanel {
     public JButton getAttackButton() {
     	if (attackButton == null) {
     		attackButton = new JButton("ATTACK");
-    		//set button properties here
+    		attackButton.setActionCommand(ATTACK);
+    		attackButton.addActionListener(new CommanderButtonListener());
+    		attackButton.setBackground(new Color(0, 0, 255));
     	}
     	return attackButton;
     }
     
     public JButton getIncreasePowerButton() {
     	if (increasePowerButton == null) {
-    		increasePowerButton = new JButton("INCREASE POWER");
-    		//set button properties here
+    		increasePowerButton = new JButton();
+    		increasePowerButton.setActionCommand(INCREASE);
+    		increasePowerButton.addActionListener(new CommanderButtonListener());
+    		increasePowerButton.setText("<html><center>INCREASE<br>POWER"
+    				+ "</center></html>");
+    		increasePowerButton.setBackground(new Color(0, 0, 255));
     	}
     	return increasePowerButton;
     }
     
     public JButton getDecreasePowerButton() {
     	if (decreasePowerButton == null) {
-    		decreasePowerButton = new JButton("DECREASE POWER");
-    		//set button properties here
+    		decreasePowerButton = new JButton();
+    		decreasePowerButton.setActionCommand(DECREASE);
+    		decreasePowerButton.addActionListener(new CommanderButtonListener());
+    		decreasePowerButton.setText("<html><center>DECREASE<br>POWER"
+    	    		+ "</center></html>");
+    		decreasePowerButton.setBackground(new Color(0, 0, 255));
     	}
     	return decreasePowerButton;
     }
@@ -96,9 +135,55 @@ public class CommanderScrollPane extends JPanel {
     public JButton getTauntButton() {
     	if (tauntButton == null) {
     		tauntButton = new JButton("TAUNT");
-    		//set button properties here
+    		tauntButton.setActionCommand(TAUNT);
+    		tauntButton.addActionListener(new CommanderButtonListener());
+    		tauntButton.setBackground(new Color(255, 0, 255));
     	}
     	return tauntButton;
     }
     
+    public class CommanderButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			//Note to team: we need a way to pass in the robot that we just clicked.
+			
+			if (arg0.getActionCommand().equals(PAUSE)) {
+				System.out.println("Pause button pressed.");
+				//set flag
+				//call pause()
+				
+			} else if (arg0.getActionCommand().equals(ADVANCE)) {
+				System.out.println("Advance button pressed.");
+				//set flag
+				//call scan()
+				
+			} else if (arg0.getActionCommand().equals(RETREAT)) {
+				System.out.println("Retreat button pressed.");
+				//set flag
+				//call scan()
+				
+			} else if (arg0.getActionCommand().equals(ATTACK)) {
+				System.out.println("Attack button pressed.");
+				//set flag
+				//call scan()
+				
+			} else if (arg0.getActionCommand().equals(INCREASE)) {
+				System.out.println("Increase Power button pressed.");
+				//set flag
+				//call increasePower()
+				
+			} else if (arg0.getActionCommand().equals(DECREASE)) {
+				System.out.println("Decrease Power button pressed.");
+				//set flag
+				//call decreasePower()
+				
+			} else if (arg0.getActionCommand().equals(TAUNT)) {
+				System.out.println("Taunt button pressed.");
+				//set flag
+				//call taunt()
+				
+			}
+		}
+    }
 }
