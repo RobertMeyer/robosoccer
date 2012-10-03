@@ -229,7 +229,7 @@ public final class Battle extends BaseBattle {
         botzillaActive = false;
 
         bp = battleProperties;
-        numObstacles = battleMode.setNumObstacles();
+        numObstacles = battleMode.setNumObstacles(battleRules);
         generateObstacles(numObstacles);
 
         this.getBattleMode().setGuiOptions();

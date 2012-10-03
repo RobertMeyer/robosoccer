@@ -29,7 +29,6 @@ import robocode.control.RobotSpecification;
  *
  */
 public class ClassicMode implements IMode {
-    int numObstacles = 0;
 	protected GuiOptions uiOptions;
 
 	/**
@@ -70,9 +69,8 @@ public class ClassicMode implements IMode {
 		return velocityIncrement;
 	}
 
-    public int setNumObstacles() {
-        numObstacles = 0;
-        return numObstacles;
+    public int setNumObstacles(BattleRules rules) {
+        return 0;
     }
 
 	/**
