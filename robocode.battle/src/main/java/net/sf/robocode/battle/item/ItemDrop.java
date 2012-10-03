@@ -78,6 +78,7 @@ public abstract	class ItemDrop {
 	 */
 	public void setXLocation(double xLocation) {
 		this.xLocation = xLocation;
+		setBoundingBox();
 	}
 
 	/**
@@ -94,6 +95,7 @@ public abstract	class ItemDrop {
 	 */
 	public void setYLocation(double yLocation) {
 		this.yLocation = yLocation;
+		setBoundingBox();
 	}
 	
 	/**
@@ -103,8 +105,8 @@ public abstract	class ItemDrop {
 	public void updateToRandomLocation() {
 		final Random random = RandomFactory.getRandom();
 		
-		this.xLocation = ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width);
-		this.yLocation = ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height);
+		this.setXLocation(ItemDrop.width + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * ItemDrop.width));
+		this.setYLocation(ItemDrop.height + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * ItemDrop.height));
 	}
 
 	/**

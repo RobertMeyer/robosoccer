@@ -150,8 +150,10 @@ public class FlagMode extends ClassicMode {
 		if (robot == flag.getCarrier()) {
 			/* The carrier so drop the flag */
 			flag.setCarrier(null);
+			flag.setXLocation(robot.getX());
+			flag.setYLocation(robot.getY());
 			// Recreate the flag
-			createRenderables();
+			// this.createRenderables();
 		}
 	}
     
