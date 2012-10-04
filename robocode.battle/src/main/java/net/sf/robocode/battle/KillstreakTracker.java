@@ -3,7 +3,11 @@ package net.sf.robocode.battle;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.robocode.battle.killstreaks.*;
+//import net.sf.robocode.battle.killstreaks.*;
+import net.sf.robocode.battle.killstreaks.RadarJammer;
+import net.sf.robocode.battle.killstreaks.AirStrike;
+import net.sf.robocode.battle.killstreaks.RobotFreeze;
+import net.sf.robocode.battle.killstreaks.SuperTank;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
