@@ -196,6 +196,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double x;
 	protected double y;
 	protected int skippedTurns;
+	
+	//Radius in which Dispenser will give energy
+	protected int dispenseRadius = WIDTH*2;
+	//Rate at which Dispenser will give energy
+	protected int dispenseRate = 10;
 
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
@@ -390,6 +395,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isBotzilla() {
     	return statics.isBotzilla();
     }
+	
+	public boolean isDispenser() {
+		return statics.isDispenser();
+	}
 
 	public String getName() {
 		return statics.getName();
@@ -851,6 +860,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			y = 0;
 		} else if (statics.isBotzilla()){
 			energy = 500;
+		} else if (statics.isDispenser()) {
+			energy = 500;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1006,7 +1017,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy) {
+	@Override
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -1053,7 +1065,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		checkWallCollision();
 
 		// Now check for robot collision
+        checkObstacleCollision(obstacles);
+
+		// Now check for robot collision
 		checkRobotCollision(robots);
+		
+		// If Dispenser, dispense
+		if (isDispenser()) {
+			dispenseHealth(robots);
+		}
 		
         // Now check for item collision
         //TODO: checkItemCollision(items);
@@ -1192,6 +1212,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//setState(RobotState.HIT_ITEM);
 		}
 	}
+	
+	protected void dispenseHealth(List<RobotPeer> robots) {
+		for (RobotPeer otherRobot : robots) {
+			if (pow(otherRobot.x - x, 2) + pow(otherRobot.y - y, 2) < pow(dispenseRadius, 2)) {
+				if (!otherRobot.isDispenser()) {
+					otherRobot.updateEnergy(dispenseRate);
+					this.updateEnergy(1); //Dispenser has a very small ability to heal self
+				}
+			}
+		}
+	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
         inCollision = false;
@@ -1228,18 +1259,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     //This Robot
                     if (isBotzilla()) {
                     	otherRobot.updateEnergy(-(otherRobot.energy + 1));
-                	} else if (getRobotArmor() - 1.0 < 0.00001) {
+                    } else if (isDispenser()) {
+                    	//ignore robot collisions as Dispenser
+                    } else if (getRobotArmor() - 1.0 < 0.00001) {
                         this.updateEnergy(-(this.getRamDamage()));
                     } else {
                         this.updateEnergy(-(this.getRamDamage()
                                             * 1 / this.getRobotArmor()));
                     }
-
-                    
                     
                     // Other Robot
                     if (otherRobot.isBotzilla()) {
                     	updateEnergy(-(energy + 1));
+                    } else if (otherRobot.isDispenser()) {
+                    	//ignore robot collisions as Dispenser
                     } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
                         otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
                     } else {
@@ -1278,6 +1311,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+	protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {
+        boolean hitObstacle = false;
+        double angle = 0;
+        double movedx = velocity * sin(bodyHeading);
+        double movedy = velocity * cos(bodyHeading);
+        
+        for (ObstaclePeer obstacle : obstacles) {
+        	obstacle.updateBoundingBox();
+
+        	if (!(obstacle == null) && obstacle.getBoundingBox().intersects(boundingBox)) {
+        		hitObstacle = true;
+        		angle = atan2(obstacle.getX() - x, obstacle.getY() - y);
+        	}
+        }
+
+        if (hitObstacle) {
+        	addEvent(new HitWallEvent(normalRelativeAngle(angle - bodyHeading)));
+        	velocity = 0;
+        	x -= movedx;
+            y -= movedy;
+        	
+        	updateBoundingBox();
+        	currentCommands.setDistanceRemaining(0);
+            setState(RobotState.HIT_WALL);
+        }
+    }
+	
 	protected void checkWallCollision() {
 		boolean hitWall = false;
 		double fixx = 0, fixy = 0;

@@ -188,6 +188,11 @@ public class BulletPeer {
 					otherRobot.updateEnergy(-damage);
 				}
 				
+//				//Dispenser should heal folks
+//				if (owner.isDispenser()) {
+//					otherRobot.updateEnergy(damage);
+//				}
+				
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
@@ -301,6 +306,18 @@ public class BulletPeer {
 			}
 		}
 	}
+	
+	private void checkObstacleCollision(List<ObstaclePeer> obstacles) {
+		for (ObstaclePeer obstacle: obstacles) {
+			if (!(obstacle == null)) {
+            	if (obstacle.getBoundingBox().intersectsLine(boundingLine)) {
+            		state = BulletState.HIT_WALL;
+    				frame = 0;
+    				owner.addEvent(new BulletMissedEvent(createBullet(false)));
+        		}
+            }
+		}
+	}
 
 	public int getBulletId() {
 		return bulletId;
@@ -388,11 +405,12 @@ public class BulletPeer {
 		state = newState;
 	}
 
-	public void update(List<RobotPeer> robots, List<BulletPeer> bullets) {
+	public void update(List<RobotPeer> robots, List<BulletPeer> bullets, List<ObstaclePeer> obstacles) {
 		frame++;
 		if (isActive()) {
 			updateMovement();
 			checkWallCollision();
+			checkObstacleCollision(obstacles);
 			if (isActive()) {
 				checkRobotCollision(robots);
 			}
