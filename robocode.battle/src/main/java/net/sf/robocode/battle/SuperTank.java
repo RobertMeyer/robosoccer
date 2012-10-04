@@ -4,18 +4,19 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
- * Callable ability (used by killstreak tracker. Instantiate one with the robot
- * who calls the RadarJammer, and the battle it is in to enable the jam. Blocks
- * the caller from other robot's radars for JAM_TIME amount of time
+ * Callable ability (used by killstreak tracker). Turns the calling robot into a
+ * "Super Tank" for SUPER_TIME amount of turns. Specifically, the calling robot
+ * will have no gun heat, and will lock energy at 2 * starting energy (resulting
+ * in a very overpowered weapon).
  **/
 public class SuperTank {
 	private final int SUPER_TIME = 1000;
 
 	/**
-	 * Constructor for the RadarJammer being called
+	 * Constructor for the SuperRobot being called
 	 * 
 	 * @param robotPeer
-	 *            The robot calling the RadarJammer
+	 *            The robot calling the SuperRobot
 	 * @param battle
 	 *            The battle that robot is part of
 	 */

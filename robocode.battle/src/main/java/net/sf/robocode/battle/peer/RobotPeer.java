@@ -226,7 +226,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
+	
+	// killstreak timers
 	private boolean isScannable = true;
+	private int radarJammerTimeout;
+	private boolean isFrozen = false;
+	private int frozenTimeout;
+	private boolean isSuperTank = false;
+	private int superTankTimeout;
 	
 	//For calculation of team's total energy (Team energy sharing mode)
 	private TeamPeer teamList;
@@ -580,12 +587,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// -----------
 
 	ByteBuffer bidirectionalBuffer;
-	
-	private int radarJammerTimeout;
-
-	private boolean isFrozen;
-
-	private int frozenTimeout;
 
 	public void setupBuffer(ByteBuffer bidirectionalBuffer) {
 		this.bidirectionalBuffer = bidirectionalBuffer;
@@ -1025,6 +1026,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return;
 		}
 		
+		if (isSuperTank && (battle.getTotalTurns() >= superTankTimeout)) {
+			setSuperTank(false);
+		}
 		// check radar jamming robots for timeout
 		if ((!isScannable) && (battle.getTotalTurns() >= radarJammerTimeout)) {
 			setScannable(true);
@@ -1034,7 +1038,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isFrozen() && (battle.getTotalTurns() >= frozenTimeout)) {
 			setFrozen(false);
 		}
-
+		
+		// apply super tank bonuses
+		if (isSuperTank()) {
+			setGunHeatEffect(0.1);
+			setEnergyEffect(getStartingEnergy() * 2, inCollision);
+		}
+		
 		setState(RobotState.ACTIVE);
 
 		updateGunHeat();
@@ -1057,7 +1067,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isFrozen()) {
 			setVelocityEffect(0.1);
 		}
-
+		
 		// At this point, robot has turned then moved.
 		// We could be touching a wall or another bot...
 
@@ -2380,4 +2390,30 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		setFrozen(true);
 		frozenTimeout = battle.getTotalTurns() + freezeTime;
 	}
+
+	/**
+	 * @param isSuperTank the isSuperTank to set
+	 */
+	private void setSuperTank(boolean isSuperTank) {
+		if(!isSuperTank) {
+			this.println("KILLSTREAK: Super Tank expired");
+		}
+		this.isSuperTank = isSuperTank;
+	}
+	
+	/**
+	 * Turns robot into a Super Tank for superTankTimeout amount of turns
+	 * 
+	 * @param superTankTime
+	 *            the amount of time to become a Super Tank
+	 */
+	public void enableSuperTank(int superTankTime) {
+		setSuperTank(true);
+		superTankTimeout = battle.getTotalTurns() + superTankTime;
+	}
+	
+	private boolean isSuperTank() {
+		return isSuperTank;
+	}
+
 }
