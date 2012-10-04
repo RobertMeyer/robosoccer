@@ -84,6 +84,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.EffectArea;
+import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -142,11 +143,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public static final int
 			WIDTH = 40,
 			HEIGHT = 40;
-
+	
 	protected static final int
 			HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
 
+	public static final int
+			BZ_WIDTH = WIDTH*2,
+			BZ_HEIGHT = HEIGHT*2;
+
+	protected static final int
+			BZ_HALF_WIDTH_OFFSET = (BZ_WIDTH / 2 - 2),
+			BZ_HALF_HEIGHT_OFFSET = (BZ_HEIGHT / 2 - 2);
+	
 	protected static final int MAX_SKIPPED_TURNS = 30;
 	protected static final int MAX_SKIPPED_TURNS_WITH_IO = 240;
 
@@ -807,8 +816,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			final Random random = RandomFactory.getRandom();
 
 			for (int j = 0; j < 1000; j++) {
-				x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-				y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+				if (!isBotzilla()) {
+					x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
+					y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+				} else {
+					x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
+					y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
+				}
 				bodyHeading = 2 * Math.PI * random.nextDouble();
 				gunHeading = radarHeading = bodyHeading;
 				updateBoundingBox();
@@ -1147,6 +1161,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private void checkItemCollision(List<ItemDrop> items){
 		inCollision = false;
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
+		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
 		
 		for (ItemDrop item : items){
 			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
@@ -1163,6 +1178,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 		}
 		for (ItemDrop item : itemsDestroyed){
+			for (IRenderable ob : battle.getCustomObject()){
+				if (item.getName().equals(ob.getName())){
+					imagesDestroyed.add(ob);
+				}
+			}
+			for (IRenderable ob : imagesDestroyed){
+				battle.getCustomObject().remove(ob);
+			}
 			items.remove(item);
 		}
 		if (inCollision){
@@ -1340,7 +1363,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public void updateBoundingBox() {
-		boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+		if(!isBotzilla()) {
+			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+		} else {
+			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
+		}
 	}
 
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?

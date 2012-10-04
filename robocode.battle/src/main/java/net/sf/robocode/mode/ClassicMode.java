@@ -257,10 +257,28 @@ public class ClassicMode implements IMode {
 		return (endTimer > 5 * time);
 	}
 
-	public boolean shouldRicochet(double power, double minBulletPower) {
+	/**
+	 * Determines if the bullet being dealt with should ricochet
+	 * @param power Power of current bullet being dealt with
+	 * @param minBulletPower Minimum bullet power from the battle rules
+	 * @param ricochetValue User provided variable that power is divided by 
+	 * each ricochet
+	 * @return true/false if a ricochet should occur
+	 */
+	public boolean shouldRicochet(double power, double minBulletPower,
+			double ricochetValue) {
 		return false;
 	}
 
+	/**
+	 * Checks user input for Ricochet is acceptable
+	 * @param rules Current battle rules
+	 * @return ricochet value as provided by user or 1 if value provided < 1
+	 */
+	public double modifyRicochet(BattleRules rules) {
+			return 1;
+		}
+	
 	 /**
      * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
      * so that a robot placed before another robot in the list will not gain any benefit when the game

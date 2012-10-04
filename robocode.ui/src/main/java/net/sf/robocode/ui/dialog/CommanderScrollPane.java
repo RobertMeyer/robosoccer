@@ -57,17 +57,17 @@ public class CommanderScrollPane extends JPanel {
         //Set up layout
         this.setLayout(new GridLayout(3, 4, 10, 10));
         
-        this.add(new JTextField("Movement"));
+        this.add(new JLabel("   Movement"));
         this.add(getPauseButton());
         this.add(getRetreatButton());
         this.add(getAdvanceButton());
         
-        this.add(new JTextField("Gun Controls"));
+        this.add(new JLabel("   Gun Controls"));
         this.add(getDecreasePowerButton());
         this.add(getAttackButton());
         this.add(getIncreasePowerButton());
         
-        this.add(new JTextField("Fun"));
+        this.add(new JLabel("   Funsies"));
         this.add(new JPanel());
         this.add(getTauntButton());
         this.add(new JPanel());
