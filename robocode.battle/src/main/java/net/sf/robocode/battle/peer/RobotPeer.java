@@ -196,6 +196,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double x;
 	protected double y;
 	protected int skippedTurns;
+	
+	//Radius in which Dispenser will give energy
+	protected int dispenseRadius = WIDTH*2;
+	//Rate at which Dispenser will give energy
+	protected int dispenseRate = 10;
 
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
@@ -390,6 +395,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isBotzilla() {
     	return statics.isBotzilla();
     }
+	
+	public boolean isDispenser() {
+		return statics.isDispenser();
+	}
 
 	public String getName() {
 		return statics.getName();
@@ -851,6 +860,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			y = 0;
 		} else if (statics.isBotzilla()){
 			energy = 500;
+		} else if (statics.isDispenser()) {
+			energy = 500;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1059,6 +1070,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// Now check for robot collision
 		checkRobotCollision(robots);
 		
+		// If Dispenser, dispense
+		if (isDispenser()) {
+			dispenseHealth(robots);
+		}
+		
         // Now check for item collision
         //TODO: checkItemCollision(items);
 
@@ -1196,6 +1212,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//setState(RobotState.HIT_ITEM);
 		}
 	}
+	
+	protected void dispenseHealth(List<RobotPeer> robots) {
+		for (RobotPeer otherRobot : robots) {
+			if (pow(otherRobot.x - x, 2) + pow(otherRobot.y - y, 2) < pow(dispenseRadius, 2)) {
+				if (!otherRobot.isDispenser()) {
+					otherRobot.updateEnergy(dispenseRate);
+					this.updateEnergy(1); //Dispenser has a very small ability to heal self
+				}
+			}
+		}
+	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
         inCollision = false;
@@ -1232,18 +1259,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     //This Robot
                     if (isBotzilla()) {
                     	otherRobot.updateEnergy(-(otherRobot.energy + 1));
-                	} else if (getRobotArmor() - 1.0 < 0.00001) {
+                    } else if (isDispenser()) {
+                    	//ignore robot collisions as Dispenser
+                    } else if (getRobotArmor() - 1.0 < 0.00001) {
                         this.updateEnergy(-(this.getRamDamage()));
                     } else {
                         this.updateEnergy(-(this.getRamDamage()
                                             * 1 / this.getRobotArmor()));
                     }
-
-                    
                     
                     // Other Robot
                     if (otherRobot.isBotzilla()) {
                     	updateEnergy(-(energy + 1));
+                    } else if (otherRobot.isDispenser()) {
+                    	//ignore robot collisions as Dispenser
                     } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
                         otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
                     } else {

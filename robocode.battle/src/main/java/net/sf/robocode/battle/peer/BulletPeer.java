@@ -188,6 +188,11 @@ public class BulletPeer {
 					otherRobot.updateEnergy(-damage);
 				}
 				
+//				//Dispenser should heal folks
+//				if (owner.isDispenser()) {
+//					otherRobot.updateEnergy(damage);
+//				}
+				
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 

@@ -39,6 +39,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final boolean isHouseRobot;
     private final boolean isBall;
     private final boolean isBotzillaBot;
+    private final boolean isDispenser;
     private final String name;
     private final String shortName;
     private final String veryShortName;
@@ -81,6 +82,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isHouseRobot = specification.isHouseRobot();
         this.isBall = specification.isBall();
         this.isBotzillaBot = specification.isBotzillaBot();
+        this.isDispenser = specification.isDispenser();
         this.isTeamLeader = isLeader;
         this.battleRules = rules;
 
@@ -125,13 +127,14 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isHouseRobot = false;
         this.isBall = isBall;
         this.isBotzillaBot = false;
+        this.isDispenser = false;
     }
 
     RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
                  boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, String name, String shortName,
                  String veryShortName, String fullClassName, String shortClassName, BattleRules battleRules,
                  String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot, 
-                 boolean isBotzilla) {
+                 boolean isBotzilla, boolean isDispenser) {
 
         this.isJuniorRobot = isJuniorRobot;
         this.isInteractiveRobot = isInteractiveRobot;
@@ -153,6 +156,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isHouseRobot = isHouseRobot;
         this.isBall = isBall;
         this.isBotzillaBot = isBotzilla;
+        this.isDispenser = isDispenser;
     }
 
     public String getAnnonymousName() {
@@ -201,6 +205,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 
 	public boolean isBotzilla() {
 		return isBotzillaBot;
+	}
+	
+	public boolean isDispenser() {
+		return isDispenser;
 	}
 
     public String getName() {
