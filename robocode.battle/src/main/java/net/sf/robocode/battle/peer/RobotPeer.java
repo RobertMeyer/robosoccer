@@ -200,7 +200,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	//Radius in which Dispenser will give energy
 	protected int dispenseRadius = WIDTH*2;
 	//Rate at which Dispenser will give energy
-	protected int dispenseRate = 10;
+	protected int maxDispenseRate = 10;
 
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
@@ -1229,8 +1229,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		for (RobotPeer otherRobot : robots) {
 			if (pow(otherRobot.x - x, 2) + pow(otherRobot.y - y, 2) < pow(dispenseRadius, 2)) {
 				if (!otherRobot.isDispenser()) {
-					otherRobot.updateEnergy(dispenseRate);
+					otherRobot.updateEnergy(maxDispenseRate); //TODO: scale with proximity to center
 					this.updateEnergy(1); //Dispenser has a very small ability to heal self
+					statistics.incrementTotalScore(this.getName());
 				}
 			}
 		}
