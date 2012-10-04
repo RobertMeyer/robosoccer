@@ -174,7 +174,7 @@ public class ClassicMode implements IMode {
 	 * the starting coordinates and heading for each robot.
 	 */
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, int robotsCount) {
+			BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
 
         if (initialPositions == null || initialPositions.trim().length() == 0) {
