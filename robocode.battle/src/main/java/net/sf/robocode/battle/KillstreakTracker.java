@@ -79,7 +79,7 @@ public class KillstreakTracker {
 		case 7:
 			new RobotFreeze(robot, battle);
 			break;
-		case 2:
+		case 9:
 			new SuperTank(robot, battle);
 			break;
 		}
