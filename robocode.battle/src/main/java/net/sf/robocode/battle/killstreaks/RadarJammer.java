@@ -5,9 +5,8 @@ import net.sf.robocode.battle.IKillstreakAbility;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
- * Callable ability (used by killstreak tracker. Instantiate one with the robot
- * who calls the RadarJammer, and the battle it is in to enable the jam. Blocks
- * the caller from other robot's radars for JAM_TIME amount of time
+ * Default 3-kill killstreak ability. Makes the calling robot unscannable for
+ * JAM_TIME amount of turns.
  **/
 public class RadarJammer implements IKillstreakAbility {
 	private static final int JAM_TIME = 400;

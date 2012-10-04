@@ -6,12 +6,11 @@ import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
- * Callable ability (used by killstreak tracker. Instantiate one with the robot
- * who calls the airstrike, and the battle it is in to call the airstrike.
- * Spawns a series of bullets that don't effect the caller
+ * Default 5-kill killstreak ability. Spawns a series of bullets that don't
+ * effect the caller.
  **/
-public class AirStrike implements IKillstreakAbility{
-	
+public class AirStrike implements IKillstreakAbility {
+
 	/**
 	 * Call an airstrike
 	 * 

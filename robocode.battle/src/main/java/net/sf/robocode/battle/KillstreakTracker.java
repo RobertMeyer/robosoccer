@@ -15,10 +15,10 @@ public class KillstreakTracker {
 	private Map<RobotPeer, Integer> killstreakRobots = new HashMap<RobotPeer, Integer>();
 	private Battle battle;
 	public static boolean enableKillstreaks = false;
-	
+
 	/* The killstreak abilities */
 	private Map<Integer, IKillstreakAbility> killstreakAbilities;
-	
+
 	/**
 	 * Constructor for the KillstreakTracker (called when battle is initialized)
 	 * Initialize the default kill streaks
@@ -29,13 +29,13 @@ public class KillstreakTracker {
 	public KillstreakTracker(Battle b) {
 		battle = b;
 		killstreakAbilities = new HashMap<Integer, IKillstreakAbility>();
-		
+
 		/* add the default killstreak abilities to the map */
 		addKillstreakAbility(3, new RadarJammer());
 		addKillstreakAbility(5, new AirStrike());
 		addKillstreakAbility(7, new RobotFreeze());
 		addKillstreakAbility(9, new SuperTank());
-		
+
 	}
 
 	/**
@@ -80,12 +80,15 @@ public class KillstreakTracker {
 	 *            The robot who got the kill
 	 */
 	private void callKillstreak(RobotPeer robot) {
+		/* get the current killstreak of the robot */
 		int killCount = killstreakRobots.get(robot);
+
+		/* call the killstreak ability associated with that bound (if it exists) */
 		IKillstreakAbility ksAbility = killstreakAbilities.get(killCount);
 		if (ksAbility != null) {
 			ksAbility.callAbility(robot, battle);
 		}
-		
+
 	}
 
 	/**
@@ -99,7 +102,7 @@ public class KillstreakTracker {
 	public static void enableKillstreaks(boolean b) {
 		enableKillstreaks = b;
 	}
-	
+
 	public void addKillstreakAbility(int bound, IKillstreakAbility ksAbility) {
 		killstreakAbilities.put(bound, ksAbility);
 	}
