@@ -227,13 +227,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
 	
-	// killstreak timers
+	// killstreak booleans
 	private boolean isScannable = true;
-	private int radarJammerTimeout;
 	private boolean isFrozen = false;
-	private int frozenTimeout;
 	private boolean isSuperTank = false;
+	
+	// killstreak timers
+	private int radarJammerTimeout;
 	private int superTankTimeout;
+	private int frozenTimeout;
 	
 	//For calculation of team's total energy (Team energy sharing mode)
 	private TeamPeer teamList;
@@ -2412,6 +2414,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		superTankTimeout = battle.getTotalTurns() + superTankTime;
 	}
 	
+	/**
+	 * @return the isSuperTank
+	 */	
 	private boolean isSuperTank() {
 		return isSuperTank;
 	}
