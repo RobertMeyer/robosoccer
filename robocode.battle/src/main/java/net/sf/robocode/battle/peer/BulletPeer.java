@@ -188,6 +188,8 @@ public class BulletPeer {
 					otherRobot.updateEnergy(-damage);
 				}
 				
+				//TODO: Gotta make this work.
+				//Should also consider removing bullet score for Dispenser
 //				//Dispenser should heal folks
 //				if (owner.isDispenser()) {
 //					otherRobot.updateEnergy(damage);

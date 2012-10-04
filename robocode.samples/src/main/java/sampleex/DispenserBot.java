@@ -3,6 +3,7 @@ package sampleex;
 import java.awt.Color;
 
 import robocode.Dispenser;
+import robocode.ScannedRobotEvent;
 
 /**
  * Behaviour for the Dispenser. Basically, it just sits there.
@@ -22,6 +23,21 @@ public class DispenserBot extends Dispenser {
     		turnGunRight(1);
     		turnLeft(1);
     	}
+		
+//		while (true) {
+//			turnRadarRight(360);
+//		}
 	}
 	
+//    public void onScannedRobot(ScannedRobotEvent e) {
+//    	
+//    	//This points the gun at the detected robot
+//    	turnGunRight(getHeading() - getGunHeading() + e.getBearing());
+//    	
+//    	fire(1);
+//    	
+//    	//Just so that the radar doesn't immediately lock on again,
+//    	//causing the robot to stay in one place until *someone* dies
+//    	turnRadarLeft(15);
+//    }
 }

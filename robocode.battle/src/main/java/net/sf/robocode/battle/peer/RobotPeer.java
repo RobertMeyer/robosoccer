@@ -198,9 +198,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected int skippedTurns;
 	
 	//Radius in which Dispenser will give energy
-	protected double dispenseRadius = WIDTH*2.5;
+	protected double dispenseRadius = WIDTH*3;
 	//Rate at which Dispenser will give energy
-	protected int maxDispenseRate = 5;
+	protected double maxDispenseRate = 1;
 
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
@@ -1226,18 +1226,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	protected void dispenseHealth(List<RobotPeer> robots) {
+		double amount = 0;
+		
 		for (RobotPeer otherRobot : robots) {
 			if (pow(otherRobot.x - x, 2) + pow(otherRobot.y - y, 2) < pow(dispenseRadius, 2)) {
 				if (!otherRobot.isDispenser()) {
 					
 					//Healing scales with proximity
-					otherRobot.updateEnergy(maxDispenseRate*(
-							(pow(dispenseRadius, 2) - (pow(otherRobot.x - x, 2)
-									+ pow(otherRobot.y - y, 2)))
-									/pow(dispenseRadius, 2)));
+					amount = maxDispenseRate*(
+							(pow(dispenseRadius, 2)
+							- (pow(otherRobot.x - x, 2)
+							+ pow(otherRobot.y - y, 2)))
+							/pow(dispenseRadius, 2));
+					
+					otherRobot.updateEnergy(amount);
 					
 					//Dispenser has a very small ability to heal self
-					this.updateEnergy(1);
+					this.updateEnergy(amount/2);
 					
 					statistics.incrementTotalScore(this.getName());
 				}
@@ -1246,7 +1251,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	protected void checkRobotCollision(List<RobotPeer> robots) {
-		//TODO: Allow robots to pass through Dispenser
 		inCollision = false;
 
         for (RobotPeer otherRobot : robots) {
