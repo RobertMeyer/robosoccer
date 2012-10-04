@@ -103,7 +103,22 @@ public class KillstreakTracker {
 		enableKillstreaks = b;
 	}
 
+	/**
+	 * Add a callable killstreak ability to the set of abilities, to be called
+	 * by a robot if it reaches 'bound' consecutive kills.
+	 * 
+	 * @param bound
+	 *            The number of consecutive kills needed by the robot to call
+	 *            the ability
+	 * @param ksAbility
+	 *            The IKillstreakAbility to add. It's callAbility method will be
+	 *            called when 'bound' is reached.
+	 */
 	public void addKillstreakAbility(int bound, IKillstreakAbility ksAbility) {
+		/* if there is already an ability at that bound, remove it */
+		if (killstreakAbilities.get(bound) != null) {
+			killstreakAbilities.remove(bound);
+		}
 		killstreakAbilities.put(bound, ksAbility);
 	}
 }
