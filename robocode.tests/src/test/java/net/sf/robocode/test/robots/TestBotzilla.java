@@ -40,13 +40,20 @@ public class TestBotzilla extends RobocodeTestBed {
 
     @Override
     public String getRobotNames() {
-        return "sample.Target";
+        return "sample.Target, sample.Walls, sample.Target";
     }
 
     @Override
     public void onTurnEnded(TurnEndedEvent event) {
         super.onTurnEnded(event);
-        final int time = event.getTurnSnapshot().getTurn();
+        final int currentTurn = event.getTurnSnapshot().getTurn();
+        System.out.println("Current turn # is: " + currentTurn);
+        // TODO change 749 and 750 to use the botzillaSpawnTime variable.
+        if (currentTurn == 749) {
+        	// Check if Botzilla HAS spawned.
+        } else if (currentTurn >= 750) {
+        	
+        }
     }
     
 //    BattleProperties battleProperties = new BattleProperties;
