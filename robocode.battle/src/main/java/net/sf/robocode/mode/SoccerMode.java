@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.SoccerTeamPeer;
@@ -15,14 +16,7 @@ import robocode.BattleResults;
 import robocode.BattleRules;
 import robocode.control.RobotSpecification;;
 
-public class SoccerMode extends ClassicMode implements IMode {
-	
-	/* Bounds for the goal - possibly to be altered at a later date */
-	public static final double GOALXMIN = 100;
-	public static final double GOALXMAX = 700;
-	public static final double GOALYMIN = 250;
-	public static final double GOALYMAX = 400;
-	
+public class SoccerMode extends ClassicMode implements IMode {	
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;
@@ -30,9 +24,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/*This stores the width and height of the playing field, plus the current
 	 * x coordinate of the ball bot.
 	 */
-	private double width;
-	private double height;
-	private double ballX;
+	private final int GOALX = 100;
+	private final int GOALY = 256;
+	private double fieldWidth;
+	private double fieldHeight;
+	private Goal scoreTeam;
+	private BoundingRectangle goal1;
+	private BoundingRectangle goal2;
 	
 	/*TeamPeers for the two soccer teams*/
 	private SoccerTeamPeer team1;
@@ -41,6 +39,11 @@ public class SoccerMode extends ClassicMode implements IMode {
 	private boolean roundOver = false;
 	
 	private final String description = "Robocode soccer.";
+	
+	private enum Goal {
+		TEAM1,
+		TEAM2
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -76,29 +79,32 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
 		initialRobotPositions = new double[(count + 1)][3];
  		
- 		height = battleRules.getBattlefieldHeight();
- 		width = battleRules.getBattlefieldWidth();
+ 		fieldHeight = battleRules.getBattlefieldHeight();
+ 		fieldWidth = battleRules.getBattlefieldWidth();
+ 		
+ 		goal1 = new BoundingRectangle(GOALX/2, fieldHeight/2, GOALX, GOALY);
+ 		goal2 = new BoundingRectangle(fieldWidth-(GOALX/2), fieldHeight/2, GOALX, GOALY);
  		
  		int teamSize = count / 2;
  		
  		// Horizontal spacing between columns of robots.
- 		double xOffset = ((width / 2)) / (1 + Math.max(1, Math.ceil(teamSize / 3.0)));
+ 		double xOffset = ((fieldWidth / 2)) / (1 + Math.max(1, Math.ceil(teamSize / 3.0)));
 
  		for(int i = 0; i < teamSize; i++) {
  			// Team 1 Initial Positions (Left side of field).
- 			initialRobotPositions[i][0] = (width / 2) - (((i/3) + 1) * xOffset);
- 			initialRobotPositions[i][1] = (0.2 * height) + (((0.9 * height) / 3) * (i % 3));
+ 			initialRobotPositions[i][0] = (fieldWidth / 2) - (((i/3) + 1) * xOffset);
+ 			initialRobotPositions[i][1] = (0.2 * fieldHeight) + (((0.9 * fieldHeight) / 3) * (i % 3));
  			initialRobotPositions[i][2] = (Math.PI / 2.0);
  			
  			// Team 2 Initial Positions (Right side of field).
- 			initialRobotPositions[(i + teamSize)][0] = (width / 2) + (((i / 3) + 1) * xOffset);
- 			initialRobotPositions[(i + teamSize)][1] = (0.2 * height) + (((0.9 * height) / 3) * (i % 3));
+ 			initialRobotPositions[(i + teamSize)][0] = (fieldWidth / 2) + (((i / 3) + 1) * xOffset);
+ 			initialRobotPositions[(i + teamSize)][1] = (0.2 * fieldHeight) + (((0.9 * fieldHeight) / 3) * (i % 3));
  			initialRobotPositions[(i + teamSize)][2] = 3 * (Math.PI / 2.0);
  		}
  		
  		// Ball starting position..
- 		initialRobotPositions[count][0] = (width / 2);
- 		initialRobotPositions[count][1] = (height / 2);
+ 		initialRobotPositions[count][0] = (fieldWidth / 2);
+ 		initialRobotPositions[count][1] = (fieldHeight / 2);
  		initialRobotPositions[count][2] = 0;
  		
  		return initialRobotPositions;
@@ -172,15 +178,15 @@ public class SoccerMode extends ClassicMode implements IMode {
 		// Scan after moved all
 		
         for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
+        	// Check to see if ball is in goal
         	if (robotPeer.isBall()) {
-        		ballX = robotPeer.getX();
-        		double y = robotPeer.getY();
-        		if (((ballX < GOALXMIN) || (ballX > GOALXMAX))
-						&& ((y < GOALYMAX) || (y > GOALYMIN))) {
-					roundOver = true;
-				} else {
-					roundOver = false;
-				}
+        		if (goal1.intersects(robotPeer.getBoundingBox())) {
+        			roundOver = true;
+        			scoreTeam = Goal.TEAM1;
+        		} else if (goal2.intersects(robotPeer.getBoundingBox())) {
+        			scoreTeam = Goal.TEAM2;
+        			roundOver = true;
+        		}
         	}
             robotPeer.performScan(ball);
         }
@@ -188,10 +194,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 	
 	@Override
 	public void scoreTurnPoints() {
-		if (ballX < width/2) {
+		// Which team scored?
+		if (scoreTeam == Goal.TEAM1) {
 			team1.getStatistics().incrementScore();
-		} else {
+			scoreTeam = null;
+		} else if(scoreTeam == Goal.TEAM2) {
 			team2.getStatistics().incrementScore();
+			scoreTeam = null;
 		}
 	}
 	
@@ -203,6 +212,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 					robotPeer.kill();
 				}
 			}
+			roundOver = false;
 		}
 		return endTimer > 5*time;
 	}
