@@ -287,32 +287,37 @@ public final class Battle extends BaseBattle {
 
 	//Generates a list of obstacles at the start of the battle
 	private void generateObstacles(int num) {
-		double w = 32, h = 32;
 		Random randomGen = new Random();
 		ObstaclePeer newObstacle;
 		boolean intersect;
 		double x, y;
+		int fail = 0;
 		for (int i = 0; i < num; i++) {
+			/* Ensure new obstacle is not intersecting a previously placed obstacle. */
 			do {
 				intersect = false;
 				x = randomGen.nextDouble() * bp.getBattlefieldWidth();
 				y = randomGen.nextDouble() * bp.getBattlefieldHeight();
 				newObstacle = new ObstaclePeer(this, battleRules, i);
+				newObstacle.setX(x);
+				newObstacle.setY(y);
 				for (int j = 0; j < obstacles.size(); j++) {
 					if (obstacles.get(j).obstacleIntersect(newObstacle)) {
 						intersect = true;
-						/*System.out.print("Intersects ");
-						System.out.print(x);
-						System.out.print(", ");
-						System.out.println(y);*/
+						/* Record number on which it failed, 
+						 * if it fails as many times as there are obstacles,
+						 * there is no more room for any obstacles, so return.
+						 */
+						if(fail == obstacles.size()) {
+							return;
+						}
+						fail++;
 					}
 				}
 			} while(intersect);
+			fail = 0;
 			obstacles.add(newObstacle);
-			obstacles.get(i).setX(x);
-			obstacles.get(i).setY(y);
 		}
-
 	}
 
 	public void resetInactiveTurnCount(double energyLoss) {
