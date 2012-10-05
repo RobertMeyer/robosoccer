@@ -101,6 +101,7 @@ import static java.lang.Math.round;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -125,6 +126,7 @@ import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 
+import java.io.Console;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
@@ -285,11 +287,30 @@ public final class Battle extends BaseBattle {
 
 	//Generates a list of obstacles at the start of the battle
 	private void generateObstacles(int num) {
+		double w = 32, h = 32;
 		Random randomGen = new Random();
+		ObstaclePeer newObstacle;
+		boolean intersect;
+		double x, y;
 		for (int i = 0; i < num; i++) {
-			obstacles.add(new ObstaclePeer(this, battleRules, i));
-			obstacles.get(i).setX(randomGen.nextDouble() * bp.getBattlefieldWidth());
-			obstacles.get(i).setY(randomGen.nextDouble() * bp.getBattlefieldHeight());
+			do {
+				intersect = false;
+				x = randomGen.nextDouble() * bp.getBattlefieldWidth();
+				y = randomGen.nextDouble() * bp.getBattlefieldHeight();
+				newObstacle = new ObstaclePeer(this, battleRules, i);
+				for (int j = 0; j < obstacles.size(); j++) {
+					if (obstacles.get(j).obstacleIntersect(newObstacle)) {
+						intersect = true;
+						/*System.out.print("Intersects ");
+						System.out.print(x);
+						System.out.print(", ");
+						System.out.println(y);*/
+					}
+				}
+			} while(intersect);
+			obstacles.add(newObstacle);
+			obstacles.get(i).setX(x);
+			obstacles.get(i).setY(y);
 		}
 
 	}
