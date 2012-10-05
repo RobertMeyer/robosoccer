@@ -183,17 +183,15 @@ public class BulletPeer {
 					score = otherRobot.getEnergy();
 				}
 				
-				//only apply damage is not botzilla
+				//only change energy is not botzilla
 				if (!otherRobot.isBotzilla()) {
-					otherRobot.updateEnergy(-damage);
+					//Dispensers restore energy, everyone else takes it away
+					if (owner.isDispenser()) {
+						otherRobot.updateEnergy(damage);
+					} else {
+						otherRobot.updateEnergy(-damage);
+					}
 				}
-				
-				//TODO: Gotta make this work.
-				//Should also consider removing bullet score for Dispenser
-//				//Dispenser should heal folks
-//				if (owner.isDispenser()) {
-//					otherRobot.updateEnergy(damage);
-//				}
 				
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
@@ -224,7 +222,8 @@ public class BulletPeer {
 				}
 				
 				//do not give energy bonus for shooting Botzilla
-				if (!otherRobot.isBotzilla()) {
+				//Dispensers don't get an energy bonus either
+				if (!otherRobot.isBotzilla() && !owner.isDispenser()) {
 					owner.updateEnergy(Rules.getBulletHitBonus(power));
 				}
 				
