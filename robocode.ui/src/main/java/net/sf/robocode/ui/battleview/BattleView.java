@@ -41,8 +41,6 @@ import net.sf.robocode.ui.IWindowManagerExt;
 import net.sf.robocode.ui.gfx.GraphicsState;
 import net.sf.robocode.ui.gfx.RenderImage;
 import net.sf.robocode.ui.gfx.RobocodeLogo;
-import robocode.EquipmentPart;
-import robocode.EquipmentSlot;
 import robocode.control.events.BattleAdaptor;
 import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
@@ -52,22 +50,8 @@ import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IObstacleSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-<<<<<<< HEAD
 import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.RenderableType;
-=======
-
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.geom.*;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import static java.lang.Math.*;
-
-import java.util.Collection;
-import java.util.Random;
->>>>>>> team-forkbomb-images
 
 
 /**
@@ -721,97 +705,12 @@ public class BattleView extends Canvas {
 		int tileIndex = 0;
 		int battleFieldHeight = battleField.getHeight();
 
-<<<<<<< HEAD
 		for(IEffectAreaSnapshot effectAreaSnapshot : snapShot.getEffectAreas()) {
 			x = effectAreaSnapshot.getXCoord();
 			y = battleFieldHeight - effectAreaSnapshot.getYCoord();
 
 			int x1 = (int)(x);
 			int y1 = (int)((battleFieldHeight - effectAreaSnapshot.getYCoord()));
-=======
-		if (drawGround && drawExplosionDebris) {
-			RenderImage explodeDebrise = imageManager.getExplosionDebriseRenderImage();
-
-			for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-				if (robotSnapshot.getState().isDead()) {
-					x = robotSnapshot.getX();
-					y = battleFieldHeight - robotSnapshot.getY();
-
-					at = AffineTransform.getTranslateInstance(x, y);
-
-					explodeDebrise.setTransform(at);
-					explodeDebrise.paint(g);
-				}
-			}
-		}
-
-		for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-			if (robotSnapshot.getState().isAlive()) {
-				
-				Collection<EquipmentPart> robotEquipment = robotSnapshot.getEquipment();
-				String bodyImageDirectory = null;
-				String gunImageDirectory = null;
-				String radarImageDirectory = null;
-				
-				if(robotEquipment != null) {
-					for(EquipmentPart ePart : robotEquipment)
-					{
-						if(ePart.getSlot() == EquipmentSlot.BODY)
-							bodyImageDirectory = ePart.getImagePath();
-						
-						if(ePart.getSlot() == EquipmentSlot.WEAPON)
-							gunImageDirectory = ePart.getImagePath();
-						
-						if(ePart.getSlot() == EquipmentSlot.RADAR)
-							radarImageDirectory = ePart.getImagePath();
-					}
-				}
-				
-				
-				x = robotSnapshot.getX();
-				y = battleFieldHeight - robotSnapshot.getY();
-
-				at = AffineTransform.getTranslateInstance(x, y);
-				at.rotate(robotSnapshot.getBodyHeading());
-
-				RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor(), bodyImageDirectory);
-
-				robotRenderImage.setTransform(at);
-				robotRenderImage.paint(g);
-
-				at = AffineTransform.getTranslateInstance(x, y);
-				at.rotate(robotSnapshot.getGunHeading());
-
-				RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor(), gunImageDirectory);
-
-				gunRenderImage.setTransform(at);
-				gunRenderImage.paint(g);
-
-				if (!robotSnapshot.isDroid()) {
-					at = AffineTransform.getTranslateInstance(x, y);
-					at.rotate(robotSnapshot.getRadarHeading());
-
-					RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor(), radarImageDirectory);
-
-					radarRenderImage.setTransform(at);
-					radarRenderImage.paint(g);
-				}
-			}
-		}
-	}
-
-	private void drawText(Graphics2D g, ITurnSnapshot snapShot) {
-		final Shape savedClip = g.getClip();
-
-		g.setClip(null);
-
-		for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-			if (robotSnapshot.getState().isDead()) {
-				continue;
-			}
-			int x = (int) robotSnapshot.getX();
-			int y = battleField.getHeight() - (int) robotSnapshot.getY();
->>>>>>> team-forkbomb-images
 
 			//first four is default ground images
 			tileIndex = effectAreaSnapshot.getActiveEffect() + 5;
