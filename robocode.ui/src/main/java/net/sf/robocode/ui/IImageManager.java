@@ -33,9 +33,17 @@ public interface IImageManager {
 
     RenderImage getExplosionDebriseRenderImage();
 
+<<<<<<< HEAD
     RenderImage getColoredBodyRenderImage(Integer color);
 
     RenderImage getColoredGunRenderImage(Integer color);
 
     RenderImage getColoredRadarRenderImage(Integer color);
+=======
+	RenderImage getColoredBodyRenderImage(Integer color, String imageDirectory);
+
+	RenderImage getColoredGunRenderImage(Integer color, String imageDirectory);
+
+	RenderImage getColoredRadarRenderImage(Integer color, String imageDirecetory);
+>>>>>>> team-forkbomb-images
 }

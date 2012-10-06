@@ -30,11 +30,25 @@ import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
 import robocode.EquipmentPart;
+<<<<<<< HEAD
 import robocode.EquipmentSlot;
+=======
+>>>>>>> team-forkbomb-images
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.RobotState;
 
+<<<<<<< HEAD
+=======
+import java.awt.geom.Arc2D;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+
+
+>>>>>>> team-forkbomb-images
 /**
  * A snapshot of a robot at a specific time instant in a battle.
  * The snapshot contains a snapshot of the robot data at that specific time.
@@ -43,6 +57,7 @@ import robocode.control.snapshot.RobotState;
  * @author Pavel Savara (contributor)
  * @since 1.6.1
  */
+<<<<<<< HEAD
 public final class RobotSnapshot implements Serializable, IXmlSerializable,
                                             IRobotSnapshot {
 
@@ -103,6 +118,393 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private String outputStreamSnapshot;
     /** Snapshot of score of the robot */
     private IScoreSnapshot robotScoreSnapshot;
+=======
+public final class RobotSnapshot implements Serializable, IXmlSerializable, IRobotSnapshot {
+
+	private static final long serialVersionUID = 2L;
+
+	/** The name of the robot */
+	private String name;
+
+	/** The short name of the robot */
+	private String shortName;
+
+	/** Very short name of the robot */
+	private String veryShortName;
+
+	/** Very short name of the team leader robot (might be null) */
+	private String teamName;
+
+	/** The unique robot index */
+	private int robotIndex;
+
+	/** The team index for the robot */
+	private int teamIndex;
+
+	/** The robot state */
+	private RobotState state;
+
+	/** The energy level of the robot */
+	private double energy;
+
+	/** The velocity of the robot */
+	private double velocity;
+
+	/** The gun heat level of the robot */
+	private double gunHeat;
+
+	/** The body heading in radians */
+	private double bodyHeading;
+
+	/** The gun heading in radians */
+	private double gunHeading;
+
+	/** The radar heading in radians */
+	private double radarHeading;
+
+	/** The X position */
+	private double x;
+
+	/** The Y position */
+	private double y;
+
+	/** The ARGB color of the body */
+	private int bodyColor = ExecCommands.defaultBodyColor;
+
+	/** The ARGB color of the gun */
+	private int gunColor = ExecCommands.defaultGunColor;
+
+	/** The ARGB color of the radar */
+	private int radarColor = ExecCommands.defaultRadarColor;
+
+	/** The ARGB color of the scan arc */
+	private int scanColor = ExecCommands.defaultScanColor;
+
+	/** Flag specifying if this robot is a Droid */
+	private boolean isDroid;
+
+	/** Flag specifying if this robot is a IPaintRobot or is invoking getGraphics() */
+	private boolean isPaintRobot;
+
+	/** Flag specifying if painting is enabled for this robot */
+	private boolean isPaintEnabled;
+
+	/** Flag specifying if RobocodeSG painting is enabled for this robot */
+	private boolean isSGPaintEnabled;
+
+	/** Snapshot of the scan arc */
+	private SerializableArc scanArc;
+
+	/** Snapshot of the object with queued calls for Graphics object */
+	private Object graphicsCalls;
+	
+	/** Snapshot of the equipment currently on the robot. */
+	private Collection<EquipmentPart> equipment;
+
+	/** Snapshot of debug properties */
+	private DebugProperty[] debugProperties;
+
+	/** Snapshot of the output print stream for this robot */
+	private String outputStreamSnapshot;
+
+	/** Snapshot of score of the robot */
+	private IScoreSnapshot robotScoreSnapshot;
+
+	/**
+	 * Creates a snapshot of a robot that must be filled out with data later.
+	 */
+	public RobotSnapshot() {
+		state = RobotState.ACTIVE;
+	}
+
+	/**
+	 * Creates a snapshot of a robot.
+	 *
+	 * @param robot the robot to make a snapshot of.
+	 * @param readoutText {@code true} if the output text from the robot must be included in the snapshot;
+	 *                    {@code false} otherwise.
+	 */
+	public RobotSnapshot(RobotPeer robot, boolean readoutText) {
+		name = robot.getName();
+		shortName = robot.getShortName();
+		veryShortName = robot.getVeryShortName();
+		teamName = robot.getTeamName();
+
+		robotIndex = robot.getRobotIndex();
+		teamIndex = robot.getTeamIndex();
+
+		state = robot.getState();
+
+		energy = robot.getEnergy();
+		velocity = robot.getVelocity();
+		gunHeat = robot.getGunHeat(); 
+
+		bodyHeading = robot.getBodyHeading();
+		gunHeading = robot.getGunHeading();
+		radarHeading = robot.getRadarHeading();
+
+		x = robot.getX();
+		y = robot.getY();
+
+		bodyColor = robot.getBodyColor();
+		gunColor = robot.getGunColor();
+		radarColor = robot.getRadarColor();
+		scanColor = robot.getScanColor();
+
+		isDroid = robot.isDroid();
+		isPaintRobot = robot.isPaintRobot() || robot.isTryingToPaint();
+		isPaintEnabled = robot.isPaintEnabled();
+		isSGPaintEnabled = robot.isSGPaintEnabled();
+
+		scanArc = robot.getScanArc() != null ? new SerializableArc((Arc2D.Double) robot.getScanArc()) : null;
+
+		graphicsCalls = robot.getGraphicsCalls();
+		
+		equipment = robot.getEquipment();
+
+		final List<DebugProperty> dp = robot.getDebugProperties();
+
+		debugProperties = dp != null ? dp.toArray(new DebugProperty[dp.size()]) : null;
+
+		if (readoutText) {
+			outputStreamSnapshot = robot.readOutText();
+		}
+
+		robotScoreSnapshot = new ScoreSnapshot(robot.getName(), robot.getRobotStatistics());
+	}
+
+	@Override
+	public String toString() {
+		return shortName + " (" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	// Used to identify buttons
+	// TODO: Fix this so that getRobotIndex() is used instead
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	// Used for text on buttons
+	public String getShortName() {
+		return shortName;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	// Used for drawing the name of the robot on the battle view
+	public String getVeryShortName() {
+		return veryShortName;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getTeamName() {
+		return teamName;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getContestantIndex() {
+		return teamIndex >= 0 ? teamIndex : robotIndex;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getRobotIndex() {
+		return robotIndex;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getTeamIndex() {
+		return teamIndex;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public RobotState getState() {
+		return state;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getEnergy() {
+		return energy;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getVelocity() {
+		return velocity;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getBodyHeading() {
+		return bodyHeading;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getGunHeading() {
+		return gunHeading;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getRadarHeading() {
+		return radarHeading;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getGunHeat() {
+		return gunHeat;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getX() {
+		return x;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getY() {
+		return y;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getBodyColor() {
+		return bodyColor;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getGunColor() {
+		return gunColor;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getRadarColor() {
+		return radarColor;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getScanColor() {
+		return scanColor;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isDroid() {
+		return isDroid;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isPaintRobot() {
+		return isPaintRobot;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isPaintEnabled() {
+		return isPaintEnabled;
+	}
+
+	/**
+	 * Sets the flag specifying if painting is enabled for the robot.
+	 *
+	 * @param isPaintEnabled {@code true} if painting must be enabled;
+	 *                       {@code false} otherwise.
+	 */
+	public void setPaintEnabled(boolean isPaintEnabled) {
+		this.isPaintEnabled = isPaintEnabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isSGPaintEnabled() {
+		return isSGPaintEnabled;
+	}
+	
+	/**
+	 *  {@inheritDoc}
+	 */
+	public Collection<EquipmentPart> getEquipment() {
+		return equipment;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public DebugProperty[] getDebugProperties() {
+		return debugProperties;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getOutputStreamSnapshot() {
+		return outputStreamSnapshot;
+	}
+
+	/**
+	 * Sets the snapshot of the output print stream for this robot.
+	 *
+	 * @param outputStreamSnapshot new output print stream snapshot.
+	 */
+	public void setOutputStreamSnapshot(String outputStreamSnapshot) {
+		this.outputStreamSnapshot = outputStreamSnapshot;
+	}
+
+	void stripDetails(SerializableOptions options) {
+		if (options.skipDebug) {
+			graphicsCalls = null;
+			debugProperties = null;
+			outputStreamSnapshot = null;
+			isPaintEnabled = false;
+			isSGPaintEnabled = false;
+		}
+		if (options.skipNames) {
+			name = veryShortName;
+			shortName = veryShortName;
+			teamName = veryShortName;
+		}
+	}
+>>>>>>> team-forkbomb-images
     
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
     
