@@ -20,6 +20,7 @@ import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.TeleporterPeer;
 import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
@@ -78,7 +79,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
      * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
      *                    {@code false} otherwise.
      */
-    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<IRenderable> customObjects, List<ItemDrop> battleItems, List<ObstaclePeer> battleObstacle, boolean readoutText) {
+    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<IRenderable> customObjects, List<ItemDrop> battleItems, List<ObstaclePeer> battleObstacle, List<TeleporterPeer> battleTeleporters, boolean readoutText) {
         robots = new ArrayList<IRobotSnapshot>();
         bullets = new ArrayList<IBulletSnapshot>();
         items = new ArrayList<IItemSnapshot>();

@@ -1020,8 +1020,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	@Override
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
+	
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy, List<TeleporterPeer> teleporters) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -1064,6 +1064,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		updateGunHeading();
 		updateRadarHeading();
 		updateMovement();
+		/* We will add check for teleporter collision
+		 * REMOVE BEFORE MERGE
+		 */
+		
+		checkTeleporterCollision(teleporters);
 		
 		// do not move frozen robots
 		if (isFrozen()) {
@@ -2377,6 +2382,41 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}
+	
+	/**
+	 * Checks whether a robot has collided with a teleporter
+	 * @param teleporters list of teleporters
+	 */
+	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
+		BoundingRectangle bound = getBoundingBox();
+		double newHeading = getBodyHeading()+PI;
+		double[] xy;
+		double[] fail = {-1.0, -1.0};
+		double[] death = {-2.0, -2.0};
+		while(newHeading>(2*PI)){
+			newHeading -=(2*PI);
+		}
+		for(TeleporterPeer teleporter : teleporters){
+			xy = teleporter.getCollisionReaction(bound);
+			if(xy.equals(fail)){
+				
+			}else if(xy[0] == -2 && xy[1] == -2){
+				//if there is a collision with a black hole, update size, set
+				//the collision to true and kill the robot
+				teleporter.updateBlackHoleSize();
+				//collidedWithBlackHole = true;
+				kill();
+				
+				
+			}else if(xy[0]>0 && xy[1]>0){
+				this.x = xy[0]+(Math.sin(newHeading)*50);
+				this.y = xy[1]+(Math.cos(newHeading)*50);
+				this.bodyHeading = newHeading;
+
+			}
+		}
+		
+	}
 
 	/**
 	 * Enables the RadarJamming ability for jamTime amount of turns. Robots who
@@ -2445,5 +2485,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private boolean isSuperTank() {
 		return isSuperTank;
 	}
+
+	@Override
+	public void performMove(List<RobotPeer> robots, List<ItemDrop> items,
+			List<ObstaclePeer> obstacles, double zapEnergy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 }

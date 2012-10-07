@@ -109,7 +109,7 @@ public class TeleporterPeer implements ITeleporter {
 	 * 
 	 */
 	
-	public double[] getCollisionReaction(BoundingRectangle bound){
+	public double[] getCollisionReaction(net.sf.robocode.battle.item.BoundingRectangle bound){
 		double[] a = {-1, -1};
 		if(this.getCircle(Portal.PORTAL1).intersects(bound)){
 			//it collided
