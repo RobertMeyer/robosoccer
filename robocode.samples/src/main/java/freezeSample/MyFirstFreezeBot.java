@@ -37,6 +37,8 @@ public class MyFirstFreezeBot extends FreezeRobot {
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		if (e.isFrozen()) {
+			setStop(true);
+			execute();
 			return;
 		}
 
