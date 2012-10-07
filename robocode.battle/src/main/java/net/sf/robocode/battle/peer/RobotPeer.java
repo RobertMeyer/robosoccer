@@ -1068,6 +1068,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isDead()) {
 			return;
 		}
+		
+		if (isFrozen()) {
+			return;
+		}
 
 		turnedRadarWithGun = false;
 		// scan
@@ -1226,22 +1230,24 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     }
 
 
+                    // Check if one of the robots is a FreezeRobot, if so, freeze the other robot.
+					if (otherRobot.isFreezeRobot()) {
+						setState(RobotState.FROZEN);
+						frozen = 100;
+					}
+					
+					if (this.isFreezeRobot()) {
+						otherRobot.setState(RobotState.FROZEN);
+						otherRobot.frozen = 100;
+					}
+                    
+					
                     if (otherRobot.energy == 0) {
                         if (otherRobot.isAlive()) {
                             otherRobot.kill();
                             if (battle.getBattleMode().respawnsOn()) {
                             	otherRobot.respawn(robots);
                             }
-                            
-        					if (otherRobot.isFreezeRobot()) {
-        						setState(RobotState.FROZEN);
-        						frozen = 100;
-        					}
-        					
-        					if (this.isFreezeRobot()) {
-        						otherRobot.setState(RobotState.FROZEN);
-        						otherRobot.frozen = 100;
-        					}
                             
                             if (!teamFire) {
                                 final double bonus = statistics.scoreRammingKill(otherRobot.getName());
