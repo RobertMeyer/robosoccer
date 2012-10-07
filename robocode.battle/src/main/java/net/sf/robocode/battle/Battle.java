@@ -158,6 +158,7 @@ public final class Battle extends BaseBattle {
     private double inactivityEnergy;
     // Objects in the battle
 	private BattleProperties bp;
+	private int a;
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
     // Death events
