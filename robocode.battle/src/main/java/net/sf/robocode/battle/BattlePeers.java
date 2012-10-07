@@ -13,6 +13,18 @@ import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 
+/**
+ * BattlePeers is a class that models the creation of RobotPeers. It takes the following parameters:
+ * 
+ * @param battlingRobotsList List of robots to be sorted.
+ * @param hostManager Host manager.
+ * @param repositoryManager Allows creation of RobotSpecification objects allowing users to 
+ * add predefined robots to the battle.
+ * 
+ * In addition, it defines the following fields:
+ * @param robots List of RobotPeers objects.
+ * @param contestants List of ContestantPeer objects.
+ */
 public class BattlePeers {
 	
 	private List<RobotPeer> robots = new ArrayList<RobotPeer>();
@@ -20,6 +32,8 @@ public class BattlePeers {
 	private IHostManager hostManager;
 	private IRepositoryManager repositoryManager;
 	private Battle battle;
+	private RobotPeer botzillaRobot;
+	private ContestantPeer botzillaContestant;
 
 	public BattlePeers(Battle battle, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
@@ -35,13 +49,9 @@ public class BattlePeers {
 	 * The initial setup for robot and contestant lists based on the given
 	 * list of robots, battleRobotsList. Overriding this will allow for 
 	 * predefined team creation. Original implementation taken from Battle.
-	 * @param battle The battle object associated with every game mode
-	 * @param battlingRobotsList List of robots to be sorted.
-	 * @param hostManager Host manager.
-	 * @param robots List of RobotPeers objects.
-	 * @param contestants List of ContestantPeer objects.
-	 * @param repositoryManager Allows creation of RobotSpecification objects
-	 * allowing users to add predefined robots to the battle.
+	 * 
+	 * @param battlingRobotsList List of robots to be sorted. (same battlingRobotsList as the one passed
+	 * to the constructor)
 	 */
 	public void createPeers(RobotSpecification[] battlingRobotsList) {
 		// create teams
@@ -177,16 +187,23 @@ public class BattlePeers {
 
 
 	public void addRobot(RobotPeer peer) {
+		botzillaRobot = peer;
 		robots.add(peer);
 	}
 	
 
 	public void addContestant(ContestantPeer peer) {
+		botzillaContestant =  peer;
 		contestants.add(peer);
 	}
 	
+	public void removeBotzilla() {
+		robots.remove(botzillaRobot);
+		contestants.remove(botzillaContestant);
+		System.out.println("botzilla is totally removed?");
+	}
+	
 	public void cleanup() {
-
 		if (contestants != null) {
 			contestants.clear();
 			contestants = null;

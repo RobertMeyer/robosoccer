@@ -13,14 +13,16 @@ public class HealthPack extends ItemDrop {
 
 
 		
-	public HealthPack(Battle battle){
+	public HealthPack(Battle battle, String name){
 		super(true, 400, 0, false, battle);
+		this.name = name;
+		this.imageName = "health.png";
 	//	System.out.println("Health Pack at (" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	public void doItemEffect(RobotPeer robot){
 		robot.updateEnergy(30);
-	//	System.out.println("Item USED");
+		System.out.println("Item USED");
 	}
 	
 }

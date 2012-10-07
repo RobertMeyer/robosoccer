@@ -306,7 +306,10 @@ public class RobotStatistics implements ContestantStatistics {
         return 0;
     }
 
-    public void scoreRobotDeath(int enemiesRemaining) {
+    public void scoreRobotDeath(int enemiesRemaining, Boolean botzillaActive) {
+    	if (botzillaActive) {
+    		enemiesRemaining--;
+    	}
         switch (enemiesRemaining) {
             case 0:
                 if (!robotPeer.isWinner()) {
@@ -337,6 +340,17 @@ public class RobotStatistics implements ContestantStatistics {
     public void scoreFirsts() {
         if (isActive) {
             totalFirsts++;
+        }
+    }
+    
+    /**
+     * Circumventing the fancy cumulative score. This is for Dispenser's sake,
+     * who scores with a functionality not shared with other robots.
+     * @param robot The robot's name - preferably getName() from a Dispenser Bot
+     */
+    public void incrementTotalScore(String robot) {
+        if (isActive) {
+            totalScore++;
         }
     }
 
