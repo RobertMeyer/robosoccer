@@ -46,5 +46,7 @@ public interface IRobotRepositoryItem extends IRepositoryItem {
 
 	boolean isJuniorRobot();
 
-	boolean isBotzilla();
+	boolean isBotzillaBot();
+	
+	boolean isDispenser();
 }
