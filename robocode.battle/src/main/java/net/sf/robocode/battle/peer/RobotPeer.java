@@ -1230,7 +1230,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		for (RobotPeer otherRobot : robots) {
 			if (pow(otherRobot.x - x, 2) + pow(otherRobot.y - y, 2) < pow(dispenseRadius, 2)) {
-				if (!otherRobot.isDispenser()) {
+				if (!otherRobot.isDispenser() && !otherRobot.isBotzilla()) {
 					
 					//Healing scales with proximity
 					amount = maxDispenseRate*(
@@ -1252,12 +1252,26 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
-
+		
+		/*
+		 * these robots have special behaviours concerning collisions
+    	 * normally, ignore collisions with dispenser
+    	 * however, if collision is between Botzilla and dispenser
+    	 * wreck the dispenser like a regular robot
+    	 */
+		boolean dispenserInvolved;
+		boolean botzillaInvolved;
+		
         for (RobotPeer otherRobot : robots) {
-            if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
+            
+        	dispenserInvolved = isDispenser() || otherRobot.isDispenser();
+        	botzillaInvolved = isBotzilla() || otherRobot.isBotzilla();
+        	
+        	if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
                     && boundingBox.intersects(otherRobot.boundingBox)
-                    && !isDispenser() && !otherRobot.isDispenser()) {
-                // Bounce back
+                    && (!dispenserInvolved || (dispenserInvolved && botzillaInvolved))) {
+                
+        		// Bounce back
                 double angle = atan2(otherRobot.x - x, otherRobot.y - y);
 
                 double movedx = velocity * sin(bodyHeading);
