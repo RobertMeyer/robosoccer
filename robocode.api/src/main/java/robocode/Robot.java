@@ -32,7 +32,6 @@
 package robocode;
 
 import java.awt.*;
-import robocode.Robot;
 import robocode.robotinterfaces.*;
 import robocode.robotinterfaces.peer.IStandardRobotPeer;
 
