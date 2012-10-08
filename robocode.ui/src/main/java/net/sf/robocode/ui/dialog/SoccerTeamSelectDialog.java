@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,6 +61,9 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 	private JButton addT2Button;
 	private JButton removeT1Button;
 	private JButton removeT2Button;
+	private JButton quickStartButton;
+	
+	private boolean isReadyToBattle;
 
 	public SoccerTeamSelectDialog(IWindowManager windowManager) {
 		super(windowManager.getRobocodeFrame(), true);
@@ -72,14 +76,23 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Initialise the dialog window, setting the minimum window size.
+	 */
 	private void initialize() {
 		setTitle("Select Teams");
-		this.setMinimumSize(new Dimension(700, 500));
-		this.setResizable(false);
+		this.setMinimumSize(new Dimension(700, 550));
+		this.setResizable(true);
 		this.add(getMainPanel());
+		this.isReadyToBattle = false;
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	
+	/**
+	 * JList containing all of the selected robots from the previous
+	 * selection step (original selection dialog implementation).
+	 * @return JList object for all available robots.
+	 */
 	private JList getAllRobotsList() {
 		if (allRobotsList == null) {
 			allRobotsList = new JList();
@@ -99,6 +112,10 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 		return allRobotsList;
 	}
 	
+	/**
+	 * Team 1 robot list.
+	 * @return JList object for team 1.
+	 */
 	private JList getTeam1List() {
 		if (team1List == null) {
 			team1List = new JList();
@@ -118,6 +135,10 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 		return team1List;
 	}
 	
+	/**
+	 * Team 2 robot list.
+	 * @return JList object for team 2.
+	 */
 	private JList getTeam2List() {
 		if (team2List == null) {
 			team2List = new JList();
@@ -137,6 +158,10 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 		return team2List;
 	}
 	
+	/**
+	 * Main JPanel containing all of the ui elements.
+	 * @return Main JPanel object.
+	 */
 	private JPanel getMainPanel() {
 		if(mainPanel == null) {
 			mainPanel = new JPanel();
@@ -147,15 +172,18 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 			c.gridx = 0;
 			c.gridy = 0;					
 			mainPanel.add(getSelectionPanel(), c);
-			
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridx = 0;
+
 			c.gridy = 1;
 			mainPanel.add(getButtonPanel(), c);
 		}
 		return mainPanel;
 	}
 	
+	/**
+	 * JPanel containing the JList objects from which 
+	 * users can select robots to be added to either team.
+	 * @return Select JPanel object.
+	 */
 	private JPanel getSelectionPanel() {
 		if(selectionPanel == null) {
 			selectionPanel = new JPanel();
@@ -176,74 +204,148 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 		return selectionPanel;
 	}
 	
+	/**
+	 * JPanel containing all of the ui buttons.
+	 * @return Container for JButton objects.
+	 */
 	private JPanel getButtonPanel() {
 		if(buttonPanel == null) {
 			buttonPanel = new JPanel();
-			buttonPanel.setLayout(new GridLayout(2, 3, 5, 5));
+			buttonPanel.setLayout(new GridLayout(3, 3, 5, 5));
 			buttonPanel.add(getAddT1Button());
 			buttonPanel.add(getResetButton());
 			buttonPanel.add(getAddT2Button());
 			buttonPanel.add(getRemoveT1Button());
 			buttonPanel.add(getStartButton());
 			buttonPanel.add(getRemoveT2Button());
+			buttonPanel.add(new JLabel(""));
+			buttonPanel.add(getQuickStartButton());
 		}
 		return buttonPanel;
 	}
 	
+	/**
+	 * Resets the current team lists, returning their entries to
+	 * the all robots list.
+	 * @return Reset button.
+	 */
 	private JButton getResetButton() {
 		if(resetButton == null) {
 			resetButton = new JButton();
 			resetButton.setText("Reset Teams");
 			resetButton.addActionListener(eventHandler);
 			resetButton.setEnabled(false);
+			resetButton.setToolTipText("Resets the current " +
+					"team selections.");
 		}
 		return resetButton;
 	}
 	
+	/**
+	 * Checks that the all robots list is empty and
+	 * that both team lists are of equal size. If this is true
+	 * the dialog window closes and the game begins, otherwise
+	 * a warning dialog appears asking the user to create
+	 * two even teams.
+	 * @return Start button.
+	 */
 	private JButton getStartButton() {
 		if(startButton == null) {
 			startButton = new JButton();
 			startButton.setText("Start Game");
 			startButton.addActionListener(eventHandler);
 			startButton.setEnabled(false);
+			startButton.setToolTipText("Start the battle. " +
+					"Teams must be of equal size and the " +
+					"original list of robots must be empty " +
+					"for the battle to begin.");
 		}
 		return startButton;
 	}
 	
+	/**
+	 * Adds the current selection of robots from the all
+	 * robots list to the team 1 list.
+	 * @return Add robots to team 1 button.
+	 */
 	private JButton getAddT1Button() {
 		if(addT1Button == null) {
 			addT1Button = new JButton();
 			addT1Button.setText("Add Robot to Team 1");
 			addT1Button.addActionListener(eventHandler);
+			addT1Button.setToolTipText("Add the selected " +
+					"robots to team 1.");
 		}
 		return addT1Button;
 	}
 	
+	/**
+	 * Removes the current selection of robots from the 
+	 * team 1 list and adds them back to the all robots
+	 * list.
+	 * @return Remove robots from team 1 button.
+	 */
 	private JButton getRemoveT1Button() {
 		if(removeT1Button == null) {
 			removeT1Button = new JButton();
 			removeT1Button.setText("Remove Robot from Team 1");
 			removeT1Button.addActionListener(eventHandler);
+			removeT1Button.setToolTipText("Remove the selected " +
+					"robots from team 1.");
 		}
 		return removeT1Button;
 	}
 	
+	/**
+	 * Adds the current selection of robots from the all
+	 * robots list to the team 2 list.
+	 * @return Add robots to team 2 button.
+	 */
 	private JButton getAddT2Button() {
 		if(addT2Button == null) {
 			addT2Button = new JButton();
 			addT2Button.setText("Add Robot to Team 2");
 			addT2Button.addActionListener(eventHandler);
+			addT2Button.setToolTipText("Add the selected " +
+					"robots to team 2.");
 		}
 		return addT2Button;
 	}
 	
+	/**
+	 * Removes the current selection of robots from the 
+	 * team 2 list and adds them back to the all robots
+	 * list.
+	 * @return Remove robots from team 2 button.
+	 */
 	private JButton getRemoveT2Button() {
 		if(removeT2Button == null) {
 			removeT2Button = new JButton();
 			removeT2Button.setText("Remove Robot from Team 2");
 			removeT2Button.addActionListener(eventHandler);
+			removeT2Button.setToolTipText("Remove the selected " +
+					"robots from team 2.");
 		}
 		return removeT2Button;
+	}
+	
+	/**
+	 * Starts a quick match using the first half of the 
+	 * all robots list as team 1 and the second half of 
+	 * the list as team 2.
+	 * @return Quick start button.
+	 */
+	private JButton getQuickStartButton() {
+		if (quickStartButton == null) {
+			quickStartButton = new JButton();
+			quickStartButton.setText("Quick Start");
+			quickStartButton.addActionListener(eventHandler);
+			quickStartButton.setToolTipText("Splits the given " +
+					"list of robots into two even teams. The " +
+					"first half of the list becomes team 1 and " +
+					"the second half becomes team 2.");
+		}
+		return quickStartButton;
 	}
 			
 	/**
@@ -350,6 +452,8 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 			} else if (e.getSource() == getRemoveT2Button()) {
 				removeSelectedRobots(getTeam2List(), team2RobotsList, 
 						getAllRobotsList(), robotsList);
+			} else if (e.getSource() == getQuickStartButton()) {
+				setQuickStartTeams();
 			}
 		}
 
@@ -378,6 +482,7 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 	public void finishButtonActionPerformed() {
 		if(robotsList.isEmpty() && (team1List.getModel().getSize() == 
 				team2List.getModel().getSize())) {
+			this.isReadyToBattle = true;
 			dispose();
 		} else {
 			JOptionPane.showMessageDialog(this, 
@@ -499,5 +604,41 @@ public class SoccerTeamSelectDialog extends JDialog implements WizardListener{
 			return adjustedList;
 		}
 		return robots;
+	}
+	
+	/**
+	 * Used to check if the selection dialog was closed via the close button
+	 * or the start button. The start button will set isReadyToBattle to true
+	 * allowing the battle to commence. If isReadyToBattle is false nothing
+	 * will happen when this dialog is closed.
+	 * @return isReadyToBattle
+	 */
+	public boolean checkReadyToBattle() {
+		return isReadyToBattle;
+	}
+	
+	/**
+	 * Begins a quick start battle in which the list of robots
+	 * is split evenly into two teams. The first half of the list
+	 * becomes team 1 and the second half becomes team 2.
+	 */
+	private void setQuickStartTeams() {
+		// Team 2 setup. First half of the robot list.
+		getAllRobotsList().clearSelection();
+		getAllRobotsList().setSelectionInterval(0, 
+				(Math.max(1, getAllRobotsList().getModel().getSize() / 2) - 1));
+		removeSelectedRobots(getAllRobotsList(), robotsList, 
+				getTeam1List(), team1RobotsList);
+		
+		// Team 2 setup. Second half of the robot list.
+		getAllRobotsList().clearSelection();
+		getAllRobotsList().setSelectionInterval(0, 
+				(getAllRobotsList().getModel().getSize() - 1));
+		removeSelectedRobots(getAllRobotsList(), robotsList, 
+				getTeam2List(), team2RobotsList);
+		
+		// Begin the battle.
+		this.isReadyToBattle = true;
+		dispose();
 	}
 }

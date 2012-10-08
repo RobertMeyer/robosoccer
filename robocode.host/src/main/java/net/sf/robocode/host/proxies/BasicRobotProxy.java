@@ -182,6 +182,14 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         setCall();
         commands.setScanColor(color != null ? color.getRGB() : ExecCommands.defaultScanColor);
     }
+    
+    @Override
+    public void setDeathEffect(int effect) {
+    	setCall();
+    	if (!(effect > 6 || effect < 1)) {
+    		commands.setDeathEffect(effect);
+    	}
+    }
 
     // counters
     @Override

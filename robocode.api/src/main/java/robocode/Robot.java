@@ -685,28 +685,13 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      * Prototype for set explosion. The idea is to call this at any time to queue
      * which kind of explosion your robot will make on death.
      */
-    public void setExplosion(int effect) {
-        deathEffect = effect;
-    }
-
-    /**
-     * Prototype for exploding.
-     */
-    public void explosion(Robot r) {
-        if (r != null) {
-            if (r.getEnergy() == 0) {
-                // robot is dead
-                int damage = deathEffect * 5;
-                int distance = 300 / deathEffect;
-                /* Pseudo-code:
-                 * robotList <- getListOfRobots()
-                 * if Check Distance from r to robotList[0 -> n]
-                 * 		if robotList[0 -> n].isAlive()
-                 * 			damage robot
-                 */
-            }
+    public void setDeathEffect(int effect) {
+        if (peer != null) {
+        	peer.setDeathEffect(effect);
         }
-        uninitializedException();
+        else {
+        	uninitializedException();
+        }
     }
 
     /**

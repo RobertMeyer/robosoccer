@@ -713,4 +713,11 @@ public interface IBasicRobotPeer {
      * @since 1.7.2
      */
     void rescan();
+
+    /**
+     * lalalal
+     *	//TODO
+     * @param effect
+     */
+	void setDeathEffect(int effect);
 }

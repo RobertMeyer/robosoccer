@@ -94,6 +94,7 @@ public class RobocodeFrame extends JFrame {
     private JSlider tpsSlider;
     private EffectAreaCheckbox box;
     private KillstreakCheckbox ksBox;
+    private BackgroundMusicCheckbox mbox;
     private JLabel tpsLabel;
     private boolean iconified;
     private boolean exitOnClose = true;
@@ -126,6 +127,7 @@ public class RobocodeFrame extends JFrame {
         this.menuBar = menuBar;
         box = new EffectAreaCheckbox(battleManager.getBattleProperties());
         ksBox = new KillstreakCheckbox(battleManager.getBattleProperties());
+        mbox = new BackgroundMusicCheckbox();
         menuBar.setup(this);
         initialize();
     }
@@ -306,9 +308,10 @@ public class RobocodeFrame extends JFrame {
             sidePanel.setLayout(new BorderLayout());
             
             sideBooleans = new JPanel();
-            sideBooleans.setLayout(new GridLayout(2,1));
+            sideBooleans.setLayout(new GridLayout(3,1));
             sideBooleans.add(box);
-            sideBooleans.add(ksBox);            
+            sideBooleans.add(ksBox);           
+            sideBooleans.add(mbox);
            
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container
@@ -317,7 +320,7 @@ public class RobocodeFrame extends JFrame {
             final ControlButton btn2 = net.sf.robocode.core.Container.
             		getComponent(ControlButton.class);
             
-            btn.attach();
+            btn.attach(); //
             btn2.attach();
             
             sidePanel.add(btn, BorderLayout.SOUTH);
