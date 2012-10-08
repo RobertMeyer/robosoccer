@@ -188,6 +188,7 @@ public final class Battle extends BaseBattle {
     /** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
     private int numObstacles;
+    private DefaultSpawnController spawnController = new DefaultSpawnController();;
 
     public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
         super(properties, battleManager, eventDispatcher);
@@ -931,6 +932,22 @@ public final class Battle extends BaseBattle {
 
     public void sendInteractiveEvent(Event e) {
         sendCommand(new SendInteractiveEventCommand(e));
+    }
+
+    public boolean addController(ISpawnController e) {
+        return spawnController.addController(e);
+    }
+
+    public boolean removeController(ISpawnController o) {
+        return spawnController.removeController(o);
+    }
+
+    public void clearControllers() {
+        spawnController.clearControllers();
+    }
+
+    public ISpawnController getSpawnController() {
+        return spawnController;
     }
 
     private class KillRobotCommand extends RobotCommand {
