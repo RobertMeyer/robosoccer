@@ -60,6 +60,9 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	/** Current round in the battle */
 	private int round;
 
+	/*List of snapshots for teleporters on the current battefield*/
+	private List<ITeleporterSnapshot> teleports;
+	
 	/** Current turn in the battle round */
 	private int turn;
     /** Current TPS (turns per second) */
@@ -86,7 +89,8 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
         obstacles = new ArrayList<IObstacleSnapshot>();
 		effArea = new ArrayList<IEffectAreaSnapshot>();
 		customObj = new ArrayList<IRenderableSnapshot>();
-
+		teleports = new ArrayList<ITeleporterSnapshot>();
+		
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
 		}
@@ -95,6 +99,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 			bullets.add(new BulletSnapshot(bulletPeer));
 		}
 
+		for (TeleporterPeer teleporterPeer : battleTeleporters) {
+			teleports.add(new TeleporterSnapshot(teleporterPeer));
+		}
+		
 		/*--ItemController--*/
 		for (ItemDrop item : battleItems) {
 			items.add(new ItemSnapshot(item));
@@ -363,6 +371,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 				return snapshot;
 			}
 		});
+	}
+
+	public ITeleporterSnapshot[] getTeleporters() {
+		return teleports.toArray(new ITeleporterSnapshot[teleports.size()]);
 	}
 
 

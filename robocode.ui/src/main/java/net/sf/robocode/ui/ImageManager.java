@@ -37,6 +37,8 @@ public class ImageManager implements IImageManager {
     private Image[] groundImages;
     private RenderImage[][] explosionRenderImages;
     private RenderImage debriseRenderImage;
+	private RenderImage teleporterImage;
+	
     private Image bodyImage;
     private Image gunImage;
     private Image radarImage;
@@ -320,4 +322,11 @@ public class ImageManager implements IImageManager {
             return size() > MAX_NUM_COLORS;
         }
     }
+
+	public RenderImage getTeleporterRenderImage() {
+		if (teleporterImage == null) {
+			teleporterImage = new RenderImage(getImage("/net/sf/robocode/ui/images/portal.png"));
+		}
+		return teleporterImage;
+	}
 }
