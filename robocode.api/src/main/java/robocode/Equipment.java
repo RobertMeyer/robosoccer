@@ -21,9 +21,9 @@ public class Equipment {
     static {
         parts.put("Division 9 Plasmaprojector",
                   new EquipmentPart.Builder(EquipmentSlot.WEAPON)
-                .set(RobotAttribute.SPEED, -20)
-                .set(RobotAttribute.BULLET_DAMAGE, 200)
-                .set(RobotAttribute.GUN_HEAT_RATE, 70)
+        		.set(RobotAttribute.SPEED, -20)
+        		.set(RobotAttribute.GUN_HEAT_RATE, 70)
+                .set(RobotAttribute.BULLET_DAMAGE, 90)
                 .build());
 
         parts.put("Guardian Tank Armor",
