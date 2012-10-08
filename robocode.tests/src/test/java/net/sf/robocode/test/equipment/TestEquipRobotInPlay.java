@@ -16,7 +16,7 @@ public class TestEquipRobotInPlay extends RobocodeTestBed {
 	 */
 	@Override
 	public String getRobotNames() {
-		return "equipment.SampleEquipRobot";
+		return "equipment.SampleEquipRobot, sample.Crazy";
 	}
 	
 }

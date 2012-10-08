@@ -18,12 +18,12 @@ public class SampleEquipRobot extends AdvancedRobot {
 	/**
 	 * The main run function
 	 */
-	public void run(){
-		
+	public void run(){		
 		equip("Division 9 Plasmaprojector");
-		
-		ahead(100);
+
+		fire(3);
 	}
+	
 	public void print(String string){
 		System.out.println(string);
 	}
