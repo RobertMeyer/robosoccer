@@ -660,7 +660,8 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
-        	} else if (robotSnapshot.getName().equals("sampleex.Botzilla (1)")) {
+        	} else if (robotSnapshot.getName().contains("botzilla")
+        			   || robotSnapshot.getName().contains("Botzilla")) {
         		x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
