@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import net.sf.robocode.mode.*;
+
 import java.awt.*;
 import java.util.Hashtable;
 /**
@@ -41,7 +42,8 @@ public class NewBattleModeTab extends JPanel {
 		new BotzillaMode(),
 		new TimerMode(),
 		new EliminationMode(),
-		new SharingMode()
+		new SharingMode(),
+		new LowVision()
 	};
 
 	public NewBattleModeTab() {
