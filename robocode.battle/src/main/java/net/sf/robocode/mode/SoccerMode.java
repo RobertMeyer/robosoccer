@@ -22,7 +22,6 @@ import robocode.control.RobotSpecification;
 import robocode.control.snapshot.RenderableType;
 
 public class SoccerMode extends ClassicMode implements IMode {	
-	private static final String RenderString = null;
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;

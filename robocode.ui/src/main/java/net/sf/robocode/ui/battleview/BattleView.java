@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import net.sf.robocode.battle.BallBot;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;

@@ -139,7 +139,11 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
-
+	public static final int
+			BALL_WIDTH = 16,
+			BALL_HEIGHT = 16;
+	
+	
 	public static final int
 			WIDTH = 40,
 			HEIGHT = 40;
@@ -1460,10 +1464,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public void updateBoundingBox() {
-		if(!isBotzilla()) {
-			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
-		} else {
+		if(isBotzilla()) {
 			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
+		} else if(isBall()) {
+			boundingBox.setRect(x - BALL_WIDTH / 2 + 2, y - BALL_HEIGHT / 2 + 2, BALL_WIDTH - 4, BALL_HEIGHT - 4);
+		} else {
+			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
 		}
 	}
 
