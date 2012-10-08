@@ -124,6 +124,7 @@ import robocode.control.events.*;
 import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.RobotState;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -540,7 +541,9 @@ public final class Battle extends BaseBattle {
         inactiveTurnCount++;
 
         computeActiveRobots();
-
+        
+        killFreezeRobot();
+        
         publishStatuses();
 
 		if (totalTurns % 100 == 0 || totalTurns == 1){
@@ -558,6 +561,19 @@ public final class Battle extends BaseBattle {
         wakeupRobots();
 
     }
+	//Method for killing the freeze robot if it one of the last two remaining robots
+	public void killFreezeRobot(){
+		//Checks if number of active robots == 2
+		if(activeRobots == 2){
+			//checks if one of the two remaining robots is a freezeRobot
+			for(int i = 0; i < robotList.size(); i++){
+				if(robotList.get(i).isFreezeRobot()){
+					//kills the freeze robot is it is one of the two remaining robots on the field
+					robotList.get(i).setState(RobotState.DEAD);
+				}
+			}
+		}
+	}
 
 	@Override
     protected void shutdownTurn() {
