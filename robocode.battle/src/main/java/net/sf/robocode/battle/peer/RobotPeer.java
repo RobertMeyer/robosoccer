@@ -1844,7 +1844,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				}
 				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-						otherRobot.getVelocity(), otherRobot.isFrozen());
+						otherRobot.getVelocity(), otherRobot.isFrozen(), otherRobot.isFreezeRobot());
 				addEvent(event);
 			}
 		}
