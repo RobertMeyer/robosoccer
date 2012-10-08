@@ -1,5 +1,10 @@
 package net.sf.robocode.mode;
-
+/**
+ * 
+ * This class models "Zombie Mode", a Robocode mode in which a single robot is pit against a swarm of
+ * zombie robots. 
+ *
+ */
 public class ZombieMode extends ClassicMode {
 
     private final String description = "This mode pits a robot against "
