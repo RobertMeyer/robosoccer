@@ -1,24 +1,25 @@
-package net.sf.robocode.battle;
+package net.sf.robocode.battle.killstreaks;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.IKillstreakAbility;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
- * Callable ability (used by killstreak tracker. Instantiate one with the robot
- * who calls the airstrike, and the battle it is in to call the airstrike.
- * Spawns a series of bullets that don't effect the caller
+ * Default 5-kill killstreak ability. Spawns a series of bullets that don't
+ * effect the caller.
  **/
-public class AirStrike {
+public class AirStrike implements IKillstreakAbility {
+
 	/**
-	 * Constructor for the airstrike being called
+	 * Call an airstrike
 	 * 
 	 * @param robotPeer
 	 *            The robot calling the airstrike
 	 * @param battle
 	 *            The battle that robot is part of
 	 */
-	public AirStrike(RobotPeer robotPeer, Battle battle) {
+	public void callAbility(RobotPeer robotPeer, Battle battle) {
 		int battleHeight = battle.getBattleRules().getBattlefieldHeight();
 		for (int i = 0; i < battleHeight; i += 15) {
 			BulletPeer bullet = new BulletPeer(robotPeer,
@@ -31,6 +32,5 @@ public class AirStrike {
 			battle.addBullet(bullet);
 		}
 		robotPeer.println("KILLSTREAK: Called an Airstrike!");
-
 	}
 }
