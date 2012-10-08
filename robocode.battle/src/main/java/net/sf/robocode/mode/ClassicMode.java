@@ -337,4 +337,8 @@ public class ClassicMode implements IMode {
 	public BattleResults[] getFinalResults() {
 		return null;
 	}
+	
+	public void addRobots(int currentTurn, BattlePeers peers){
+		// do nothing
+	}
 }

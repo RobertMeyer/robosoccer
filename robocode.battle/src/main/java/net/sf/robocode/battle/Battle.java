@@ -737,6 +737,8 @@ public final class Battle extends BaseBattle {
         		!botzillaActive) {
         	addBotzilla();
         }
+        
+        getBattleMode().addRobots(currentTurn, peers);
 
         // Increment mode specific points - TODO -team-Telos
 		this.getBattleMode().scoreTurnPoints();
