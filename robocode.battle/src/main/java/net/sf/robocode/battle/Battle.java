@@ -232,7 +232,8 @@ public final class Battle extends BaseBattle {
 
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
-        generateObstacles(numObstacles);
+        obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
+        //generateObstacles(numObstacles);
 
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(

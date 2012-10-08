@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BattleProperties;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 import robocode.BattleRules;
@@ -147,4 +149,53 @@ public class ObstacleMode extends ClassicMode {
 
         return initialRobotPositions;
 	}
+	
+	public static List<ObstaclePeer> generateRandomObstacles(int num, BattleProperties bp, BattleRules battleRules, Battle battle) {
+		List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+		Random randomGen = new Random();
+		ObstaclePeer newObstacle;
+		boolean intersect;
+		double x, y;
+		int fail = 0;
+		for (int i = 0; i < num; i++) {
+			/* Ensure new obstacle is not intersecting a previously placed obstacle. */
+			do {
+				intersect = false;
+				x = randomGen.nextDouble() * bp.getBattlefieldWidth();
+				y = randomGen.nextDouble() * bp.getBattlefieldHeight();
+				newObstacle = new ObstaclePeer(battle, battleRules, i);
+				newObstacle.setX(x);
+				newObstacle.setY(y);
+				for (int j = 0; j < obstacles.size(); j++) {
+					if (obstacles.get(j).obstacleIntersect(newObstacle)) {
+						intersect = true;
+						/* Record number on which it failed, 
+						 * if it fails as many times as there are obstacles,
+						 * there is no more room for any obstacles, so return.
+						 */
+						if(fail == obstacles.size()) {
+							return obstacles;
+						}
+						fail++;
+					}
+				}
+			} while(intersect);
+			fail = 0;
+			obstacles.add(newObstacle);
+		}
+		return obstacles;
+	}
+	
+	public static List<ObstaclePeer> generateMazeObstacles(int num, BattleProperties bp, BattleRules battleRules, Battle battle) {
+		List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+		/* Depth first search goes here. */		
+		return obstacles;
+	}
+	
+	public static List<ObstaclePeer> generateRoomObstacles(int num, BattleProperties bp, BattleRules battleRules, Battle battle) {
+		List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+		/* Recursive Division Maze Generation goes here. */		
+		return obstacles;
+	}
+	
 }
