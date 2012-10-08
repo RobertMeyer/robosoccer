@@ -535,7 +535,7 @@ public class BattleView extends Canvas {
 				at.shear(snap.getShearX(), snap.getShearY());
 				AffineTransform oldAt = g.getTransform();
 				g.setTransform(at);
-				System.out.println(snap.getX() + "\n");
+
 				// Keep old alpha level state
 				Composite oldState = g.getComposite();
 				// Setup new alpha level state

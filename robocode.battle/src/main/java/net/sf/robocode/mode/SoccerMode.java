@@ -1,10 +1,13 @@
 package net.sf.robocode.mode;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.RenderString;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -14,9 +17,11 @@ import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
 import robocode.BattleResults;
 import robocode.BattleRules;
-import robocode.control.RobotSpecification;;
+import robocode.control.RobotSpecification;
+import robocode.control.snapshot.RenderableType;
 
 public class SoccerMode extends ClassicMode implements IMode {	
+	private static final String RenderString = null;
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;
@@ -217,33 +222,27 @@ public class SoccerMode extends ClassicMode implements IMode {
 		return endTimer > 5*time;
 	}
 	
-	/*@Override
+	@Override
 	public List<IRenderable> createRenderables() {
 		List<IRenderable> objs = new ArrayList<IRenderable>(); 
-		RenderObject obj = new RenderObject ("flag", "/net/sf/robocode/ui/images/flag.png");
-		//obj.setTranslate(robots.get(0).getX(), robots.get(0).getY());	
-		//obj.setColour(Color.BLUE);
-		objs.add(obj);
+		RenderString score = new RenderString("score", "0 : 0");
+		score.setTranslate((fieldWidth/2)-200, 20);
+		score.setScale(2, 2);
+		score.setColour(Color.BLUE);
+		objs.add(score);
 		return objs;
 	}
-	
-	private int counter = 0; 
-	private float degree = 0;
-	
+
 	@Override
 	public void updateRenderables(List<IRenderable> objects) {
-		counter += System.currentTimeMillis();
-		Iterator<IRenderable> itr = objects.iterator();
-		while (itr.hasNext()) {
-			IRenderable obj = (IRenderable)itr.next();
-			if (obj.getType() == RenderableType.SPRITE) {
-				RenderObject objs = (RenderObject)obj;
-				objs.setTranslate(robots.get(0).getBoundingBox().getCenterX(), robots.get(0).getBoundingBox().getCenterY());				
+		for (IRenderable renderable : objects) {
+			if (renderable.getType() == RenderableType.SPRITE_STRING) {
+				RenderString scoreString = (RenderString)renderable;
+				scoreString.setText((int)team1.getStatistics().getTotalScore() +
+						":" + (int)team2.getStatistics().getTotalScore());
 			}
-			//obj.toggleHide();
-			//itr.remove();
-		}	
-	}*/
+		}
+	}
 	
 	@Override
 	public void setGuiOptions() {
