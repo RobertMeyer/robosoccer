@@ -10,6 +10,7 @@ import javax.swing.JMenuItem;
 /**
  * Main Frame for the track editor
  * @author Taso s4231811
+ * @author Reinard s4200802
  *
  */
 @SuppressWarnings("serial")
@@ -28,6 +29,12 @@ public class EditorFrame extends JFrame{
         JMenuItem fileQuit = new JMenuItem("Quit");
         
         JMenuItem helpAbout = new JMenuItem("About");
+        
+        file.add(fileNew);
+        file.add(fileOpen);
+        file.add(fileSave);
+        file.add(fileQuit);
+        help.add(helpAbout);
         
         menubar.add(file);
         menubar.add(help);
