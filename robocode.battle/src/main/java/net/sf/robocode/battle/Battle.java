@@ -779,6 +779,44 @@ public final class Battle extends BaseBattle {
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
+        	
+        	// Death effect
+        	if (battleManager.getBattleProperties().getEffectArea()) {
+        		int finalX, finalY;
+        		int yOffset = bp.getBattlefieldHeight() % 64;
+
+        		// Round off to closest X and Y tiles
+        		finalX = (int)deadRobot.getX()-(int)deadRobot.getX()%64;
+
+        		finalY = (int)deadRobot.getY()-yOffset+64;
+        		finalY = (finalY/64)*64;
+        		finalY = finalY+yOffset;
+
+        		switch(deadRobot.getDeathEffect()) {
+        		case 1:
+        			// Large explosion - small damage
+        		case 2:
+        			// Medium explosion - medium damage
+        		case 3:
+        			// Small explosion - large damage
+        		case 4:
+        			// Effect area 1
+        			EffectArea deathEffect1 = new EffectArea(finalX, finalY, 64, 64, 1);
+        			effArea.add(deathEffect1);
+        			break;
+        		case 5:
+        			// Effect area 2
+        			EffectArea deathEffect2 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 2);
+        			effArea.add(deathEffect2);
+        			break;
+        		case 6:
+        			// Effect area 3
+        			EffectArea deathEffect3 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 3);
+        			effArea.add(deathEffect3);
+        			break;
+        		}
+        	}
+        	
             // Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
                 deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);

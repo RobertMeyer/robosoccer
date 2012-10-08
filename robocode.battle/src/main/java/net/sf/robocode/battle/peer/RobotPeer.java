@@ -556,6 +556,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public int getScanColor() {
 		return commands.get().getScanColor();
 	}
+	
+	public int getDeathEffect() {
+		return commands.get().getDeathEffect();
+	}
 
 	// ------------
 	// team
