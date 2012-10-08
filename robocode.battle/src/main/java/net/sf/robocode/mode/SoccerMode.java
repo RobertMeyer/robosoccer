@@ -24,8 +24,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/*This stores the width and height of the playing field, plus the current
 	 * x coordinate of the ball bot.
 	 */
-	private final int GOALX = 100;
-	private final int GOALY = 256;
+	private final int GOALX = 80;
+	private final int GOALY = 236;
 	private double fieldWidth;
 	private double fieldHeight;
 	private Goal scoreTeam;
@@ -82,8 +82,8 @@ public class SoccerMode extends ClassicMode implements IMode {
  		fieldHeight = battleRules.getBattlefieldHeight();
  		fieldWidth = battleRules.getBattlefieldWidth();
  		
- 		goal1 = new BoundingRectangle(GOALX/2, fieldHeight/2, GOALX, GOALY);
- 		goal2 = new BoundingRectangle(fieldWidth-(GOALX/2), fieldHeight/2, GOALX, GOALY);
+ 		goal1 = new BoundingRectangle(0, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
+ 		goal2 = new BoundingRectangle(fieldWidth - GOALX, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
  		
  		int teamSize = count / 2;
  		
