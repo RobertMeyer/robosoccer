@@ -31,7 +31,7 @@ public class TestFreezeBot {
 		
 	}
 	
-	/*
+	
 	@Test
 	public void testFrozenRobot() {
 		
@@ -40,10 +40,10 @@ public class TestFreezeBot {
 		when(mockEvent.isFrozen()).thenReturn(true);
 		when(mockEvent.getBearing()).thenReturn(0d);
 		bot.onScannedRobot(mockEvent);
-		verify(mockPeer).doNothing(); // - freezerobot does nothing here, can't find a way to check that it does nothing.
+		verifyZeroInteractions(mockPeer);	 // - freezerobot does nothing here, can't find a way to check that it does nothing.
 	}
 	
-	
+	/*
 	@Test
 	public void testRobotCollision() {
 		
