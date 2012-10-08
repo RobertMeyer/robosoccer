@@ -24,10 +24,10 @@ public class ItemMode extends ClassicMode {
     }
 
 	public void setItems(Battle battle){
-		items.add(new HealthPack(battle));
-		items.add(new HealthPack(battle));
-		items.add(new HealthPack(battle));
-		items.add(new HealthPack(battle));
+		items.add(new HealthPack(battle,"health1"));
+		items.add(new HealthPack(battle,"health2"));
+		items.add(new HealthPack(battle,"health3"));
+		items.add(new HealthPack(battle,"health4"));
 	}
 	
 	/**

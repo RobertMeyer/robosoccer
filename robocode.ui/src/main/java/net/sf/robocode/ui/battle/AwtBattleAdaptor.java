@@ -236,8 +236,8 @@ public final class AwtBattleAdaptor {
                     isRunning.set(true);
                     isPaused.set(false);
                     synchronized (snapshot) {
-                        outCache = new StringBuilder[event.getRobotsCount()];
-                        for (int i = 0; i < event.getRobotsCount(); i++) {
+                        outCache = new StringBuilder[event.getRobotsCount() + 1];
+                        for (int i = 0; i < event.getRobotsCount() + 1; i++) {
                             outCache[i] = new StringBuilder(1024);
                         }
                     }

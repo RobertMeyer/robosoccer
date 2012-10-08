@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.item.Flag;
 import net.sf.robocode.battle.item.ItemDrop;
 
@@ -17,13 +19,28 @@ import net.sf.robocode.battle.item.ItemDrop;
  */
 public class FlagMode extends ClassicMode {
 
-    // Class Variables
+	/* Point limit for when to finish the game */
     private double pointLimit;
+    /* Time limit for when to finish the game */
     private double timeLimit;
+    
     List<? extends ItemDrop> itemsG = new ArrayList<ItemDrop>();
     @SuppressWarnings("unchecked")
 	List<ItemDrop> items = (List<ItemDrop>) itemsG;
+    
+    /* The actual flag we need */
     private Flag flag;
+    
+    /* Location of the file TODO */
+    private String imageFile;
+    
+    /* List of CustomObjects used */
+    List<IRenderable> objects = new ArrayList<IRenderable>();
+    
+    /* The current turn since last flag update */
+    private int turnsSinceLastFlagUpdate;
+    /* How often the Flag should be moved */
+    private final int UPDATE_FLAG_TURNS = 100;
 
     /**
      *
@@ -133,4 +150,56 @@ public class FlagMode extends ClassicMode {
     public int turnLimit() {
     	return 2*30*60;  // 2 min. at 30 turns per sec (default)
     }
+    
+    /**
+     * Add the Flag to the board
+     */
+    @Override
+	public List<IRenderable> createRenderables() {    	
+    	/* Add the object and print it */
+    	objects.add(new RenderObject("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
+    	
+    	return objects;
+    }
+    
+    /**
+     * If the Flag is not with a robot and the amount of turns is less than the
+     * specified update value, continue.
+     * 
+     * If the Flag is not with a robot and the amount of turns is greater than the
+     * specified update value, randomly move the Flag.
+     * 
+     * If the Flag is with a robot, keep the Flag attached to the Robot.
+     */
+    @Override
+    public void updateRenderables(List<IRenderable> customObject) {
+		/* Check if the flag is with a robot */
+    	if (flag.getCarrier() == null) {
+    		/* Not with a robot so check to see if it should be moved */
+    		if (this.turnsSinceLastFlagUpdate > UPDATE_FLAG_TURNS) {
+    			/* Change the location */
+    			flag.updateToRandomLocation();
+    			
+    			/* Only one item but for future */
+    			for (IRenderable obj: objects) {
+    				if (obj.getName() == "Flag") {
+    				    obj.setTranslate(flag.getXLocation(), flag.getYLocation());
+    				}
+    			}	
+    			
+    			/* Update since last update */
+    			this.turnsSinceLastFlagUpdate++;
+    		} else {
+    			/* With a robot so set the location to be the carrier */
+    			for (IRenderable obj: objects) {
+    				if (obj.getName() == "Flag") {
+    				    obj.setTranslate(flag.getCarrier().getX(), flag.getCarrier().getY());
+    				}
+    			}
+    			
+    			/* Set update since last update to 0 */
+    			this.turnsSinceLastFlagUpdate = 0;
+    		}
+    	}
+	}
 }

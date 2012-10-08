@@ -288,6 +288,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
             finalizeTurn();
             
+            
         }
     }
 
