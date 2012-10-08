@@ -895,6 +895,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				}
 			}
 		}
+		
+		for (ObstaclePeer bObstacle : battle.getObstacleList()) {
+			if (getBoundingBox().intersects(bObstacle.getBoundingBox())) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 
