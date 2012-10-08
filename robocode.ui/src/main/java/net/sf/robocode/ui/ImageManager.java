@@ -269,8 +269,13 @@ public class ImageManager implements IImageManager {
     }
 
     @Override
-    public RenderImage getColoredRadarRenderImage(Integer color) {
+    public RenderImage getColoredRadarRenderImage(Integer color, String imagePath) {
         RenderImage img = robotRadarImageCache.get(color);
+        
+        // sets a custom radar image if one is provided and it is necessary.
+        if(imagePath != null || radarImage == null) {
+        	radarImage = getImage(imagePath);
+        }
 
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(), new Color(color, true)));

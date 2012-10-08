@@ -660,6 +660,7 @@ public class BattleView extends Canvas {
              // sets the body image path to null
                 String bodyPath = null;
                 String weaponPath = null;
+                String radarPath = null;
                 
                 
                 // If a custom body part is present in the robots equipment
@@ -691,8 +692,13 @@ public class BattleView extends Canvas {
                 if (!robotSnapshot.isDroid()) {
                     at = AffineTransform.getTranslateInstance(x, y);
                     at.rotate(robotSnapshot.getRadarHeading());
+                    
+                    if(partsMap.containsKey(EquipmentSlot.RADAR)) {
+                    	EquipmentPart part = partsMap.get(EquipmentSlot.RADAR);
+                    	radarPath = part.getImagePath();
+                    }
 
-                    RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor());
+                    RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor(), radarPath);
 
                     radarRenderImage.setTransform(at);
                     radarRenderImage.paint(g);
