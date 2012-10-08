@@ -4,7 +4,9 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
- * A health pack item. Extends item drop
+ * HaltPack represents items that can be dropped on the battlefield. 
+ * It causes the robot to be halted for the rest of the round on hit.
+ * 
  * @author Ghassan Thabit
  *
  */
@@ -17,7 +19,6 @@ public class HaltPack extends ItemDrop {
 		super(true, 400, 0, false, battle);
 		this.name = name;
 		this.imageName = "halt.png";
-	//	System.out.println("Health Pack at (" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	

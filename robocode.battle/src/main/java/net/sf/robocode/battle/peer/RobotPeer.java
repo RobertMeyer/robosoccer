@@ -1089,7 +1089,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
         // Now check for item collision
         //TODO: checkItemCollision(items);
-		checkItemCollision(items);
+		//checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan

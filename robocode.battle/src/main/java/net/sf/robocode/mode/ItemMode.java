@@ -32,6 +32,7 @@ public class ItemMode extends ClassicMode {
 		items.add(new HaltPack(battle,"halt1"));
 		items.add(new PoisonPack(battle,"poison1"));
 		items.add(new HealthPack(battle,"health3"));
+		items.add(new HaltPack(battle,"halt2"));
 		items.add(new HealthPack(battle,"health4"));
 		items.add(new PoisonPack(battle,"poison2"));
 
