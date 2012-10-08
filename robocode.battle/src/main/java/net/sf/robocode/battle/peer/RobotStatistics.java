@@ -338,6 +338,17 @@ public class RobotStatistics implements ContestantStatistics {
             totalFirsts++;
         }
     }
+    
+    /**
+     * Circumventing the fancy cumulative score. This is for Dispenser's sake,
+     * who scores with a functionality not shared with other robots.
+     * @param robot The robot's name - preferably getName() from a Dispenser Bot
+     */
+    public void incrementTotalScore(String robot) {
+        if (isActive) {
+            totalScore++;
+        }
+    }
 
     public void setInactive() {
         resetScores();

@@ -29,56 +29,60 @@ import robocode.control.RobotSpecification;
  *
  */
 public class ClassicMode implements IMode {
-	
+
 	protected GuiOptions uiOptions;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String toString() {
 		return "Classic Mode";
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getDescription() {
 		return "Original robocode mode.";
 	}
-	
+
 	public JPanel getRulesPanel() {
 		return null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Hashtable<String, Object> getRulesPanelValues() {
 		return null;
 	}
-	
+
 	// ----- Mode-specific methods below this line ------
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
 		return modifyVelocity(velocityIncrement);
 	}
-	
+
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
 	}
-	
+
+    public int setNumObstacles(BattleRules rules) {
+        return 0;
+    }
+
 	/**
-	 * Returns a list of ItemDrop's to 
+	 * Returns a list of ItemDrop's to
 	 * spawn in the beginning of the round
 	 * @return List of items
 	 */
 	public List<? extends ItemDrop> getItems() {
 		return new ArrayList<ItemDrop>();
 	}
-	
+
 	/**
 	 * Create a list of ItemDrop's to
 	 * spawn in the beginning of the round
@@ -94,82 +98,75 @@ public class ClassicMode implements IMode {
 	public void scoreTurnPoints() {
 		/* ClassicMode does not need a score method, optional for overriding */
 	}
-	
+
 	/**
 	 * Override me if you wish to use the CustomObjectAPI.
-	 * 
+	 *
 	 * This function will get called once a frame, you can perform
 	 * functions like moving the image around the battle, changing
 	 * scale, changing alpha level, so on.
-	 * 
+	 *
 	 * Loop over the given ArrayList of objects and perform logic
 	 * on them. To find an object your after look at getName() function.
-	 * 
+	 *
 	 * @param customObject - an ArrayList of all customObjects
 	 */
 	public void updateRenderables(List<IRenderable> renderables) {
-		
+
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean respawnsOn() {
 		return false;
 	}
-	
-	/**
-	 * Called after the death of a robot that is about to respawn
-	 */
-	public void onRespawnDeath(RobotPeer robot) {
-		
-	}
-	
+
 	/**
 	 * Override me if you wish to use the CustomObjectAPI.
-	 * 
+	 *
 	 * This function should create new CustomObjects which should
 	 * be stored in a ArrayList<CustomObject> and returned.
-	 * 
+	 *
 	 * The returned list will represent all the custom objects in
 	 * the scene to be rendered.
-	 * 
-	 * example:- 
+	 *
+	 * example:-
 	 * 		// Create ArrayList
-	 * 		List<CustomObject> objs = new ArrayList<CustomObject>(); 
+	 * 		List<CustomObject> objs = new ArrayList<CustomObject>();
 	 * 		// Create a new object at (100,100) which will render a flag
-	 *		CustomObject obj = new CustomObject("flag", 
+	 *		CustomObject obj = new CustomObject("flag",
 	 *		"/net/sf/robocode/ui/images/flag.png", 100, 100);
 	 *		// Set Alpha blending to fade 50%
 	 *		obj.setAlpha(0.5f);
 	 *		// Add object to ArrayList
 	 *		objs.add(obj);
 	 *		return objs;
-	 * 
+	 *
 	 * @return a ArrayList<CustomObjects> which are added to the scene.
 	 */
 	public List<IRenderable> createRenderables() {
 		return null;
 	}
-	
+
 	@Override
 	public String addModeRobots(String selectedRobots) {
 		// Don't need to add any extra robots for classic mode
 		return selectedRobots;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public int turnLimit() {
 		return 5*30*60; // 9000 turns is the default
 	}
-	
+
 	/**
 	 * Sets the starting positions for all robot objects.
 	 * Original implementation taken from Battle.
-	 * @param initialPositions String of initial positions. Parsed by 
-	 * the original implementation found in Battle. Can be ignored for 
+	 * @param initialPositions String of initial positions. Parsed by
+	 * the original implementation found in Battle. Can be ignored for
 	 * custom implementations.
 	 * @param battleRules Battle rules.
 	 * @param robotsCount Size of battlingRobotsList
@@ -177,13 +174,13 @@ public class ClassicMode implements IMode {
 	 * the starting coordinates and heading for each robot.
 	 */
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, int robotsCount) {
+			BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
 
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
         }
-        
+
         List<String> positions = new ArrayList<String>();
 
         Pattern pattern = Pattern.compile("([^,(]*[(][^)]*[)])?[^,]*,?");
@@ -244,10 +241,10 @@ public class ClassicMode implements IMode {
             initialRobotPositions[i][1] = y;
             initialRobotPositions[i][2] = heading;
         }
-        
+
         return initialRobotPositions;
 	}
-	
+
 	/**
 	 * Perform scan dictates the scanning behaviour of robots. One parameter
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
@@ -259,14 +256,32 @@ public class ClassicMode implements IMode {
             robotPeer.performScan(getRobotsAtRandom(robots));
         }
 	}
-	
+
 	public boolean isRoundOver(int endTimer, int time) {
 		return (endTimer > 5 * time);
 	}
 
-	public boolean shouldRicochet(double power, double minBulletPower) {
+	/**
+	 * Determines if the bullet being dealt with should ricochet
+	 * @param power Power of current bullet being dealt with
+	 * @param minBulletPower Minimum bullet power from the battle rules
+	 * @param ricochetValue User provided variable that power is divided by
+	 * each ricochet
+	 * @return true/false if a ricochet should occur
+	 */
+	public boolean shouldRicochet(double power, double minBulletPower,
+			double ricochetValue) {
 		return false;
 	}
+
+	/**
+	 * Checks user input for Ricochet is acceptable
+	 * @param rules Current battle rules
+	 * @return ricochet value as provided by user or 1 if value provided < 1
+	 */
+	public double modifyRicochet(BattleRules rules) {
+			return 1;
+		}
 
 	 /**
      * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
@@ -284,13 +299,14 @@ public class ClassicMode implements IMode {
         return shuffledList;
     }
 
-    /**
-     * Create items for the specific mode
-     */
 	@Override
 	public void setItems() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public void scorePoints() {
+		// TODO Auto-generated method stub
 	}
 
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
@@ -305,7 +321,7 @@ public class ClassicMode implements IMode {
 	public void setGuiOptions() {
 		uiOptions = new GuiOptions(true, true);
 	}
-	
+
 	/**
 	 * Getter method for the GuiOptions object associated with this
 	 * mode.
@@ -313,5 +329,12 @@ public class ClassicMode implements IMode {
 	 */
 	public GuiOptions getGuiOptions() {
 		return uiOptions;
+	}
+	
+	/**
+	 * Called after the death of a robot that is about to respawn
+	 */
+	public void onRespawnDeath(RobotPeer robot) {
+		
 	}
 }

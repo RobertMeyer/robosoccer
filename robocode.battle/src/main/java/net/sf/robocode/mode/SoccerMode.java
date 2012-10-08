@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.peer.BallPeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -55,7 +56,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 */
 	@Override
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, int robotsCount) {
+			BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
 		roundOver = false;
 		

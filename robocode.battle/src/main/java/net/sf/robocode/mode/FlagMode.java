@@ -120,7 +120,7 @@ public class FlagMode extends ClassicMode {
     public void setItems(Battle battle) {
     	/* Add the flag to the items */
     	flag = new Flag(false, Integer.MAX_VALUE, 100, true, battle, null);
-        items.add(flag);
+    	items.add(flag);
     }
 
     /**
@@ -161,7 +161,7 @@ public class FlagMode extends ClassicMode {
      * Rounds will last 2 mins at 30 turns per second (3600 turns)
      */
     public int turnLimit() {
-    	return 2*30*60;  // 2 min. at 30 turns per sec (default)
+    	return 800;  // 2 min. at 30 turns per sec (default)
     }
     
     /**
