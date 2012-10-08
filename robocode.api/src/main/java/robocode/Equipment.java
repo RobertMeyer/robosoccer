@@ -22,8 +22,8 @@ public class Equipment {
         parts.put("Division 9 Plasmaprojector",
                   new EquipmentPart.Builder(EquipmentSlot.WEAPON)
                 .set(RobotAttribute.SPEED, -20)
-                .set(RobotAttribute.BULLET_DAMAGE, 200)
-                .set(RobotAttribute.GUN_HEAT_RATE, 70)
+                .set(RobotAttribute.BULLET_DAMAGE, 90)
+                .set(RobotAttribute.GUN_HEAT_RATE, 30)
                 .build());
 
         parts.put("Guardian Tank Armor",
@@ -38,12 +38,12 @@ public class Equipment {
                   new EquipmentPart.Builder(EquipmentSlot.POWER)
                 .set(RobotAttribute.ENERGY, 30)
                 .set(RobotAttribute.ENERGY_REGEN, 50)
-                .set(RobotAttribute.SPEED, -5)
+                .set(RobotAttribute.SPEED, -10)
                 .build());
         
         parts.put("Stealth Tracks",
                   new EquipmentPart.Builder(EquipmentSlot.TRACKS)
-                .set(RobotAttribute.SPEED, 40)
+                .set(RobotAttribute.SPEED, 50)
                 .set(RobotAttribute.GUN_HEAT_RATE, 50)
                 .set(RobotAttribute.BULLET_SPEED, 90)
                 .set(RobotAttribute.ENERGY, -60)

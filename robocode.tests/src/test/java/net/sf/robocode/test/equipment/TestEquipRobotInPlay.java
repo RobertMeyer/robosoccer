@@ -1,6 +1,5 @@
 package net.sf.robocode.test.equipment;
 
-import org.junit.Test;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 
 /**

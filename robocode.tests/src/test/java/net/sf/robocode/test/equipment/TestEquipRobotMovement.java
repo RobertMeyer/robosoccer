@@ -5,6 +5,7 @@ import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.junit.Test;
 
 import robocode.control.events.TurnEndedEvent;
+import robocode.control.snapshot.IRobotSnapshot;
 
 /**
  * Test that an equipment robot is moving at the correct velocity, and
@@ -14,6 +15,9 @@ import robocode.control.events.TurnEndedEvent;
  * @author Jayke Anderson
  */
 public class TestEquipRobotMovement extends RobocodeTestBed {
+	
+	private int currentX = 0;
+	private int currentY = 0;
 	
 	@Test
     @Override
@@ -28,7 +32,8 @@ public class TestEquipRobotMovement extends RobocodeTestBed {
     
     @Override
     public void onTurnEnded(TurnEndedEvent event) {
-        super.onTurnEnded(event);
-        
+    	for (IRobotSnapshot robot : event.getTurnSnapshot().getRobots()) {
+    		
+    	}
     }
 }

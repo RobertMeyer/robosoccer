@@ -23,7 +23,7 @@ public class SampleEquipRobot extends AdvancedRobot {
 		// Move in a circle
 		while (true){
 			setAhead(150);
-			setTurnRight(180);
+			execute();
 		}
 	}
 	
