@@ -31,6 +31,7 @@ public class TestFreezeBot {
 		
 	}
 	
+	/*
 	@Test
 	public void testFrozenRobot() {
 		
@@ -53,5 +54,5 @@ public class TestFreezeBot {
 		bot.onHitRobot(mockEvent);
 		verify(mockPeer).setMove(-100);
 	}
-
+*/
 }
