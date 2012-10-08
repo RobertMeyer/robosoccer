@@ -659,6 +659,8 @@ public class BattleView extends Canvas {
                 
              // sets the body image path to null
                 String bodyPath = null;
+                String weaponPath = null;
+                
                 
                 // If a custom body part is present in the robots equipment
                 // then the body image path is changed to the custom one.
@@ -666,6 +668,11 @@ public class BattleView extends Canvas {
                 if(partsMap.containsKey(EquipmentSlot.BODY)) {
                 	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
                 	bodyPath = part.getImagePath();
+                }
+                
+                if(partsMap.containsKey(EquipmentSlot.WEAPON)) {
+                	EquipmentPart part = partsMap.get(EquipmentSlot.WEAPON);
+                	weaponPath = part.getImagePath();
                 }
 
                 RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor(), bodyPath);
@@ -676,7 +683,7 @@ public class BattleView extends Canvas {
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getGunHeading());
 
-                RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor());
+                RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor(), weaponPath);
 
                 gunRenderImage.setTransform(at);
                 gunRenderImage.paint(g);

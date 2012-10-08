@@ -35,7 +35,7 @@ public interface IImageManager {
 
     RenderImage getColoredBodyRenderImage(Integer color, String imagePath);
 
-    RenderImage getColoredGunRenderImage(Integer color);
+    RenderImage getColoredGunRenderImage(Integer color, String imagePath);
 
     RenderImage getColoredRadarRenderImage(Integer color);
 }

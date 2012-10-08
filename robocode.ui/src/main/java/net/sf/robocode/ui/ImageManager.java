@@ -253,8 +253,13 @@ public class ImageManager implements IImageManager {
     }
 
     @Override
-    public RenderImage getColoredGunRenderImage(Integer color) {
+    public RenderImage getColoredGunRenderImage(Integer color, String imagePath) {
         RenderImage img = robotGunImageCache.get(color);
+        
+        // sets a custom gun image if one is provided and it is necessary.
+        if(imagePath != null || gunImage == null) {
+        	gunImage = getImage(imagePath);
+        }
 
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(), new Color(color, true)));
