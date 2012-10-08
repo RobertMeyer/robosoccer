@@ -2486,12 +2486,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return isSuperTank;
 	}
 
-	@Override
-	public void performMove(List<RobotPeer> robots, List<ItemDrop> items,
-			List<ObstaclePeer> obstacles, double zapEnergy) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 
 
