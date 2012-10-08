@@ -237,9 +237,14 @@ public class ImageManager implements IImageManager {
     }
     
     @Override
-    public RenderImage getColoredBodyRenderImage(Integer color) {
+    public RenderImage getColoredBodyRenderImage(Integer color, String imagePath) {
         RenderImage img = robotBodyImageCache.get(color);
-
+        
+        // sets a custom body image if one is provided and it is necessary.
+        if(imagePath != null || bodyImage == null) {
+        	bodyImage = getImage(imagePath);
+        }
+        
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(), new Color(color, true)));
             robotBodyImageCache.put(color, img);

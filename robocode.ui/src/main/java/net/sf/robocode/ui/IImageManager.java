@@ -33,7 +33,7 @@ public interface IImageManager {
 
     RenderImage getExplosionDebriseRenderImage();
 
-    RenderImage getColoredBodyRenderImage(Integer color);
+    RenderImage getColoredBodyRenderImage(Integer color, String imagePath);
 
     RenderImage getColoredGunRenderImage(Integer color);
 
