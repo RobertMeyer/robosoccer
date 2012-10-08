@@ -556,6 +556,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public int getScanColor() {
 		return commands.get().getScanColor();
 	}
+	
+	public int getDeathEffect() {
+		return commands.get().getDeathEffect();
+	}
 
 	// ------------
 	// team
@@ -2018,28 +2022,30 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public void equip(String partName) {
 		EquipmentPart part = Equipment.getPart(partName);
-
+		
 		// Unequip whatever's currently occupying this slot (if anything)
 		unequip(part.getSlot());
+		
+		// Add the part to the map of equipped items
+		equipment.get().put(part.getSlot(), part);
 
 		/* Add all the attribute modifiers of the part to the current
 		 * attribute modifiers (many attributes of the part may be 0).
 		 */
 		for (RobotAttribute attribute : RobotAttribute.values()) {
+			
 			double partValue = part.get(attribute);
-			double currentValue = part.get(attribute);
+			double currentValue = attributes.get().get(attribute);
 
 			/* Part modifiers are represented as 1=+1% effectiveness, hence
 			 * the division by 100 (as this.attributes represents 1.0 as 100%
 			 * effectiveness for easy multiplication).
 			 */
 			double newValue = currentValue + (partValue / 100.0);
-
-
+			
 			attributes.get().put(attribute, newValue);
 		}
 	}
-
 
 	/**
 	 * Unequips the part equipped to the given slot, if any, and resets all

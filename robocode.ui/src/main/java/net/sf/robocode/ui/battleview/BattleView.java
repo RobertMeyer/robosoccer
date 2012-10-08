@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import net.sf.robocode.battle.BallBot;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
@@ -574,7 +575,7 @@ public class BattleView extends Canvas {
 				at.shear(snap.getShearX(), snap.getShearY());
 				AffineTransform oldAt = g.getTransform();
 				g.setTransform(at);
-				System.out.println(snap.getX() + "\n");
+
 				// Keep old alpha level state
 				Composite oldState = g.getComposite();
 				// Setup new alpha level state
@@ -712,13 +713,21 @@ public class BattleView extends Canvas {
 
 	     g.setClip(null);
 
-        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-            if (robotSnapshot.getState().isDead()) {
+        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) { 
+        	if (robotSnapshot.getState().isDead()) {
                 continue;
             }
             int x = (int) robotSnapshot.getX();
             int y = battleField.getHeight() - (int) robotSnapshot.getY();
-
+            if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+            	if (robotSnapshot.getName().contains("BallBot")) {
+            		
+            	} else {
+            	g.setColor(Color.white);
+                centerString(g, robotSnapshot.getVeryShortName(), x,
+                             y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
+            	}
+            } else {
             if (drawRobotEnergy) {
                 g.setColor(Color.white);
                 int ll = (int) robotSnapshot.getEnergy();
@@ -739,6 +748,7 @@ public class BattleView extends Canvas {
                 g.setColor(Color.white);
                 centerString(g, robotSnapshot.getVeryShortName(), x,
                              y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
+            }
             }
         }
 

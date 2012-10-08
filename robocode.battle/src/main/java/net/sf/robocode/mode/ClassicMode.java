@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.IRenderable;
+import robocode.BattleResults;
 import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -305,11 +306,6 @@ public class ClassicMode implements IMode {
 
 	}
 
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub
-	}
-
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
@@ -323,6 +319,11 @@ public class ClassicMode implements IMode {
 		uiOptions = new GuiOptions(true, true);
 	}
 
+	@Override
+	public void scorePoints() {
+		// TODO Auto-generated method stub
+	}
+
 	/**
 	 * Getter method for the GuiOptions object associated with this
 	 * mode.
@@ -330,5 +331,14 @@ public class ClassicMode implements IMode {
 	 */
 	public GuiOptions getGuiOptions() {
 		return uiOptions;
+	}
+	
+	@Override
+	public BattleResults[] getFinalResults() {
+		return null;
+	}
+	
+	public void addRobots(int currentTurn, BattlePeers peers){
+		// do nothing
 	}
 }
