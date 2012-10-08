@@ -27,12 +27,14 @@ import robocode.control.RandomFactory;
  *
  * @author lee
  */
-public class DefaultSpawnController implements ISpawnController {
+public final class DefaultSpawnController implements ISpawnController {
 
     private final List<ISpawnController> controllers = new ArrayList<ISpawnController>();
     private final Random random = RandomFactory.getRandom();
 
     public DefaultSpawnController() {
+        controllers.add(new BotzillaSpawnController());
+        controllers.add(new HouseRobotSpawnController());
     }
 
     public boolean addController(ISpawnController e) {

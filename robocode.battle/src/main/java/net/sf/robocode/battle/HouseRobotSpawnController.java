@@ -53,6 +53,10 @@ public class HouseRobotSpawnController implements ISpawnController {
                     return pos.getPosition(r, battle);
                 }
             }
+            HouseRobotBattlePositions hrbp = new HouseRobotBattlePositions();
+            double[] position = hrbp.getPosition(r, battle);
+            battlePositions.put(new WeakReference<Battle>(battle), hrbp);
+            return position;
         } else {
             return null;
         }
@@ -86,8 +90,66 @@ public class HouseRobotSpawnController implements ISpawnController {
                 // Left
                 return 0 + cornerBuffer;
             } else {
+                // Right
                 return width - cornerBuffer;
             }
+        }
+
+        /**
+         * Provides an Y with max(5% of width, 50 units) buffer.
+         * @param corner
+         * @param height
+         * @return
+         */
+        private double getY(int corner, double height) {
+            double cornerBuffer = Math.max(height * 0.05, 50);
+            if (corner / 2 != 0) {
+                // Bottom
+                return 0 + cornerBuffer;
+            } else {
+                // Top
+                return height - cornerBuffer;
+            }
+        }
+
+        private double[] getPosition_(int corner, double width, double height) {
+            double x, y, c_x, c_y;
+            x = getX(corner, width);
+            y = getY(corner, height);
+            c_x = (corner % 2 == 0 ? 0 : width);
+            c_y = (corner / 2 != 0 ? 0 : height);
+            double heading = Math.atan2(y - c_y, x - c_x);
+            return new double[]{x, y, heading};
+        }
+
+        private double[] getPosition(RobotPeer r, Battle battle) {
+            if (unallocatedCorners.isEmpty()) {
+                return null;
+            }
+            int corner = unallocatedCorners.remove(0);
+            if (corners[corner] != null) {
+                // We've picked a corner that has a robot in already.
+                // So We'll just reallocate the entire list.
+                refreshUnallocatedCorners();
+                if (unallocatedCorners.isEmpty()) {
+                    return null;
+                } else {
+                    corner = unallocatedCorners.remove(0);
+                }
+
+            }
+            corners[corner] = r;
+            return getPosition_(corner, battle.getBattleRules().getBattlefieldWidth(), battle.getBattleRules().getBattlefieldHeight());
+        }
+
+        private final void refreshUnallocatedCorners() {
+            unallocatedCorners.clear();
+            for (int i = 0; i < corners.length; i++) {
+                if (corners[i] == null) {
+                    unallocatedCorners.add(i);
+                }
+            }
+            Collections.shuffle(unallocatedCorners, random);
         }
     }
 }
