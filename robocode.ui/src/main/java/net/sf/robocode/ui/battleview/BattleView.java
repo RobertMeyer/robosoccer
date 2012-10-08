@@ -260,6 +260,9 @@ public class BattleView extends Canvas {
         	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
+        	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
+        		// Botzilla
+        		imageManager.addCustomImage("botzilla", "/net/sf/robocode/ui/images/botzilla.png");
         	} else {
         		createGroundImage();
         	}
@@ -638,7 +641,7 @@ public class BattleView extends Canvas {
         }
 
         for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-        	if(robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
+        	if (robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
         		x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
@@ -649,7 +652,20 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+        	} else if (robotSnapshot.getName().equals("samplex.Botzilla")) {
+        		// If name is incorrect, just use getName elsewhere like in
+        		// Battle.java
+        		
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
 
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+
+                RenderImage robotRenderImage = imageManager.getCustomImage("botzilla");
+
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
         	} else if (robotSnapshot.getState().isAlive()) {
                 x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
