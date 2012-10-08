@@ -52,6 +52,7 @@ import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
+import net.sf.robocode.mode.BotzillaMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -263,7 +264,8 @@ public class BattleView extends Canvas {
         		createSoccerField();
         	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
         		// Botzilla
-        		imageManager.addCustomImage("botzilla", "/net/sf/robocode/ui/images/botzilla.png");
+        		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
+        		createGroundImage();
         	} else {
         		createGroundImage();
         	}
@@ -653,17 +655,14 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
-        	} else if (robotSnapshot.getName().equals("samplex.Botzilla")) {
-        		// If name is incorrect, just use getName elsewhere like in
-        		// Battle.java
-        		
+        	} else if (robotSnapshot.getName().equals("sampleex.Botzilla (1)")) {
         		x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
 
-                RenderImage robotRenderImage = imageManager.getCustomImage("botzilla");
+                RenderImage robotRenderImage = imageManager.getCustomImage("botzillaImage");
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
