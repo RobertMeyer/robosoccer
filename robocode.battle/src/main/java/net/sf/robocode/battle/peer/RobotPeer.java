@@ -1900,16 +1900,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				totalTeamEnergy += teamList.get(i).getEnergy();
 			}
 		}
-		//System.out.println("(Team: "+ teamIndex + ") (Team Size: " + teamSize + ") (Energy: " + totalTeamEnergy +")");
 		return totalTeamEnergy;
 	}
 
 	//Assign robots energy based on the distributed team energy
 	public void distributeEnergy(){
-		int totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
-		int distribute = totalTeamEnergy / statics.getTeamSize();
+		int totalTeamEnergy = 0;
+		double distribute = 0;
+		if (statics.getTeamSize() > 1) {
+			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
+			distribute = totalTeamEnergy / statics.getTeamSize();
+		} else {
+			distribute = energy;
+		}
 		energy = distribute;
-		System.out.println(energy);
 	}
 
 	public void setWinner(boolean newWinner) {
