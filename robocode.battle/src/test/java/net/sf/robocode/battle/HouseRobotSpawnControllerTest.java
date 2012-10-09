@@ -16,12 +16,7 @@
  */
 package net.sf.robocode.battle;
 
-import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.peer.RobotPeer;
-import net.sf.robocode.host.ICpuManager;
-import net.sf.robocode.host.IHostManager;
-import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.settings.ISettingsManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,7 +26,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static net.sf.robocode.battle.BattleCreatorForTest.*;
 import static java.lang.Math.*;
-import robocode.BattleRules;
 import robocode.BattleRulesForTest;
 
 /**
@@ -91,20 +85,64 @@ public class HouseRobotSpawnControllerTest {
      * Test of getSpawnLocation method, of class HouseRobotSpawnController.
      */
     @Test
-    public void testSpawnHouseRobotReturnsSameForSameRobot() {
+    public void testSpawnHouseRobotReturnsValidCorner() {
         // Setup
         when(r.isHouseRobot()).thenReturn(Boolean.TRUE);
         double w = 1000, h = 1000;
         rules.setBattlefieldHeight((int) h);
         rules.setBattlefieldWidth((int) w);
         setBattleRules(battle, rules);
-        double corner_w = w * 0.05;
-        double corner_h = h * 0.05;
         HouseRobotSpawnController instance = new HouseRobotSpawnController();
         // Testing
         System.out.println("getSpawnLocation");
         double[] result = instance.getSpawnLocation(r, battle);
+        assertCornerAndReturn(result, w, h);
+    }
+
+    /**
+     * Test of getSpawnLocation method, of class HouseRobotSpawnController.
+     */
+    @Test
+    public void testSpawnHouseRobotReturnsValidCorner2() {
+        // Setup
+        when(r.isHouseRobot()).thenReturn(Boolean.TRUE);
+        double w = 100, h = 100;
+        rules.setBattlefieldHeight((int) h);
+        rules.setBattlefieldWidth((int) w);
+        setBattleRules(battle, rules);
+        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        // Testing
+        System.out.println("getSpawnLocation");
+        double[] result = instance.getSpawnLocation(r, battle);
+        assertCornerAndReturn(result, w, h);
+    }
+
+    /**
+     * Test of getSpawnLocation method, of class HouseRobotSpawnController.
+     */
+    @Test
+    public void testSpawnHouseRobotReturnsSameCorner() {
+        // Setup
+        when(r.isHouseRobot()).thenReturn(Boolean.TRUE);
+        double w = 100, h = 100;
+        rules.setBattlefieldHeight((int) h);
+        rules.setBattlefieldWidth((int) w);
+        setBattleRules(battle, rules);
+        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        // Testing
+        System.out.println("getSpawnLocation");
+        double[] result = instance.getSpawnLocation(r, battle);
+        int corner1 = assertCornerAndReturn(result, w, h);
+        result = instance.getSpawnLocation(r, battle);
+        int corner2 = assertCornerAndReturn(result, w, h);
+        assertEquals("The same robot get's different corners!", corner1, corner2);
+    }
+
+    private int assertCornerAndReturn(double[] result, double w, double h) {
         assertNotNull("The HouseRobotSpawnController thinks it can't place a house robot", result);
+        int corner;
+        double corner_w = max(50.0, w * 0.05);
+        double corner_h = max(50.0, h * 0.05);
         assertEquals("Did not calculate corner x correctly", corner_w, min(result[0], abs(result[0] - w)), 1);
         assertEquals("Did not calculate corner y correctly", corner_h, min(result[1], abs(result[1] - h)), 1);
         double deg = toDegrees(result[2]);
@@ -113,17 +151,29 @@ public class HouseRobotSpawnControllerTest {
         }
         if (result[0] < w / 2) { //LEFT
             if (result[1] < h / 2) {// BOTTOM
+                corner = 2;
+                assertEquals("Did not calculate corner x correctly", corner_w, result[0], 1);
+                assertEquals("Did not calculate corner y correctly", corner_h, result[1], 1);
                 assertEquals("Bottom Left Corner should point North East", 45.0, deg, 1.0);
-            } else {
+            } else { //TOP
+                corner = 0;
+                assertEquals("Did not calculate corner x correctly", corner_w, result[0], 1);
+                assertEquals("Did not calculate corner y correctly", h - corner_h, result[1], 1);
                 assertEquals("Top Left Corner should point South East", -45.0, deg, 1.0);
             }
         } else { // Right
             if (result[1] < h / 2) {// BOTTOM
+                corner = 3;
+                assertEquals("Did not calculate corner x correctly", w - corner_w, result[0], 1);
+                assertEquals("Did not calculate corner y correctly", corner_h, result[1], 1);
                 assertEquals("Bottom Right Corner should point North West", 135.0, deg, 1.0);
-            } else {
+            } else { // TOP
+                corner = 1;
+                assertEquals("Did not calculate corner x correctly", w - corner_w, result[0], 1);
+                assertEquals("Did not calculate corner y correctly", h - corner_h, result[1], 1);
                 assertEquals("Top Right Corner should point South West", -135.0, deg, 1.0);
             }
         }
-        // Check that no other methods were called.
+        return corner;
     }
 }
