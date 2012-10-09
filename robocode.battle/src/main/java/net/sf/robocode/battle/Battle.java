@@ -393,6 +393,7 @@ public final class Battle extends BaseBattle {
     	/* (team-Telos) Create the items */
     	this.getBattleMode().setItems(this);
     	items = (List<ItemDrop>) this.getBattleMode().getItems();
+    	Collections.shuffle(items);
     }
 
 	@Override

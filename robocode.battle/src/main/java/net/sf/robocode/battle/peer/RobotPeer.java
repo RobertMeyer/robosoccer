@@ -556,7 +556,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public int getScanColor() {
 		return commands.get().getScanColor();
 	}
-	
+
 	public int getDeathEffect() {
 		return commands.get().getDeathEffect();
 	}
@@ -1055,12 +1055,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		updateGunHeat();
 
+		
 		lastHeading = bodyHeading;
 		lastGunHeading = gunHeading;
 		lastRadarHeading = radarHeading;
 		final double lastX = x;
 		final double lastY = y;
-
+		
 		if (!inCollision) {
 			updateHeading();
 		}
@@ -1092,8 +1093,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 
         // Now check for item collision
-        //TODO: checkItemCollision(items);
-		//checkItemCollision(items);
+        checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1110,6 +1110,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (zapEnergy != 0) {
 			zap(zapEnergy);
 		}
+
 	}
 
 	public void performScan(List<RobotPeer> robots) {
@@ -1196,13 +1197,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 
 	private void checkItemCollision(List<ItemDrop> items){
-		inCollision = false;
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
 
 		for (ItemDrop item : items){
 			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
-				inCollision = true;
 				if (item.getHealth() > 0){
 					if (item.getIsDestroyable()){
 						item.setHealth(item.getHealth() - 20);
@@ -1224,9 +1223,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				battle.getCustomObject().remove(ob);
 			}
 			items.remove(item);
-		}
-		if (inCollision){
-			//setState(RobotState.HIT_ITEM);
 		}
 	}
 
@@ -2028,10 +2024,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public void equip(String partName) {
 		EquipmentPart part = Equipment.getPart(partName);
-		
+
 		// Unequip whatever's currently occupying this slot (if anything)
 		unequip(part.getSlot());
-		
+
 		// Add the part to the map of equipped items
 		equipment.get().put(part.getSlot(), part);
 
@@ -2039,7 +2035,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		 * attribute modifiers (many attributes of the part may be 0).
 		 */
 		for (RobotAttribute attribute : RobotAttribute.values()) {
-			
+
 			double partValue = part.get(attribute);
 			double currentValue = attributes.get().get(attribute);
 
@@ -2048,7 +2044,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 * effectiveness for easy multiplication).
 			 */
 			double newValue = currentValue + (partValue / 100.0);
-			
+
 			attributes.get().put(attribute, newValue);
 		}
 	}
@@ -2459,3 +2455,4 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 }
+
