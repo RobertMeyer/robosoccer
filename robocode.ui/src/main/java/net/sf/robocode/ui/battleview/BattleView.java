@@ -279,6 +279,7 @@ public class BattleView extends Canvas {
         //      mode, but we can still check for their presence amongst the
         //      lists of playing robots.
         imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
+        imageManager.addCustomImage("dispenserRadius", "/net/sf/robocode/ui/images/radius.png");
         
         initialized = true;
     }
@@ -685,9 +686,14 @@ public class BattleView extends Canvas {
                 at.rotate(robotSnapshot.getBodyHeading());
 
                 RenderImage robotRenderImage = imageManager.getCustomImage("dispenserImage");
-
+                
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+                
+                RenderImage dispenserRadiusImage = imageManager.getCustomImage("dispenserRadius");
+                
+                dispenserRadiusImage.setTransform(at);
+                dispenserRadiusImage.paint(g);
                 
         	} else if (robotSnapshot.getState().isAlive()) {
                 x = robotSnapshot.getX();
