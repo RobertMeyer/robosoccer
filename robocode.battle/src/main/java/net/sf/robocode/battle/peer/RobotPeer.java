@@ -1685,6 +1685,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return distance;
 	}
 
+	protected double maxRadarScan() {
+		double scanRadius =  getRadarScanRadius()/2;
+
+		return scanRadius;
+	}
 	/**
 	 * Returns the new velocity based on the current velocity and distance to move.
 	 *

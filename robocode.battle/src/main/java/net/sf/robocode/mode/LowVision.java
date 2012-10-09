@@ -1,21 +1,22 @@
 package net.sf.robocode.mode;
 
-/**
- *
- */
-public class LowVision extends ClassicMode {
 
-    public void execute() {
-        System.out.println("TEMPORARY");
-    }
+public class LowVision extends ClassicMode{
+	
+	private final String title = "Low Vision Mode";
+    private final String description = "This mode will reduce the vision of the Robots by 1/2";
 
-    @Override
     public String toString() {
-        return new String("TEMPORARY");
+        return title;
     }
 
-    @Override
     public String getDescription() {
-        return "TEMPORARY";
+        return description;
     }
+     
+    public double modifyVision(double VisionDecrease)
+    {
+    	return VisionDecrease/20;
+    }
+
 }
