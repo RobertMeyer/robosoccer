@@ -15,22 +15,44 @@
  *******************************************************************************/
 package net.sf.robocode.ui.battleview;
 
-import java.awt.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.round;
+import static java.lang.Math.sqrt;
+
+import java.awt.AlphaComposite;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import static java.lang.Math.*;
-
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
+import net.sf.robocode.battle.BallBot;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
-import net.sf.robocode.battle.snapshot.ObstacleSnapshot;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
+import net.sf.robocode.mode.BotzillaMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -41,16 +63,18 @@ import net.sf.robocode.ui.IWindowManagerExt;
 import net.sf.robocode.ui.gfx.GraphicsState;
 import net.sf.robocode.ui.gfx.RenderImage;
 import net.sf.robocode.ui.gfx.RobocodeLogo;
+import robocode.EquipmentPart;
+import robocode.EquipmentSlot;
 import robocode.control.events.BattleAdaptor;
 import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
-import robocode.control.snapshot.IRenderableSnapshot;
+import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.IObstacleSnapshot;
+import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.RenderableType;
 
 
@@ -238,6 +262,10 @@ public class BattleView extends Canvas {
         	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
+        	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
+        		// Botzilla
+        		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
+        		createGroundImage();
         	} else {
         		createGroundImage();
         	}
@@ -246,7 +274,12 @@ public class BattleView extends Canvas {
         } else {
             groundImage = null;
         }
-
+        
+        //TODO: Add check for Dispenser presence. Dispensers aren't tied to a
+        //      mode, but we can still check for their presence amongst the
+        //      lists of playing robots.
+        imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
+        
         initialized = true;
     }
 
@@ -552,7 +585,7 @@ public class BattleView extends Canvas {
 				at.shear(snap.getShearX(), snap.getShearY());
 				AffineTransform oldAt = g.getTransform();
 				g.setTransform(at);
-				System.out.println(snap.getX() + "\n");
+
 				// Keep old alpha level state
 				Composite oldState = g.getComposite();
 				// Setup new alpha level state
@@ -616,7 +649,7 @@ public class BattleView extends Canvas {
         }
 
         for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-        	if(robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
+        	if (robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
         		x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
@@ -627,15 +660,62 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+        	} else if (robotSnapshot.getName().contains("botzilla")
+        			   || robotSnapshot.getName().contains("Botzilla")) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
 
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+
+                RenderImage robotRenderImage = imageManager.getCustomImage("botzillaImage");
+
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+                
+            //TODO: Change to a check for robot type. The name string check is
+            //      lazy, and adds an extra condition on Dispenser bot names.
+        	} else if ((robotSnapshot.getName().contains("dispenser")
+        			|| robotSnapshot.getName().contains("Dispenser"))
+        			&& robotSnapshot.getState().isAlive()) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
+
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+
+                RenderImage robotRenderImage = imageManager.getCustomImage("dispenserImage");
+
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+                
         	} else if (robotSnapshot.getState().isAlive()) {
                 x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
+                
+             // sets the body image path to null
+                String bodyPath = null;
+                String weaponPath = null;
+                String radarPath = null;
+                
+                
+                // If a custom body part is present in the robots equipment
+                // then the body image path is changed to the custom one.
+                Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
+                if(partsMap.containsKey(EquipmentSlot.BODY)) {
+                	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
+                	bodyPath = part.getImagePath();
+                }
+                
+                if(partsMap.containsKey(EquipmentSlot.WEAPON)) {
+                	EquipmentPart part = partsMap.get(EquipmentSlot.WEAPON);
+                	weaponPath = part.getImagePath();
+                }
 
-                RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor());
+                RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor(), bodyPath);
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
@@ -643,7 +723,7 @@ public class BattleView extends Canvas {
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getGunHeading());
 
-                RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor());
+                RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor(), weaponPath);
 
                 gunRenderImage.setTransform(at);
                 gunRenderImage.paint(g);
@@ -651,8 +731,13 @@ public class BattleView extends Canvas {
                 if (!robotSnapshot.isDroid()) {
                     at = AffineTransform.getTranslateInstance(x, y);
                     at.rotate(robotSnapshot.getRadarHeading());
+                    
+                    if(partsMap.containsKey(EquipmentSlot.RADAR)) {
+                    	EquipmentPart part = partsMap.get(EquipmentSlot.RADAR);
+                    	radarPath = part.getImagePath();
+                    }
 
-                    RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor());
+                    RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor(), radarPath);
 
                     radarRenderImage.setTransform(at);
                     radarRenderImage.paint(g);
@@ -666,13 +751,21 @@ public class BattleView extends Canvas {
 
 	     g.setClip(null);
 
-        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-            if (robotSnapshot.getState().isDead()) {
+        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) { 
+        	if (robotSnapshot.getState().isDead()) {
                 continue;
             }
             int x = (int) robotSnapshot.getX();
             int y = battleField.getHeight() - (int) robotSnapshot.getY();
-
+            if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+            	if (robotSnapshot.getName().contains("BallBot")) {
+            		
+            	} else {
+            	g.setColor(Color.white);
+                centerString(g, robotSnapshot.getVeryShortName(), x,
+                             y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
+            	}
+            } else {
             if (drawRobotEnergy) {
                 g.setColor(Color.white);
                 int ll = (int) robotSnapshot.getEnergy();
@@ -693,6 +786,7 @@ public class BattleView extends Canvas {
                 g.setColor(Color.white);
                 centerString(g, robotSnapshot.getVeryShortName(), x,
                              y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
+            }
             }
         }
 

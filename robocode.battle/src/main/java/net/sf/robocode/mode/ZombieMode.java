@@ -1,4 +1,11 @@
 package net.sf.robocode.mode;
+
+import robocode.ZombieRobot;
+import robocode.control.RobocodeEngine;
+import robocode.control.RobotSpecification;
+import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.peer.RobotPeer;
+
 /**
  * 
  * This class models "Zombie Mode", a Robocode mode in which a single robot is pit against a swarm of
@@ -24,5 +31,21 @@ public class ZombieMode extends ClassicMode {
     @Override
     public String getDescription() {
         return description;
+    }
+    
+    public void addRobots(int currentTurn, BattlePeers peers){
+    	if(currentTurn == 20) {
+	    	RobocodeEngine engine = new RobocodeEngine();
+	    	RobotSpecification[] specs = engine.getLocalRepository("zombies.NormalZombie");
+	    	
+	    	RobotPeer zombie = new RobotPeer(peers.getBattle(),
+					peers.getHostManager(),
+					specs[0],
+					0,
+					null,
+					peers.getBattle().getRobotsCount());
+	    	
+	    	peers.addRobot(zombie);
+    	}
     }
 }

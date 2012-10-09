@@ -13,7 +13,6 @@ public class SpeedItem extends ItemDrop {
 
     public SpeedItem(Battle battle, String name) {
         super(true, 400, 0, false, battle);
-   //     System.out.println("Speed Item");
         this.name = name;
         this.imageName = "speed.png";
     }

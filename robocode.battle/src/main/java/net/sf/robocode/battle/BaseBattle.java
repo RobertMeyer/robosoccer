@@ -294,9 +294,6 @@ public abstract class BaseBattle implements IBattle, Runnable {
 
     protected boolean isRoundOver() {
     	roundOver = battleMode.isRoundOver(endTimer, TURNS_DISPLAYED_AFTER_ENDING);
-    	//if (battleMode.getDescription().equals("Robocode soccer.")) {
-    	//	isAborted = roundOver;
-    	//}
     	return roundOver;
     			
     }
