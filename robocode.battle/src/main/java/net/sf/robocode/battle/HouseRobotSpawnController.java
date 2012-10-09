@@ -16,11 +16,12 @@
  */
 package net.sf.robocode.battle;
 
-import java.lang.ref.PhantomReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -40,15 +41,22 @@ public class HouseRobotSpawnController implements ISpawnController {
     public HouseRobotSpawnController() {
     }
 
+    public static void cleanMap() {
+        for (Iterator<WeakReference<Battle>> it = battlePositions.keySet().iterator(); it.hasNext();) {
+            WeakReference<Battle> pr = it.next();
+            if (pr.get() == null) {
+                it.remove();
+            }
+        }
+    }
+
     @Override
     public double[] getSpawnLocation(RobotPeer r, Battle battle) {
         if (r.isHouseRobot()) {
+            cleanMap();
             for (Map.Entry<WeakReference<Battle>, HouseRobotBattlePositions> entry : battlePositions.entrySet()) {
                 WeakReference<Battle> pr = entry.getKey();
-                if (pr.get() == null) {
-                    battlePositions.remove(pr);
-                    continue;
-                } else if (pr.get().equals(battle)) {
+                if (pr.get().equals(battle)) {
                     HouseRobotSpawnController.HouseRobotBattlePositions pos = entry.getValue();
                     return pos.getPosition(r, battle);
                 }
@@ -68,11 +76,11 @@ public class HouseRobotSpawnController implements ISpawnController {
          * Corner order:
          * Top Left, Top Right, Bottom Left, Bottom Right.
          */
-        private RobotPeer[] corners = new RobotPeer[4];
-        private List<Integer> unallocatedCorners = new ArrayList<Integer>(corners.length);
+        private List<RobotPeer> corners = new ArrayList<RobotPeer>(Arrays.asList(new RobotPeer[4]));
+        private List<Integer> unallocatedCorners = new ArrayList<Integer>(corners.size());
 
         private HouseRobotBattlePositions() {
-            for (int i = 0; i < corners.length; i++) {
+            for (int i = 0; i < corners.size(); i++) {
                 unallocatedCorners.add(i);
             }
             Collections.shuffle(unallocatedCorners, random);
@@ -115,37 +123,47 @@ public class HouseRobotSpawnController implements ISpawnController {
         private double[] getPosition_(int corner, double width, double height) {
             double x, y, c_x, c_y;
             x = getX(corner, width);
+            System.err.println("x = " + x);
             y = getY(corner, height);
+            System.err.println("y = " + y);
             c_x = (corner % 2 == 0 ? 0 : width);
+            System.err.println("c_x = " + c_x);
             c_y = (corner / 2 != 0 ? 0 : height);
-            double heading = Math.atan2(y - c_y, x - c_x);
+            System.err.println("c_y = " + c_y);
+
+            double heading = (Math.PI / 2) - Math.atan2(y - c_y, x - c_x);
             return new double[]{x, y, heading};
         }
 
         private double[] getPosition(RobotPeer r, Battle battle) {
-            if (unallocatedCorners.isEmpty()) {
-                return null;
-            }
-            int corner = unallocatedCorners.remove(0);
-            if (corners[corner] != null) {
-                // We've picked a corner that has a robot in already.
-                // So We'll just reallocate the entire list.
-                refreshUnallocatedCorners();
+            int corner;
+            if (corners.contains(r)) {
+                corner = corners.indexOf(r);
+            } else {
                 if (unallocatedCorners.isEmpty()) {
                     return null;
-                } else {
-                    corner = unallocatedCorners.remove(0);
                 }
+                corner = unallocatedCorners.remove(0);
+                if (corners.get(corner) != null) {
+                    // We've picked a corner that has a robot in already.
+                    // So We'll just update the list from the array
+                    refreshUnallocatedCorners();
+                    if (unallocatedCorners.isEmpty()) {
+                        return null;
+                    } else {
+                        corner = unallocatedCorners.remove(0);
+                    }
 
-            }
-            corners[corner] = r;
+                }
+                corners.set(corner, r);
+            } // TODO cache the results.
             return getPosition_(corner, battle.getBattleRules().getBattlefieldWidth(), battle.getBattleRules().getBattlefieldHeight());
         }
 
         private final void refreshUnallocatedCorners() {
             unallocatedCorners.clear();
-            for (int i = 0; i < corners.length; i++) {
-                if (corners[i] == null) {
+            for (int i = 0; i < corners.size(); i++) {
+                if (corners.get(i) == null) {
                     unallocatedCorners.add(i);
                 }
             }
