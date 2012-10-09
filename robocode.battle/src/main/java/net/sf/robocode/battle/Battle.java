@@ -188,7 +188,7 @@ public final class Battle extends BaseBattle {
     /** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
     private int numObstacles;
-    private DefaultSpawnController spawnController = new DefaultSpawnController();;
+    private static DefaultSpawnController spawnController = new DefaultSpawnController();
 
     public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
         super(properties, battleManager, eventDispatcher);
@@ -934,15 +934,15 @@ public final class Battle extends BaseBattle {
         sendCommand(new SendInteractiveEventCommand(e));
     }
 
-    public boolean addController(ISpawnController e) {
+    public static boolean addController(ISpawnController e) {
         return spawnController.addController(e);
     }
 
-    public boolean removeController(ISpawnController o) {
+    public static boolean removeController(ISpawnController o) {
         return spawnController.removeController(o);
     }
 
-    public void clearControllers() {
+    public static void clearControllers() {
         spawnController.clearControllers();
     }
 
