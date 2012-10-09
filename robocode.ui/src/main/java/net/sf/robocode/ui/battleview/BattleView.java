@@ -675,8 +675,9 @@ public class BattleView extends Canvas {
                 
             //TODO: Change to a check for robot type. The name string check is
             //      lazy, and adds an extra condition on Dispenser bot names.
-        	} else if (robotSnapshot.getName().contains("dispenser")
-        			|| robotSnapshot.getName().contains("Dispenser")) {
+        	} else if ((robotSnapshot.getName().contains("dispenser")
+        			|| robotSnapshot.getName().contains("Dispenser"))
+        			&& robotSnapshot.getState().isAlive()) {
         		x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
