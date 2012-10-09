@@ -13,6 +13,18 @@ import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 
+/**
+ * BattlePeers is a class that models the creation of RobotPeers. It takes the following parameters:
+ * 
+ * @param battlingRobotsList List of robots to be sorted.
+ * @param hostManager Host manager.
+ * @param repositoryManager Allows creation of RobotSpecification objects allowing users to 
+ * add predefined robots to the battle.
+ * 
+ * In addition, it defines the following fields:
+ * @param robots List of RobotPeers objects.
+ * @param contestants List of ContestantPeer objects.
+ */
 public class BattlePeers {
 	
 	private List<RobotPeer> robots = new ArrayList<RobotPeer>();
@@ -37,13 +49,9 @@ public class BattlePeers {
 	 * The initial setup for robot and contestant lists based on the given
 	 * list of robots, battleRobotsList. Overriding this will allow for 
 	 * predefined team creation. Original implementation taken from Battle.
-	 * @param battle The battle object associated with every game mode
-	 * @param battlingRobotsList List of robots to be sorted.
-	 * @param hostManager Host manager.
-	 * @param robots List of RobotPeers objects.
-	 * @param contestants List of ContestantPeer objects.
-	 * @param repositoryManager Allows creation of RobotSpecification objects
-	 * allowing users to add predefined robots to the battle.
+	 * 
+	 * @param battlingRobotsList List of robots to be sorted. (same battlingRobotsList as the one passed
+	 * to the constructor)
 	 */
 	public void createPeers(RobotSpecification[] battlingRobotsList) {
 		// create teams
@@ -176,7 +184,10 @@ public class BattlePeers {
 	public Battle getBattle(){
 		return battle;
 	}
-
+	
+	public IHostManager getHostManager(){
+		return hostManager;
+	}
 
 	public void addRobot(RobotPeer peer) {
 		botzillaRobot = peer;

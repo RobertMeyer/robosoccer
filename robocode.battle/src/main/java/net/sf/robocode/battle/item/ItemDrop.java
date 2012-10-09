@@ -224,7 +224,6 @@ public abstract	class ItemDrop {
 			}
 		}
 		this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
-		System.out.println("(" + this.getXLocation() + "," + this.getYLocation() + ")");
 	}
 	
 	public boolean addNewItem(List<RobotPeer> robots, List<ItemDrop> items, double x, double y){
