@@ -105,6 +105,7 @@ import robocode.control.snapshot.RobotState;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.WinException;
+import robocode.robotinterfaces.peer.IBasicRobotPeer;
 import static robocode.util.Utils.*;
 
 import java.awt.geom.Arc2D;
@@ -239,6 +240,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	//For calculation of team's total energy (Team energy sharing mode)
 	private TeamPeer teamList;
+	
+	//Minion specific variables.
+	//Store parent's minions in an array for parent->minion communication.
+	private List<RobotPeer> minionList = new ArrayList<RobotPeer>();
+	//Store minion proxies for communication between parent/minion.
+	private List<MinionProxy> minionProxyList = new ArrayList<MinionProxy>();
+	//Need to store host manager for minion creation.
+	private IHostManager hostManager;
+	//Temporary robotSpecification until minions can be loaded in at runtime.
+	private RobotSpecification minionSpecification;
 	/**
 	 * An association of values to every RobotAttribute, such that game
 	 * mechanics can be uniquely determined for each robot based on a variety
@@ -313,6 +324,44 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.statistics = new RobotStatistics(this, battle.getRobotsCount());
 
 		this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
+		this.hostManager = hostManager;
+		this.minionSpecification = robotSpecification;
+	}
+	
+	public void spawnMinions() {
+		if(currentCommands.getSpawnMinion() && !isMinion()) {
+			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minionSpecification, 0, null, 0);
+			battle.addMinion(minionPeer);
+			//Quick hack to make the minion "think" it's a minion.
+			//TODO: Load minions at runtime from different UI (waiting on team member).
+			minionPeer.statics.isMinion = true;
+			
+		    //Provide a proxy to the parent. (Minion=>Parent)
+			MinionProxy parentProxy = new MinionProxy((IBasicRobotPeer)robotProxy);
+			minionPeer.setParent(parentProxy);
+			//Provide a proxy to the minion. (Parent=>Minion)
+			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
+			
+			minionList.add(minionPeer);
+			minionProxyList.add(minionProxy);
+			currentCommands.setSpawnMinion(false);
+			//Update the minions proxy list in commands.
+			currentCommands.setMinions(minionProxyList);
+		}
+		
+	}
+	
+	public void setParent(MinionProxy parent) {
+		if(this.isMinion()) {
+			currentCommands.setParent(parent);
+		}
+	}
+	
+	public void finalizeMinions() {
+		for(RobotPeer minion: minionList) {
+			minion.waitForStop();
+			minion.cleanup();
+		}
 	}
 
 	public void println(String s) {
@@ -407,6 +456,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public boolean isDispenser() {
 		return statics.isDispenser();
+	}
+	
+	public boolean isMinion() {
+		return statics.isMinion();
 	}
 
 	public String getName() {
@@ -1110,6 +1163,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (zapEnergy != 0) {
 			zap(zapEnergy);
 		}
+		
+
 
 	}
 
@@ -1967,6 +2022,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void cleanup() {
 		battle = null;
 
+		for(RobotPeer minion: minionList) {
+		    minion.cleanup();
+		}
+		
 		if (robotProxy != null) {
 			robotProxy.cleanup();
 			robotProxy = null;

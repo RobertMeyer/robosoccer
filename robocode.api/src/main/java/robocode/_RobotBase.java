@@ -13,6 +13,8 @@
  *******************************************************************************/
 package robocode;
 
+import java.util.List;
+
 import robocode.exception.RobotException;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
@@ -91,5 +93,17 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
         throw new RobotException(
                 "You cannot call the " + methodName
                 + "() method before your run() method is called, or you are using a Robot object that the game doesn't know about.");
+    }
+    
+    public final void spawnMinion() {
+    	this.peer.spawnMinion();
+    }
+    
+    public final List<MinionProxy> getMinions() {
+    	return this.peer.getMinions();
+    }
+    
+    public final MinionProxy getParent() {
+    	return this.peer.getParent();
     }
 }

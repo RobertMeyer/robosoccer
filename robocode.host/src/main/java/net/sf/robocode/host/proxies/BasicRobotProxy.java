@@ -36,6 +36,7 @@ import robocode.exception.RobotException;
 import robocode.exception.WinException;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 import robocode.util.Utils;
+import java.util.List;
 
 /**
  * @author Pavel Savara (original)
@@ -72,7 +73,23 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         setSetCallCount(0);
         setGetCallCount(0);
     }
-
+    
+    @Override
+    public void spawnMinion() {
+    	commands.setSpawnMinion(true);
+    	execute();
+    }
+    
+    @Override
+    public List<MinionProxy> getMinions() {
+    	return commands.getMinions();
+    }
+    
+    @Override
+    public MinionProxy getParent() {
+    	return commands.getParent();
+    }
+    
     @Override
     protected void initializeRound(ExecCommands commands, RobotStatus status) {
         updateStatus(commands, status);

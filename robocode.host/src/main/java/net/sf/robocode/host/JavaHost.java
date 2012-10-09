@@ -121,6 +121,7 @@ public class JavaHost implements IHost {
         boolean isBotzilla = false;
         boolean isZombie = false;
         boolean isDispenser = false;
+        boolean isMinionRobot = false;
 
         if (Droid.class.isAssignableFrom(robotClass)) {
             isDroid = true;
@@ -154,6 +155,9 @@ public class JavaHost implements IHost {
         	isDispenser = true;
         }
 
+        if(IMinionRobot.class.isAssignableFrom(robotClass)) {
+        	isMinionRobot = true;
+        }
         if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
             // in this case we make sure that robot don't waste time
             if (checkMethodOverride(robotClass, Robot.class, "getInteractiveEventListener")
@@ -198,7 +202,7 @@ public class JavaHost implements IHost {
             }
         }
         return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-                             isTeamRobot, isDroid, isHouseRobot, isBall, isBotzilla, isZombie, isDispenser);
+                             isTeamRobot, isDroid, isHouseRobot, isBall, isBotzilla, isZombie, isDispenser, isMinionRobot);
     	}
 
     private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {

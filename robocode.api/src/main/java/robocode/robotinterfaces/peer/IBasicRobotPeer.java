@@ -720,4 +720,10 @@ public interface IBasicRobotPeer {
      * @param effect
      */
 	void setDeathEffect(int effect);
+	
+	void spawnMinion();
+	
+	java.util.List<MinionProxy> getMinions();
+
+	MinionProxy getParent();
 }

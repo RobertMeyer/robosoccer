@@ -283,6 +283,17 @@ public final class Battle extends BaseBattle {
 		bullets.add(bullet);
 	}
 
+	public void addMinion(RobotPeer minion) {
+		robotsCount++;
+		peers.addRobot(minion);
+		minion.initializeRound(peers.getRobots(), null);
+		//TODO:Move the following calculations into a function. It's used a few times.
+		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+        final long waitMillis = waitTime / 1000000;
+        final int waitNanos = (int) (waitTime % 1000000);
+        minion.startRound(waitMillis, waitNanos);
+        
+	}
 	//Generates a list of obstacles at the start of the battle
 	private void generateObstacles(int num) {
 		Random randomGen = new Random();
@@ -487,9 +498,15 @@ public final class Battle extends BaseBattle {
 			removeBotzilla();
 		}
 
-		for (RobotPeer robotPeer : peers.getRobots()) {
+		//Modified the following iteration to allow removal of minions.
+		ListIterator it = peers.getRobots().listIterator();
+		while(it.hasNext()) {
+			RobotPeer robotPeer = (RobotPeer)it.next();
 			robotPeer.waitForStop();
 			robotPeer.getRobotStatistics().generateTotals();
+			if(robotPeer.isMinion()) {
+				it.remove();
+			}
 		}
         
         // Increment mode specific points - TODO -team-Telos
@@ -517,12 +534,12 @@ public final class Battle extends BaseBattle {
 	@Override
     protected void runTurn() {
         super.runTurn();
-
+        
         loadCommands();
 
         /*--ItemController--*/
         itemControl.updateRobots(peers.getRobots());
-
+        
         updateBullets();
 
         updateEffectAreas();
@@ -731,6 +748,7 @@ public final class Battle extends BaseBattle {
         // Move all bots
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
+            robotPeer.spawnMinions();
         }
 
         if (currentTurn >= botzillaSpawnTime &&
@@ -1094,5 +1112,6 @@ public final class Battle extends BaseBattle {
 	        }
 	    }
 	}
+	 
 
 }

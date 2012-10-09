@@ -13,7 +13,9 @@ package net.sf.robocode.peer;
 
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.MinionProxy;
 import robocode.Rules;
+import robocode.robotinterfaces.peer.IBasicRobotPeer;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -51,12 +53,15 @@ public final class ExecCommands implements Serializable {
     private boolean scan;
     private boolean isIORobot;
     private boolean isTryingToPaint;
+    private boolean spawnMinion;
     private String outputText;
     private List<BulletCommand> bullets = new ArrayList<BulletCommand>();
     private List<TeamMessage> teamMessages = new ArrayList<TeamMessage>();
     private List<DebugProperty> debugProperties = new ArrayList<DebugProperty>();
+    private List<MinionProxy> minions = new ArrayList<MinionProxy>();
+    private MinionProxy parent;
     private Object graphicsCalls;
-
+    
     public ExecCommands() {
         setMaxVelocity(Double.MAX_VALUE);
         setMaxTurnRate(Double.MAX_VALUE);
@@ -75,6 +80,8 @@ public final class ExecCommands implements Serializable {
         maxVelocity = origin.maxVelocity;
         copyColors(origin);
         deathEffect = origin.deathEffect;
+        minions = origin.minions;
+        parent = origin.parent;
         if (fromRobot) {
             debugProperties = origin.debugProperties;
             bullets = origin.bullets;
@@ -84,6 +91,7 @@ public final class ExecCommands implements Serializable {
             outputText = origin.outputText;
             teamMessages = origin.teamMessages;
             isTryingToPaint = origin.isTryingToPaint;
+            spawnMinion = origin.spawnMinion;
         }
     }
 
@@ -115,6 +123,28 @@ public final class ExecCommands implements Serializable {
 
     public int getScanColor() {
         return scanColor;
+    }
+    
+    public List<MinionProxy> getMinions() {
+    	return minions;
+    }
+    
+    public MinionProxy getParent() {
+    	return parent;
+    }
+    
+    public void setParent(MinionProxy parent) {
+    	this.parent = parent;
+    }
+    
+    public void setMinions(List<MinionProxy> minionProxyList) {
+    	this.minions = minionProxyList;
+    }
+    public boolean getSpawnMinion() {
+    	return spawnMinion;
+    }
+    public void setSpawnMinion(boolean spawn) {
+    	spawnMinion = spawn;
     }
     
     public int getDeathEffect() {

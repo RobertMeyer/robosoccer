@@ -500,6 +500,11 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     public boolean isDispenser() {
     	return robotType.isDispenser();
     }
+    
+    @Override
+    public boolean isMinion() {
+    	return robotType.isMinion();
+    }
 
     @Override
     public URL getClassPathURL() {
