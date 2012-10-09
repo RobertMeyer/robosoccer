@@ -69,6 +69,7 @@ package net.sf.robocode.battle.peer;
 import static net.sf.robocode.io.Logger.logMessage;
 
 import java.awt.geom.Arc2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import static java.lang.Math.*;
@@ -1714,21 +1715,30 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		for (RobotPeer otherRobot : robots) {
 			if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
 					&& intersects(scanArc, otherRobot.boundingBox)) {
-				double dx = otherRobot.x - x;
-				double dy = otherRobot.y - y;
-				double angle = atan2(dx, dy);
-				double dist = Math.hypot(dx, dy);
-
-
-				// block the scan if the robot is jamming UAV
-				if (!otherRobot.isScannable()) {
-					return;
+				boolean obstructed = false;
+				Line2D scanLine = new Line2D.Double(x, y, otherRobot.getX(), otherRobot.getY());
+				for (ObstaclePeer obstacle : battle.getObstacleList()) {
+					if (scanLine.intersects(obstacle.getBoundingBox())) {
+						obstructed = true;
+					}
 				}
-				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
-						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-						otherRobot.getVelocity());
-
-				addEvent(event);
+				if (obstructed == false) {
+					double dx = otherRobot.x - x;
+					double dy = otherRobot.y - y;
+					double angle = atan2(dx, dy);
+					double dist = Math.hypot(dx, dy);
+	
+	
+					// block the scan if the robot is jamming UAV
+					if (!otherRobot.isScannable()) {
+						return;
+					}
+					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
+							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
+							otherRobot.getVelocity());
+	
+					addEvent(event);
+				}
 			}
 		}
 	}
