@@ -783,6 +783,14 @@ public final class Battle extends BaseBattle {
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
+        	//spawn blackhole on dead robot is there was not one there already
+			if (!deadRobot.collidedWithBlackHole()) {
+				double y2 = -2;
+				double x2 = -2;
+				double x1 = deadRobot.getX();
+				double y1 = deadRobot.getY();
+				teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
+			}
             // Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
                 deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
@@ -1022,6 +1030,7 @@ public final class Battle extends BaseBattle {
 		//add a new TeleporterPeer
 		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
 	}
+	
 	
 	private void createEffectAreas(){
 		int tileWidth = 64;

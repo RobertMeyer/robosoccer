@@ -231,6 +231,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private boolean isScannable = true;
 	private boolean isFrozen = false;
 	private boolean isSuperTank = false;
+	
+	//blackhole
+	private boolean collidedWithBlackHole;
 
 	// killstreak timers
 	private int radarJammerTimeout;
@@ -2403,7 +2406,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				//if there is a collision with a black hole, update size, set
 				//the collision to true and kill the robot
 				teleporter.updateBlackHoleSize();
-				//collidedWithBlackHole = true;
+				collidedWithBlackHole = true;
 				kill();
 				
 				
@@ -2484,9 +2487,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private boolean isSuperTank() {
 		return isSuperTank;
 	}
-
 	
-
+	/**
+	 * @return true if is a blackhole
+	 */
+	public boolean collidedWithBlackHole() {
+		return collidedWithBlackHole;
+	}
 
 
 }
