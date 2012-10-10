@@ -109,15 +109,16 @@ public final class AwtBattleAdaptor {
                     if (readoutText) {
                         synchronized (snapshot) {
                             robots = lastSnapshot.getRobots();
-
                             for (int i = 0; i < robots.length; i++) {
                                 RobotSnapshot robot = (RobotSnapshot) robots[i];
-
-                                final StringBuilder cache = outCache[i];
-
-                                if (cache.length() > 0) {
-                                    robot.setOutputStreamSnapshot(cache.toString());
-                                    outCache[i].setLength(0);
+                                
+                                if(outCache.length >= robots.length){
+	                                final StringBuilder cache = outCache[i];
+	
+	                                if (cache.length() > 0) {
+	                                    robot.setOutputStreamSnapshot(cache.toString());
+	                                    outCache[i].setLength(0);
+	                                }
                                 }
                             }
                         }

@@ -16,6 +16,8 @@ public class ZombieMode extends ClassicMode {
 
     private final String description = "This mode pits a robot against "
             + "a swarm of zombie enemies. Survive as long as you can!";
+    
+    private final RobocodeEngine engine = new RobocodeEngine();
 
     /**
      * {@inheritDoc}
@@ -34,9 +36,8 @@ public class ZombieMode extends ClassicMode {
     }
     
     public void addRobots(int currentTurn, BattlePeers peers){
-    	if(currentTurn == 20) {
-	    	RobocodeEngine engine = new RobocodeEngine();
-	    	RobotSpecification[] specs = engine.getLocalRepository("zombies.NormalZombie");
+    	if(currentTurn % 50 == 0) {
+	    	RobotSpecification[] specs = engine.getLocalRepository("sampleex.NormalZombie");
 	    	
 	    	RobotPeer zombie = new RobotPeer(peers.getBattle(),
 					peers.getHostManager(),
@@ -46,6 +47,8 @@ public class ZombieMode extends ClassicMode {
 					peers.getBattle().getRobotsCount());
 	    	
 	    	peers.addRobot(zombie);
+	    	zombie.initializeRound(peers.getRobots(), null);
+	    	zombie.startRound(0, 0);
     	}
     }
 }
