@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 import javax.swing.JPanel;
 
+import robocode.BattleResults;
 import robocode.BattleRules;
 
 /**
@@ -88,4 +89,6 @@ public interface IMode {
 	 * @return GuiOptions object associated with this mode.
 	 */
 	public GuiOptions getGuiOptions();
+
+	public BattleResults[] getFinalResults();
 }

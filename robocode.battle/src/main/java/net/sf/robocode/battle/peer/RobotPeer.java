@@ -557,6 +557,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return commands.get().getScanColor();
 	}
 
+	public int getDeathEffect() {
+		return commands.get().getDeathEffect();
+	}
+
 	// ------------
 	// team
 	// ------------
@@ -1051,12 +1055,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		updateGunHeat();
 
+		
 		lastHeading = bodyHeading;
 		lastGunHeading = gunHeading;
 		lastRadarHeading = radarHeading;
 		final double lastX = x;
 		final double lastY = y;
-
+		
 		if (!inCollision) {
 			updateHeading();
 		}
@@ -1105,6 +1110,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (zapEnergy != 0) {
 			zap(zapEnergy);
 		}
+
 	}
 
 	public void performScan(List<RobotPeer> robots) {
@@ -1191,13 +1197,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 
 	private void checkItemCollision(List<ItemDrop> items){
-		inCollision = false;
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
 
 		for (ItemDrop item : items){
 			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
-				inCollision = true;
 				if (item.getHealth() > 0){
 					if (item.getIsDestroyable()){
 						item.setHealth(item.getHealth() - 20);
@@ -1221,9 +1225,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				battle.getCustomObject().remove(ob);
 			}
 			items.remove(item);
-		}
-		if (inCollision){
-			//setState(RobotState.HIT_ITEM);
 		}
 	}
 
@@ -1682,6 +1683,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return distance;
 	}
 
+	protected double maxRadarScan() {
+		double scanRadius =  getRadarScanRadius()/2;
+
+		return scanRadius;
+	}
 	/**
 	 * Returns the new velocity based on the current velocity and distance to move.
 	 *
@@ -1896,16 +1902,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				totalTeamEnergy += teamList.get(i).getEnergy();
 			}
 		}
-		//System.out.println("(Team: "+ teamIndex + ") (Team Size: " + teamSize + ") (Energy: " + totalTeamEnergy +")");
 		return totalTeamEnergy;
 	}
 
 	//Assign robots energy based on the distributed team energy
 	public void distributeEnergy(){
-		int totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
-		int distribute = totalTeamEnergy / statics.getTeamSize();
+		int totalTeamEnergy = 0;
+		double distribute = 0;
+		if (statics.getTeamSize() > 1) {
+			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
+			distribute = totalTeamEnergy / statics.getTeamSize();
+		} else {
+			distribute = energy;
+		}
 		energy = distribute;
-		System.out.println(energy);
 	}
 
 	public void setWinner(boolean newWinner) {
@@ -2026,12 +2036,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// Unequip whatever's currently occupying this slot (if anything)
 		unequip(part.getSlot());
 
+		// Add the part to the map of equipped items
+		equipment.get().put(part.getSlot(), part);
+
 		/* Add all the attribute modifiers of the part to the current
 		 * attribute modifiers (many attributes of the part may be 0).
 		 */
 		for (RobotAttribute attribute : RobotAttribute.values()) {
+
 			double partValue = part.get(attribute);
-			double currentValue = part.get(attribute);
+			double currentValue = attributes.get().get(attribute);
 
 			/* Part modifiers are represented as 1=+1% effectiveness, hence
 			 * the division by 100 (as this.attributes represents 1.0 as 100%
@@ -2039,11 +2053,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 */
 			double newValue = currentValue + (partValue / 100.0);
 
-
 			attributes.get().put(attribute, newValue);
 		}
 	}
-
 
 	/**
 	 * Unequips the part equipped to the given slot, if any, and resets all
@@ -2451,3 +2463,4 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 }
+

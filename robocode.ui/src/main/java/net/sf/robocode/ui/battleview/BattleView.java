@@ -47,10 +47,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import net.sf.robocode.battle.BallBot;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
+import net.sf.robocode.mode.BotzillaMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -260,6 +262,10 @@ public class BattleView extends Canvas {
         	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
+        	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
+        		// Botzilla
+        		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
+        		createGroundImage();
         	} else {
         		createGroundImage();
         	}
@@ -268,7 +274,12 @@ public class BattleView extends Canvas {
         } else {
             groundImage = null;
         }
-
+        
+        if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
+        		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
+        	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
+        }
+        
         initialized = true;
     }
 
@@ -574,7 +585,7 @@ public class BattleView extends Canvas {
 				at.shear(snap.getShearX(), snap.getShearY());
 				AffineTransform oldAt = g.getTransform();
 				g.setTransform(at);
-				System.out.println(snap.getX() + "\n");
+
 				// Keep old alpha level state
 				Composite oldState = g.getComposite();
 				// Setup new alpha level state
@@ -638,7 +649,7 @@ public class BattleView extends Canvas {
         }
 
         for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-        	if(robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
+        	if (robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
         		x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
 
@@ -649,7 +660,33 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+        	} else if (robotSnapshot.getName().contains("botzilla")
+        			   || robotSnapshot.getName().contains("Botzilla")) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
 
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+
+                RenderImage robotRenderImage = imageManager.getCustomImage("botzillaImage");
+
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+                
+        	} else if ((robotSnapshot.getName().contains("dispenser")
+        			|| robotSnapshot.getName().contains("Dispenser"))
+        			&& robotSnapshot.getState().isAlive()) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
+
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+
+                RenderImage robotRenderImage = imageManager.getCustomImage("dispenserImage");
+                
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+                
         	} else if (robotSnapshot.getState().isAlive()) {
                 x = robotSnapshot.getX();
                 y = battleFieldHeight - robotSnapshot.getY();
@@ -712,13 +749,21 @@ public class BattleView extends Canvas {
 
 	     g.setClip(null);
 
-        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-            if (robotSnapshot.getState().isDead()) {
+        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) { 
+        	if (robotSnapshot.getState().isDead()) {
                 continue;
             }
             int x = (int) robotSnapshot.getX();
             int y = battleField.getHeight() - (int) robotSnapshot.getY();
-
+            if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+            	if (robotSnapshot.getName().contains("BallBot")) {
+            		
+            	} else {
+            	g.setColor(Color.white);
+                centerString(g, robotSnapshot.getVeryShortName(), x,
+                             y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
+            	}
+            } else {
             if (drawRobotEnergy) {
                 g.setColor(Color.white);
                 int ll = (int) robotSnapshot.getEnergy();
@@ -739,6 +784,7 @@ public class BattleView extends Canvas {
                 g.setColor(Color.white);
                 centerString(g, robotSnapshot.getVeryShortName(), x,
                              y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
+            }
             }
         }
 

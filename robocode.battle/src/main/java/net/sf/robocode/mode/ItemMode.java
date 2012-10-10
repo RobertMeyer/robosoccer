@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.item.HaltPack;
 import net.sf.robocode.battle.item.HealthPack;
+import net.sf.robocode.battle.item.PoisonPack;
+import net.sf.robocode.battle.item.SpeedItem;
 import net.sf.robocode.battle.item.ItemDrop;
 
 public class ItemMode extends ClassicMode {
@@ -26,8 +29,13 @@ public class ItemMode extends ClassicMode {
 	public void setItems(Battle battle){
 		items.add(new HealthPack(battle,"health1"));
 		items.add(new HealthPack(battle,"health2"));
+		items.add(new HaltPack(battle,"halt1"));
+		items.add(new PoisonPack(battle,"poison1"));
 		items.add(new HealthPack(battle,"health3"));
+		items.add(new HaltPack(battle,"halt2"));
 		items.add(new HealthPack(battle,"health4"));
+		items.add(new PoisonPack(battle,"poison2"));
+
 	}
 	
 	/**

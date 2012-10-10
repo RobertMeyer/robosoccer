@@ -238,4 +238,8 @@ public class TeamStatistics implements ContestantStatistics {
                                  getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFlagScore(), getTotalFirsts(), getTotalSeconds(),
                                  getTotalThirds());
     }
+
+	@Override
+	public void incrementScore() {	
+	}
 }

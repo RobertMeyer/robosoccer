@@ -383,4 +383,8 @@ public class RobotStatistics implements ContestantStatistics {
     public boolean isInRound() {
         return isInRound;
     }
+
+	@Override
+	public void incrementScore() {	
+	}
 }

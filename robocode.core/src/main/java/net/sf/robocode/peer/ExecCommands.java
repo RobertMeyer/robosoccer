@@ -44,6 +44,7 @@ public final class ExecCommands implements Serializable {
     private int radarColor = defaultRadarColor;
     private int scanColor = defaultScanColor;
     private int bulletColor = defaultBulletColor;
+    private int deathEffect = 1;
     private double maxTurnRate;
     private double maxVelocity;
     private boolean moved;
@@ -73,6 +74,7 @@ public final class ExecCommands implements Serializable {
         maxTurnRate = origin.maxTurnRate;
         maxVelocity = origin.maxVelocity;
         copyColors(origin);
+        deathEffect = origin.deathEffect;
         if (fromRobot) {
             debugProperties = origin.debugProperties;
             bullets = origin.bullets;
@@ -114,6 +116,10 @@ public final class ExecCommands implements Serializable {
     public int getScanColor() {
         return scanColor;
     }
+    
+    public int getDeathEffect() {
+    	return deathEffect;
+    }
 
     public void setBodyColor(int color) {
         bodyColor = color;
@@ -135,6 +141,10 @@ public final class ExecCommands implements Serializable {
         scanColor = color;
     }
 
+    public void setDeathEffect(int effect) {
+    	deathEffect = effect;
+    }
+    
     public double getBodyTurnRemaining() {
         return bodyTurnRemaining;
     }

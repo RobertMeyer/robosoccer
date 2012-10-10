@@ -11,7 +11,7 @@ public class BackgroundMusicTracker {
 	
 	public static boolean music = false;
 	public static Clip clip;
-	public static BackgroundMusicTracker object = new BackgroundMusicTracker();
+	//public static BackgroundMusicTracker object = new BackgroundMusicTracker();
 	
 	public static void enableMusic(boolean b) {
 		 music = b;

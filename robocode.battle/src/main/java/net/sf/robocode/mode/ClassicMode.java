@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.IRenderable;
+import robocode.BattleResults;
 import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -304,11 +305,7 @@ public class ClassicMode implements IMode {
 		// TODO Auto-generated method stub
 
 	}
-
-	public void scorePoints() {
-		// TODO Auto-generated method stub
-	}
-
+	
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
@@ -336,5 +333,14 @@ public class ClassicMode implements IMode {
 	 */
 	public void onRespawnDeath(RobotPeer robot) {
 		
+	}
+
+	@Override
+	public BattleResults[] getFinalResults() {
+		return null;
+	}
+	
+	public void addRobots(int currentTurn, BattlePeers peers){
+		// do nothing
 	}
 }
