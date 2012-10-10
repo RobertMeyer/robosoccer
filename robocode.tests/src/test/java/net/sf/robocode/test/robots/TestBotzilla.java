@@ -47,7 +47,7 @@ public class TestBotzilla extends RobocodeTestBed {
     public void onTurnEnded(TurnEndedEvent event) {
         super.onTurnEnded(event);
         final int currentTurn = event.getTurnSnapshot().getTurn();
-        System.out.println("Current turn # is: " + currentTurn);
+        // System.out.println("Current turn # is: " + currentTurn);
         // TODO change 749 and 750 to use the botzillaSpawnTime variable.
         if (currentTurn == 749) {
         	// Check if Botzilla HAS spawned.
