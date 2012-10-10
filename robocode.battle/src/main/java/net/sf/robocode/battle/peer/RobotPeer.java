@@ -69,6 +69,7 @@ package net.sf.robocode.battle.peer;
 import static net.sf.robocode.io.Logger.logMessage;
 
 import java.awt.geom.Arc2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import static java.lang.Math.*;
@@ -557,6 +558,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return commands.get().getScanColor();
 	}
 
+	public int getDeathEffect() {
+		return commands.get().getDeathEffect();
+	}
+
 	// ------------
 	// team
 	// ------------
@@ -909,6 +914,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				}
 			}
 		}
+		
+		for (ObstaclePeer bObstacle : battle.getObstacleList()) {
+			if (getBoundingBox().intersects(bObstacle.getBoundingBox())) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 
@@ -1051,12 +1063,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		updateGunHeat();
 
+		
 		lastHeading = bodyHeading;
 		lastGunHeading = gunHeading;
 		lastRadarHeading = radarHeading;
 		final double lastX = x;
 		final double lastY = y;
-
+		
 		if (!inCollision) {
 			updateHeading();
 		}
@@ -1088,7 +1101,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 
         // Now check for item collision
-        //TODO: checkItemCollision(items);
+        checkItemCollision(items);
 
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
@@ -1105,6 +1118,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (zapEnergy != 0) {
 			zap(zapEnergy);
 		}
+
 	}
 
 	public void performScan(List<RobotPeer> robots) {
@@ -1191,13 +1205,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 
 	private void checkItemCollision(List<ItemDrop> items){
-		inCollision = false;
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
 
 		for (ItemDrop item : items){
 			if ( !(item == null) && boundingBox.intersects(item.getBoundingBox())){
-				inCollision = true;
 				if (item.getHealth() > 0){
 					if (item.getIsDestroyable()){
 						item.setHealth(item.getHealth() - 20);
@@ -1219,9 +1231,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				battle.getCustomObject().remove(ob);
 			}
 			items.remove(item);
-		}
-		if (inCollision){
-			//setState(RobotState.HIT_ITEM);
 		}
 	}
 
@@ -1680,6 +1689,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return distance;
 	}
 
+	protected double maxRadarScan() {
+		double scanRadius =  getRadarScanRadius()/2;
+
+		return scanRadius;
+	}
 	/**
 	 * Returns the new velocity based on the current velocity and distance to move.
 	 *
@@ -1773,21 +1787,30 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		for (RobotPeer otherRobot : robots) {
 			if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
 					&& intersects(scanArc, otherRobot.boundingBox)) {
-				double dx = otherRobot.x - x;
-				double dy = otherRobot.y - y;
-				double angle = atan2(dx, dy);
-				double dist = Math.hypot(dx, dy);
-
-
-				// block the scan if the robot is jamming UAV
-				if (!otherRobot.isScannable()) {
-					return;
+				boolean obstructed = false;
+				Line2D scanLine = new Line2D.Double(x, y, otherRobot.getX(), otherRobot.getY());
+				for (ObstaclePeer obstacle : battle.getObstacleList()) {
+					if (scanLine.intersects(obstacle.getBoundingBox())) {
+						obstructed = true;
+					}
 				}
-				final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
-						normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-						otherRobot.getVelocity());
-
-				addEvent(event);
+				if (obstructed == false) {
+					double dx = otherRobot.x - x;
+					double dy = otherRobot.y - y;
+					double angle = atan2(dx, dy);
+					double dist = Math.hypot(dx, dy);
+	
+	
+					// block the scan if the robot is jamming UAV
+					if (!otherRobot.isScannable()) {
+						return;
+					}
+					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
+							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
+							otherRobot.getVelocity());
+	
+					addEvent(event);
+				}
 			}
 		}
 	}
@@ -1894,16 +1917,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				totalTeamEnergy += teamList.get(i).getEnergy();
 			}
 		}
-		//System.out.println("(Team: "+ teamIndex + ") (Team Size: " + teamSize + ") (Energy: " + totalTeamEnergy +")");
 		return totalTeamEnergy;
 	}
 
 	//Assign robots energy based on the distributed team energy
 	public void distributeEnergy(){
-		int totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
-		int distribute = totalTeamEnergy / statics.getTeamSize();
+		int totalTeamEnergy = 0;
+		double distribute = 0;
+		if (statics.getTeamSize() > 1) {
+			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
+			distribute = totalTeamEnergy / statics.getTeamSize();
+		} else {
+			distribute = energy;
+		}
 		energy = distribute;
-		System.out.println(energy);
 	}
 
 	public void setWinner(boolean newWinner) {
@@ -2018,10 +2045,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public void equip(String partName) {
 		EquipmentPart part = Equipment.getPart(partName);
-		
+
 		// Unequip whatever's currently occupying this slot (if anything)
 		unequip(part.getSlot());
-		
+
 		// Add the part to the map of equipped items
 		equipment.get().put(part.getSlot(), part);
 
@@ -2029,7 +2056,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		 * attribute modifiers (many attributes of the part may be 0).
 		 */
 		for (RobotAttribute attribute : RobotAttribute.values()) {
-			
+
 			double partValue = part.get(attribute);
 			double currentValue = attributes.get().get(attribute);
 
@@ -2038,7 +2065,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 * effectiveness for easy multiplication).
 			 */
 			double newValue = currentValue + (partValue / 100.0);
-			
+
 			attributes.get().put(attribute, newValue);
 		}
 	}
@@ -2449,3 +2476,4 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 }
+

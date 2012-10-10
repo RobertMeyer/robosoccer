@@ -8,6 +8,7 @@
 package robocode;
 
 import robocode.Robot;
+import robocode.robotinterfaces.IBasicRobot;
 
 /**
  * An extension of the basic robot class, containing methods for behaviours
@@ -18,8 +19,9 @@ import robocode.Robot;
  * @author The Fightin' Mongooses (contributor)
  * @see Robot
  */
-public class SoldierRobot extends Robot {
+public class SoldierRobot extends Robot implements IBasicRobot {
 	
+    public final int NO_TACTIC = 0;
 	public final int PAUSE = 1;
 	public final int ADVANCE = 2;
 	public final int RETREAT = 3;
@@ -31,12 +33,31 @@ public class SoldierRobot extends Robot {
 	private int tactic = 0;
 	protected double power = 1.5;
 	
-	public int getTactic() {
-		return tactic;
-	}
-
-	public void setTactic(int tactic) {
-		this.tactic = tactic;
+	public void receiveCommand(CommanderEvent e) {
+		tactic = e.getTactic();
+		switch (tactic) {
+			case PAUSE:
+				pause();
+				break;
+				
+			case ADVANCE:
+			case RETREAT:
+			case ATTACK:
+				turnRadarRight(360);
+				break;
+				
+			case INCREASE_POWER:
+				increasePower();
+				break;
+				
+			case DECREASE_POWER:
+				decreasePower();
+				break;
+				
+			case TAUNT:
+				taunt();
+				break;
+		}
 	}
 	
 	/**

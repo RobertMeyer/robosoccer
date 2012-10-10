@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Botzilla extends ClassicMode {
+public class BotzillaMode extends ClassicMode {
 	
 	private JTextField setBotzillaSpawn; 
 	private JTextField setBotzillaModifier;
