@@ -158,6 +158,7 @@ public class CommanderScrollPane extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (arg0.getActionCommand().equals(PAUSE)) {
+				System.out.println("Pause button pressed.");
                 killButtonActionPerformed();
 				//set flag
 				//call pause()
