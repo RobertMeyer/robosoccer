@@ -771,6 +771,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
     }
 
+    @Override
     public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions) {
         boolean valid = false;
         if (initialRobotPositions != null) {
@@ -791,16 +792,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         if (!valid) {
             final Random random = RandomFactory.getRandom();
 
+            double[] sl;
             for (int j = 0; j < 1000; j++) {
-                if (!isBotzilla()) {
-                    x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-                    y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
-                } else {
-                    x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
-                    y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
-                }
-                bodyHeading = 2 * Math.PI * random.nextDouble();
-                gunHeading = radarHeading = bodyHeading;
+                sl = battle.getSpawnController().getSpawnLocation(this, battle);
                 updateBoundingBox();
 
                 if (validSpot(robots)) {

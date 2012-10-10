@@ -18,6 +18,7 @@ package net.sf.robocode.battle;
 
 import java.util.Random;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.mode.IMode;
 import robocode.BattleRules;
 import robocode.control.RandomFactory;
 
@@ -25,12 +26,14 @@ import robocode.control.RandomFactory;
  *
  * @author lee
  */
-public class BotzillaSpawnController implements ISpawnController {
+public class BotzillaSpawnController extends IModeSpawnController {
 
     private final Random random = RandomFactory.getRandom();
 
-    public BotzillaSpawnController() {
+    public BotzillaSpawnController(Class<? extends IMode> mode) {
+        super(mode);
     }
+
 
     @Override
     public double[] getSpawnLocation(RobotPeer r, Battle b) {
@@ -43,5 +46,10 @@ public class BotzillaSpawnController implements ISpawnController {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void resetSpawnLocation(RobotPeer r, Battle b) {
+        // NO OP
     }
 }

@@ -26,20 +26,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.mode.IMode;
 import robocode.control.RandomFactory;
 
 /**
  *
  * @author lee
  */
-public class HouseRobotSpawnController implements ISpawnController {
+public class HouseRobotSpawnController extends IModeSpawnController {
 
     private static final Random random = RandomFactory.getRandom();
     private static final HashMap<WeakReference<Battle>, HouseRobotBattlePositions> battlePositions =
             new HashMap<WeakReference<Battle>, HouseRobotBattlePositions>();
 
-    public HouseRobotSpawnController() {
+    public HouseRobotSpawnController(Class<? extends IMode> mode) {
+        super(mode);
     }
+
 
     public static void cleanMap() {
         for (Iterator<WeakReference<Battle>> it = battlePositions.keySet().iterator(); it.hasNext();) {
@@ -56,7 +59,7 @@ public class HouseRobotSpawnController implements ISpawnController {
             cleanMap();
             for (Map.Entry<WeakReference<Battle>, HouseRobotBattlePositions> entry : battlePositions.entrySet()) {
                 WeakReference<Battle> pr = entry.getKey();
-                if (pr.get().equals(battle)) {
+                if (pr.get() != null && pr.get().equals(battle)) {
                     HouseRobotSpawnController.HouseRobotBattlePositions pos = entry.getValue();
                     return pos.getPosition(r, battle);
                 }
@@ -67,6 +70,17 @@ public class HouseRobotSpawnController implements ISpawnController {
             return position;
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void resetSpawnLocation(RobotPeer r, Battle b) {
+        cleanMap();
+        for (Map.Entry<WeakReference<Battle>, HouseRobotBattlePositions> entry : battlePositions.entrySet()) {
+            WeakReference<Battle> pr = entry.getKey();
+            if (pr.get() != null && pr.get().equals(b)) {
+                entry.getValue().remove(r);
+            }
         }
     }
 
@@ -123,13 +137,9 @@ public class HouseRobotSpawnController implements ISpawnController {
         private double[] getPosition_(int corner, double width, double height) {
             double x, y, c_x, c_y;
             x = getX(corner, width);
-            System.err.println("x = " + x);
             y = getY(corner, height);
-            System.err.println("y = " + y);
             c_x = (corner % 2 == 0 ? 0 : width);
-            System.err.println("c_x = " + c_x);
             c_y = (corner / 2 != 0 ? 0 : height);
-            System.err.println("c_y = " + c_y);
 
             double heading = (Math.PI / 2) - Math.atan2(y - c_y, x - c_x);
             return new double[]{x, y, heading};
@@ -160,7 +170,7 @@ public class HouseRobotSpawnController implements ISpawnController {
             return getPosition_(corner, battle.getBattleRules().getBattlefieldWidth(), battle.getBattleRules().getBattlefieldHeight());
         }
 
-        private final void refreshUnallocatedCorners() {
+        private void refreshUnallocatedCorners() {
             unallocatedCorners.clear();
             for (int i = 0; i < corners.size(); i++) {
                 if (corners.get(i) == null) {
@@ -168,6 +178,11 @@ public class HouseRobotSpawnController implements ISpawnController {
                 }
             }
             Collections.shuffle(unallocatedCorners, random);
+        }
+
+        private void remove(RobotPeer r) {
+            corners.remove(r);
+            refreshUnallocatedCorners();
         }
     }
 }

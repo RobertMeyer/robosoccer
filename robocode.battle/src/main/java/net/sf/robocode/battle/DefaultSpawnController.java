@@ -17,14 +17,17 @@
 package net.sf.robocode.battle;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.mode.Botzilla;
 import robocode.BattleRules;
 import robocode.control.RandomFactory;
 
 /**
- *
+ * TODO: Write Tests and Document.
  * @author lee
  */
 public final class DefaultSpawnController implements ISpawnController {
@@ -33,8 +36,6 @@ public final class DefaultSpawnController implements ISpawnController {
     private final Random random = RandomFactory.getRandom();
 
     public DefaultSpawnController() {
-        controllers.add(new BotzillaSpawnController());
-        controllers.add(new HouseRobotSpawnController());
     }
 
     public boolean addController(ISpawnController e) {
@@ -52,8 +53,15 @@ public final class DefaultSpawnController implements ISpawnController {
     @Override
     public double[] getSpawnLocation(RobotPeer r, Battle b) {
         BattleRules br = b.getBattleRules();
+        Logger.realOut.println(controllers);
         for (int i = 0; i < controllers.size(); i++) {
             ISpawnController iSpawnController = controllers.get(i);
+            if (iSpawnController instanceof IModeSpawnController) {
+                IModeSpawnController controller = (IModeSpawnController) iSpawnController;
+                if (!b.getBattleMode().equals(controller.getMode())) {
+                    continue;
+                }
+            }
             double[] pos = iSpawnController.getSpawnLocation(r, b);
             if (pos != null && pos.length == 3) {
                 return pos;
@@ -64,5 +72,12 @@ public final class DefaultSpawnController implements ISpawnController {
         double y = RobotPeer.HEIGHT + random.nextDouble() * (br.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
         double heading = 2 * Math.PI * random.nextDouble();
         return new double[]{x, y, heading};
+    }
+
+    @Override
+    public void resetSpawnLocation(RobotPeer r, Battle b) {
+        for (Iterator<ISpawnController> it = controllers.iterator(); it.hasNext();) {
+            it.next().resetSpawnLocation(r, b);
+        }
     }
 }

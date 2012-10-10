@@ -67,6 +67,11 @@ public class HouseRobotSpawnControllerTest {
         System.gc();
         HouseRobotSpawnController.cleanMap();
     }
+    /**
+     *
+        controllers.add(new BotzillaSpawnController(Botzilla.class));
+        controllers.add(new HouseRobotSpawnController(HouseR));
+     */
 
     /**
      * Test of getSpawnLocation method, of class HouseRobotSpawnController.
@@ -76,10 +81,9 @@ public class HouseRobotSpawnControllerTest {
         // Setup phase
         when(r.isHouseRobot()).thenReturn(Boolean.FALSE);
 
-
         // Start Testing
         System.out.println("getSpawnLocation");
-        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        HouseRobotSpawnController instance = createSpawner();
         double[] result = instance.getSpawnLocation(r, battle);
         assertNull("The HouseRobotSpawnController thinks it can place a non house robot", result);
         verify(r).isHouseRobot(); // Check that It checked for house robot.
@@ -98,7 +102,7 @@ public class HouseRobotSpawnControllerTest {
         rules.setBattlefieldHeight((int) h);
         rules.setBattlefieldWidth((int) w);
         setBattleRules(battle, rules);
-        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        HouseRobotSpawnController instance = createSpawner();
         // Testing
         System.out.println("getSpawnLocation");
         double[] result = instance.getSpawnLocation(r, battle);
@@ -116,7 +120,7 @@ public class HouseRobotSpawnControllerTest {
         rules.setBattlefieldHeight((int) h);
         rules.setBattlefieldWidth((int) w);
         setBattleRules(battle, rules);
-        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        HouseRobotSpawnController instance = createSpawner();
         // Testing
         System.out.println("getSpawnLocation");
         double[] result = instance.getSpawnLocation(r, battle);
@@ -137,7 +141,7 @@ public class HouseRobotSpawnControllerTest {
         rules.setBattlefieldHeight((int) h);
         rules.setBattlefieldWidth((int) w);
         setBattleRules(battle, rules);
-        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        HouseRobotSpawnController instance = createSpawner();
         // Testing
         System.out.println("getSpawnLocation");
         for (int i = 0; i < peers.length; i++) {
@@ -165,7 +169,7 @@ public class HouseRobotSpawnControllerTest {
         rules.setBattlefieldHeight((int) h);
         rules.setBattlefieldWidth((int) w);
         setBattleRules(battle, rules);
-        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        HouseRobotSpawnController instance = createSpawner();
         // Testing
         System.out.println("getSpawnLocation");
         for (int i = 0; i < peers.length; i++) {
@@ -194,7 +198,7 @@ public class HouseRobotSpawnControllerTest {
         rules.setBattlefieldHeight((int) h);
         rules.setBattlefieldWidth((int) w);
         setBattleRules(battle, rules);
-        HouseRobotSpawnController instance = new HouseRobotSpawnController();
+        HouseRobotSpawnController instance = createSpawner();
         // Testing
         System.out.println("getSpawnLocation");
         double[] result = instance.getSpawnLocation(r, battle);
@@ -245,5 +249,10 @@ public class HouseRobotSpawnControllerTest {
             }
         }
         return corner;
+    }
+
+    private HouseRobotSpawnController createSpawner() {
+        HouseRobotSpawnController instance = new HouseRobotSpawnController(null);
+        return instance;
     }
 }

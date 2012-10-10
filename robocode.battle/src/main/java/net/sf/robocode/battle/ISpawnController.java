@@ -18,8 +18,6 @@ package net.sf.robocode.battle;
 
 import net.sf.robocode.battle.peer.RobotPeer;
 
-
-
 /**
  *
  * @author lee
@@ -36,4 +34,16 @@ public interface ISpawnController {
      *          type of robot.
      */
     public double[] getSpawnLocation(RobotPeer r, Battle battle);
+
+    /**
+     * This method is called when the spawn location given in
+     * {@link #getSpawnLocation(net.sf.robocode.battle.peer.RobotPeer,
+     * net.sf.robocode.battle.Battle) } is invalid. This method should perform
+     * what it can to ensure that the next call to
+     * {@link #getSpawnLocation(net.sf.robocode.battle.peer.RobotPeer,
+     * net.sf.robocode.battle.Battle) } will succeed.
+     * @param r The RobotPeer whose positioning failed.
+     * @param b The Battle that the peer belongs too.
+     */
+    public void resetSpawnLocation(RobotPeer r, Battle b);
 }
