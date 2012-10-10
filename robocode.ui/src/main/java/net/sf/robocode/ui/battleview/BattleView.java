@@ -275,11 +275,10 @@ public class BattleView extends Canvas {
             groundImage = null;
         }
         
-        //TODO: Add check for Dispenser presence. Dispensers aren't tied to a
-        //      mode, but we can still check for their presence amongst the
-        //      lists of playing robots.
-        imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
-        imageManager.addCustomImage("dispenserRadius", "/net/sf/robocode/ui/images/radius.png");
+        if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
+        		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
+        	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
+        }
         
         initialized = true;
     }
@@ -674,8 +673,6 @@ public class BattleView extends Canvas {
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
                 
-            //TODO: Change to a check for robot type. The name string check is
-            //      lazy, and adds an extra condition on Dispenser bot names.
         	} else if ((robotSnapshot.getName().contains("dispenser")
         			|| robotSnapshot.getName().contains("Dispenser"))
         			&& robotSnapshot.getState().isAlive()) {
@@ -689,11 +686,6 @@ public class BattleView extends Canvas {
                 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
-                
-                RenderImage dispenserRadiusImage = imageManager.getCustomImage("dispenserRadius");
-                
-                dispenserRadiusImage.setTransform(at);
-                dispenserRadiusImage.paint(g);
                 
         	} else if (robotSnapshot.getState().isAlive()) {
                 x = robotSnapshot.getX();
