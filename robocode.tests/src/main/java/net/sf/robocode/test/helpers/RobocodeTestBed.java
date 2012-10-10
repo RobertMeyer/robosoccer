@@ -120,7 +120,7 @@ public abstract class RobocodeTestBed extends BattleAdaptor {
             final Random random = Utils.getRandom();
 
             if (event.getRobotsCount() == 2) {
-                Assert.assertNear(0.98484154, random.nextDouble());
+                Assert.assertNear(0.24053641567148587, random.nextDouble());
             }
         }
     }
