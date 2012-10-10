@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
+import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
@@ -335,6 +336,14 @@ public class ClassicMode implements IMode {
 	
 	@Override
 	public BattleResults[] getFinalResults() {
+		return null;
+	}
+	
+	/**
+	 * Returns null in classic mode. See SoccerMode for details.
+	 * @return null
+	 */
+	public BoundingRectangle[] getGoals() {
 		return null;
 	}
 }

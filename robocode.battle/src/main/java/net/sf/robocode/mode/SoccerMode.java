@@ -90,7 +90,9 @@ public class SoccerMode extends ClassicMode implements IMode {
  		fieldHeight = battleRules.getBattlefieldHeight();
  		fieldWidth = battleRules.getBattlefieldWidth();
  		
+ 		// goal1 on Left side of field
  		goal1 = new BoundingRectangle(0, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
+ 		// goal2 on Right side of field
  		goal2 = new BoundingRectangle(fieldWidth - GOALX, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
  		
  		int teamSize = count / 2;
@@ -266,5 +268,11 @@ public class SoccerMode extends ClassicMode implements IMode {
 			results.add(team1.getStatistics().getFinalResults());
 		}
 		return results.toArray(new BattleResults[results.size()]);
+	}
+	
+	@Override
+	public BoundingRectangle[] getGoals() {
+		BoundingRectangle[] goals = {goal1, goal2};
+		return goals;
 	}
 }

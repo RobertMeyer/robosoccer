@@ -17,7 +17,10 @@
  *******************************************************************************/
 package robocode.robotinterfaces.peer;
 
+
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
+
 import robocode.*;
 import robocode.robotinterfaces.IBasicEvents;
 
@@ -258,6 +261,8 @@ public interface IBasicRobotPeer {
      * @see #getGunTurnRemaining()
      */
     double getRadarTurnRemaining();
+    
+   
 
     /**
      * Executes any pending actions, or continues executing actions that are
@@ -713,4 +718,6 @@ public interface IBasicRobotPeer {
      * @since 1.7.2
      */
     void rescan();
+    
+    
 }

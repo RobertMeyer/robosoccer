@@ -45,8 +45,10 @@ public class JavaHost implements IHost {
         IHostingRobotProxy robotProxy;
         final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
                 robotSpecification);
-
-        if (specification.isTeamRobot()) {
+        
+        if (specification.isSoccerRobot()) {
+        	robotProxy = new SoccerRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+        } else if (specification.isTeamRobot()) {
             robotProxy = new TeamRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
         } else if (specification.isAdvancedRobot()) {
             robotProxy = new AdvancedRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
@@ -118,6 +120,7 @@ public class JavaHost implements IHost {
         boolean isDroid = false;
         boolean isHouseRobot = false;
         boolean isBall = false;
+        boolean isSoccerRobot = false;
         boolean isBotzilla = false;
         boolean isZombie = false;
         boolean isDispenser = false;
@@ -140,6 +143,10 @@ public class JavaHost implements IHost {
         
         if (IBall.class.isAssignableFrom(robotClass)) {
 			isBall = true;
+		}
+        
+        if (ISoccerRobot.class.isAssignableFrom(robotClass)) {
+			isSoccerRobot = true;
 		}
         
         if (IBotzilla.class.isAssignableFrom(robotClass)) {
@@ -198,7 +205,7 @@ public class JavaHost implements IHost {
             }
         }
         return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-                             isTeamRobot, isDroid, isHouseRobot, isBall, isBotzilla, isZombie, isDispenser);
+                             isTeamRobot, isDroid, isHouseRobot, isBall, isSoccerRobot, isBotzilla, isZombie, isDispenser);
     	}
 
     private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {

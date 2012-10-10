@@ -368,6 +368,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isBall() {
     	return statics.isBall();
     }
+	
+	public boolean isSoccerRobot() {
+		return statics.isSoccerRobot();
+	}
 
 	public boolean isJuniorRobot() {
 		return statics.isJuniorRobot();
@@ -2434,6 +2438,24 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	private boolean isSuperTank() {
 		return isSuperTank;
+	}
+	
+	/**
+	 * Returns the bounding rectangles representing the goals in soccermode. 
+	 * Goal 1 and Goal 2 being index 0 and 1 respectively of the returned 
+	 * array.
+	 * @return BoundingRectangle[] - goal boxes
+	 */
+	public BoundingRectangle getOwnGoal() {
+		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
+		int index = getTeamIndex() % 2;
+		return (goals == null) ? null : goals[index];
+	}
+	
+	public BoundingRectangle getEnemyGoal() {
+		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
+		int index = (getTeamIndex() + 1) % 2;
+		return (goals == null) ? null : goals[index];
 	}
 
 }
