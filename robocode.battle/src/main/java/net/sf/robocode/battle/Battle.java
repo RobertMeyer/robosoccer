@@ -101,6 +101,7 @@ import static java.lang.Math.round;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -125,6 +126,7 @@ import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 
+import java.io.Console;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
@@ -231,7 +233,8 @@ public final class Battle extends BaseBattle {
 
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
-        generateObstacles(numObstacles);
+        obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
+        //generateObstacles(numObstacles);
 
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
@@ -287,12 +290,36 @@ public final class Battle extends BaseBattle {
 	//Generates a list of obstacles at the start of the battle
 	private void generateObstacles(int num) {
 		Random randomGen = new Random();
+		ObstaclePeer newObstacle;
+		boolean intersect;
+		double x, y;
+		int fail = 0;
 		for (int i = 0; i < num; i++) {
-			obstacles.add(new ObstaclePeer(this, battleRules, i));
-			obstacles.get(i).setX(randomGen.nextDouble() * bp.getBattlefieldWidth());
-			obstacles.get(i).setY(randomGen.nextDouble() * bp.getBattlefieldHeight());
+			/* Ensure new obstacle is not intersecting a previously placed obstacle. */
+			do {
+				intersect = false;
+				x = randomGen.nextDouble() * bp.getBattlefieldWidth();
+				y = randomGen.nextDouble() * bp.getBattlefieldHeight();
+				newObstacle = new ObstaclePeer(this, battleRules, i);
+				newObstacle.setX(x);
+				newObstacle.setY(y);
+				for (int j = 0; j < obstacles.size(); j++) {
+					if (obstacles.get(j).obstacleIntersect(newObstacle)) {
+						intersect = true;
+						/* Record number on which it failed, 
+						 * if it fails as many times as there are obstacles,
+						 * there is no more room for any obstacles, so return.
+						 */
+						if(fail == obstacles.size()) {
+							return;
+						}
+						fail++;
+					}
+				}
+			} while(intersect);
+			fail = 0;
+			obstacles.add(newObstacle);
 		}
-
 	}
 
 	public void resetInactiveTurnCount(double energyLoss) {
