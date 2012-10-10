@@ -234,7 +234,6 @@ public final class Battle extends BaseBattle {
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
         obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
-        //generateObstacles(numObstacles);
 
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
@@ -285,41 +284,6 @@ public final class Battle extends BaseBattle {
 
 	public void addBullet(BulletPeer bullet) {
 		bullets.add(bullet);
-	}
-
-	//Generates a list of obstacles at the start of the battle
-	private void generateObstacles(int num) {
-		Random randomGen = new Random();
-		ObstaclePeer newObstacle;
-		boolean intersect;
-		double x, y;
-		int fail = 0;
-		for (int i = 0; i < num; i++) {
-			/* Ensure new obstacle is not intersecting a previously placed obstacle. */
-			do {
-				intersect = false;
-				x = randomGen.nextDouble() * bp.getBattlefieldWidth();
-				y = randomGen.nextDouble() * bp.getBattlefieldHeight();
-				newObstacle = new ObstaclePeer(this, battleRules, i);
-				newObstacle.setX(x);
-				newObstacle.setY(y);
-				for (int j = 0; j < obstacles.size(); j++) {
-					if (obstacles.get(j).obstacleIntersect(newObstacle)) {
-						intersect = true;
-						/* Record number on which it failed, 
-						 * if it fails as many times as there are obstacles,
-						 * there is no more room for any obstacles, so return.
-						 */
-						if(fail == obstacles.size()) {
-							return;
-						}
-						fail++;
-					}
-				}
-			} while(intersect);
-			fail = 0;
-			obstacles.add(newObstacle);
-		}
 	}
 
 	public void resetInactiveTurnCount(double energyLoss) {
