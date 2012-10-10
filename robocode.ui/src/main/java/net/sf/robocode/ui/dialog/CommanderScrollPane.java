@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.IBattleManager;
 
 /**
@@ -52,6 +53,9 @@ public class CommanderScrollPane extends JPanel {
     
     // Selected robot details
     int robotIndex;
+    
+    // Battle
+    Battle battle;
 	
     public CommanderScrollPane(IBattleManager battleManager, int selectedRobot) {
         super();
@@ -59,6 +63,9 @@ public class CommanderScrollPane extends JPanel {
         
         // Specify which robot was selected.
         robotIndex = selectedRobot;
+        
+        // Battle
+        this.battle = battleManager.getBattle();
         
         //Set up layout
         this.setLayout(new GridLayout(3, 4, 10, 10));
@@ -164,6 +171,8 @@ public class CommanderScrollPane extends JPanel {
 				//call pause()
 				
 			} else if (arg0.getActionCommand().equals(ADVANCE)) {
+				System.out.println("There are " + battle.getActiveRobots() + " active robots.");
+				System.out.println(battle.getRobotList());
 				System.out.println("Advance button pressed.");
 				//set flag
 				//call scan()

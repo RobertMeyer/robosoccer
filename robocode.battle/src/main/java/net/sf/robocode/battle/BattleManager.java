@@ -423,6 +423,10 @@ public class BattleManager implements IBattleManager {
         }
     }
     
+    public Battle getBattle() {
+    	return (Battle) battle;
+    }
+    
     //Eliminate all robots except the top health robot
 	@Override
 	public void getTopRobot() {
