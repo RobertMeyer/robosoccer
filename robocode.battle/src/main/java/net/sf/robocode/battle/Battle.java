@@ -239,10 +239,6 @@ public final class Battle extends BaseBattle {
             } else if (Integer.parseInt((String) setTimeHashTable.get("botzillaModifier")) != 0) {
                 botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable.get("botzillaModifier")) * robotsCount;
             }
-<<<<<<< HEAD
-=======
-
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
             System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
         }
     }
@@ -287,15 +283,9 @@ public final class Battle extends BaseBattle {
             obstacles.get(i).setX(randomGen.nextDouble() * bp.getBattlefieldWidth());
             obstacles.get(i).setY(randomGen.nextDouble() * bp.getBattlefieldHeight());
         }
-<<<<<<< HEAD
 
     }
 
-=======
-
-    }
-
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
     public void resetInactiveTurnCount(double energyLoss) {
         if (energyLoss < 0) {
             return;
@@ -306,13 +296,8 @@ public final class Battle extends BaseBattle {
             inactiveTurnCount = 0;
         }
     }
-<<<<<<< HEAD
     //Get list of robots
 
-=======
-
-    //Get list of robots
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
     public List<RobotPeer> getRobotList() {
         return robotList;
     }
@@ -332,7 +317,6 @@ public final class Battle extends BaseBattle {
      */
     public KillstreakTracker getKillstreakTracker() {
         return killstreakTracker;
-<<<<<<< HEAD
     }
 
     @Override
@@ -423,73 +407,6 @@ public final class Battle extends BaseBattle {
         computeActiveRobots();
 
         hostManager.resetThreadManager();
-=======
-    }
-
-    @Override
-    public void cleanup() {
-        peers.cleanup();
-
-        super.cleanup();
-
-        battleManager = null;
-
-        // Request garbage collecting
-        for (int i = 4; i >= 0; i--) { // Make sure it is run
-            System.gc();
-        }
-
-    }
-
-    @Override
-    protected void initializeBattle() {
-        super.initializeBattle();
-
-        parallelOn = System.getProperty("PARALLEL", "false").equals("true");
-        if (parallelOn) {
-            // how could robots share CPUs ?
-            double parallelConstant = peers.getRobots().size() / Runtime.getRuntime().availableProcessors();
-
-            // four CPUs can't run two single threaded robot faster than two CPUs
-            if (parallelConstant < 1) {
-                parallelConstant = 1;
-            }
-            final long waitTime = (long) (cpuConstant * parallelConstant);
-
-            millisWait = waitTime / 1000000;
-            nanoWait = (int) (waitTime % 1000000);
-        } else {
-            millisWait = cpuConstant / 1000000;
-            nanoWait = (int) (cpuConstant % 1000000);
-        }
-        if (nanoWait == 0) {
-            nanoWait = 1;
-        }
-    }
-
-    @Override
-    protected void finalizeBattle() {
-        eventDispatcher.onBattleFinished(new BattleFinishedEvent(isAborted()));
-
-        if (!isAborted()) {
-            eventDispatcher.onBattleCompleted(new BattleCompletedEvent(battleRules, computeBattleResults()));
-        }
-
-        for (RobotPeer robotPeer : peers.getRobots()) {
-            robotPeer.cleanup();
-        }
-
-        hostManager.resetThreadManager();
-
-        super.finalizeBattle();
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void initialiseItems() {
-        /* (team-Telos) Create the items */
-        this.getBattleMode().setItems(this);
-        items = (List<ItemDrop>) this.getBattleMode().getItems();
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
     }
 
     @Override
@@ -583,20 +500,13 @@ public final class Battle extends BaseBattle {
         if (botzillaActive) {
             removeBotzilla();
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
         for (RobotPeer robotPeer : peers.getRobots()) {
             robotPeer.waitForStop();
             robotPeer.getRobotStatistics().generateTotals();
         }
 
-<<<<<<< HEAD
         // Increment mode specific points - TODO -team-Telos
         this.getBattleMode().scoreTurnPoints();
-=======
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
         bullets.clear();
 
         eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
@@ -835,10 +745,6 @@ public final class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
         if (currentTurn >= botzillaSpawnTime
                 && battleMode.toString() == "Botzilla Mode"
                 && !botzillaActive) {
@@ -1052,10 +958,6 @@ public final class Battle extends BaseBattle {
         if (getActiveRobots() <= 1) {
             return true;
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> b96913252ca507312975bc433fbc03cd16b31b41
         boolean found = false;
         TeamPeer currentTeam = null;
 
