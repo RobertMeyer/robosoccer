@@ -49,10 +49,16 @@ public class CommanderScrollPane extends JPanel {
     private final static String INCREASE = "INCREASE";
     private final static String DECREASE = "DECREASE";
     private final static String TAUNT = "TAUNT";
+    
+    // Selected robot details
+    int robotIndex;
 	
-    public CommanderScrollPane(IBattleManager battleManager) {
+    public CommanderScrollPane(IBattleManager battleManager, int selectedRobot) {
         super();
         this.battleManager = battleManager;
+        
+        // Specify which robot was selected.
+        robotIndex = selectedRobot;
         
         //Set up layout
         this.setLayout(new GridLayout(3, 4, 10, 10));
@@ -151,8 +157,6 @@ public class CommanderScrollPane extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			//Note to team: we need a way to pass in the robot that we just clicked.
-			
 			if (arg0.getActionCommand().equals(PAUSE)) {
                 killButtonActionPerformed();
 				//set flag
@@ -196,6 +200,6 @@ public class CommanderScrollPane extends JPanel {
      * Is called when the Kill button has been activated
      */
     private void killButtonActionPerformed() {
-        battleManager.killRobot(0);
+        battleManager.killRobot(robotIndex);
     }
 }

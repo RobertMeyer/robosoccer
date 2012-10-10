@@ -270,7 +270,7 @@ public class RobotDialog extends JFrame {
      */
     private CommanderScrollPane getCommanderScrollPane() {
         if (commanderScrollPane == null) {
-            commanderScrollPane = new CommanderScrollPane(battleManager);
+            commanderScrollPane = new CommanderScrollPane(battleManager, robotIndex);
         }
         return commanderScrollPane;
     }
