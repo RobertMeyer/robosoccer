@@ -18,11 +18,15 @@ package net.sf.robocode.ui.dialog;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.*;
 
+import robocode.CommanderEvent;
+
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
  * Pane for Commander controls.
@@ -43,13 +47,21 @@ public class CommanderScrollPane extends JPanel {
     private JButton tauntButton;
     
     //ActionCommands
-    private final static String PAUSE = "PAUSE";
-    private final static String ADVANCE = "ADVANCE";
-    private final static String RETREAT = "RETREAT";
-    private final static String ATTACK = "ATTACK";
-    private final static String INCREASE = "INCREASE";
-    private final static String DECREASE = "DECREASE";
-    private final static String TAUNT = "TAUNT";
+    private final static String PAUSE_STRING = "PAUSE";
+    private final static String ADVANCE_STRING = "ADVANCE";
+    private final static String RETREAT_STRING = "RETREAT";
+    private final static String ATTACK_STRING = "ATTACK";
+    private final static String INCREASE_STRING = "INCREASE";
+    private final static String DECREASE_STRING = "DECREASE";
+    private final static String TAUNT_STRING = "TAUNT";
+    
+    private final static int PAUSE = 1;
+    private final static int ADVANCE = 2;
+    private final static int RETREAT = 3;
+    private final static int ATTACK = 4;
+    private final static int INCREASE = 5;
+    private final static int DECREASE = 6;
+    private final static int TAUNT = 7;
     
     // Selected robot details
     int robotIndex;
@@ -89,7 +101,7 @@ public class CommanderScrollPane extends JPanel {
     public JButton getPauseButton() {
     	if (pauseButton == null) {
     		pauseButton = new JButton("PAUSE");
-    		pauseButton.setActionCommand(PAUSE);
+    		pauseButton.setActionCommand(PAUSE_STRING);
     		pauseButton.addActionListener(new CommanderButtonListener());
     		pauseButton.setBackground(new Color(255, 0, 0));
     	}
@@ -99,7 +111,7 @@ public class CommanderScrollPane extends JPanel {
     public JButton getAdvanceButton() {
     	if (advanceButton == null) {
     		advanceButton = new JButton("ADVANCE");
-    		advanceButton.setActionCommand(ADVANCE);
+    		advanceButton.setActionCommand(ADVANCE_STRING);
     		advanceButton.addActionListener(new CommanderButtonListener());
     		advanceButton.setBackground(new Color(0, 255, 0));
     	}
@@ -109,7 +121,7 @@ public class CommanderScrollPane extends JPanel {
     public JButton getRetreatButton() {
     	if (retreatButton == null) {
     		retreatButton = new JButton("RETREAT");
-    		retreatButton.setActionCommand(RETREAT);
+    		retreatButton.setActionCommand(RETREAT_STRING);
     		retreatButton.addActionListener(new CommanderButtonListener());
     		retreatButton.setBackground(new Color(255, 255, 0));
     	}
@@ -119,7 +131,7 @@ public class CommanderScrollPane extends JPanel {
     public JButton getAttackButton() {
     	if (attackButton == null) {
     		attackButton = new JButton("ATTACK");
-    		attackButton.setActionCommand(ATTACK);
+    		attackButton.setActionCommand(ATTACK_STRING);
     		attackButton.addActionListener(new CommanderButtonListener());
     		attackButton.setBackground(new Color(0, 0, 255));
     	}
@@ -129,7 +141,7 @@ public class CommanderScrollPane extends JPanel {
     public JButton getIncreasePowerButton() {
     	if (increasePowerButton == null) {
     		increasePowerButton = new JButton();
-    		increasePowerButton.setActionCommand(INCREASE);
+    		increasePowerButton.setActionCommand(INCREASE_STRING);
     		increasePowerButton.addActionListener(new CommanderButtonListener());
     		increasePowerButton.setText("<html><center>INCREASE<br>POWER"
     				+ "</center></html>");
@@ -141,7 +153,7 @@ public class CommanderScrollPane extends JPanel {
     public JButton getDecreasePowerButton() {
     	if (decreasePowerButton == null) {
     		decreasePowerButton = new JButton();
-    		decreasePowerButton.setActionCommand(DECREASE);
+    		decreasePowerButton.setActionCommand(DECREASE_STRING);
     		decreasePowerButton.addActionListener(new CommanderButtonListener());
     		decreasePowerButton.setText("<html><center>DECREASE<br>POWER"
     	    		+ "</center></html>");
@@ -153,7 +165,7 @@ public class CommanderScrollPane extends JPanel {
     public JButton getTauntButton() {
     	if (tauntButton == null) {
     		tauntButton = new JButton("TAUNT");
-    		tauntButton.setActionCommand(TAUNT);
+    		tauntButton.setActionCommand(TAUNT_STRING);
     		tauntButton.addActionListener(new CommanderButtonListener());
     		tauntButton.setBackground(new Color(255, 0, 255));
     	}
@@ -164,43 +176,44 @@ public class CommanderScrollPane extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (arg0.getActionCommand().equals(PAUSE)) {
+			
+			List<RobotPeer> robotList = battle.getRobotList();
+			RobotPeer robot = robotList.get(robotIndex);
+			
+			if (arg0.getActionCommand().equals(PAUSE_STRING)) {
 				System.out.println("Pause button pressed.");
-                killButtonActionPerformed();
-				//set flag
-				//call pause()
+				final CommanderEvent event = new CommanderEvent(robot.getName(), PAUSE);
+				robot.addEvent(event);
 				
-			} else if (arg0.getActionCommand().equals(ADVANCE)) {
-				System.out.println("There are " + battle.getActiveRobots() + " active robots.");
-				System.out.println(battle.getRobotList());
+			} else if (arg0.getActionCommand().equals(ADVANCE_STRING)) {
 				System.out.println("Advance button pressed.");
-				//set flag
-				//call scan()
+				final CommanderEvent event = new CommanderEvent(robot.getName(), ADVANCE);
+				robot.addEvent(event);
 				
-			} else if (arg0.getActionCommand().equals(RETREAT)) {
+			} else if (arg0.getActionCommand().equals(RETREAT_STRING)) {
 				System.out.println("Retreat button pressed.");
-				//set flag
-				//call scan()
+				final CommanderEvent event = new CommanderEvent(robot.getName(), RETREAT);
+				robot.addEvent(event);
 				
-			} else if (arg0.getActionCommand().equals(ATTACK)) {
+			} else if (arg0.getActionCommand().equals(ATTACK_STRING)) {
 				System.out.println("Attack button pressed.");
-				//set flag
-				//call scan()
+				final CommanderEvent event = new CommanderEvent(robot.getName(), ATTACK);
+				robot.addEvent(event);
 				
-			} else if (arg0.getActionCommand().equals(INCREASE)) {
+			} else if (arg0.getActionCommand().equals(INCREASE_STRING)) {
 				System.out.println("Increase Power button pressed.");
-				//set flag
-				//call increasePower()
+				final CommanderEvent event = new CommanderEvent(robot.getName(), INCREASE);
+				robot.addEvent(event);
 				
-			} else if (arg0.getActionCommand().equals(DECREASE)) {
+			} else if (arg0.getActionCommand().equals(DECREASE_STRING)) {
 				System.out.println("Decrease Power button pressed.");
-				//set flag
-				//call decreasePower()
+				final CommanderEvent event = new CommanderEvent(robot.getName(), DECREASE);
+				robot.addEvent(event);
 				
-			} else if (arg0.getActionCommand().equals(TAUNT)) {
+			} else if (arg0.getActionCommand().equals(TAUNT_STRING)) {
 				System.out.println("Taunt button pressed.");
-				//set flag
-				//call taunt()
+				final CommanderEvent event = new CommanderEvent(robot.getName(), TAUNT);
+				robot.addEvent(event);
 				
 			}
 		}
