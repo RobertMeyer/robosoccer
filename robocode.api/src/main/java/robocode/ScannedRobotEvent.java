@@ -33,6 +33,10 @@ import robocode.robotinterfaces.IBasicRobot;
  * not work in future Robocode versions, if you choose to inherit from this class.
  *
  * @author Mathew A. Nelson (original)
+ * 
+ * Can now tell if the scanned robot is frozen. This is mainly so the FreezeRobot
+ * does not attack frozen robots.
+ * Can also tell if the scanned robot is a FreezeRobot.
  */
 public class ScannedRobotEvent extends Event {
 
@@ -45,7 +49,9 @@ public class ScannedRobotEvent extends Event {
 	private final double distance;
 	private final double velocity;
 	
+	// Is the robot currents frozen?
 	private final boolean frozen;
+	// Is the robot a FreezeRobot?
 	private final boolean freezeBot;
 
 	/**

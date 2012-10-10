@@ -30,6 +30,7 @@ import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.IFreezeRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.Vector;
 
@@ -58,7 +59,14 @@ import java.util.Vector;
  * @see Droid
  */
 public class FreezeRobot extends _AdvancedRadiansRobot implements IFreezeRobot, IAdvancedRobot, IAdvancedEvents {
-
+	
+	// When the FreezeRobot has been hit 'hitsTillFreeze' times by a bullet, it will be frozen for 'turnsFrozen' turns
+	// to give the other robots a chance.
+	private int hitsTillFreeze = 3;
+	private int timesHit = 0;
+	private int turnsFrozen = 10;
+	
+	
 	/**
 	 * Returns the distance remaining in the robot's current move measured in
 	 * pixels.
@@ -333,128 +341,6 @@ public class FreezeRobot extends _AdvancedRadiansRobot implements IFreezeRobot, 
 		} else {
 			uninitializedException();
 		}
-	}
-
-	/**
-	 * Sets the gun to fire a bullet when the next execution takes place.
-	 * The bullet will travel in the direction the gun is pointing.
-	 * <p/>
-	 * This call returns immediately, and will not execute until you call
-	 * execute() or take an action that executes.
-	 * <p/>
-	 * The specified bullet power is an amount of energy that will be taken from
-	 * the robot's energy. Hence, the more power you want to spend on the
-	 * bullet, the more energy is taken from your robot.
-	 * <p/>
-	 * The bullet will do (4 * power) damage if it hits another robot. If power
-	 * is greater than 1, it will do an additional 2 * (power - 1) damage.
-	 * You will get (3 * power) back if you hit the other robot. You can call
-	 * Rules#getBulletDamage(double)} for getting the damage that a
-	 * bullet with a specific bullet power will do.
-	 * <p/>
-	 * The specified bullet power should be between
-	 * {@link Rules#MIN_BULLET_POWER} and {@link Rules#MAX_BULLET_POWER}.
-	 * <p/>
-	 * Note that the gun cannot fire if the gun is overheated, meaning that
-	 * {@link #getGunHeat()} returns a value > 0.
-	 * <p/>
-	 * An event is generated when the bullet hits a robot, wall, or another
-	 * bullet.
-	 * <p/>
-	 * Example:
-	 * <pre>
-	 *   // Fire a bullet with maximum power if the gun is ready
-	 *   if (getGunHeat() == 0) {
-	 *       setFire(Rules.MAX_BULLET_POWER);
-	 *   }
-	 *   ...
-	 *   execute();
-	 * </pre>
-	 *
-	 * @param power the amount of energy given to the bullet, and subtracted
-	 *              from the robot's energy.
-	 * @see #setFireBullet(double)
-	 * @see #fire(double) fire(double)
-	 * @see #fireBullet(double) fireBullet(double)
-	 * @see #getGunHeat() getGunHeat()
-	 * @see #getGunCoolingRate() getGunCoolingRate()
-	 * @see #onBulletHit(BulletHitEvent) onBulletHit(BulletHitEvent)
-	 * @see #onBulletHitBullet(BulletHitBulletEvent) onBulletHitBullet(BulletHitBulletEvent)
-	 * @see #onBulletMissed(BulletMissedEvent) onBulletMissed(BulletMissedEvent)
-	 */
-	public void setFire(double power) {
-		if (peer != null) {
-			peer.setFire(power);
-		} else {
-			uninitializedException();
-		}
-	}
-
-	/**
-	 * Sets the gun to fire a bullet when the next execution takes place.
-	 * The bullet will travel in the direction the gun is pointing.
-	 * <p/>
-	 * This call returns immediately, and will not execute until you call
-	 * execute() or take an action that executes.
-	 * <p/>
-	 * The specified bullet power is an amount of energy that will be taken from
-	 * the robot's energy. Hence, the more power you want to spend on the
-	 * bullet, the more energy is taken from your robot.
-	 * <p/>
-	 * The bullet will do (4 * power) damage if it hits another robot. If power
-	 * is greater than 1, it will do an additional 2 * (power - 1) damage.
-	 * You will get (3 * power) back if you hit the other robot. You can call
-	 * {@link Rules#getBulletDamage(double)} for getting the damage that a
-	 * bullet with a specific bullet power will do.
-	 * <p/>
-	 * The specified bullet power should be between
-	 * {@link Rules#MIN_BULLET_POWER} and {@link Rules#MAX_BULLET_POWER}.
-	 * <p/>
-	 * Note that the gun cannot fire if the gun is overheated, meaning that
-	 * {@link #getGunHeat()} returns a value > 0.
-	 * <p/>
-	 * A event is generated when the bullet hits a robot
-	 * ({@link BulletHitEvent}), wall ({@link BulletMissedEvent}), or another
-	 * bullet ({@link BulletHitBulletEvent}).
-	 * <p/>
-	 * Example:
-	 * <pre>
-	 *   Bullet bullet = null;
-	 * <p/>
-	 *   // Fire a bullet with maximum power if the gun is ready
-	 *   if (getGunHeat() == 0) {
-	 *       bullet = setFireBullet(Rules.MAX_BULLET_POWER);
-	 *   }
-	 *   ...
-	 *   execute();
-	 *   ...
-	 *   // Get the velocity of the bullet
-	 *   if (bullet != null) {
-	 *       double bulletVelocity = bullet.getVelocity();
-	 *   }
-	 * </pre>
-	 *
-	 * @param power the amount of energy given to the bullet, and subtracted
-	 *              from the robot's energy.
-	 * @return a {@link Bullet} that contains information about the bullet if it
-	 *         was actually fired, which can be used for tracking the bullet after it
-	 *         has been fired. If the bullet was not fired, {@code null} is returned.
-	 * @see #setFire(double)
-	 * @see Bullet
-	 * @see #fire(double) fire(double)
-	 * @see #fireBullet(double) fireBullet(double)
-	 * @see #getGunHeat() getGunHeat()
-	 * @see #getGunCoolingRate() getGunCoolingRate()
-	 * @see #onBulletHit(BulletHitEvent) onBulletHit(BulletHitEvent)
-	 * @see #onBulletHitBullet(BulletHitBulletEvent) onBulletHitBullet(BulletHitBulletEvent)
-	 * @see #onBulletMissed(BulletMissedEvent) onBulletMissed(BulletMissedEvent)
-	 */
-	public Bullet setFireBullet(double power) {
-		if (peer != null) {
-			return peer.setFire(power);
-		}
-		uninitializedException();
-		return null;
 	}
 
 	/**
@@ -2041,4 +1927,50 @@ public class FreezeRobot extends _AdvancedRadiansRobot implements IFreezeRobot, 
 	public final IAdvancedEvents getAdvancedEventListener() {
 		return this; // this robot is listening
 	}
+	
+	
+	/**
+	 * Counts how many times the FreezeRobot has been hit and freezes
+	 * it if needed.
+	 * Is final so that the FreezeRobot that is extending this cannot
+	 * override the method to get out of being frozen.
+	 */
+	public final void onHitByBullet(HitByBulletEvent e) {	
+		if (++timesHit == hitsTillFreeze) {
+			freeze(turnsFrozen);
+			timesHit = 0;
+		}
+	}
+	
+	/**
+	 * Freezes the FreezeRobot for n turns
+	 * @param n: the turns to freeze the FreezeRobot for
+	 */
+	private void freeze(int n) {
+		setAllColors(Color.BLACK);
+		setStop();
+		execute();
+		while (n > 0) {
+			doNothing();
+			n--;
+		}
+		setResume();
+		execute();
+		setAllColors(Color.CYAN);
+	}
+	
+	/**
+	 * Stops the FreezeRobot being able to fire
+	 */
+	public final void fire(double power) {
+		return;
+    }
+	
+	/**
+	 * Stops the FreezeRobot being able to fire
+	 */
+	public final Bullet fireBullet(double power) {
+        return null;
+    }
+    
 }

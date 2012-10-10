@@ -224,7 +224,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final RbSerializer rbSerializer;
 
 	// The number of turns the robot is frozen for, 0 if not frozen
-	public int frozen = 0;
+	protected int frozen = 0;
 
 	
 	// item inventory
@@ -889,6 +889,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 500;
 		} else if (statics.isDispenser()) {
 			energy = 500;
+		} else if (statics.isFreezeRobot()) {
+			energy = 500;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1340,39 +1342,36 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						statistics.scoreRammingDamage(otherRobot.getName());
 					}
 					
-                    //Use a factor of the armor if it has been changed
-                    //This Robot
-                    if (isBotzilla()) {
-                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
-                    } else if (getRobotArmor() - 1.0 < 0.00001) {
-                        this.updateEnergy(-(this.getRamDamage()));
-                    } else {
-                        this.updateEnergy(-(this.getRamDamage()
-                                            * 1 / this.getRobotArmor()));
-                    }
-                    
-                    // Other Robot
-                    if (otherRobot.isBotzilla()) {
-                    	updateEnergy(-(energy + 1));
-                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
-						otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
-                    } else {
-                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()
-                                                  / 1 / otherRobot.getRobotArmor()));
-                    }
-
-
                     // Check if one of the robots is a FreezeRobot, if so, freeze the other robot.
-					if (otherRobot.isFreezeRobot()) {
-						setState(RobotState.FROZEN);
-						frozen = 100;
-					}
-					
-					if (this.isFreezeRobot()) {
-						otherRobot.setState(RobotState.FROZEN);
-						otherRobot.frozen = 100;
-					}
+                    if (!checkForFreezeBot(otherRobot)) {
+                    	
+                   
+	                    //Use a factor of the armor if it has been changed
+	                    //This Robot
+	                    if (isBotzilla()) {
+	                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
+	                    } else if (getRobotArmor() - 1.0 < 0.00001) {
+	                        this.updateEnergy(-(this.getRamDamage()));
+	                    } else {
+	                        this.updateEnergy(-(this.getRamDamage()
+	                                            * 1 / this.getRobotArmor()));
+	                    }
+	                    
+	                    
+	                    // Other Robot
+	                    if (otherRobot.isBotzilla()) {
+	                    	updateEnergy(-(energy + 1));
+	                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
+							otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
+	                    } else {
+	                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()
+	                                                  / 1 / otherRobot.getRobotArmor()));
+	                    }
+                    }
+
+
                     
+					
 					
                     if (otherRobot.energy == 0) {
                         if (otherRobot.isAlive()) {
@@ -1406,6 +1405,28 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         }
           
     }
+	
+	/**
+	 * Checks if this robot or the other robot are FreezeRobots. 
+	 * If so will freeze the robot that is not a FreezeRobot.
+	 * @param otherRobot: The other robot in the collision
+	 * @return true if one of the robots is a FreezeRobot, false otherwise
+	 */
+	protected boolean checkForFreezeBot(RobotPeer otherRobot) {
+		if (otherRobot.isFreezeRobot()) {
+			setState(RobotState.FROZEN);
+			frozen = 100;
+			return true;
+		}
+		
+		if (this.isFreezeRobot()) {
+			otherRobot.setState(RobotState.FROZEN);
+			otherRobot.frozen = 100;
+			return true;
+		}
+		
+		return false;
+	}
 
 	protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {
         boolean hitObstacle = false;
