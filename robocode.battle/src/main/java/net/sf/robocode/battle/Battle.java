@@ -95,8 +95,6 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-
-
 import static java.lang.Math.round;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -51,11 +51,12 @@ public class ResultsDialog extends BaseScoreDialog {
     }
 
     public void setup(BattleResults[] results, int numRounds, IMode battleMode) {
-    	if (battleMode.toString().equals("Soccer Mode")) {
-    		tableModel = new SoccerResultsTableModel(results, numRounds);
-    	} else {
-    		tableModel = new BattleResultsTableModel(results, numRounds);
-    	}
+    	/* BRANDONCW:
+    	 * Using Mode generated Results Table, create and set then add data */
+    	battleMode.setCustomResultsTable();
+    	tableModel = battleMode.getCustomResultsTable();
+    	tableModel.setResults(results);
+    	tableModel.setNumberOfRounds(numRounds);
     	
         setTitle(((BattleResultsTableModel) getTableModel()).getTitle());
         setResultsData();

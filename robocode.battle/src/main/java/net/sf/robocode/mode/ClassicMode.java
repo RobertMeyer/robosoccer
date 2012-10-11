@@ -7,6 +7,7 @@ import java.util.Hashtable;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
 import robocode.BattleResults;
 import robocode.BattleRules;
@@ -32,6 +33,8 @@ import robocode.control.RobotSpecification;
 public class ClassicMode implements IMode {
 
 	protected GuiOptions uiOptions;
+	/* Results table */
+	protected BattleResultsTableModel resultsTable;
 
 	/**
 	 * {@inheritDoc}
@@ -342,5 +345,41 @@ public class ClassicMode implements IMode {
 	
 	public void addRobots(int currentTurn, BattlePeers peers){
 		// do nothing
+	}
+
+	/**
+	 * Get the customised BattleResultsTableModel
+	 * @return Customised BattleResultsTableModel
+	 */
+	@Override
+	public BattleResultsTableModel getCustomResultsTable() {
+		if (resultsTable == null) {
+			this.setCustomResultsTable();
+		}
+		
+		return resultsTable;
+	}
+	
+	/**
+	 * Setup a default BattleResultsTableModel
+	 */
+	public void setCustomResultsTable() {
+		if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+		
+		/* Set it to show the default scores */
+		resultsTable.showOverallRank(true);
+		resultsTable.showRobotName(true);
+		resultsTable.showTotalScore(true);
+		resultsTable.showSurvival(true);
+		resultsTable.showSurvivalBonus(true);
+		resultsTable.showBulletDamage(true);
+		resultsTable.showBulletBonus(true);
+		resultsTable.showRamDamage(true);
+		resultsTable.showRamBonus(true);
+		resultsTable.showFirsts(true);
+		resultsTable.showSeconds(true);
+		resultsTable.showThirds(true);
 	}
 }

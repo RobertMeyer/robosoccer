@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.item.Flag;
@@ -19,7 +20,9 @@ import net.sf.robocode.battle.peer.RobotPeer;
  *
  */
 public class FlagMode extends ClassicMode {
-
+	/* Custom Results Table */
+	private BattleResultsTableModel resultsTable;
+	
 	/* Point limit for when to finish the game */
     private double pointLimit;
     /* Time limit for when to finish the game */
@@ -97,7 +100,6 @@ public class FlagMode extends ClassicMode {
     public double getTimeLimit() {
         return this.timeLimit;
     }
-
 
     @Override
     public String toString() {
@@ -216,4 +218,25 @@ public class FlagMode extends ClassicMode {
 			this.turnsSinceLastFlagUpdate = 0;
 		}
 	}
+
+    /**
+     * Setup for FlagMode to just display the rank, the name, the total score
+     * and the flag points
+     */
+    public void setCustomResultsTable() {
+    	if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+    	resultsTable.showOverallRank(true);
+    	resultsTable.showRobotName(true);
+    	resultsTable.showTotalScore(true);
+    	resultsTable.showFlagScore(true);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BattleResultsTableModel getCustomResultsTable() {
+    	return resultsTable;
+    }
 }

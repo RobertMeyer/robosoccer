@@ -357,6 +357,7 @@ public final class RobocodeMain extends RobocodeMainBase {
                 }
             }
             if (out != null) {
+            	/* TODO BRANDONCW */
                 BattleResultsTableModel resultsTable = new BattleResultsTableModel(event.getSortedResults(),
                                                                                    event.getBattleRules().getNumRounds());
 
