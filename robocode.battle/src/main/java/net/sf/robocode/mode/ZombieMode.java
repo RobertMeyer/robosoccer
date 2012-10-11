@@ -1,6 +1,5 @@
 package net.sf.robocode.mode;
 
-import robocode.ZombieRobot;
 import robocode.control.RobocodeEngine;
 import robocode.control.RobotSpecification;
 import net.sf.robocode.battle.BattlePeers;

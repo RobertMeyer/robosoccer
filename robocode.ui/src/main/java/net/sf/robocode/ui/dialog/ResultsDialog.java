@@ -20,7 +20,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import net.sf.robocode.battle.BattleResultsTableModel;
-import net.sf.robocode.battle.SoccerResultsTableModel;
 import net.sf.robocode.mode.IMode;
 import net.sf.robocode.ui.IWindowManager;
 import robocode.BattleResults;
