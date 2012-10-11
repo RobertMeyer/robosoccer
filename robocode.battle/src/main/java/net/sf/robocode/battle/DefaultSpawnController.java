@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.io.Logger;
+import net.sf.robocode.mode.BotzillaMode;
 import robocode.BattleRules;
 import robocode.control.RandomFactory;
 
@@ -32,9 +33,9 @@ import robocode.control.RandomFactory;
 public final class DefaultSpawnController implements ISpawnController {
 
     private final List<ISpawnController> controllers = new ArrayList<ISpawnController>();
-    private final Random random = RandomFactory.getRandom();
 
     public DefaultSpawnController() {
+        controllers.add(new BotzillaSpawnController(BotzillaMode.class));
     }
 
     public boolean addController(ISpawnController e) {
@@ -51,13 +52,18 @@ public final class DefaultSpawnController implements ISpawnController {
 
     @Override
     public double[] getSpawnLocation(RobotPeer r, Battle b) {
-        BattleRules br = b.getBattleRules();
-        Logger.realOut.println(controllers);
+        Random random = RandomFactory.getRandom();
+        BattleRules battleRules = b.getBattleRules();
         for (int i = 0; i < controllers.size(); i++) {
             ISpawnController iSpawnController = controllers.get(i);
+            if (iSpawnController == null) {
+                controllers.remove(i);
+                i--;
+                continue;
+            }
             if (iSpawnController instanceof IModeSpawnController) {
                 IModeSpawnController controller = (IModeSpawnController) iSpawnController;
-                if (!b.getBattleMode().equals(controller.getMode())) {
+                if (!b.getBattleMode().getClass().equals(controller.getMode())) {
                     continue;
                 }
             }
@@ -67,8 +73,8 @@ public final class DefaultSpawnController implements ISpawnController {
             }
         }
         // Havn't found a location, so default to random.
-        double x = RobotPeer.WIDTH + random.nextDouble() * (br.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-        double y = RobotPeer.HEIGHT + random.nextDouble() * (br.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+        double x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
+        double y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
         double heading = 2 * Math.PI * random.nextDouble();
         return new double[]{x, y, heading};
     }

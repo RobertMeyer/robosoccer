@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static net.sf.robocode.battle.BattleCreatorForTest.*;
+import static net.sf.robocode.battle.BattleHelper.*;
 import static java.lang.Math.*;
 import java.util.ArrayList;
 import java.util.Arrays;

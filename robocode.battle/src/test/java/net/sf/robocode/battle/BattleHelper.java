@@ -19,6 +19,7 @@ package net.sf.robocode.battle;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.settings.ISettingsManager;
 import static org.mockito.Mockito.*;
@@ -29,7 +30,17 @@ import robocode.BattleRulesForTest;
  *
  * @author lee
  */
-public class BattleCreatorForTest {
+public class BattleHelper {
+
+    public static BattleHelper createBasicBattleWithHelper() {
+        ISettingsManager properties = mock(ISettingsManager.class);
+        IBattleManager battleManager = mock(IBattleManager.class);
+        IHostManager hostManager = mock(IHostManager.class);
+        IRepositoryManager repositoryManager = mock(IRepositoryManager.class);
+        ICpuManager cpuManager = mock(ICpuManager.class);
+        BattleEventDispatcher eventDispatcher = mock(BattleEventDispatcher.class);
+        return new BattleHelper(properties, battleManager, hostManager, repositoryManager, cpuManager, eventDispatcher);
+    }
 
     public static Battle createBasicBattle() {
         ISettingsManager properties = mock(ISettingsManager.class);
@@ -38,10 +49,10 @@ public class BattleCreatorForTest {
         IRepositoryManager repositoryManager = mock(IRepositoryManager.class);
         ICpuManager cpuManager = mock(ICpuManager.class);
         BattleEventDispatcher eventDispatcher = mock(BattleEventDispatcher.class);
-        Battle b = new Battle(properties, battleManager, hostManager, repositoryManager, cpuManager, eventDispatcher);
-        return b;
+        Battle battle = new Battle(properties, battleManager, hostManager, repositoryManager, cpuManager, eventDispatcher);
+        battle.battleMode = new ClassicMode();
+        return battle;
     }
-
 
     public static Battle setBattleRules(Battle b, BattleRulesForTest newRules) {
         b.battleRules = newRules.createBattleRules();
@@ -50,5 +61,22 @@ public class BattleCreatorForTest {
 
     public static BattleRules getBattleRules(Battle b) {
         return b.battleRules;
+    }
+    public final ISettingsManager properties;
+    public final IBattleManager battleManager;
+    public final IHostManager hostManager;
+    public final IRepositoryManager repositoryManager;
+    public final ICpuManager cpuManager;
+    public final BattleEventDispatcher eventDispatcher;
+    public final Battle battle;
+
+    private BattleHelper(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
+        this.properties = properties;
+        this.battleManager = battleManager;
+        this.hostManager = hostManager;
+        this.repositoryManager = repositoryManager;
+        this.cpuManager = cpuManager;
+        this.eventDispatcher = eventDispatcher;
+        battle = new Battle(properties, battleManager, hostManager, repositoryManager, cpuManager, eventDispatcher);
     }
 }

@@ -15,6 +15,7 @@ package robocode;
 
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
+import net.sf.robocode.io.Logger;
 
 /**
  * This advanced robot type allows you to set a rate for each of the robot's movements.
@@ -427,6 +428,10 @@ public class RateControlRobot extends TeamRobot {
      */
     @Override
     public void execute() {
+        Logger.realOut.println("velocityRate=" + velocityRate);
+        Logger.realOut.println("gunRotationRate=" + gunRotationRate);
+        Logger.realOut.println("radarRotationRate=" + radarRotationRate);
+        Logger.realOut.println("turnRate=" + turnRate);
         setMaxVelocity(velocityRate);
         if (velocityRate > 0) {
             setAhead(Double.POSITIVE_INFINITY);
