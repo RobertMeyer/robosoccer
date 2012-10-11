@@ -53,6 +53,7 @@ import net.sf.robocode.battle.item.BoundingRectangle;
 
 /**
  * @author Joel Addison
+ * @author Jack Toohey (contributor)
  */
 public class ObstaclePeer {
 
@@ -101,5 +102,14 @@ public class ObstaclePeer {
 	@Override
 	public String toString() {
 		return "Obstacle";
+	}
+	
+	public boolean obstacleIntersect(ObstaclePeer o) {
+		this.updateBoundingBox();
+		o.updateBoundingBox();
+		if (this.getBoundingBox().intersects(o.getBoundingBox())) {
+			return true;
+		}
+		return false;		
 	}
 }

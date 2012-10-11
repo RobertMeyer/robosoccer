@@ -693,7 +693,7 @@ public class BattleView extends Canvas {
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
                 
-             // sets the body image path to null
+                // sets the body image path to null
                 String bodyPath = null;
                 String weaponPath = null;
                 String radarPath = null;

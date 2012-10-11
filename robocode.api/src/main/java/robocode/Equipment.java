@@ -49,6 +49,15 @@ public class Equipment {
                 .set(RobotAttribute.ENERGY, -60)
                 .build());
         
+        parts.put("Twin Turret",
+                new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+              .set(RobotAttribute.SPEED, -10)
+              .set(RobotAttribute.GUN_HEAT_RATE, -50)
+              .set(RobotAttribute.BULLET_SPEED, 100)
+              .set(RobotAttribute.ENERGY, -60)
+              .image("/net/sf/robocode/ui/images/twinturret.png")
+              .build());
+        
         parts.put("Test", 
         		  new EquipmentPart.Builder(EquipmentSlot.WEAPON)
         		.sound("/robocode.sound/src/main/resources/net/sf/robocode/sound/sounds/zap.wav")
