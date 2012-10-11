@@ -791,7 +791,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                 valid = validSpot(robots);
             }
         }
-        Logger.realOut.println("SDJFAJDSFsdkjfghksdjfgeshjkfgadjhskfgasdkjagfajshdj,hajhskfgahkjlsfhg,mxzcvhkdhfb,mnzvhgxjzvhf,bmndfxhk");
+        //Logger.realOut.println("SDJFAJDSFsdkjfghksdjfgeshjkfgadjhskfgasdkjagfajshdj,hajhskfgahkjlsfhg,mxzcvhkdhfb,mnzvhgxjzvhf,bmndfxhk");
         if (!valid) {
             final Random random = RandomFactory.getRandom();
 
@@ -814,7 +814,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                 gunHeading = radarHeading = bodyHeading = sl[2];
                 x = sl[0];
                 y = sl[1];
-                
+
                 updateBoundingBox();
 
                 if (validSpot(robots)) {
