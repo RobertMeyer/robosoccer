@@ -231,6 +231,8 @@ public class FlagMode extends ClassicMode {
     	resultsTable.showRobotName(true);
     	resultsTable.showTotalScore(true);
     	resultsTable.showFlagScore(true);
+    	
+    	resultsTable.setTitle("Flag Results");
     }
     
     /**
