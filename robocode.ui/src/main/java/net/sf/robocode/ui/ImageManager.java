@@ -73,7 +73,7 @@ public class ImageManager implements IImageManager {
 
         // Read images into the cache
 		getBodyImage();
-		getGunImage();
+		getGunImage(null);
 		getRadarImage();
 		getExplosionRenderImage(0, 0);
 	}
@@ -206,12 +206,16 @@ public class ImageManager implements IImageManager {
     /**
      * Gets the gun image
      * Loads from disk if necessary.
+     * @param imagePath 
      *
      * @return the gun image
      */
-    private Image getGunImage() {
-        if (gunImage == null) {
+    private Image getGunImage(String imagePath) {
+        
+        if (gunImage == null || imagePath == null) {
             gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
+        } else {
+        	gunImage = getImage(imagePath);
         }
         return gunImage;
     }
@@ -255,14 +259,9 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredGunRenderImage(Integer color, String imagePath) {
         RenderImage img = robotGunImageCache.get(color);
-        
-        // sets a custom gun image if one is provided and it is necessary.
-        if(imagePath != null || gunImage == null) {
-        	gunImage = getImage(imagePath);
-        }
 
         if (img == null) {
-            img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(), new Color(color, true)));
+            img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(imagePath), new Color(color, true)));
             robotGunImageCache.put(color, img);
         }
         return img;
