@@ -346,6 +346,11 @@ public class ClassicMode implements IMode {
 	public void addRobots(int currentTurn, BattlePeers peers){
 		// do nothing
 	}
+	
+	public double modifyVision(double VisionDecrease)
+	{
+		return VisionDecrease;
+	}
 
 	/**
 	 * Get the customised BattleResultsTableModel

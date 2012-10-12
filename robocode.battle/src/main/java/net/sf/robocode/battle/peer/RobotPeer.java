@@ -1751,6 +1751,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		double startAngle = lastRadarHeading;
 		double scanRadians = getRadarHeading() - startAngle;
+		double scanDistance = battle.getBattleMode().modifyVision(Rules.RADAR_SCAN_RADIUS);
 
 		// Check if we passed through 360
 		if (scanRadians < -PI) {
@@ -1766,8 +1767,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		startAngle = normalAbsoluteAngle(startAngle);
 
-		scanArc.setArc(x - Rules.RADAR_SCAN_RADIUS, y - Rules.RADAR_SCAN_RADIUS, 2 * Rules.RADAR_SCAN_RADIUS,
-				2 * Rules.RADAR_SCAN_RADIUS, 180.0 * startAngle / PI, 180.0 * scanRadians / PI, Arc2D.PIE);
+		scanArc.setArc(x - scanDistance, y - scanDistance, 2 * scanDistance,
+				2 * scanDistance, 180.0 * startAngle / PI, 180.0 * scanRadians / PI, Arc2D.PIE);
 
 		for (RobotPeer otherRobot : robots) {
 			if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
