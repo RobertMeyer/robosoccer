@@ -99,6 +99,7 @@ import static java.lang.Math.round;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -122,11 +123,6 @@ import robocode.control.events.*;
 import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The {@code Battle} class is used for controlling a battle.
@@ -172,6 +168,7 @@ public final class Battle extends BaseBattle {
     private Hashtable<String, Object> setTimeHashTable;
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
+<<<<<<< HEAD
     // Turn skip related items
     private boolean parallelOn;
     private long millisWait;
@@ -186,6 +183,24 @@ public final class Battle extends BaseBattle {
     private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
     private BattlePeers peers;
     /** List of obstacles in the battlefield */
+=======
+
+	// Turn skip related items
+	private boolean parallelOn;
+	private long millisWait;
+	private int nanoWait;
+
+	/*--ItemController--*/
+	private ItemController itemControl;// = new ItemController();
+	private List<ItemDrop> items = new ArrayList<ItemDrop>();
+	private int itemCursor;
+	// Objects in the battle
+	private int robotsCount;
+	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
+	private BattlePeers peers;
+
+	/** List of obstacles in the battlefield */
+>>>>>>> master
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
     private int numObstacles;
     private static DefaultSpawnController spawnController = new DefaultSpawnController();
@@ -223,7 +238,7 @@ public final class Battle extends BaseBattle {
 
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
-        generateObstacles(numObstacles);
+        obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
 
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
@@ -296,6 +311,7 @@ public final class Battle extends BaseBattle {
             inactivityEnergy -= 10;
             inactiveTurnCount = 0;
         }
+<<<<<<< HEAD
     }
 
     //Get list of robots
@@ -313,6 +329,68 @@ public final class Battle extends BaseBattle {
     }
 
     /**
+=======
+	}
+
+	public void registerDeathRobot(RobotPeer r) {
+		deathRobots.add(r);
+	}
+
+	public BattleRules getBattleRules() {
+		return battleRules;
+	}
+
+	public int getRobotsCount() {
+		return robotsCount;
+	}
+
+	public List<IRenderable> getCustomObject(){
+		return customObject;
+	}
+
+	public ItemController getItemControl(){
+		return itemControl;
+	}
+
+	public List<ObstaclePeer> getObstacleList() {
+		return new ArrayList<ObstaclePeer>(obstacles);
+	}
+
+	public boolean isDebugging() {
+		return isDebugging;
+	}
+
+	public void addBullet(BulletPeer bullet) {
+		bullets.add(bullet);
+	}
+
+	public void resetInactiveTurnCount(double energyLoss) {
+		if (energyLoss < 0) {
+			return;
+		}
+		inactivityEnergy += energyLoss;
+		while (inactivityEnergy >= 10) {
+			inactivityEnergy -= 10;
+			inactiveTurnCount = 0;
+		}
+	}
+
+	//Get list of robots
+	public List<RobotPeer> getRobotList(){
+		return robotList;
+	}
+
+	/**
+	 * Gets the activeRobots.
+	 *
+	 * @return Returns a int
+	 */
+	public int getActiveRobots() {
+		return activeRobots;
+	}
+
+	/**
+>>>>>>> master
      * Gets the killstreak Tracker
      * @return Returns the KillstreakTracker for this battle
      */
@@ -350,6 +428,7 @@ public final class Battle extends BaseBattle {
             }
             final long waitTime = (long) (cpuConstant * parallelConstant);
 
+<<<<<<< HEAD
             millisWait = waitTime / 1000000;
             nanoWait = (int) (waitTime % 1000000);
         } else {
@@ -360,6 +439,13 @@ public final class Battle extends BaseBattle {
             nanoWait = 1;
         }
     }
+=======
+		items.clear();
+		
+		customObject.clear();
+
+		battleManager = null;
+>>>>>>> master
 
     @Override
     protected void finalizeBattle() {
@@ -432,7 +518,57 @@ public final class Battle extends BaseBattle {
         hostManager.resetThreadManager();
     }
 
+<<<<<<< HEAD
     @Override
+=======
+	@Override
+	protected void preloadRound() {
+		super.preloadRound();
+
+		//TODO reset currentTurn
+		currentTurn = 0;
+
+		/*--ItemController--*/
+		itemControl = new ItemController();
+		itemControl.updateRobots(peers.getRobots());
+
+		// At this point the unsafe loader thread will now set itself to wait for a notify
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			robotPeer.initializeRound(peers.getRobots(), initialRobotPositions);
+			robotPeer.println("=========================");
+			robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
+			robotPeer.println("=========================");
+		}
+
+		/* Start to initialise all the items */
+		this.initialiseItems();
+		effArea.clear();
+		customObject.clear();
+
+		List<IRenderable> objs = this.getBattleMode().createRenderables();
+		if (objs != null) {
+			customObject = objs;
+		}
+
+		//boolean switch to switch off effect areas
+		if (battleManager.getBattleProperties().getEffectArea()) {
+			//clear effect area and recreate every round
+			createEffectAreas();
+		}
+		if (getRoundNum() == 0) {
+			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, peers.getRobots().size(), false));
+			if (isPaused()) {
+				eventDispatcher.onBattlePaused(new BattlePausedEvent());
+			}
+		}
+
+		computeActiveRobots();
+
+		hostManager.resetThreadManager();
+	}
+
+	@Override
+>>>>>>> master
     protected void initializeRound() {
         super.initializeRound();
 
@@ -486,7 +622,13 @@ public final class Battle extends BaseBattle {
         // Increment mode specific points - TODO -team-Telos
         this.getBattleMode().scoreTurnPoints();
 
+<<<<<<< HEAD
         bullets.clear();
+=======
+		bullets.clear();
+		
+		items.clear();
+>>>>>>> master
 
         eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
     }
@@ -537,6 +679,7 @@ public final class Battle extends BaseBattle {
         computeActiveRobots();
 
         publishStatuses();
+<<<<<<< HEAD
 
         if (totalTurns % 100 == 0 || totalTurns == 1) {
 
@@ -549,6 +692,20 @@ public final class Battle extends BaseBattle {
         }
 
         currentTurn++;
+=======
+        
+		if (totalTurns % 100 == 0 || totalTurns == 1){
+
+			for (ItemDrop item: items){
+				if (!itemControl.getItems().contains(item)) {
+					itemControl.spawnRandomItem(item);
+					break;
+				}
+			}
+		}
+		currentTurn++;
+
+>>>>>>> master
         // Robot time!
         wakeupRobots();
 
@@ -771,6 +928,7 @@ public final class Battle extends BaseBattle {
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
+<<<<<<< HEAD
 
             // Death effect
             if (battleManager.getBattleProperties().getEffectArea()) {
@@ -809,6 +967,14 @@ public final class Battle extends BaseBattle {
                 }
             }
 
+=======
+        	
+        	// Death effect
+        	if (battleManager.getBattleProperties().getEffectArea()) {
+        		deathEffect(deadRobot);
+        	}
+        	
+>>>>>>> master
             // Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
                 deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
@@ -839,6 +1005,111 @@ public final class Battle extends BaseBattle {
         }
 
         deathRobots.clear();
+    }
+    
+    private void deathEffect(RobotPeer deadRobot) {
+    	int finalX = 0;
+    	int finalY = 0;
+		int yOffset = bp.getBattlefieldHeight() % 64;
+
+		// distance and damage variables used for case 1, 2 and 3
+		int damage = -5;
+		int explosionDistance = 75;
+		
+		if (deadRobot.getDeathEffect() > 3) {
+			// Round off to closest X and Y tiles
+			// Only applicable to case 4, 5 and 6
+			finalX = (int)deadRobot.getX()-(int)deadRobot.getX()%64;
+
+			finalY = (int)deadRobot.getY()-yOffset+64;
+			finalY = (finalY/64)*64;
+			finalY = finalY+yOffset;
+		}
+		
+		switch(deadRobot.getDeathEffect()) {
+		case 1:
+			// Large explosion - small damage
+			explosionDistance *= 3;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+					
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 2:
+			// Medium explosion - medium damage
+			explosionDistance *= 2;
+			damage *= 2;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+					
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 3:
+			// Small explosion - large damage
+			damage *= 3;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+					
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 4:
+			// Effect area 1
+			EffectArea deathEffect1 = new EffectArea(finalX, finalY, 64, 64, 1);
+			effArea.add(deathEffect1);
+			break;
+		case 5:
+			// Effect area 2
+			EffectArea deathEffect2 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 2);
+			effArea.add(deathEffect2);
+			break;
+		case 6:
+			// Effect area 3
+			EffectArea deathEffect3 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 3);
+			effArea.add(deathEffect3);
+			break;
+		}
     }
 
     private void publishStatuses() {

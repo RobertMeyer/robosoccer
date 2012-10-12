@@ -1,7 +1,5 @@
 package net.sf.robocode.battle;
 
-import java.text.NumberFormat;
-
 import robocode.BattleResults;
 
 @SuppressWarnings("serial")
