@@ -22,6 +22,7 @@ public class Equipment {
         parts.put("Division 9 Plasmaprojector",
                   new EquipmentPart.Builder(EquipmentSlot.WEAPON)
         		.set(RobotAttribute.SPEED, -20)
+        		.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
         		.set(RobotAttribute.GUN_HEAT_RATE, 70)
                 .set(RobotAttribute.BULLET_DAMAGE, 90)
                 .build());
@@ -60,7 +61,7 @@ public class Equipment {
         
         parts.put("Test", 
         		  new EquipmentPart.Builder(EquipmentSlot.WEAPON)
-        		.sound("/robocode.sound/src/main/resources/net/sf/robocode/sound/sounds/zap.wav")
+        		.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
         		.build());
     }
 

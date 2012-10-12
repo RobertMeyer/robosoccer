@@ -17,7 +17,13 @@ public class SampleEquipRobot extends AdvancedRobot {
 		
 		equip("Division 9 Plasmaprojector");
 		
-		ahead(100);
+		while(true){
+		
+		fire(3);
+		
+		}
+		
+		
 	}
 	public void print(String string){
 		System.out.println(string);
