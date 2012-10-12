@@ -20,6 +20,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import net.sf.robocode.battle.BattleResultsTableModel;
+import net.sf.robocode.battle.SoccerResultsTableModel;
 import net.sf.robocode.mode.IMode;
 import net.sf.robocode.ui.IWindowManager;
 import robocode.BattleResults;
@@ -50,12 +51,11 @@ public class ResultsDialog extends BaseScoreDialog {
     }
 
     public void setup(BattleResults[] results, int numRounds, IMode battleMode) {
-    	/* BRANDONCW:
-    	 * Using Mode generated Results Table, create and set then add data */
-    	battleMode.setCustomResultsTable();
-    	tableModel = battleMode.getCustomResultsTable();
-    	tableModel.setResults(results);
-    	tableModel.setNumberOfRounds(numRounds);
+    	if (battleMode.toString().equals("Soccer Mode")) {
+    		tableModel = new SoccerResultsTableModel(results, numRounds);
+    	} else {
+    		tableModel = new BattleResultsTableModel(results, numRounds);
+    	}
     	
         setTitle(((BattleResultsTableModel) getTableModel()).getTitle());
         setResultsData();

@@ -1,5 +1,7 @@
 package net.sf.robocode.ui;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class SampleTest {

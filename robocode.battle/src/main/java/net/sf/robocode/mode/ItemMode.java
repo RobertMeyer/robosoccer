@@ -7,6 +7,7 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.item.HaltPack;
 import net.sf.robocode.battle.item.HealthPack;
 import net.sf.robocode.battle.item.PoisonPack;
+import net.sf.robocode.battle.item.SpeedItem;
 import net.sf.robocode.battle.item.ItemDrop;
 
 public class ItemMode extends ClassicMode {

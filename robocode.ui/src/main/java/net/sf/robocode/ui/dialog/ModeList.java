@@ -1,5 +1,6 @@
 package net.sf.robocode.ui.dialog;
 
+import javax.swing.JLabel;
 import javax.swing.JList;
 
 public class ModeList extends JList {

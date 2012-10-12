@@ -121,8 +121,7 @@ public abstract class BaseScoreDialog extends JDialog {
         public void componentMoved(ComponentEvent e) {
         }
     }
-    
-    // Initialise results table model
+
     protected abstract AbstractTableModel getTableModel();
 
     protected void onDialogShown() {

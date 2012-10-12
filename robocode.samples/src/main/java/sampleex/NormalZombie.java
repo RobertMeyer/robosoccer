@@ -1,5 +1,6 @@
 package sampleex;
 
+import robocode.HitWallEvent;
 import robocode.ScannedRobotEvent;
 import robocode.ZombieRobot;
 

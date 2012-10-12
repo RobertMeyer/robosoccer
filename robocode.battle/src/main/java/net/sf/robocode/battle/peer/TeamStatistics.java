@@ -213,15 +213,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
-    public double getCurrentFlagScore() {
-    	double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentFlagScore();
-        }
-        return d;
-    }
-    
+    @Override
     public double getCurrentRammingKillBonus() {
         double d = 0;
 

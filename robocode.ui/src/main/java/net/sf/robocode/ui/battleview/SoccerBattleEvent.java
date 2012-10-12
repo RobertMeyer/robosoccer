@@ -1,10 +1,13 @@
 package net.sf.robocode.ui.battleview;
 
+import static java.lang.Math.round;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import net.sf.robocode.ui.IImageManager;
 

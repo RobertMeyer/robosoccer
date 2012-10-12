@@ -5,27 +5,23 @@ import java.util.*;
 import net.sf.robocode.battle.peer.*;
 
 /**
- * Item controller. Controls the addition and removal of items from the 
- * battlefield.
+ * Item controller
  * 
- * @author Jacob Klein (Dream Team)
+ * @author Jacob Klein - Dream Team
  * 
- * Contributors:
- * @author Ameer Sabri (Dream Team) (documentation only)
  */
 
 public class ItemController {
 
-	//Lists of the current battlefield
+	//Lists of current battlefield
 	private List<ItemDrop> battleItems = new ArrayList<ItemDrop>();
 	private List<RobotPeer> currentRobots = new ArrayList<RobotPeer>();
 	
-	//Boolean to enable displayed console output
+	//Boolean to display console output
 	private boolean debugMessage = true;
-	
 	/**
-	 * Updates the robot list used for collision detection
-	 * @param robots list of robots on the battlefield
+	 * Updates robot list used for collision detection
+	 * @param robots - List of robots on battlefield
 	 */	
 	public void updateRobots(List<RobotPeer> robots){
 		currentRobots = robots;
@@ -37,11 +33,11 @@ public class ItemController {
     }
 
 	/**
-	 * Calls item initialiser to attempt spawning an item
-	 * @param item item to be spawned
-	 * @param x x-coordinate of the item
-	 * @param y y-coordinate of the item
-	 * @return {@code true} if the item was successfully spawned; {@code false} otherwise
+	 * Calls item initialiser to attempt spawn of item
+	 * @param item - Item to be spawned
+	 * @param x - x coordinate to attempt spawn
+	 * @param y - y coordinate to attempt spawn
+	 * @return boolean if spawn was successful
 	 */
 	public boolean spawnItem(ItemDrop item, double x, double y) {
 		if(item.addNewItem(currentRobots,battleItems,x,y)){
@@ -53,7 +49,7 @@ public class ItemController {
 	
 	/**
 	 * Calls item initialiser to attempt spawn of item at random spot on battlefield
-	 * @param item item to be spawned
+	 * @param item - Item to be spawned
 	 */
 	
 	public void spawnRandomItem(ItemDrop item){
@@ -62,8 +58,8 @@ public class ItemController {
 	}
 	
 	/**
-	 * Removes the item from the current items on the battlefield
-	 * @param item item to remove from the battlefield
+	 * Removes item from current battlefield items
+	 * @param item - item to remove;
 	 */
 	public void removeItem(ItemDrop item){
 		if (battleItems.contains(item)){
@@ -73,7 +69,7 @@ public class ItemController {
 	
 	/**
 	 * Public method to access current items on the battlefield
-	 * @return List of the current items on the battlefield
+	 * @return List of current items on the battlefield
 	 */
 	public List<ItemDrop> getItems() {
 		return battleItems;
@@ -81,7 +77,7 @@ public class ItemController {
 
 	
 	/**
-	 * Helper method to print messages to console if debugging is enabled.
+	 * Helper method to print messages to console if debugMessage = true
 	 */
 	private void printf(String s) {
 		if (debugMessage){

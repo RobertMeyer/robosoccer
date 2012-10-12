@@ -1,5 +1,10 @@
 package equipment;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import net.sf.robocode.io.Logger;
 import robocode.*;
 
 /**

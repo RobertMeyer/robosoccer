@@ -213,7 +213,6 @@ public class BattleRecordInfo implements Serializable, IXmlSerializable {
                 writer.writeAttribute("bulletDamageBonus", bulletDamageBonus, options.trimPrecision);
                 writer.writeAttribute("ramDamage", ramDamage, options.trimPrecision);
                 writer.writeAttribute("ramDamageBonus", ramDamageBonus, options.trimPrecision);
-                writer.writeAttribute("flagScore", flagScore, options.trimPrecision);
                 writer.writeAttribute("firsts", firsts);
                 writer.writeAttribute("seconds", seconds);
                 writer.writeAttribute("thirds", thirds);
@@ -284,13 +283,6 @@ public class BattleRecordInfo implements Serializable, IXmlSerializable {
                         @Override
                         public void read(String value) {
                             rules.ramDamageBonus = Double.parseDouble(value);
-                        }
-                    });
-                    // Team Telos addition
-                    reader.expect("flagScore", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.flagScore = Double.parseDouble(value);
                         }
                     });
                     reader.expect("firsts", new XmlReader.Attribute() {

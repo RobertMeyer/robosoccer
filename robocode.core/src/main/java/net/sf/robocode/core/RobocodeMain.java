@@ -50,6 +50,11 @@ import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.util.StringUtil;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.events.*;
+import javax.sound.sampled.*;   
+import java.net.URL;
+import javax.sound.sampled.AudioInputStream; 
+import javax.sound.sampled.AudioSystem; 
+import javax.sound.sampled.Clip;
 /**
  * Robocode - A programming game involving battling AI tanks.<br>
  * Copyright (c) 2001-2012 Mathew A. Nelson and Robocode contributors
@@ -352,7 +357,6 @@ public final class RobocodeMain extends RobocodeMainBase {
                 }
             }
             if (out != null) {
-            	/* TODO BRANDONCW */
                 BattleResultsTableModel resultsTable = new BattleResultsTableModel(event.getSortedResults(),
                                                                                    event.getBattleRules().getNumRounds());
 

@@ -2,6 +2,7 @@ package net.sf.robocode.ui.dialog;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.*;
 
 import javax.swing.*;

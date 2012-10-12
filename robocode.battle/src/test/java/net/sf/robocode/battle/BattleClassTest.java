@@ -1,5 +1,7 @@
 package net.sf.robocode.battle;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class BattleClassTest {

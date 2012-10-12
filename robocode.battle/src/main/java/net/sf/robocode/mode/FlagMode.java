@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.item.Flag;
 import net.sf.robocode.battle.item.ItemDrop;
-import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
  * Basic Construct for the CTF mode:
@@ -20,9 +18,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
  *
  */
 public class FlagMode extends ClassicMode {
-	/* Custom Results Table */
-	private BattleResultsTableModel resultsTable;
-	
+
 	/* Point limit for when to finish the game */
     private double pointLimit;
     /* Time limit for when to finish the game */
@@ -35,8 +31,8 @@ public class FlagMode extends ClassicMode {
     /* The actual flag we need */
     private Flag flag;
     
-    /* Location of the file */
-    private String imageFile = "/net/sf/robocode/ui/images/flag.png";
+    /* Location of the file TODO */
+    private String imageFile;
     
     /* List of CustomObjects used */
     List<IRenderable> objects = new ArrayList<IRenderable>();
@@ -44,7 +40,7 @@ public class FlagMode extends ClassicMode {
     /* The current turn since last flag update */
     private int turnsSinceLastFlagUpdate;
     /* How often the Flag should be moved */
-    private final int UPDATE_FLAG_TURNS = 500;
+    private final int UPDATE_FLAG_TURNS = 100;
 
     /**
      *
@@ -102,6 +98,12 @@ public class FlagMode extends ClassicMode {
     }
 
     @Override
+    public double modifyVelocity(double velocityIncrement) {
+        // Maybe upon pick up flag make slightly slower.
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return "Capture the Flag";
     }
@@ -121,8 +123,8 @@ public class FlagMode extends ClassicMode {
     @Override
     public void setItems(Battle battle) {
     	/* Add the flag to the items */
-    	flag = new Flag(false, Integer.MAX_VALUE, 100, true, battle, null);
-    	items.add(flag);
+    	flag = new Flag(false, Integer.MAX_VALUE, 0.0, true, battle, null);
+        items.add(flag);
     }
 
     /**
@@ -130,9 +132,7 @@ public class FlagMode extends ClassicMode {
      */
     @Override
     public void scoreTurnPoints() {
-    	if (flag.getCarrier() != null) {
-    		flag.getCarrier().getRobotStatistics().scoreFlag();
-    	}
+    	flag.getCarrier().getRobotStatistics().scoreFlag();
     }
     
     /**
@@ -145,25 +145,10 @@ public class FlagMode extends ClassicMode {
     }
     
     /**
-     * On the death of a robot that is going to respawn, drop the flag if they're
-     * the carrier
-     */
-    public void onRespawnDeath(RobotPeer robot) {
-		if (robot == flag.getCarrier()) {
-			/* The carrier so drop the flag */
-			flag.setCarrier(null);
-			flag.setXLocation(robot.getX());
-			flag.setYLocation(robot.getY());
-			// Recreate the flag
-			// this.createRenderables();
-		}
-	}
-    
-    /**
      * Rounds will last 2 mins at 30 turns per second (3600 turns)
      */
     public int turnLimit() {
-    	return 800;  // 2 min. at 30 turns per sec (default)
+    	return 2*30*60;  // 2 min. at 30 turns per sec (default)
     }
     
     /**
@@ -173,6 +158,7 @@ public class FlagMode extends ClassicMode {
 	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
     	objects.add(new RenderObject("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
+    	
     	return objects;
     }
     
@@ -201,44 +187,19 @@ public class FlagMode extends ClassicMode {
     				}
     			}	
     			
+    			/* Update since last update */
+    			this.turnsSinceLastFlagUpdate++;
+    		} else {
+    			/* With a robot so set the location to be the carrier */
+    			for (IRenderable obj: objects) {
+    				if (obj.getName() == "Flag") {
+    				    obj.setTranslate(flag.getCarrier().getX(), flag.getCarrier().getY());
+    				}
+    			}
+    			
+    			/* Set update since last update to 0 */
     			this.turnsSinceLastFlagUpdate = 0;
     		}
-    		
-    		/* Update since last update */
-			this.turnsSinceLastFlagUpdate++;
-    	}  else {
-			/* With a robot, so set the location to be the carrier */
-			for (IRenderable obj: objects) {
-				if (obj.getName() == "Flag") {
-				    obj.setTranslate(flag.getCarrier().getX(), flag.getCarrier().getY());
-				}
-			}
-			
-			/* Set update since last update to 0 */
-			this.turnsSinceLastFlagUpdate = 0;
-		}
+    	}
 	}
-
-    /**
-     * Setup for FlagMode to just display the rank, the name, the total score
-     * and the flag points
-     */
-    public void setCustomResultsTable() {
-    	if (resultsTable == null) {
-			resultsTable = new BattleResultsTableModel();
-		}
-    	resultsTable.showOverallRank(true);
-    	resultsTable.showRobotName(true);
-    	resultsTable.showTotalScore(true);
-    	resultsTable.showFlagScore(true);
-    	
-    	resultsTable.setTitle("Flag Results");
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public BattleResultsTableModel getCustomResultsTable() {
-    	return resultsTable;
-    }
 }

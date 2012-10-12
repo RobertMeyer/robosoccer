@@ -1,5 +1,10 @@
 package equipment;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import net.sf.robocode.io.Logger;
 import robocode.*;
 
 /**
@@ -17,13 +22,7 @@ public class SampleEquipRobot extends AdvancedRobot {
 		
 		equip("Division 9 Plasmaprojector");
 		
-		while(true){
-		
-		fire(3);
-		
-		}
-		
-		
+		ahead(100);
 	}
 	public void print(String string){
 		System.out.println(string);

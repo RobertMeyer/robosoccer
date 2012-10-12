@@ -1,9 +1,13 @@
 package net.sf.robocode.battle.peer;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
+import robocode.Rules;
 import robocode.control.RobotSpecification;
+import robocode.control.snapshot.RobotState;
 import static robocode.util.Utils.normalAbsoluteAngle;
 import static robocode.util.Utils.normalNearAbsoluteAngle;
 

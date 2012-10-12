@@ -428,7 +428,7 @@ public class BulletPeer {
 		case FIRED:
 			// Note that the bullet must be in the FIRED state before it goes to
 			// the MOVING state
-			if (frame > 1) {
+			if (frame > 0) {
 				state = BulletState.MOVING;
 			}
 			break;
