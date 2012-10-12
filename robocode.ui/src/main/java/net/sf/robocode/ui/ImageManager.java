@@ -201,7 +201,11 @@ public class ImageManager implements IImageManager {
         if (bodyImage == null || imagePath == null) {
             bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
         } else {
+        	try{
         	bodyImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		gunImage = getImage("/net/sf/robocode/ui/images/body.png");
+        	}
         }
         return bodyImage;
     }
@@ -218,7 +222,11 @@ public class ImageManager implements IImageManager {
         if (gunImage == null || imagePath == null) {
             gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
         } else {
-        	gunImage = getImage(imagePath);
+        	try{
+        		gunImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
+        	}
         }
         return gunImage;
     }
@@ -234,7 +242,11 @@ public class ImageManager implements IImageManager {
         if (radarImage == null || imagePath == null) {
             radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
         } else {
+        	try{
         	radarImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		gunImage = getImage("/net/sf/robocode/ui/images/radar.png");
+        	}
         }
         return radarImage;
     }
