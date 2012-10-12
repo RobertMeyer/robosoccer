@@ -105,6 +105,7 @@ import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
+import net.sf.robocode.battle.peer.LandminePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
@@ -123,6 +124,7 @@ import robocode.control.events.*;
 import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.LandmineState;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -190,6 +192,7 @@ public final class Battle extends BaseBattle {
 	// Objects in the battle
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
+	private final List<LandminePeer> landmines=new CopyOnWriteArrayList<LandminePeer>();
 	private BattlePeers peers;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -259,6 +262,10 @@ public final class Battle extends BaseBattle {
 		bullets.add(bullet);
 	}
 
+	public void addLandmine(LandminePeer landmine)
+	{
+		landmines.add(landmine);
+	}
 	public void resetInactiveTurnCount(double energyLoss) {
 		if (energyLoss < 0) {
 			return;
@@ -463,7 +470,7 @@ public final class Battle extends BaseBattle {
 
         Logger.logMessage(""); // puts in a new-line in the log message
 
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, landmines,effArea, customObject, itemControl.getItems(), false);
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -482,6 +489,7 @@ public final class Battle extends BaseBattle {
 		}
 
 		bullets.clear();
+		landmines.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
 	}
@@ -510,6 +518,8 @@ public final class Battle extends BaseBattle {
         itemControl.updateRobots(peers.getRobots());
 
         updateBullets();
+        
+        updateLandmines();
         
         updateEffectAreas();
         
@@ -613,7 +623,7 @@ public final class Battle extends BaseBattle {
 	 
 	 @Override
     protected void finalizeTurn() {
-        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), true)));
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, landmines,effArea, customObject, itemControl.getItems(), true)));
 
         super.finalizeTurn();
     }
@@ -676,6 +686,13 @@ public final class Battle extends BaseBattle {
 		Collections.shuffle(shuffledList, RandomFactory.getRandom());
 		return shuffledList;
 	}
+	
+	private List<LandminePeer> getLandminesAtRandom() {
+		List<LandminePeer> shuffledList = new ArrayList<LandminePeer>(landmines);
+
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
 	/**
 	 * Returns a list of all death robots in random order. This method is used to gain fair play in Robocode.
@@ -701,6 +718,15 @@ public final class Battle extends BaseBattle {
 			bullet.update(getRobotsAtRandom(), getBulletsAtRandom());
 			if (bullet.getState() == BulletState.INACTIVE) {
 				bullets.remove(bullet);
+			}
+		}
+	}
+	
+	private void updateLandmines() {
+		for (LandminePeer landmine : getLandminesAtRandom()) {
+			landmine.update(getRobotsAtRandom(), getLandminesAtRandom());
+			if (landmine.getState() == LandmineState.INACTIVE) {
+				landmines.remove(landmine);
 			}
 		}
 	}

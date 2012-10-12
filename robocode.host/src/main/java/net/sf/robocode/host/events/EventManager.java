@@ -215,6 +215,20 @@ public class EventManager implements IEventManager {
         }
         return events;
     }
+    
+    @Override
+    public List<LandmineHitEvent> getLandmineHitEvents() {
+        List<LandmineHitEvent> events = Collections.synchronizedList(new ArrayList<LandmineHitEvent>());
+
+        synchronized (eventQueue) {
+            for (Event e : eventQueue) {
+                if (e instanceof LandmineHitEvent) {
+                    events.add((LandmineHitEvent) e);
+                }
+            }
+        }
+        return events;
+    }
 
     /**
      * Returns a list containing all BulletMissedEvents currently in the robot's queue.
@@ -274,6 +288,20 @@ public class EventManager implements IEventManager {
             for (Event e : eventQueue) {
                 if (e instanceof HitByBulletEvent) {
                     events.add((HitByBulletEvent) e);
+                }
+            }
+        }
+        return events;
+    }
+    
+    @Override
+    public List<HitByLandmineEvent> getHitByLandmineEvents() {
+        List<HitByLandmineEvent> events = Collections.synchronizedList(new ArrayList<HitByLandmineEvent>());
+
+        synchronized (eventQueue) {
+            for (Event e : eventQueue) {
+                if (e instanceof HitByLandmineEvent) {
+                    events.add((HitByLandmineEvent) e);
                 }
             }
         }
@@ -614,9 +642,11 @@ public class EventManager implements IEventManager {
         registerNamedEvent(new BattleEndedEvent(false, null));
         registerNamedEvent(new BulletHitBulletEvent(null, null));
         registerNamedEvent(new BulletHitEvent(null, 0, null));
+        registerNamedEvent(new LandmineHitEvent(null, 0, null));
         registerNamedEvent(new BulletMissedEvent(null));
         registerNamedEvent(new DeathEvent());
         registerNamedEvent(new HitByBulletEvent(0, null));
+        registerNamedEvent(new HitByLandmineEvent(0, null));
         registerNamedEvent(new HitRobotEvent(null, 0, 0, false));
         registerNamedEvent(new HitWallEvent(0));
         registerNamedEvent(new KeyPressedEvent(null));

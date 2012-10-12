@@ -13,11 +13,11 @@
  *******************************************************************************/
 package net.sf.robocode.battle.snapshot;
 
-
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
+import net.sf.robocode.battle.peer.LandminePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.serialization.IXmlSerializable;
@@ -29,28 +29,30 @@ import robocode.control.snapshot.*;
 import java.io.IOException;
 import java.util.*;
 
-
 /**
- * A snapshot of a battle turn at a specific time instant in a battle.
- * The snapshot contains a snapshot of the battle turn data at that specific time.
- *
+ * A snapshot of a battle turn at a specific time instant in a battle. The
+ * snapshot contains a snapshot of the battle turn data at that specific time.
+ * 
  * @author Flemming N. Larsen (original)
  * @author Pavel Savara (contributor)
  * @since 1.6.1
  */
 
-public final class TurnSnapshot implements java.io.Serializable, IXmlSerializable, ITurnSnapshot {
+public final class TurnSnapshot implements java.io.Serializable,
+		IXmlSerializable, ITurnSnapshot {
 
 	private static final long serialVersionUID = 1L;
 
-    /** List of snapshots for the robots participating in the battle */
-    private List<IRobotSnapshot> robots;
-    /** List of snapshots for the bullets that are currently on the battlefield */
-    private List<IBulletSnapshot> bullets;
-    /** List of snapshots for the items that are currently on the battlefield */
-    //TODO expand this use
-    private List<IItemSnapshot> items;
-    /** List of snapshots of effect areas */
+	/** List of snapshots for the robots participating in the battle */
+	private List<IRobotSnapshot> robots;
+	/** List of snapshots for the bullets that are currently on the battlefield */
+	private List<IBulletSnapshot> bullets;
+
+	private List<ILandmineSnapshot> landmines;
+	/** List of snapshots for the items that are currently on the battlefield */
+	// TODO expand this use
+	private List<IItemSnapshot> items;
+	/** List of snapshots of effect areas */
 	private List<IEffectAreaSnapshot> effArea;
 	private List<IRenderableSnapshot> customObj;
 	/** Current round in the battle */
@@ -58,27 +60,37 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 	/** Current turn in the battle round */
 	private int turn;
-    /** Current TPS (turns per second) */
-    private int tps;
+	/** Current TPS (turns per second) */
+	private int tps;
 
 	/**
-	 * Creates a snapshot of a battle turn that must be filled out with data later.
+	 * Creates a snapshot of a battle turn that must be filled out with data
+	 * later.
 	 */
-	public TurnSnapshot() {}
+	public TurnSnapshot() {
+	}
 
-	 /**
-     * Creates a snapshot of a battle turn.
-     *
-     * @param battle the battle to make a snapshot of.
-     * @param battleRobots the robots participating in the battle.
-     * @param battleBullets the current bullet on the battlefield.
-     * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
-     *                    {@code false} otherwise.
-     */
-    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<IRenderable> customObjects, List<ItemDrop> battleItems, boolean readoutText) {
-        robots = new ArrayList<IRobotSnapshot>();
-        bullets = new ArrayList<IBulletSnapshot>();
-        items = new ArrayList<IItemSnapshot>();
+	/**
+	 * Creates a snapshot of a battle turn.
+	 * 
+	 * @param battle
+	 *            the battle to make a snapshot of.
+	 * @param battleRobots
+	 *            the robots participating in the battle.
+	 * @param battleBullets
+	 *            the current bullet on the battlefield.
+	 * @param readoutText
+	 *            {@code true} if the output text from the robots must be
+	 *            included in the snapshot; {@code false} otherwise.
+	 */
+	public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots,
+			List<BulletPeer> battleBullets, List<LandminePeer> battleLandmines,
+			List<EffectArea> effectAreas, List<IRenderable> customObjects,
+			List<ItemDrop> battleItems, boolean readoutText) {
+		robots = new ArrayList<IRobotSnapshot>();
+		bullets = new ArrayList<IBulletSnapshot>();
+		landmines = new ArrayList<ILandmineSnapshot>();
+		items = new ArrayList<IItemSnapshot>();
 		effArea = new ArrayList<IEffectAreaSnapshot>();
 		customObj = new ArrayList<IRenderableSnapshot>();
 
@@ -89,7 +101,11 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		for (BulletPeer bulletPeer : battleBullets) {
 			bullets.add(new BulletSnapshot(bulletPeer));
 		}
-		
+
+		for (LandminePeer landminePeer : battleLandmines) {
+			landmines.add(new LandmineSnapshot(landminePeer));
+		}
+
 		/*--ItemController--*/
 		for (ItemDrop item : battleItems) {
 			items.add(new ItemSnapshot(item));
@@ -98,42 +114,48 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		for (EffectArea effectArea : effectAreas) {
 			effArea.add(new EffectAreaSnapshot(effectArea));
 		}
-        
-        for (IRenderable customObject : customObjects) {
-        	customObj.add(new RenderableSnapshot(customObject));
-        }
-        
+
+		for (IRenderable customObject : customObjects) {
+			customObj.add(new RenderableSnapshot(customObject));
+		}
+
 		tps = battle.getTPS();
 		turn = battle.getTime();
 		round = battle.getRoundNum();
 	}
-       
+
 	@Override
 	public String toString() {
 		return this.round + "/" + turn + " (" + this.robots.size() + ")";
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRobotSnapshot[] getRobots() {
 		return robots.toArray(new IRobotSnapshot[robots.size()]);
 	}
- 
 
 	@Override
 	public IItemSnapshot[] getItems() {
 		// TODO Auto-generated method stub
 		return items.toArray(new IItemSnapshot[items.size()]);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public IBulletSnapshot[] getBullets() {
 		return bullets.toArray(new IBulletSnapshot[bullets.size()]);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ILandmineSnapshot[] getLandmines() {
+		return landmines.toArray(new ILandmineSnapshot[landmines.size()]);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -155,7 +177,6 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		return round;
 	}
 
-    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -166,19 +187,18 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	public IEffectAreaSnapshot[] getEffectAreas() {
 		return effArea.toArray(new IEffectAreaSnapshot[effArea.size()]);
 	}
-	
+
 	@Override
 	public IRenderableSnapshot[] getCustomObjects() {
 		return customObj.toArray(new IRenderableSnapshot[customObj.size()]);
 	}
-	
-
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IScoreSnapshot[] getSortedTeamScores() {
-		List<IScoreSnapshot> copy = new ArrayList<IScoreSnapshot>(Arrays.asList(getIndexedTeamScores()));
+		List<IScoreSnapshot> copy = new ArrayList<IScoreSnapshot>(
+				Arrays.asList(getIndexedTeamScores()));
 
 		Collections.sort(copy);
 		Collections.reverse(copy);
@@ -189,7 +209,8 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	 * {@inheritDoc}
 	 */
 	public IScoreSnapshot[] getIndexedTeamScores() {
-		// team scores are computed on demand from team scores to not duplicate data in the snapshot
+		// team scores are computed on demand from team scores to not duplicate
+		// data in the snapshot
 
 		List<IScoreSnapshot> results = new ArrayList<IScoreSnapshot>();
 
@@ -201,9 +222,9 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 			final int contestantIndex = robot.getContestantIndex();
 			final IScoreSnapshot snapshot = results.get(contestantIndex);
 
-			IScoreSnapshot score = (snapshot == null)
-					? robot.getScoreSnapshot()
-					: new ScoreSnapshot(robot.getTeamName(), snapshot, robot.getScoreSnapshot());
+			IScoreSnapshot score = (snapshot == null) ? robot
+					.getScoreSnapshot() : new ScoreSnapshot(
+					robot.getTeamName(), snapshot, robot.getScoreSnapshot());
 
 			results.set(contestantIndex, score);
 		}
@@ -227,15 +248,19 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	/**
 	 * {@inheritDoc}
 	 */
-	public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
-		writer.startElement(options.shortAttributes ? "t" : "turn"); {
-			writer.writeAttribute(options.shortAttributes ? "ro" : "round", round);
+	public void writeXml(XmlWriter writer, SerializableOptions options)
+			throws IOException {
+		writer.startElement(options.shortAttributes ? "t" : "turn");
+		{
+			writer.writeAttribute(options.shortAttributes ? "ro" : "round",
+					round);
 			writer.writeAttribute(options.shortAttributes ? "tu" : "turn", turn);
 			if (!options.skipVersion) {
 				writer.writeAttribute("ver", serialVersionUID);
 			}
 
-			writer.startElement(options.shortAttributes ? "rs" : "robots"); {
+			writer.startElement(options.shortAttributes ? "rs" : "robots");
+			{
 				SerializableOptions op = options;
 
 				if (turn == 0) {
@@ -245,13 +270,15 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 				for (IRobotSnapshot r : robots) {
 					final RobotSnapshot rs = (RobotSnapshot) r;
 
-					if (!options.skipExploded || rs.getState() != RobotState.DEAD) {
+					if (!options.skipExploded
+							|| rs.getState() != RobotState.DEAD) {
 						rs.writeXml(writer, op);
 					} else {
 						boolean writeFirstExplosionFrame = false;
-
+						boolean writeSecondExplosionFrame = false;
 						for (IBulletSnapshot b : bullets) {
-							if (b.isExplosion() && b.getFrame() == 0 && b.getVictimIndex() == r.getRobotIndex()) {
+							if (b.isExplosion() && b.getFrame() == 0
+									&& b.getVictimIndex() == r.getRobotIndex()) {
 								writeFirstExplosionFrame = true;
 								break;
 							}
@@ -259,20 +286,48 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 						if (writeFirstExplosionFrame) {
 							rs.writeXml(writer, op);
 						}
+						for (ILandmineSnapshot l : landmines) {
+							if (l.getFrame() == 0&& l.getVictimIndex() == r.getRobotIndex()) {
+								writeSecondExplosionFrame = true;
+								break;
+							}
+						}
+						if (writeSecondExplosionFrame) {
+							rs.writeXml(writer, op);
+						}
 					}
 				}
 			}
 			writer.endElement();
 
-			writer.startElement(options.shortAttributes ? "bs" : "bullets"); {
+			writer.startElement(options.shortAttributes ? "bs" : "bullets");
+			{
 				for (IBulletSnapshot b : bullets) {
 					final BulletSnapshot bs = (BulletSnapshot) b;
 					final BulletState state = bs.getState();
 
 					if (!options.skipExploded
-							|| (state != BulletState.EXPLODED && state != BulletState.INACTIVE
-							&& (bs.getFrame() == 0 || state == BulletState.MOVING))) {
+							|| (state != BulletState.EXPLODED
+									&& state != BulletState.INACTIVE && (bs
+									.getFrame() == 0 || state == BulletState.MOVING))) {
 						bs.writeXml(writer, options);
+					}
+				}
+
+			}
+			writer.endElement();
+
+			writer.startElement(options.shortAttributes ? "bs" : "Landmines");
+			{
+				for (ILandmineSnapshot l : landmines) {
+					final LandmineSnapshot ls = (LandmineSnapshot) l;
+					final LandmineState state = ls.getState();
+
+					if (!options.skipExploded
+							|| (state != LandmineState.EXPLODED
+									&& state != LandmineState.INACTIVE && ls
+									.getFrame() == 0)) {
+						ls.writeXml(writer, options);
 					}
 				}
 			}
@@ -312,7 +367,8 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 					}
 
 					public void close() {
-						// allows loading of minimalistic XML, which skips dead robots, but GUI expects them
+						// allows loading of minimalistic XML, which skips dead
+						// robots, but GUI expects them
 						Hashtable<String, Object> context = reader.getContext();
 						Integer robotCount = (Integer) context.get("robots");
 						boolean[] present = new boolean[robotCount];
@@ -322,9 +378,11 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 						}
 						for (int i = 0; i < robotCount; i++) {
 							if (!present[i]) {
-								String name = (String) context.get(Integer.toString(i));
+								String name = (String) context.get(Integer
+										.toString(i));
 
-								snapshot.robots.add(new RobotSnapshot(name, i, RobotState.DEAD));
+								snapshot.robots.add(new RobotSnapshot(name, i,
+										RobotState.DEAD));
 							}
 						}
 					}
@@ -341,13 +399,28 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 						snapshot.bullets.add((BulletSnapshot) child);
 					}
 
-					public void close() {}
+					public void close() {
+					}
+				});
+
+				reader.expect("landmines", "ls", new XmlReader.ListElement() {
+					public IXmlSerializable read(XmlReader reader) {
+						snapshot.landmines = new ArrayList<ILandmineSnapshot>();
+						// prototype
+						return new LandmineSnapshot();
+					}
+
+					public void add(IXmlSerializable child) {
+						snapshot.landmines.add((LandmineSnapshot) child);
+					}
+
+					public void close() {
+					}
 				});
 
 				return snapshot;
 			}
 		});
 	}
-
 
 }

@@ -31,6 +31,7 @@ public final class ExecCommands implements Serializable {
     public static final int defaultRadarColor = 0xFF29298C;
     public static final int defaultScanColor = 0xFF0000FF;
     public static final int defaultBulletColor = 0xFFFFFFFF;
+    public static final int defaultLandmineColor=0xFFFFFFFF;
     private double bodyTurnRemaining;
     private double radarTurnRemaining;
     private double gunTurnRemaining;
@@ -44,6 +45,7 @@ public final class ExecCommands implements Serializable {
     private int radarColor = defaultRadarColor;
     private int scanColor = defaultScanColor;
     private int bulletColor = defaultBulletColor;
+    private int landmineColor=defaultLandmineColor;
     private double maxTurnRate;
     private double maxVelocity;
     private boolean moved;
@@ -52,6 +54,7 @@ public final class ExecCommands implements Serializable {
     private boolean isTryingToPaint;
     private String outputText;
     private List<BulletCommand> bullets = new ArrayList<BulletCommand>();
+    private List<LandmineCommand> landmines= new ArrayList<LandmineCommand>();
     private List<TeamMessage> teamMessages = new ArrayList<TeamMessage>();
     private List<DebugProperty> debugProperties = new ArrayList<DebugProperty>();
     private Object graphicsCalls;
@@ -76,6 +79,7 @@ public final class ExecCommands implements Serializable {
         if (fromRobot) {
             debugProperties = origin.debugProperties;
             bullets = origin.bullets;
+            landmines=origin.landmines;
             scan = origin.scan;
             moved = origin.moved;
             graphicsCalls = origin.graphicsCalls;
@@ -92,6 +96,7 @@ public final class ExecCommands implements Serializable {
             radarColor = origin.radarColor;
             bulletColor = origin.bulletColor;
             scanColor = origin.scanColor;
+            landmineColor=origin.landmineColor;
         }
     }
 
@@ -109,6 +114,11 @@ public final class ExecCommands implements Serializable {
 
     public int getBulletColor() {
         return bulletColor;
+    }
+    
+    public int getLandmineColor()
+    {
+    	return landmineColor;
     }
 
     public int getScanColor() {
@@ -129,6 +139,11 @@ public final class ExecCommands implements Serializable {
 
     public void setBulletColor(int color) {
         bulletColor = color;
+    }
+    
+    public void setLandmineColor(int color)
+    {
+    	landmineColor=color;
     }
 
     public void setScanColor(int color) {
@@ -242,6 +257,11 @@ public final class ExecCommands implements Serializable {
     public List<BulletCommand> getBullets() {
         return bullets;
     }
+    
+    public List<LandmineCommand> getLandmines()
+    {
+    	return landmines;
+    }
 
     public Object getGraphicsCalls() {
         return graphicsCalls;
@@ -305,7 +325,7 @@ public final class ExecCommands implements Serializable {
             int size = RbSerializer.SIZEOF_TYPEINFO + 4 * RbSerializer.SIZEOF_DOUBLE;
 
             size += 4 * RbSerializer.SIZEOF_BOOL;
-            size += 5 * RbSerializer.SIZEOF_INT;
+            size += 6 * RbSerializer.SIZEOF_INT;//number of item colors
             size += 2 * RbSerializer.SIZEOF_DOUBLE;
             size += 4 * RbSerializer.SIZEOF_BOOL;
             size += serializer.sizeOf(obj.outputText);
@@ -314,6 +334,10 @@ public final class ExecCommands implements Serializable {
 
             // bullets
             size += obj.bullets.size() * serializer.sizeOf(RbSerializer.BulletCommand_TYPE, null);
+            size += 1;
+            
+            // landmines
+            size += obj.landmines.size() * serializer.sizeOf(RbSerializer.LandmineCommand_TYPE, null);
             size += 1;
 
             // messages
@@ -350,6 +374,7 @@ public final class ExecCommands implements Serializable {
             serializer.serialize(buffer, obj.radarColor);
             serializer.serialize(buffer, obj.scanColor);
             serializer.serialize(buffer, obj.bulletColor);
+            serializer.serialize(buffer, obj.landmineColor);
 
             serializer.serialize(buffer, obj.maxTurnRate);
             serializer.serialize(buffer, obj.maxVelocity);
@@ -365,6 +390,10 @@ public final class ExecCommands implements Serializable {
 
             for (BulletCommand bullet : obj.bullets) {
                 serializer.serialize(buffer, RbSerializer.BulletCommand_TYPE, bullet);
+            }
+            buffer.put(RbSerializer.TERMINATOR_TYPE);
+            for (LandmineCommand landmine : obj.landmines) {
+                serializer.serialize(buffer, RbSerializer.LandmineCommand_TYPE, landmine);
             }
             buffer.put(RbSerializer.TERMINATOR_TYPE);
             for (TeamMessage message : obj.teamMessages) {
@@ -396,6 +425,7 @@ public final class ExecCommands implements Serializable {
             res.radarColor = buffer.getInt();
             res.scanColor = buffer.getInt();
             res.bulletColor = buffer.getInt();
+            res.landmineColor=buffer.getInt();
 
             res.maxTurnRate = buffer.getDouble();
             res.maxVelocity = buffer.getDouble();
@@ -414,6 +444,13 @@ public final class ExecCommands implements Serializable {
             while (item != null) {
                 if (item instanceof BulletCommand) {
                     res.bullets.add((BulletCommand) item);
+                }
+                item = serializer.deserializeAny(buffer);
+            }
+            item = serializer.deserializeAny(buffer);
+            while (item != null) {
+                if (item instanceof LandmineCommand) {
+                    res.landmines.add((LandmineCommand) item);
                 }
                 item = serializer.deserializeAny(buffer);
             }

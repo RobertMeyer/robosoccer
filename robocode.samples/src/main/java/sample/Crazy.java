@@ -93,6 +93,7 @@ public class Crazy extends AdvancedRobot {
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
+        fireLandmine(1);
     }
 
     /**

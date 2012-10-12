@@ -462,6 +462,17 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
             uninitializedException();
         }
     }
+    
+    public void fireLandmine(double power)
+    {
+        if (peer != null) {
+            peer.setLandmine(power);
+            peer.execute();
+        } else {
+            uninitializedException();
+        }
+    }
+    
 
     /**
      * Immediately fires a bullet. The bullet will travel in the direction the
@@ -714,6 +725,10 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      */
     @Override
     public void onBulletHit(BulletHitEvent event) {
+    }
+    
+    @Override
+    public void onLandmineHit(LandmineHitEvent event) {
     }
 
     /**
@@ -1628,4 +1643,10 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     @Override
     public void onStatus(StatusEvent e) {
     }
+
+	@Override
+	public void onHitByLandmine(HitByLandmineEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

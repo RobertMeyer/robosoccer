@@ -29,6 +29,7 @@ import net.sf.robocode.io.Logger;
 import net.sf.robocode.peer.IRobotStatics;
 import robocode.BattleRules;
 import robocode.Bullet;
+import robocode.Landmine;
 import robocode.Event;
 import robocode.RobotStatus;
 import robocode.control.RobotSpecification;
@@ -43,6 +44,7 @@ public class HiddenAccess {
 
     private static IHiddenEventHelper eventHelper;
     private static IHiddenBulletHelper bulletHelper;
+    private static IHiddenLandmineHelper landmineHelper;
     private static IHiddenSpecificationHelper specificationHelper;
     private static IHiddenStatusHelper statusHelper;
     private static IHiddenRulesHelper rulesHelper;
@@ -68,6 +70,11 @@ public class HiddenAccess {
             method = Bullet.class.getDeclaredMethod("createHiddenHelper");
             method.setAccessible(true);
             bulletHelper = (IHiddenBulletHelper) method.invoke(null);
+            method.setAccessible(false);
+            
+            method = Landmine.class.getDeclaredMethod("createHiddenHelper");
+            method.setAccessible(true);
+            landmineHelper = (IHiddenLandmineHelper) method.invoke(null);
             method.setAccessible(false);
 
             method = RobotSpecification.class.getDeclaredMethod("createHiddenHelper");
@@ -205,6 +212,10 @@ public class HiddenAccess {
 
     public static void update(Bullet bullet, double x, double y, String victimName, boolean isActive) {
         bulletHelper.update(bullet, x, y, victimName, isActive);
+    }
+    
+    public static void updateLandmine(Landmine landmine, double x, double y, String victimName, boolean isActive) {
+        landmineHelper.update(landmine, x, y, victimName, isActive);
     }
 
     public static RobotSpecification createSpecification(Object fileSpecification, String name, String author, String webpage, String version, String robocodeVersion, String jarFile, String fullClassName, String description) {

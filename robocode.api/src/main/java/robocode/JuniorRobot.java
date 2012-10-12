@@ -778,6 +778,10 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
         @Override
         public void onBulletHit(BulletHitEvent event) {
         }
+        
+        @Override
+        public void onLandmineHit(LandmineHitEvent event) {
+        }
 
         @Override
         public void onBulletHitBullet(BulletHitBulletEvent event) {
@@ -898,5 +902,11 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
                 }
             }
         }
+
+		@Override
+		public void onHitByLandmine(HitByLandmineEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 }
