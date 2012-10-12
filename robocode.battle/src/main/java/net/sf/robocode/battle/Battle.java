@@ -721,7 +721,7 @@ public final class Battle extends BaseBattle {
 
 	private void updateBullets() {
 		for (BulletPeer bullet : getBulletsAtRandom()) {
-			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList());
+			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList(), teleporters);
 			if (bullet.getState() == BulletState.INACTIVE) {
 				bullets.remove(bullet);
 			}
