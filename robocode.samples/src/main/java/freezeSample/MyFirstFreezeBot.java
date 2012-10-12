@@ -17,6 +17,8 @@ public class MyFirstFreezeBot extends FreezeRobot {
 		setAdjustRadarForGunTurn(true);
 		setAdjustGunForRobotTurn(true);
 		
+		setAllColors(Color.CYAN);
+		
 		while (true) {
 			// Continually scan for robots
 			turnRadarRight(360);
@@ -37,7 +39,7 @@ public class MyFirstFreezeBot extends FreezeRobot {
 		execute();
 		
 		// Turn away so to hit the same robot again
-		setTurnRight(45);
+		setTurnRight(55);
 		execute();
 		
 		// Scan for next target
