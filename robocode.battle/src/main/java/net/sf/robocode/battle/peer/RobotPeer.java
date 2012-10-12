@@ -1751,7 +1751,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		double startAngle = lastRadarHeading;
 		double scanRadians = getRadarHeading() - startAngle;
-		double scanDistance = battle.getBattleMode().modifyVision(Rules.RADAR_SCAN_RADIUS);
+		double scanDistance = battle.getBattleMode().modifyVision(Rules.RADAR_SCAN_RADIUS, battleRules);
 
 		// Check if we passed through 360
 		if (scanRadians < -PI) {

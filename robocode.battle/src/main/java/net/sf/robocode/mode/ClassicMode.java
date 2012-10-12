@@ -347,9 +347,13 @@ public class ClassicMode implements IMode {
 		// do nothing
 	}
 	
-	public double modifyVision(double VisionDecrease)
+	public double modifyVision(double standard) {
+		return standard;
+	}
+	
+	public double modifyVision(double standard, BattleRules rules)
 	{
-		return VisionDecrease;
+		return modifyVision(standard);
 	}
 
 	/**
