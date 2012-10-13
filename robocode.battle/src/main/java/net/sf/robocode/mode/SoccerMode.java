@@ -3,6 +3,7 @@ package net.sf.robocode.mode;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.sf.robocode.battle.BattlePeers;
@@ -123,42 +124,75 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public void createPeers(BattlePeers peers,
 			RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
-		Hashtable<String, Integer> duplicates = new Hashtable<String, Integer>();
+		
+		// Duplicate robot hashtables.
+		Hashtable<String, Integer> team1Duplicates = new Hashtable<String, Integer>();
+		Hashtable<String, Integer> team2Duplicates = new Hashtable<String, Integer>();
+		
+		// Team member names.
+		List<String> team1Names = new LinkedList<String>();
+		List<String> team2Names = new LinkedList<String>();
+		
 		int teamSize = peers.getBattle().getRobotsCount() / 2;
+		
 		// Counts the number of duplicates for each robot being used.
 		for(int i = 0; i < peers.getBattle().getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
 			String name = spec.getName();
+			String botName = null;
 			
-			if(duplicates.contains(name)) {
-				duplicates.put(name, duplicates.get(name) + 1);
+			if(i < teamSize) {
+				// Populate duplicates list and member names list for team 1.
+				if(team1Duplicates.contains(name)) {
+					int count = team1Duplicates.get(name);
+					
+					team1Duplicates.put(name, count == 1 ? 3 : count + 1);
+				} else {
+					team1Duplicates.put(name, 1);
+				}
+				
+				botName = name + team1Duplicates.get(name);
+				team1Names.add(botName);
 			} else {
-				duplicates.put(name, 1);
+				// Populate duplicates list and member names list for team 2.
+				if(team2Duplicates.contains(name)) {
+					int count = team2Duplicates.get(name);
+					
+					team2Duplicates.put(name, count == 1 ? 3 : count + 1);
+				} else {
+					team2Duplicates.put(name, 1);
+				}
+				
+				botName = name + team2Duplicates.get(name);
+				team2Names.add(botName);
 			}
 		}
 		
 		// Create teams 1 and 2.
-		team1 = new SoccerTeamPeer("Team 1", null, 0);
-		team2 = new SoccerTeamPeer("Team 2", null, 1);
+		team1 = new SoccerTeamPeer("Team 1", team1Names, 0);
+		team2 = new SoccerTeamPeer("Team 2", team2Names, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
 		
-		peers.addContestant(team1);
-		peers.addContestant(team2);
 		
+		// Create robot peer objects, assign teams and add them to the
+		// peer list.
 		for(int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
 			RobotSpecification spec = battlingRobotsList[j];
 			RobotPeer robot = null;
 			
 			if(j < teamSize) {
 				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
-						duplicates.get(spec.getName()), team1, j);
+						team1Duplicates.get(spec.getName()), team1, j);
 			} else {
 				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
-						duplicates.get(spec.getName()), team2, j);
+						team2Duplicates.get(spec.getName()), team2, j);
 			}
 			
 			peers.addRobot(robot);
 		}
+		
+		peers.addContestant(team1);
+		peers.addContestant(team2);
 		
 		// Create the ball robot and add it to the appropriate peer lists/team.
 		RobotSpecification ballSpec = 

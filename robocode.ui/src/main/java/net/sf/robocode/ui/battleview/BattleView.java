@@ -727,25 +727,6 @@ public class BattleView extends Canvas {
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
                 
-                // sets the body image path to null
-                String bodyPath = null;
-                String weaponPath = null;
-                String radarPath = null;
-                
-                
-                // If a custom body part is present in the robots equipment
-                // then the body image path is changed to the custom one.
-                Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
-                if(partsMap.containsKey(EquipmentSlot.BODY)) {
-                	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
-                	bodyPath = part.getImagePath();
-                }
-                
-                if(partsMap.containsKey(EquipmentSlot.WEAPON)) {
-                	EquipmentPart part = partsMap.get(EquipmentSlot.WEAPON);
-                	weaponPath = part.getImagePath();
-                }
-
 				// sets the body image path to null
 				String bodyPath = null;
 				String weaponPath = null;

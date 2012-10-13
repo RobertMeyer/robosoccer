@@ -104,6 +104,7 @@ import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
@@ -169,10 +170,7 @@ public final class Battle extends BaseBattle {
     RobotSpecification botzilla;
     private Hashtable<String, Object> setTimeHashTable;
 
-
-    private int botzillaSpawnTime = 40;
-  
-   
+    
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
 

@@ -310,11 +310,6 @@ public class ClassicMode implements IMode {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub
-	}
 	
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
