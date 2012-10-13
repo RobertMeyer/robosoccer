@@ -1,5 +1,8 @@
 package net.sf.robocode.battle.item;
 
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.peer.RobotPeer;
+
 
 /**
  * A speed item. Extends item drop
@@ -8,13 +11,13 @@ package net.sf.robocode.battle.item;
  */
 public class SpeedItem extends ItemDrop {
 
-    public SpeedItem(boolean isDestroyable, int lifespan, int health, boolean isEquippable) {
-        super(isDestroyable, lifespan, health, isEquippable, null);
-   //     System.out.println("Speed Item");
-        this.name = "SpeedItem";
+    public SpeedItem(Battle battle, String name) {
+        super(true, 400, 0, false, battle);
+        this.name = name;
+        this.imageName = "speed.png";
     }
 
-    public void doItemEffect() {
+    public void doItemEffect(RobotPeer robot) {
         return;
     }
 }

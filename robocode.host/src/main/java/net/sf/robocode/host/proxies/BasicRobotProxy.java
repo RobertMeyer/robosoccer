@@ -182,6 +182,14 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         setCall();
         commands.setScanColor(color != null ? color.getRGB() : ExecCommands.defaultScanColor);
     }
+    
+    @Override
+    public void setDeathEffect(int effect) {
+    	setCall();
+    	if (!(effect > 6 || effect < 1)) {
+    		commands.setDeathEffect(effect);
+    	}
+    }
 
     // counters
     @Override
@@ -586,4 +594,70 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         return statics.getShortName() + "(" + (int) status.getEnergy() + ") X" + (int) status.getX() + " Y"
                 + (int) status.getY();
     }
+
+	@Override
+	public double getRealMaxVelocity() {
+		getCall();
+        return status.getMaxVelocity();
+	}
+
+	@Override
+	public double getMaxBulletPower() {
+		getCall();
+        return status.getMaxBulletPower();
+	}
+
+	@Override
+	public double getMinBulletPower() {
+		getCall();
+        return status.getMinBulletPower();
+	}
+
+	@Override
+	public double getAcceleration() {
+		getCall();
+        return status.getAcceleration();
+	}
+
+	@Override
+	public double getDeceleration() {
+		getCall();
+        return status.getDeceleration();
+	}
+
+	@Override
+	public double getRadarScanRadius() {
+		getCall();
+        return status.getRadarScanRadius();
+	}
+
+	@Override
+	public double getMaxTurnRate() {
+		getCall();
+        return status.getMaxTurnRate();
+	}
+
+	@Override
+	public double getGunTurnRate() {
+		getCall();
+        return status.getGunTurnRate();
+	}
+
+	@Override
+	public double getRadarTurnRate() {
+		getCall();
+        return status.getRadarTurnRate();
+	}
+
+	@Override
+	public double getRobotHitDamage() {
+		getCall();
+        return status.getRobotHitDamage();
+	}
+
+	@Override
+	public double getRobotHitAttack() {
+		getCall();
+        return status.getRobotHitAttack();
+	}
 }

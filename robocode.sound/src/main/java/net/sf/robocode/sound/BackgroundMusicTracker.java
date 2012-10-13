@@ -1,8 +1,5 @@
 package net.sf.robocode.sound;
 
-import java.io.File;
-import java.util.logging.Logger;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -11,7 +8,7 @@ public class BackgroundMusicTracker {
 	
 	public static boolean music = false;
 	public static Clip clip;
-	public static BackgroundMusicTracker object = new BackgroundMusicTracker();
+	//public static BackgroundMusicTracker object = new BackgroundMusicTracker();
 	
 	public static void enableMusic(boolean b) {
 		 music = b;

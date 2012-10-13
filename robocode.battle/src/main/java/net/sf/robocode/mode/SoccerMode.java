@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.RenderString;
 import net.sf.robocode.battle.item.BoundingRectangle;
@@ -263,4 +264,24 @@ public class SoccerMode extends ClassicMode implements IMode {
 		}
 		return results.toArray(new BattleResults[results.size()]);
 	}
+
+	/**
+     * Setup for SoccerMode to just display the rank, the team and the total score
+     */
+    public void setCustomResultsTable() {
+    	/* BRANDONCW */
+    	if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+    	resultsTable.showOverallRank(true);
+    	resultsTable.showTeam(true);
+    	resultsTable.showTotalScore(true);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BattleResultsTableModel getCustomResultsTable() {
+    	return resultsTable;
+    }
 }
