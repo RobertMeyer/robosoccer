@@ -103,6 +103,7 @@ public class Equipment {
         		.set(RobotAttribute.GUN_HEAT_RATE, -20)
         		.set(RobotAttribute.GUN_TURN_ANGLE, 40)
         		.set(RobotAttribute.SPEED, 40)
+        		.set(RobotAttribute.ENERGY_REGEN, 30)
         		.build());
         
         /*
