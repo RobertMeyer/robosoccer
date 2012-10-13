@@ -680,6 +680,60 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
         uninitializedException();
         return 0; // never called
     }
+    
+    /**
+     * Returns the maximum velocity of the robot measured in pixels/turn.
+     * <p/>
+     * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
+     * * {@link RobotAttribute#SPEED}
+     * 
+     * @return the maximum velocity of the robot in pixels/turn
+     * @see Rules#MAX_VELOCITY
+     * @see RobotAttribute#SPEED
+     */
+    public double getMaxVelocity(){
+    	if(peer != null){
+    		return peer.getRealMaxVelocity();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the maximum bullet power of the robot.
+     * <p/>
+     * The maximum bullet power is defined as {@link Rules#MAX_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the maximum bullet power of the robot
+     * @see Rules#MAX_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    public double getMaxBulletPower(){
+    	if(peer != null){
+    		return peer.getMaxBulletPower();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the minimum bullet power of the robot.
+     * <p/>
+     * The minimum bullet power is defined as {@link Rules#MIN_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the minimum bullet power of the robot
+     * @see Rules#MIN_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    public double getMinBulletPower(){
+    	if(peer != null){
+    		return peer.getMinBulletPower();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
 
     /**
      * Prototype for set explosion. The idea is to call this at any time to queue

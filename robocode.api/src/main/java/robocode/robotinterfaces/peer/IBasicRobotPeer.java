@@ -91,7 +91,43 @@ public interface IBasicRobotPeer {
      * @see Rules#MAX_VELOCITY
      */
     double getVelocity();
-
+    
+    /**
+     * Returns the maximum velocity of the robot measured in pixels/turn.
+     * <p/>
+     * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
+     * * {@link RobotAttribute#SPEED}
+     * 
+     * @return the maximum velocity of the robot in pixels/turn
+     * @see Rules#MAX_VELOCITY
+     * @see RobotAttribute#SPEED
+     */
+    double getRealMaxVelocity();
+    
+    /**
+     * Returns the maximum bullet power of the robot.
+     * <p/>
+     * The maximum bullet power is defined as {@link Rules#MAX_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the maximum bullet power of the robot
+     * @see Rules#MAX_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    double getMaxBulletPower();
+    
+    /**
+     * Returns the maximum bullet power of the robot.
+     * <p/>
+     * The maximum bullet power is defined as {@link Rules#MAX_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the maximum bullet power of the robot
+     * @see Rules#MAX_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    double getMinBulletPower();
+    
     /**
      * Returns the direction that the robot's body is facing, in radians.
      * The value returned will be between 0 and 2 * PI (is excluded).
