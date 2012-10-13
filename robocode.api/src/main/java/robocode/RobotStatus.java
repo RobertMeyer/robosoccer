@@ -46,6 +46,14 @@ public final class RobotStatus implements Serializable {
     private final double maxVelocity;
     private final double maxBulletPower;
     private final double minBulletPower;
+    private final double acceleration;
+    private final double deceleration;
+    private final double radarScanRadius;
+    private final double maxTurnRate;
+    private final double gunTurnRate;
+    private final double radarTurnRate;
+    private final double robotHitDamage;
+    private final double robotHitAttack;
 
     /**
      * Returns the robot's current energy.
@@ -367,11 +375,153 @@ public final class RobotStatus implements Serializable {
     public double getMinBulletPower(){
     	return minBulletPower;
     }
+    
+    /**
+     * Returns the acceleration of the robot.
+     * <p/>
+     * The acceleration of the robot defined as 
+     * {@link Rules#ACCELERATION} * {@link RobotAttribute#ACCELERATION}
+     * 
+     * @return the acceleration of the robot
+     * @see Rules#ACCELERATION
+     * @see RobotAttribute#ACCELERATION
+     */
+    public double getAcceleration(){
+    	return acceleration;
+    }
+    
+    /**
+     * Returns the deceleration of the robot.
+     * <p/>
+     * The deceleration of the robot defined as 
+     * {@link Rules#DECELERATION} * {@link RobotAttribute#DECELERATION}
+     * 
+     * @return the deceleration of the robot
+     * @see Rules#DECELERATION
+     * @see RobotAttribute#DECELERATION
+     */
+    public double getDeceleration(){
+    	return deceleration;
+    }
+    
+    /**
+     * Returns the radar scan radius of the robot
+     * <p/>
+     * The radar scan radius is defined as {@link Rules#RADAR_SCAN_RADIUS}
+     *  * {@link RobotAttribute#SCAN_RADIUS}
+     *  
+     * @return the radar scan radius of the robot
+     * @see Rules#RADAR_SCAN_RADIUS
+     * @see RobotAttribute#SCAN_RADIUS
+     */
+    public double getRadarScanRadius(){
+    	return radarScanRadius;
+    }
+    
+    /**
+     * Returns the maximum turn rate of the robot in degrees.  The rate at 
+     * which the robot turns also depends on velocity.
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#MAX_TURN_RATE}
+     *  * {@link RobotAttribute#ROBOT_TURN_ANGLE}
+     * 
+     * @return the maximum turn rate of the robot in degrees
+     * @see Rules#MAX_TURN_RATE
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Rules#getTurnRate(double)
+     * @see Rules#getTurnRateRadians(double)
+     */
+    public double getMaxTurnRate(){
+    	return maxTurnRate;
+    }
+    
+    /**
+     * Returns the maximum gun turn rate of the robot in degrees.
+     * 
+     * Note, that if setAdjustGunForRobotTurn(true) has been called, the gun
+     * turn is independent of the robot turn.
+     * In this case the gun moves relatively to the screen. If
+     * setAdjustGunForRobotTurn(false) has been called or
+     * setAdjustGunForRobotTurn() has not been called at all (this is the
+     * default), then the gun turn is dependent on the robot turn, and in this
+     * case the gun moves relatively to the robot body.
+     * 
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#GUN_TURN_RATE}
+     *  * {@link RobotAttribute#GUN_TURN_ANGLE}
+     * 
+     * @return the maximum gun turn rate of the robot in degrees
+     * @see Rules#GUN_TURN_RATE
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     */
+    public double getGunTurnRate(){
+    	return gunTurnRate;
+    }
+    
+    /**
+     * Returns the radar turn rate of the robot in degrees.
+     * 
+     * Note, that if setAdjustRadarForRobotTurn(true) and/or
+     * setAdjustRadarForGunTurn(true) has been called, the radar turn is
+     * independent of the robot and/or gun turn. If both methods has been set to
+     * true, the radar moves relatively to the screen.
+     * If setAdjustRadarForRobotTurn(false) and/or setAdjustRadarForGunTurn(false)
+     * has been called or not called at all (this is the default), then the
+     * radar turn is dependent on the robot and/or gun turn, and in this case
+     * the radar moves relatively to the gun and/or robot body.
+     * 
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#RADAR_TURN_RATE}
+     *  * {@link RobotAttribute#RADAR_ANGLE}
+     * 
+     * @return the radar turn rate of the robot in degrees
+     * @see Rules#RADAR_TURN_RATE_RADIANS
+     * @see RobotAttribute#RADAR_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     * @see Robot#setAdjustRadarForGunTurn(boolean)
+     */
+    public double getRadarTurnRate(){
+    	return radarTurnRate;
+    }
+    
+    /**
+     * The amount of damage taken when a robot hits or is hit by another robot
+     * <p/>
+     * This is defined as {@link Rules#ROBOT_HIT_DAMAGE} * 
+     * {@link RobotAttribute#RAM_DEFENSE}
+     * 
+     * @return the amount of damage taken when a robot hits or is hit by
+     * 			another robot
+     * @see Rules#ROBOT_HIT_DAMAGE
+     * @see RobotAttribute#RAM_DEFENSE
+     */
+    public double getRobotHitDamage(){
+    	return robotHitDamage;
+    }
+    
+    /**
+     * The amount of bonus given when a robot moving forward hits an opponent
+     * robot (ramming)
+     * <p/>
+     * This is defined as {@link Rules#ROBOT_HIT_BONUS} * 
+     * {@link RobotAttribute#RAM_ATTACK}
+     * 
+     * @return the amount of damage taken when a robot hits or is hit by
+     * 			another robot
+     * @see Rules#ROBOT_HIT_BONUS
+     * @see RobotAttribute#RAM_ATTACK
+     */
+    public double getRobotHitAttack(){
+    	return robotHitAttack;
+    }
 
     private RobotStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading,
                         double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining,
                         double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time,
-                        double maxVelocity, double maxBulletPower, double minBulletPower) {
+                        double maxVelocity, double maxBulletPower, double minBulletPower, double acceleration,
+                        double deceleration, double radarScanRadius, double maxTurnRate, double gunTurnRate,
+                        double radarTurnRate, double robotHitDamage, double robotHitAttack) {
         this.energy = energy;
         this.x = x;
         this.y = y;
@@ -391,6 +541,14 @@ public final class RobotStatus implements Serializable {
         this.maxVelocity = maxVelocity;
         this.maxBulletPower = maxBulletPower;
         this.minBulletPower = minBulletPower;
+        this.acceleration = acceleration;
+        this.deceleration = deceleration;
+        this.radarScanRadius = radarScanRadius;
+        this.maxTurnRate = maxTurnRate;
+        this.gunTurnRate = gunTurnRate;
+        this.radarTurnRate = radarTurnRate;
+        this.robotHitDamage = robotHitDamage;
+        this.robotHitAttack = robotHitAttack;
     }
 
     static ISerializableHelper createHiddenSerializer() {
@@ -429,6 +587,14 @@ public final class RobotStatus implements Serializable {
             serializer.serialize(buffer, obj.maxVelocity);
             serializer.serialize(buffer, obj.maxBulletPower);
             serializer.serialize(buffer, obj.minBulletPower);
+            serializer.serialize(buffer, obj.acceleration);
+            serializer.serialize(buffer, obj.deceleration);
+            serializer.serialize(buffer, obj.radarScanRadius);
+            serializer.serialize(buffer, obj.maxTurnRate);
+            serializer.serialize(buffer, obj.gunTurnRate);
+            serializer.serialize(buffer, obj.radarTurnRate);
+            serializer.serialize(buffer, obj.robotHitDamage);
+            serializer.serialize(buffer, obj.robotHitAttack);
         }
 
         @Override
@@ -452,20 +618,32 @@ public final class RobotStatus implements Serializable {
             double maxVelocity = buffer.getDouble();
             double maxBulletPower = buffer.getDouble();
             double minBulletPower = buffer.getDouble();
+            double acceleration = buffer.getDouble();
+            double deceleration = buffer.getDouble();
+            double radarScanRadius = buffer.getDouble();
+            double maxTurnRate = buffer.getDouble();
+            double gunTurnRate = buffer.getDouble();
+            double radarTurnRate = buffer.getDouble();
+            double robotHitDamage = buffer.getDouble();
+            double robotHitAttack = buffer.getDouble();
+            
 
             return new RobotStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity, bodyTurnRemaining,
                                    radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time,
-                                   maxVelocity, maxBulletPower, minBulletPower);
+                                   maxVelocity, maxBulletPower, minBulletPower, acceleration,deceleration, radarScanRadius, maxTurnRate,
+                                   gunTurnRate, radarTurnRate, robotHitDamage, robotHitAttack);
         }
 
         @Override
         public RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading, 
         		double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining, double distanceRemaining, 
         		double gunHeat, int others, int roundNum, int numRounds, long time, double maxVelocity, double maxBulletPower,
-        		double minBulletPower) {
+        		double minBulletPower, double acceleration, double deceleration, double radarScanRadius, double maxTurnRate, 
+        		double gunTurnRate, double radarTurnRate, double robotHitDamage, double robotHitAttack) {
             return new RobotStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity, bodyTurnRemaining,
                                    radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time,
-                                   maxVelocity, maxBulletPower, minBulletPower);
+                                   maxVelocity, maxBulletPower, minBulletPower, acceleration, deceleration, radarScanRadius, maxTurnRate,
+                                   gunTurnRate, radarTurnRate, robotHitDamage, robotHitAttack);
         }
     }
 }
