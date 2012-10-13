@@ -679,7 +679,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (Double.isNaN(newCommands.getMaxVelocity())) {
 			println("You cannot setMaxVelocity to: " + newCommands.getMaxVelocity());
 		}
-		newCommands.setMaxVelocity(Math.min(abs(newCommands.getMaxVelocity()), getRuleMaxVelocity()));
+		newCommands.setMaxVelocity(Math.min(abs(newCommands.getMaxVelocity()), getRealMaxVelocity()));
 	}
 
 	protected List<Event> readoutEvents() {
@@ -923,7 +923,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		RobotStatus stat = HiddenAccess.createStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity,
 				currentCommands.getBodyTurnRemaining(), currentCommands.getRadarTurnRemaining(),
 				currentCommands.getGunTurnRemaining(), currentCommands.getDistanceRemaining(), gunHeat, others,
-				battle.getRoundNum(), battle.getNumRounds(), battle.getTime());
+				battle.getRoundNum(), battle.getNumRounds(), battle.getTime(), currentCommands.getMaxVelocity(),
+				getMaxBulletPower(), getMinBulletPower());
 
 		status.set(stat);
 		robotProxy.startRound(currentCommands, stat);
@@ -1527,7 +1528,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		boolean normalizeHeading = true;
 
 		double turnRate = min(currentCommands.getMaxTurnRate(), (.4 + .6 * (1 - (abs(velocity)
-				/ getRuleMaxVelocity()))) * getMaxTurnRateRadians());
+				/ getRealMaxVelocity()))) * getMaxTurnRateRadians());
 
 		if (currentCommands.getBodyTurnRemaining() > 0) {
 			if (currentCommands.getBodyTurnRemaining() < turnRate) {
@@ -1719,7 +1720,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				(Math.sqrt((4 * 2 / getRobotDeceleration()) * distance + 1) - 1) / 2));
 
 		if (decelTime == Double.POSITIVE_INFINITY) {
-			return getRuleMaxVelocity();
+			return getRealMaxVelocity();
 		}
 
 		final double decelDist = (decelTime / 2.0) * (decelTime - 1) // sum of 0..(decelTime-1)
@@ -2011,7 +2012,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		RobotStatus stat = HiddenAccess.createStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity,
 				currentCommands.getBodyTurnRemaining(), currentCommands.getRadarTurnRemaining(),
 				currentCommands.getGunTurnRemaining(), currentCommands.getDistanceRemaining(), gunHeat, others,
-				battle.getRoundNum(), battle.getNumRounds(), battle.getTime());
+				battle.getRoundNum(), battle.getNumRounds(), battle.getTime(), currentCommands.getMaxVelocity(),
+				getMaxBulletPower(), getMinBulletPower());
 
 		status.set(stat);
 	}
@@ -2055,7 +2057,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 			attributes.get().put(attribute, newValue);
 		}
-		currentCommands.setMaxVelocity(getRuleMaxVelocity());
+		currentCommands.setMaxVelocity(getRealMaxVelocity());
 	}
 
 	/**
@@ -2085,7 +2087,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				attributes.get().put(attribute, newValue);
 			}
 		}
-		currentCommands.setMaxVelocity(getRuleMaxVelocity());
+		currentCommands.setMaxVelocity(getRealMaxVelocity());
 	}
 
 	 /**
@@ -2196,7 +2198,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 *
 	 * @return the speed (velocity) of the robot associated with this peer.
 	 */
-	public double getRuleMaxVelocity(){
+	public double getRealMaxVelocity(){
 		return attributes.get().get(RobotAttribute.SPEED) * Rules.MAX_VELOCITY;
 	}
 

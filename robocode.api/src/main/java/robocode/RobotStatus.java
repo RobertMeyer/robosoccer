@@ -43,6 +43,9 @@ public final class RobotStatus implements Serializable {
     private final int roundNum;
     private final int numRounds;
     private final long time;
+    private final double maxVelocity;
+    private final double maxBulletPower;
+    private final double minBulletPower;
 
     /**
      * Returns the robot's current energy.
@@ -322,10 +325,53 @@ public final class RobotStatus implements Serializable {
     public long getTime() {
         return time;
     }
+    
+    /**
+     * Returns the maximum velocity of the robot measured in pixels/turn.
+     * <p/>
+     * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
+     * * {@link RobotAttribute#SPEED}
+     * 
+     * @return the maximum velocity of the robot in pixels/turn
+     * @see Rules#MAX_VELOCITY
+     * @see RobotAttribute#SPEED
+     */
+    public double getMaxVelocity(){
+    	return maxVelocity;
+    }
+    
+    /**
+     * Returns the maximum bullet power of the robot.
+     * <p/>
+     * The maximum bullet power is defined as {@link Rules#MAX_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the maximum bullet power of the robot
+     * @see Rules#MAX_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    public double getMaxBulletPower(){
+    	return maxBulletPower;
+    }
+    
+    /**
+     * Returns the minimum bullet power of the robot.
+     * <p/>
+     * The minimum bullet power is defined as {@link Rules#MIN_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the minimum bullet power of the robot
+     * @see Rules#MIN_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    public double getMinBulletPower(){
+    	return minBulletPower;
+    }
 
     private RobotStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading,
                         double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining,
-                        double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time) {
+                        double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time,
+                        double maxVelocity, double maxBulletPower, double minBulletPower) {
         this.energy = energy;
         this.x = x;
         this.y = y;
@@ -342,6 +388,9 @@ public final class RobotStatus implements Serializable {
         this.roundNum = roundNum;
         this.numRounds = numRounds;
         this.time = time;
+        this.maxVelocity = maxVelocity;
+        this.maxBulletPower = maxBulletPower;
+        this.minBulletPower = minBulletPower;
     }
 
     static ISerializableHelper createHiddenSerializer() {
@@ -377,6 +426,9 @@ public final class RobotStatus implements Serializable {
             serializer.serialize(buffer, obj.roundNum);
             serializer.serialize(buffer, obj.numRounds);
             serializer.serialize(buffer, obj.time);
+            serializer.serialize(buffer, obj.maxVelocity);
+            serializer.serialize(buffer, obj.maxBulletPower);
+            serializer.serialize(buffer, obj.minBulletPower);
         }
 
         @Override
@@ -397,15 +449,23 @@ public final class RobotStatus implements Serializable {
             int roundNum = buffer.getInt();
             int numRounds = buffer.getInt();
             long time = buffer.getLong();
+            double maxVelocity = buffer.getDouble();
+            double maxBulletPower = buffer.getDouble();
+            double minBulletPower = buffer.getDouble();
 
             return new RobotStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity, bodyTurnRemaining,
-                                   radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time);
+                                   radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time,
+                                   maxVelocity, maxBulletPower, minBulletPower);
         }
 
         @Override
-        public RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading, double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining, double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time) {
+        public RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading, 
+        		double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining, double distanceRemaining, 
+        		double gunHeat, int others, int roundNum, int numRounds, long time, double maxVelocity, double maxBulletPower,
+        		double minBulletPower) {
             return new RobotStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity, bodyTurnRemaining,
-                                   radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time);
+                                   radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum, numRounds, time,
+                                   maxVelocity, maxBulletPower, minBulletPower);
         }
     }
 }
