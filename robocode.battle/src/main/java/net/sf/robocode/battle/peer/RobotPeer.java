@@ -1478,7 +1478,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			queue.add(event);
 		}
 	}
-
+	
 	protected void updateGunHeading() {
 		if (currentCommands.getGunTurnRemaining() > 0) {
 			if (currentCommands.getGunTurnRemaining() < getGunTurnRateRadians()) {

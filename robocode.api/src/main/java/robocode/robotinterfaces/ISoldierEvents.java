@@ -15,10 +15,12 @@ package robocode.robotinterfaces;
 
 import robocode.*;
 
-public interface ISoldierEvents extends IBasicRobot {
+public interface ISoldierEvents {
     void onWin(WinEvent event);
     
     void receiveCommand(CommanderEvent e);
+    
+    void onCommandRecieved(CommanderEvent event);
     
     void pause();
     void advance(ScannedRobotEvent e);

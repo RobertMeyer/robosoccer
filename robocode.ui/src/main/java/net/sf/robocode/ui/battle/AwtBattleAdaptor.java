@@ -189,7 +189,9 @@ public final class AwtBattleAdaptor {
                 RobotSnapshot robot = (RobotSnapshot) robots[i];
                 final int r = i;
                 final String text = robot.getOutputStreamSnapshot();
-
+                if(outCache.length >= robots.length) {
+                	
+                }
                 if (text != null && text.length() != 0 && outCache.length >= robots.length) {
                     robot.setOutputStreamSnapshot(null);
                     EventQueue.invokeLater(new Runnable() {

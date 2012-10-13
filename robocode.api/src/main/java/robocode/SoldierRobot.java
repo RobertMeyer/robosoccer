@@ -9,6 +9,8 @@ package robocode;
 
 import robocode.Robot;
 import robocode.robotinterfaces.IBasicRobot;
+import robocode.robotinterfaces.ISoldierEvents;
+import robocode.robotinterfaces.ISoldierRobot;
 
 /**
  * An extension of the basic robot class, containing methods for behaviours
@@ -19,7 +21,7 @@ import robocode.robotinterfaces.IBasicRobot;
  * @author The Fightin' Mongooses (contributor)
  * @see Robot
  */
-public class SoldierRobot extends Robot implements IBasicRobot {
+public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents {
 	
     public final int NO_TACTIC = 0;
 	public final int PAUSE = 1;
@@ -32,6 +34,10 @@ public class SoldierRobot extends Robot implements IBasicRobot {
 	
 	private int tactic = 0;
 	protected double power = 1.5;
+	
+	public void onCommandRecieved(CommanderEvent e) {
+		System.out.println("I SOMEHOW MADE IT INTO THE onCommandRevieved() function ...");
+	}
 	
 	public void receiveCommand(CommanderEvent e) {
 		tactic = e.getTactic();
@@ -145,5 +151,9 @@ public class SoldierRobot extends Robot implements IBasicRobot {
     		turnLeft(1);
     	}
 	}
+	
+	public final ISoldierEvents getSoldierEventListener() {
+        return this; // this robot is listening
+    }
 	
 }

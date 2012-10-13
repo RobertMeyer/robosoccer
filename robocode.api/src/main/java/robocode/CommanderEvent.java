@@ -108,10 +108,10 @@ public class CommanderEvent extends Event {
     final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
         
         //if (statics.isSoldierRobot()) {
-            ISoldierEvents listener = ((ISoldierRobot) robot).getSoldierEventListener();
-
+            ISoldierEvents listener = ((ISoldierRobot)robot).getSoldierEventListener();
+            //System.out.println("am i in or able to b in the commanderEvent???");
             if (listener != null) {
-            	listener.receiveCommand(this);
+            	listener.onCommandRecieved(this);
             }
         //}
     }
