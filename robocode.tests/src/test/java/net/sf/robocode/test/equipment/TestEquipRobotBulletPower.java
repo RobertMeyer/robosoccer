@@ -46,15 +46,15 @@ public class TestEquipRobotBulletPower extends RobocodeTestBed {
     	
     	switch(turnNo){	
     	case 41:
-    		test(104.2, 89.4, bulletPowerRobot, targetRobot);
+    		test(105.46, 86.22, bulletPowerRobot, targetRobot);
     		break;
     		
     	case 56:
-    		test(108.4, 78.8, bulletPowerRobot, targetRobot);
+    		test(110.92, 72.44, bulletPowerRobot, targetRobot);
     		break;
     	
     	case 71:
-    		test(112.6, 68.2, bulletPowerRobot, targetRobot);
+    		test(116.38, 58.66, bulletPowerRobot, targetRobot);
     		break;
     	}
     }

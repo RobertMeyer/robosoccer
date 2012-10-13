@@ -1874,7 +1874,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public void updateEnergy(double delta) {
 		if ((!isExecFinishedAndDisabled && !isEnergyDrained) || delta < 0) {
-			setEnergy(energy + delta, true);
+			setEnergy(energy + (delta * getEnergyRegen()), true);
 			if (battle.getBattleMode().toString() == "Energy Sharing Mode"){
 				distributeEnergy();
 			}
