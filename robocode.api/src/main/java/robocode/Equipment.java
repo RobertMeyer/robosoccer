@@ -57,16 +57,6 @@ public class Equipment {
         		.set(RobotAttribute.SCAN_RADIUS, 50)
         		.set(RobotAttribute.SPEED, 30)
         		.build());
-        
-        parts.put("Pistol",
-        		new EquipmentPart.Builder(EquipmentSlot.WEAPON)
-        		.set(RobotAttribute.ACCELERATION, 30)
-        		.set(RobotAttribute.BULLET_DAMAGE, -30)
-        		.set(RobotAttribute.BULLET_SPEED, 20)
-        		.set(RobotAttribute.GUN_HEAT_RATE, -20)
-        		.set(RobotAttribute.GUN_TURN_ANGLE, 40)
-        		.set(RobotAttribute.SPEED, 40)
-        		.build());
 
         parts.put("Twin Turret",
                 new EquipmentPart.Builder(EquipmentSlot.WEAPON)
@@ -80,6 +70,25 @@ public class Equipment {
         parts.put("Test", 
         		  new EquipmentPart.Builder(EquipmentSlot.WEAPON)
         		.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
+        		.build());
+        
+        // Do not Remove, this will cause tests to fail.
+        parts.put("Plasma Test",
+        		new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+        	.set(RobotAttribute.SPEED, -20)
+        	.set(RobotAttribute.GUN_HEAT_RATE, 70)
+        	.set(RobotAttribute.BULLET_DAMAGE, 90)
+        	.build());
+        
+        // Do not remove, this will cause the tests to fail.
+        parts.put("Pistol Test",
+        		new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+        		.set(RobotAttribute.ACCELERATION, 30)
+        		.set(RobotAttribute.BULLET_DAMAGE, -30)
+        		.set(RobotAttribute.BULLET_SPEED, 20)
+        		.set(RobotAttribute.GUN_HEAT_RATE, -20)
+        		.set(RobotAttribute.GUN_TURN_ANGLE, 40)
+        		.set(RobotAttribute.SPEED, 40)
         		.build());
     }
 

@@ -14,7 +14,7 @@ public class MovementPistol extends AdvancedRobot {
 	 * The main run function.
 	 */
 	public void run(){		
-		equip("Pistol");
+		equip("Pistol Test");
 		ahead(400);
 		back(400);
 	}
