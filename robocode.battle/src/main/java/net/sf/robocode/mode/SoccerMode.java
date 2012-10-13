@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.RenderString;
@@ -22,6 +21,7 @@ import robocode.control.RobotSpecification;
 import robocode.control.snapshot.RenderableType;
 
 public class SoccerMode extends ClassicMode implements IMode {	
+	private static final String RenderString = null;
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;
@@ -40,9 +40,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/*TeamPeers for the two soccer teams*/
 	private SoccerTeamPeer team1;
 	private SoccerTeamPeer team2;
-	
-	private RenderString scoreTeam1;
-	private RenderString scoreTeam2;
 	
 	private boolean roundOver = false;
 	
@@ -79,7 +76,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 */
 	@Override
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, Battle battle, int robotsCount) {
+			double width, double height, int robotsCount) {
 		double[][] initialRobotPositions = null;
 		roundOver = false;
 		
@@ -87,8 +84,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
 		initialRobotPositions = new double[(count + 1)][3];
  		
- 		fieldHeight = battleRules.getBattlefieldHeight();
- 		fieldWidth = battleRules.getBattlefieldWidth();
+ 		fieldHeight = height;
+ 		fieldWidth = width;
  		
  		goal1 = new BoundingRectangle(0, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
  		goal2 = new BoundingRectangle(fieldWidth - GOALX, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
@@ -187,15 +184,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
         for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
         	// Check to see if ball is in goal
-        	if (robotPeer.isBall() && robotPeer.isAlive()) {
+        	if (robotPeer.isBall()) {
         		if (goal1.intersects(robotPeer.getBoundingBox())) {
         			roundOver = true;
         			scoreTeam = Goal.TEAM1;
-        			robotPeer.kill();
         		} else if (goal2.intersects(robotPeer.getBoundingBox())) {
         			scoreTeam = Goal.TEAM2;
         			roundOver = true;
-        			robotPeer.kill();
         		}
         	}
             robotPeer.performScan(ball);
@@ -205,15 +200,11 @@ public class SoccerMode extends ClassicMode implements IMode {
 	@Override
 	public void scoreTurnPoints() {
 		// Which team scored?
-		if (scoreTeam == Goal.TEAM1 && !roundOver) {
+		if (scoreTeam == Goal.TEAM1) {
 			team1.getStatistics().incrementScore();
-			scoreTeam1.setText("Team 1\n" + 
-						(int)team1.getStatistics().getTotalScore());
 			scoreTeam = null;
-		} else if(scoreTeam == Goal.TEAM2 && !roundOver) {
+		} else if(scoreTeam == Goal.TEAM2) {
 			team2.getStatistics().incrementScore();
-			scoreTeam2.setText("Team 2\n         " + 
-					(int)team2.getStatistics().getTotalScore());
 			scoreTeam = null;
 		}
 	}
@@ -234,18 +225,23 @@ public class SoccerMode extends ClassicMode implements IMode {
 	@Override
 	public List<IRenderable> createRenderables() {
 		List<IRenderable> objs = new ArrayList<IRenderable>(); 
-		scoreTeam1 = new RenderString("score2", "Team 1\n" + 
-				(int)team1.getStatistics().getTotalScore());
-		scoreTeam1.setTranslate(25, 50);
-		scoreTeam1.setColour(Color.WHITE);
-		objs.add(scoreTeam1);
-		
-		scoreTeam2 = new RenderString("score1", ("Team 2\n         " + 
-				(int)team2.getStatistics().getTotalScore()));
-		scoreTeam2.setTranslate(fieldWidth - 70, 50);
-		scoreTeam2.setColour(Color.WHITE);
-		objs.add(scoreTeam2);
+		RenderString score = new RenderString("score", "0 : 0");
+		score.setTranslate((fieldWidth/2)-200, 20);
+		score.setScale(2, 2);
+		score.setColour(Color.BLUE);
+		objs.add(score);
 		return objs;
+	}
+
+	@Override
+	public void updateRenderables(List<IRenderable> objects) {
+		for (IRenderable renderable : objects) {
+			if (renderable.getType() == RenderableType.SPRITE_STRING) {
+				RenderString scoreString = (RenderString)renderable;
+				scoreString.setText((int)team1.getStatistics().getTotalScore() +
+						":" + (int)team2.getStatistics().getTotalScore());
+			}
+		}
 	}
 	
 	@Override
