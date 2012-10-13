@@ -63,10 +63,11 @@ public class TestEquipRobotMovement extends RobocodeTestBed {
     		break;
     	
     	// The MovementPistol should have moved approx 200 pixels forward
-    	case 28:
+    	case 22:
     		Assert.assertNear(150, pistolRobot.getX());
-    		Assert.assertNear(253.3, pistolRobot.getY());
-    		Assert.assertNear(11.2, pistolRobot.getVelocity());//
+    		Assert.assertNear(253.6, pistolRobot.getY());
+    		Assert.assertNear(11.2, pistolRobot.getVelocity());
+    		Assert.assertNear(1.3, pistolRobot.getAcceleration());
     		break;
     	case 76:
     		Assert.assertNear(pistolRobot.getX(), 150);
