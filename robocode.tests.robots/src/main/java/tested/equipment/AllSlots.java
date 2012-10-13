@@ -8,7 +8,7 @@ import robocode.AdvancedRobot;
  * 
  * @author Jayke Anderson - CSSE2003
  */
-public class AllSots extends AdvancedRobot {
+public class AllSlots extends AdvancedRobot {
 	
 	/**
 	 * The main run method.

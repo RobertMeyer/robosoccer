@@ -30,7 +30,7 @@ public class TestEquipRobotMovement extends RobocodeTestBed {
 
     @Override
     public String getRobotNames() {
-        return "equipment.PlasmaEquipRobot,equipment.PistolEquipRobot";
+        return "tested.equipment.MovementPlasma,tested.equipment.MovementPistol";
     }
     
     @Override
@@ -52,38 +52,50 @@ public class TestEquipRobotMovement extends RobocodeTestBed {
     			getRobots()[1];
     	
     	switch(turnNo){
+    	// Where MovementPlasma robot should be
+    	// Case 34 halfway through movement North
+    	// Case 99 halway back towards starting position
     	case 34:
     	case 99:
-    		Assert.assertNear(plasmaRobot.getX(), 50);
+    		Assert.assertNear(50, plasmaRobot.getX());
     		Assert.assertNear(plasmaRobot.getY(), 250);
     		Assert.assertNear(plasmaRobot.getVelocity(), 6.4);
     		break;
-    		
-    	case 29:
+    	
+    	// The MovementPistol should have moved approx 200 pixels forward
+    	case 28:
+    		Assert.assertNear(150, pistolRobot.getX());
+    		Assert.assertNear(253.3, pistolRobot.getY());
+    		Assert.assertNear(11.2, pistolRobot.getVelocity());//
+    		break;
     	case 76:
     		Assert.assertNear(pistolRobot.getX(), 150);
     		Assert.assertNear(pistolRobot.getY(), 250);
     		Assert.assertNear(pistolRobot.getVelocity(), 11.2);
     		break;
     	
+    	// Case 65 MovementPlasma should have moved 400 pixels forward
     	case 65:
     		Assert.assertNear(plasmaRobot.getX(), 50);
     		Assert.assertNear(plasmaRobot.getY(), 450);
     		Assert.assertNear(plasmaRobot.getVelocity(), 6.4);
     		break;
-    		
+    	
+    	// Case 47 MovementPistol should have moved 400 pixels forward
     	case 47:
     		Assert.assertNear(pistolRobot.getX(), 150);
     		Assert.assertNear(pistolRobot.getY(), 450);
     		Assert.assertNear(pistolRobot.getVelocity(), 11.2);
     		break;
-    		
+    	
+    	// Case 130 MovementPlasma should be back to the starting position
     	case 130:
     		Assert.assertNear(plasmaRobot.getX(), 50);
     		Assert.assertNear(plasmaRobot.getY(), 50);
     		Assert.assertNear(plasmaRobot.getVelocity(), 6.4);
     		break;
-    		
+    	
+    	// Case 94 Movement Pistol should be back to the starting position
     	case 94:
     		Assert.assertNear(pistolRobot.getX(), 150);
     		Assert.assertNear(pistolRobot.getY(), 50);
