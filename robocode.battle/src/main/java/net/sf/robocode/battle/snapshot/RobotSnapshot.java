@@ -62,6 +62,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private RobotState state;
     /** The energy level of the robot */
     private double energy;
+    /** The acceleration of the robot */
+    private double acceleration;
     /** The velocity of the robot */
     private double velocity;
     /** The gun heat level of the robot */
@@ -133,6 +135,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
         state = robot.getState();
 
         energy = robot.getEnergy();
+        acceleration = robot.getRobotAcceleration();
         velocity = robot.getVelocity();
         gunHeat = robot.getGunHeat();
 
@@ -267,6 +270,14 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     @Override
     public double getEnergy() {
         return energy;
+    }
+    
+    /**
+     * {@inheirtDoc}
+     */
+    @Override
+    public double getAcceleration(){
+    	return acceleration;
     }
 
     /**

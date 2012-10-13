@@ -679,7 +679,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (Double.isNaN(newCommands.getMaxVelocity())) {
 			println("You cannot setMaxVelocity to: " + newCommands.getMaxVelocity());
 		}
-		newCommands.setMaxVelocity(Math.min(abs(newCommands.getMaxVelocity()), getMaxVelocity()));
+		newCommands.setMaxVelocity(Math.min(abs(newCommands.getMaxVelocity()), getRuleMaxVelocity()));
 	}
 
 	protected List<Event> readoutEvents() {
@@ -1017,7 +1017,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	@Override
 	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
-
+		
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
 			return;
@@ -1045,7 +1045,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		setState(RobotState.ACTIVE);
 
 		updateGunHeat();
-
 		
 		lastHeading = bodyHeading;
 		lastGunHeading = gunHeading;
@@ -1528,7 +1527,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		boolean normalizeHeading = true;
 
 		double turnRate = min(currentCommands.getMaxTurnRate(), (.4 + .6 * (1 - (abs(velocity)
-				/ getMaxVelocity()))) * getMaxTurnRateRadians());
+				/ getRuleMaxVelocity()))) * getMaxTurnRateRadians());
 
 		if (currentCommands.getBodyTurnRemaining() > 0) {
 			if (currentCommands.getBodyTurnRemaining() < turnRate) {
@@ -1720,7 +1719,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				(Math.sqrt((4 * 2 / getRobotDeceleration()) * distance + 1) - 1) / 2));
 
 		if (decelTime == Double.POSITIVE_INFINITY) {
-			return getMaxVelocity();
+			return getRuleMaxVelocity();
 		}
 
 		final double decelDist = (decelTime / 2.0) * (decelTime - 1) // sum of 0..(decelTime-1)
@@ -2056,6 +2055,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 			attributes.get().put(attribute, newValue);
 		}
+		currentCommands.setMaxVelocity(getRuleMaxVelocity());
 	}
 
 	/**
@@ -2085,6 +2085,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				attributes.get().put(attribute, newValue);
 			}
 		}
+		currentCommands.setMaxVelocity(getRuleMaxVelocity());
 	}
 
 	 /**
@@ -2195,7 +2196,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 *
 	 * @return the speed (velocity) of the robot associated with this peer.
 	 */
-	public double getMaxVelocity(){
+	public double getRuleMaxVelocity(){
 		return attributes.get().get(RobotAttribute.SPEED) * Rules.MAX_VELOCITY;
 	}
 
