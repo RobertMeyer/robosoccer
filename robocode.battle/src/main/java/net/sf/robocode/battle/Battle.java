@@ -520,6 +520,10 @@ public final class Battle extends BaseBattle {
         this.getBattleMode().updateRenderables(customObject);
 
         updateRobots();
+        
+        if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        	checkRobotHitSpike();
+        }
 
         handleDeadRobots();
         if (getBattleMode().respawnsOn()) {
