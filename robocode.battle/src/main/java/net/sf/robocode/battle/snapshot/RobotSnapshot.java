@@ -16,7 +16,6 @@ package net.sf.robocode.battle.snapshot;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;

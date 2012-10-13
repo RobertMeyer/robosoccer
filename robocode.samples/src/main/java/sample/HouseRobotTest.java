@@ -35,8 +35,33 @@ public class HouseRobotTest extends HouseRobot {
 
     private void moveToCorner() {
         goToCorner();
-        turnLeft(normalAbsoluteAngleDegrees(getHeading() + selectedCorner));
+        setTurnLeft(normalAbsoluteAngleDegrees((smallestTurn(getHeading() + selectedCorner))));
     }
+    
+	/**
+	 * A private helper method to calculate the smallest possible turn to
+	 * achieve a required angle.
+	 * 
+	 * 
+	 * @param angle
+	 *            The angle that is being reduced to a more efficient angle
+	 * 
+	 * @return Returns the smallest angle to achieve the required turn
+	 */
+	private double smallestTurn(double angle) {
+
+		// If the angle is greater than 180 degrees, subtract 360 to obtain
+		// the shortest angle, which will be in the opposite direction
+		if (angle > 180)
+			angle -= 360;
+
+		// If the angle is less than -180 degrees, add 360 to obtain the
+		// shortest angle, which will be in the opposite direction
+		if (angle < -180)
+			angle += 360;
+
+		return angle;
+	}
 
     // START COPIED CODE BLOCK //////////////////////////////////////////
 	/*

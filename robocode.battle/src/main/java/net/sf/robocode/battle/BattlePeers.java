@@ -184,7 +184,10 @@ public class BattlePeers {
 	public Battle getBattle(){
 		return battle;
 	}
-
+	
+	public IHostManager getHostManager(){
+		return hostManager;
+	}
 
 	public void addRobot(RobotPeer peer) {
 		botzillaRobot = peer;
