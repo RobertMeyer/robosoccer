@@ -612,4 +612,52 @@ public class BasicRobotProxy extends HostingRobotProxy implements
 		getCall();
         return status.getMinBulletPower();
 	}
+
+	@Override
+	public double getAcceleration() {
+		getCall();
+        return status.getAcceleration();
+	}
+
+	@Override
+	public double getDeceleration() {
+		getCall();
+        return status.getDeceleration();
+	}
+
+	@Override
+	public double getRadarScanRadius() {
+		getCall();
+        return status.getRadarScanRadius();
+	}
+
+	@Override
+	public double getMaxTurnRate() {
+		getCall();
+        return status.getMaxTurnRate();
+	}
+
+	@Override
+	public double getGunTurnRate() {
+		getCall();
+        return status.getGunTurnRate();
+	}
+
+	@Override
+	public double getRadarTurnRate() {
+		getCall();
+        return status.getRadarTurnRate();
+	}
+
+	@Override
+	public double getRobotHitDamage() {
+		getCall();
+        return status.getRobotHitDamage();
+	}
+
+	@Override
+	public double getRobotHitAttack() {
+		getCall();
+        return status.getRobotHitAttack();
+	}
 }

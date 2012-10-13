@@ -924,7 +924,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				currentCommands.getBodyTurnRemaining(), currentCommands.getRadarTurnRemaining(),
 				currentCommands.getGunTurnRemaining(), currentCommands.getDistanceRemaining(), gunHeat, others,
 				battle.getRoundNum(), battle.getNumRounds(), battle.getTime(), currentCommands.getMaxVelocity(),
-				getMaxBulletPower(), getMinBulletPower());
+				getMaxBulletPower(), getMinBulletPower(), getRobotAcceleration(), getRobotDeceleration(),
+				getRadarScanRadius(), getMaxTurnRate(), getGunTurnRate(), getRadarTurnRate(), getRamDamage(),
+				getRamAttack());
 
 		status.set(stat);
 		robotProxy.startRound(currentCommands, stat);
@@ -2013,7 +2015,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				currentCommands.getBodyTurnRemaining(), currentCommands.getRadarTurnRemaining(),
 				currentCommands.getGunTurnRemaining(), currentCommands.getDistanceRemaining(), gunHeat, others,
 				battle.getRoundNum(), battle.getNumRounds(), battle.getTime(), currentCommands.getMaxVelocity(),
-				getMaxBulletPower(), getMinBulletPower());
+				getMaxBulletPower(), getMinBulletPower(), getRobotAcceleration(), getRobotDeceleration(),
+				getRadarScanRadius(), getMaxTurnRate(), getGunTurnRate(), getRadarTurnRate(), getRamDamage(),
+				getRamAttack());
 
 		status.set(stat);
 	}
