@@ -72,6 +72,11 @@ public class Equipment {
         		.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
         		.build());
         
+        
+        /*
+         * Do not remove the following items or change them, as doing so would
+         * likely cause tests to fail. 
+         */
         // Do not Remove, this will cause tests to fail.
         parts.put("Plasma Test",
         		new EquipmentPart.Builder(EquipmentSlot.WEAPON)
@@ -90,6 +95,10 @@ public class Equipment {
         		.set(RobotAttribute.GUN_TURN_ANGLE, 40)
         		.set(RobotAttribute.SPEED, 40)
         		.build());
+        
+        /*
+         * End of Test equipment
+         */
     }
 
     /**

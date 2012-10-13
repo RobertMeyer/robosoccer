@@ -14,7 +14,7 @@ public class MovementPlasma extends AdvancedRobot {
 	 * The main run function
 	 */
 	public void run(){		
-		equip("PlasmaTest");
+		equip("Plasma Test");
 		ahead(400);
 		back(400);
 	}
