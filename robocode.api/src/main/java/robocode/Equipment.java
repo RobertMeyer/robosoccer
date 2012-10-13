@@ -49,6 +49,24 @@ public class Equipment {
                 .set(RobotAttribute.ENERGY, -60)
                 .build());
         
+        parts.put("Small Radar",
+        		new EquipmentPart.Builder(EquipmentSlot.RADAR)
+        		.set(RobotAttribute.ACCELERATION, 20)
+        		.set(RobotAttribute.RADAR_ANGLE, -25)
+        		.set(RobotAttribute.SCAN_RADIUS, 50)
+        		.set(RobotAttribute.SPEED, 30)
+        		.build());
+        
+        parts.put("Pistol",
+        		new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+        		.set(RobotAttribute.ACCELERATION, 30)
+        		.set(RobotAttribute.BULLET_DAMAGE, -30)
+        		.set(RobotAttribute.BULLET_SPEED, 20)
+        		.set(RobotAttribute.GUN_HEAT_RATE, -20)
+        		.set(RobotAttribute.GUN_TURN_ANGLE, 40)
+        		.set(RobotAttribute.SPEED, 40)
+        		.build());
+        
         parts.put("Test", 
         		  new EquipmentPart.Builder(EquipmentSlot.WEAPON)
         		.sound("/robocode.sound/src/main/resources/net/sf/robocode/sound/sounds/zap.wav")
