@@ -2,8 +2,6 @@ package net.sf.robocode.battle.item;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.peer.RobotPeer;
-import net.sf.robocode.mode.FlagMode;
-import net.sf.robocode.mode.IMode;
 
 public class Flag extends ItemDrop {
 
@@ -36,6 +34,6 @@ public class Flag extends ItemDrop {
     
     @Override
     public void doItemEffect(RobotPeer robot) {
-    	// TODO (team-Telos)
+    	this.setCarrier(robot);
     }
 }

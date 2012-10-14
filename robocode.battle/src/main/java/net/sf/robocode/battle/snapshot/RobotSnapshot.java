@@ -16,7 +16,6 @@ package net.sf.robocode.battle.snapshot;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -46,66 +45,68 @@ import robocode.control.snapshot.RobotState;
 public final class RobotSnapshot implements Serializable, IXmlSerializable,
                                             IRobotSnapshot {
 
-	private static final long serialVersionUID = 2L;
-	/** The name of the robot */
-	private String name;
-	/** The short name of the robot */
-	private String shortName;
-	/** Very short name of the robot */
-	private String veryShortName;
-	/** Very short name of the team leader robot (might be null) */
-	private String teamName;
-	/** The unique robot index */
-	private int robotIndex;
-	/** The team index for the robot */
-	private int teamIndex;
-	/** The robot state */
-	private RobotState state;
-	/** The energy level of the robot */
-	private double energy;
-	/** The velocity of the robot */
-	private double velocity;
-	/** The gun heat level of the robot */
-	private double gunHeat;
-	/** The body heading in radians */
-	private double bodyHeading;
-	/** The gun heading in radians */
-	private double gunHeading;
-	/** The radar heading in radians */
-	private double radarHeading;
-	/** The X position */
-	private double x;
-	/** The Y position */
-	private double y;
-	/** The ARGB color of the body */
-	private int bodyColor = ExecCommands.defaultBodyColor;
-	/** The ARGB color of the gun */
-	private int gunColor = ExecCommands.defaultGunColor;
-	/** The ARGB color of the radar */
-	private int radarColor = ExecCommands.defaultRadarColor;
-	/** The ARGB color of the scan arc */
-	private int scanColor = ExecCommands.defaultScanColor;
-	/** Flag specifying if this robot is a Droid */
-	private boolean isDroid;
+    private static final long serialVersionUID = 2L;
+    /** The name of the robot */
+    private String name;
+    /** The short name of the robot */
+    private String shortName;
+    /** Very short name of the robot */
+    private String veryShortName;
+    /** Very short name of the team leader robot (might be null) */
+    private String teamName;
+    /** The unique robot index */
+    private int robotIndex;
+    /** The team index for the robot */
+    private int teamIndex;
+    /** The robot state */
+    private RobotState state;
+    /** The energy level of the robot */
+    private double energy;
+    /** The acceleration of the robot */
+    private double acceleration;
+    /** The velocity of the robot */
+    private double velocity;
+    /** The gun heat level of the robot */
+    private double gunHeat;
+    /** The body heading in radians */
+    private double bodyHeading;
+    /** The gun heading in radians */
+    private double gunHeading;
+    /** The radar heading in radians */
+    private double radarHeading;
+    /** The X position */
+    private double x;
+    /** The Y position */
+    private double y;
+    /** The ARGB color of the body */
+    private int bodyColor = ExecCommands.defaultBodyColor;
+    /** The ARGB color of the gun */
+    private int gunColor = ExecCommands.defaultGunColor;
+    /** The ARGB color of the radar */
+    private int radarColor = ExecCommands.defaultRadarColor;
+    /** The ARGB color of the scan arc */
+    private int scanColor = ExecCommands.defaultScanColor;
+    /** Flag specifying if this robot is a Droid */
+    private boolean isDroid;
+    /** Flag specifying if this robot is a IPaintRobot or is invoking getGraphics() */
+    private boolean isPaintRobot;
+    /** Flag specifying if painting is enabled for this robot */
+    private boolean isPaintEnabled;
+    /** Flag specifying if RobocodeSG painting is enabled for this robot */
+    private boolean isSGPaintEnabled;
+    /** Snapshot of the scan arc */
+    private SerializableArc scanArc;
+    /** Snapshot of the object with queued calls for Graphics object */
+    private Object graphicsCalls;
+    /** Snapshot of debug properties */
+    private DebugProperty[] debugProperties;
+    /** Snapshot of the output print stream for this robot */
+    private String outputStreamSnapshot;
+    /** Snapshot of score of the robot */
+    private IScoreSnapshot robotScoreSnapshot;
 	/** Flag specifying if the robot is a FreezeRobot */
 	private boolean isFreezeRobot;
-	/** Flag specifying if this robot is a IPaintRobot or is invoking getGraphics() */
-	private boolean isPaintRobot;
-	/** Flag specifying if painting is enabled for this robot */
-	private boolean isPaintEnabled;
-	/** Flag specifying if RobocodeSG painting is enabled for this robot */
-	private boolean isSGPaintEnabled;
-	/** Snapshot of the scan arc */
-	private SerializableArc scanArc;
-	/** Snapshot of the object with queued calls for Graphics object */
-	private Object graphicsCalls;
-	/** Snapshot of debug properties */
-	private DebugProperty[] debugProperties;
-	/** Snapshot of the output print stream for this robot */
-	private String outputStreamSnapshot;
-	/** Snapshot of score of the robot */
-	private IScoreSnapshot robotScoreSnapshot;
-
+    
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
     
     private double scanRadius;
@@ -135,9 +136,11 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 
 		state = robot.getState();
 
-		energy = robot.getEnergy();
-		velocity = robot.getVelocity();
-		gunHeat = robot.getGunHeat(); 
+
+        energy = robot.getEnergy();
+        acceleration = robot.getRobotAcceleration();
+        velocity = robot.getVelocity();
+        gunHeat = robot.getGunHeat();
 
         equipment = robot.getEquipment();
         
@@ -269,9 +272,17 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	 * {@inheritDoc}
 	 */
     @Override
-	public double getEnergy() {
-		return energy;
-	}
+    public double getEnergy() {
+        return energy;
+    }
+    
+    /**
+     * {@inheirtDoc}
+     */
+    @Override
+    public double getAcceleration(){
+    	return acceleration;
+    }
 
 	/**
 	 * {@inheritDoc}

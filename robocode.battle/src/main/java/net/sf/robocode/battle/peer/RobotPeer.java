@@ -75,7 +75,6 @@ import java.io.IOException;
 import static java.lang.Math.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +83,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
@@ -107,20 +105,6 @@ import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.WinException;
 import static robocode.util.Utils.*;
-
-import java.awt.geom.Arc2D;
-import java.awt.geom.Rectangle2D;
-import java.io.IOException;
-import static java.lang.Math.*;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
@@ -717,7 +701,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (Double.isNaN(newCommands.getMaxVelocity())) {
 			println("You cannot setMaxVelocity to: " + newCommands.getMaxVelocity());
 		}
-		newCommands.setMaxVelocity(Math.min(abs(newCommands.getMaxVelocity()), getMaxVelocity()));
+		newCommands.setMaxVelocity(Math.min(abs(newCommands.getMaxVelocity()), getRealMaxVelocity()));
 	}
 
 	protected List<Event> readoutEvents() {
@@ -966,7 +950,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		RobotStatus stat = HiddenAccess.createStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity,
 				currentCommands.getBodyTurnRemaining(), currentCommands.getRadarTurnRemaining(),
 				currentCommands.getGunTurnRemaining(), currentCommands.getDistanceRemaining(), gunHeat, others,
-				battle.getRoundNum(), battle.getNumRounds(), battle.getTime());
+				battle.getRoundNum(), battle.getNumRounds(), battle.getTime(), currentCommands.getMaxVelocity(),
+				getMaxBulletPower(), getMinBulletPower(), getRobotAcceleration(), getRobotDeceleration(),
+				getRadarScanRadius(), getMaxTurnRate(), getGunTurnRate(), getRadarTurnRate(), getRamDamage(),
+				getRamAttack());
 
 		status.set(stat);
 		robotProxy.startRound(currentCommands, stat);
@@ -1060,7 +1047,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	@Override
 	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
-
+		
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
 			return;
@@ -1096,7 +1083,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		setState(RobotState.ACTIVE);
 
 		updateGunHeat();
-
 		
 		lastHeading = bodyHeading;
 		lastGunHeading = gunHeading;
@@ -1257,6 +1243,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					itemsDestroyed.add(item);
 				}
 				item.doItemEffect(this);
+				item.setXLocation(-50);
+				item.setYLocation(-50);
 			}
 		}
 		for (ItemDrop item : itemsDestroyed){
@@ -1623,7 +1611,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		boolean normalizeHeading = true;
 
 		double turnRate = min(currentCommands.getMaxTurnRate(), (.4 + .6 * (1 - (abs(velocity)
-				/ getMaxVelocity()))) * getMaxTurnRateRadians());
+				/ getRealMaxVelocity()))) * getMaxTurnRateRadians());
 
 		if (currentCommands.getBodyTurnRemaining() > 0) {
 			if (currentCommands.getBodyTurnRemaining() < turnRate) {
@@ -1815,7 +1803,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				(Math.sqrt((4 * 2 / getRobotDeceleration()) * distance + 1) - 1) / 2));
 
 		if (decelTime == Double.POSITIVE_INFINITY) {
-			return getMaxVelocity();
+			return getRealMaxVelocity();
 		}
 
 		final double decelDist = (decelTime / 2.0) * (decelTime - 1) // sum of 0..(decelTime-1)
@@ -1846,6 +1834,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		double startAngle = lastRadarHeading;
 		double scanRadians = getRadarHeading() - startAngle;
+		double scanDistance = battle.getBattleMode().modifyVision(Rules.RADAR_SCAN_RADIUS, battleRules);
 
 		// Check if we passed through 360
 		if (scanRadians < -PI) {
@@ -1861,8 +1850,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		startAngle = normalAbsoluteAngle(startAngle);
 
-		scanArc.setArc(x - Rules.RADAR_SCAN_RADIUS, y - Rules.RADAR_SCAN_RADIUS, 2 * Rules.RADAR_SCAN_RADIUS,
-				2 * Rules.RADAR_SCAN_RADIUS, 180.0 * startAngle / PI, 180.0 * scanRadians / PI, Arc2D.PIE);
+		scanArc.setArc(x - scanDistance, y - scanDistance, 2 * scanDistance,
+				2 * scanDistance, 180.0 * startAngle / PI, 180.0 * scanRadians / PI, Arc2D.PIE);
 
 		for (RobotPeer otherRobot : robots) {
 			if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
@@ -1968,7 +1957,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public void updateEnergy(double delta) {
 		if ((!isExecFinishedAndDisabled && !isEnergyDrained) || delta < 0) {
-			setEnergy(energy + delta, true);
+			setEnergy(energy + (delta * getEnergyRegen()), true);
 			if (battle.getBattleMode().toString() == "Energy Sharing Mode"){
 				distributeEnergy();
 			}
@@ -2045,11 +2034,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			battle.addBullet(fake);
 		}
 		updateEnergy(-energy);
+		
 
 		setState(RobotState.DEAD);
 	}
 
     public void respawn(List<RobotPeer> robots) {
+    	this.battle.getBattleMode().onRespawnDeath(this);
     	initializeRound(robots, null);
     }
 
@@ -2103,7 +2094,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		RobotStatus stat = HiddenAccess.createStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity,
 				currentCommands.getBodyTurnRemaining(), currentCommands.getRadarTurnRemaining(),
 				currentCommands.getGunTurnRemaining(), currentCommands.getDistanceRemaining(), gunHeat, others,
-				battle.getRoundNum(), battle.getNumRounds(), battle.getTime());
+				battle.getRoundNum(), battle.getNumRounds(), battle.getTime(), currentCommands.getMaxVelocity(),
+				getMaxBulletPower(), getMinBulletPower(), getRobotAcceleration(), getRobotDeceleration(),
+				getRadarScanRadius(), getMaxTurnRate(), getGunTurnRate(), getRadarTurnRate(), getRamDamage(),
+				getRamAttack());
 
 		status.set(stat);
 	}
@@ -2146,6 +2140,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 			attributes.get().put(attribute, newValue);
 		}
+		currentCommands.setMaxVelocity(getRealMaxVelocity());
 	}
 
 	/**
@@ -2175,6 +2170,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				attributes.get().put(attribute, newValue);
 			}
 		}
+		currentCommands.setMaxVelocity(getRealMaxVelocity());
 	}
 
 	 /**
@@ -2284,7 +2280,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 *
 	 * @return the speed (velocity) of the robot associated with this peer.
 	 */
-	public double getMaxVelocity(){
+	public double getRealMaxVelocity(){
 		return attributes.get().get(RobotAttribute.SPEED) * Rules.MAX_VELOCITY;
 	}
 

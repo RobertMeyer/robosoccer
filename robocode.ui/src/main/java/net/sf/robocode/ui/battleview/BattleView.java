@@ -43,11 +43,11 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import net.sf.robocode.battle.BallBot;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
@@ -126,6 +126,10 @@ public class BattleView extends Canvas {
 
     // Hold current custom images to be rendered.
     private HashMap<String, RenderImage> customImage;
+    
+    //To store spike position
+    private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
+    private ArrayList<Integer> spikePosY = new ArrayList<Integer>();  
 
 	public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
 		this.properties = properties;
@@ -268,6 +272,8 @@ public class BattleView extends Canvas {
         		// Botzilla
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
+        	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        		createSpikeGround();
         	} else {
         		createGroundImage();
         	}
@@ -397,12 +403,85 @@ public class BattleView extends Canvas {
 			for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
 				Image img = imageManager.getGroundTileImage(groundTiles[y][x]);
 
-				if (img != null) {
-					groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
-				}
-			}
-		}
-	}
+                if (img != null) {
+                    groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                }
+            }
+        }
+    }
+    
+    private void createSpikeGround(){
+        // Reinitialize ground tiles
+
+        Random r = new Random(); // independent
+
+        final int NUM_HORZ_TILES = battleField.getWidth() / groundTileWidth + 1;
+        final int NUM_VERT_TILES = battleField.getHeight() / groundTileHeight + 1;
+
+        if ((groundTiles == null) || (groundTiles.length != NUM_VERT_TILES) || (groundTiles[0].length != NUM_HORZ_TILES)) {
+
+            groundTiles = new int[NUM_VERT_TILES][NUM_HORZ_TILES];
+            for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
+                for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+                    groundTiles[y][x] = (int) round(r.nextDouble() * 4);
+                }
+            }
+        }
+
+        // Create new buffered image with the ground pre-rendered
+
+        int groundWidth = (int) (battleField.getWidth() * scale);
+        int groundHeight = (int) (battleField.getHeight() * scale);
+        
+        groundImage = new BufferedImage(groundWidth, groundHeight, BufferedImage.TYPE_INT_RGB);
+
+        Graphics2D groundGfx = (Graphics2D) groundImage.getGraphics();
+
+        groundGfx.setRenderingHints(renderingHints);
+
+        groundGfx.setTransform(AffineTransform.getScaleInstance(scale, scale));
+
+        int count = 0;
+        
+        spikePosX.clear();
+        spikePosY.clear();
+        
+        for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
+            for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+            	
+                Image img = imageManager.getGroundTileImage(groundTiles[y][x]);
+                Image spikeImg = imageManager.getSpikeTileImage();
+                
+                if (img != null) {
+                	
+                	int randomNum = r.nextInt(100);
+                	
+                	if(randomNum > 95){
+                		if (count == 0){
+                			groundGfx.drawImage(spikeImg, x * groundTileWidth, y * groundTileHeight, null);
+                		
+                			count = count + 1;
+                			spikePosX.add(x * groundTileWidth);
+                			int opposite = Math.abs(y * groundTileHeight - battleField.getHeight());
+                			spikePosY.add(opposite);
+                			System.out.println("Tile X: "+x * groundTileWidth);
+                			System.out.println("Tile Y: "+opposite);
+                		} else {
+                			groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                		}
+                	} else {
+                		groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                	}
+                }
+            }
+        }
+        
+        System.out.println(spikePosX);
+        System.out.println(spikePosY);
+        
+        battleManager.saveSpikePosX(spikePosX);
+        battleManager.saveSpikePosY(spikePosY);
+    }
 
 	private void drawBattle(Graphics2D g, ITurnSnapshot snapShot) {
 		// Save the graphics state

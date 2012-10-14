@@ -115,12 +115,19 @@ public interface IRobotSnapshot {
 	 */
 	RobotState getState();
 
-	/**
-	 * Returns the energy level of the robot.
-	 *
-	 * @return the energy level of the robot.
-	 */
-	double getEnergy();
+    /**
+     * Returns the energy level of the robot.
+     *
+     * @return the energy level of the robot.
+     */
+    double getEnergy();
+    
+    /**
+     * Returns the acceleration of the robot.
+     * 
+     * @return the acceleration of the robot.
+     */
+    double getAcceleration();
 
 	/**
 	 * Returns the velocity of the robot.

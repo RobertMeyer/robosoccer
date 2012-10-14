@@ -95,8 +95,6 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-
-
 import static java.lang.Math.round;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -127,11 +125,6 @@ import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.RobotState;
 
-import java.io.Console;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The {@code Battle} class is used for controlling a battle.
@@ -191,7 +184,6 @@ public final class Battle extends BaseBattle {
 	private ItemController itemControl;// = new ItemController();
 	private List<ItemDrop> items = new ArrayList<ItemDrop>();
 	private int itemCursor;
-
 	// Objects in the battle
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
@@ -328,6 +320,10 @@ public final class Battle extends BaseBattle {
 
 		super.cleanup();
 
+		items.clear();
+		
+		customObject.clear();
+
 		battleManager = null;
 
 		// Request garbage collecting
@@ -414,8 +410,9 @@ public final class Battle extends BaseBattle {
 		customObject.clear();
 
 		List<IRenderable> objs = this.getBattleMode().createRenderables();
-		if (objs != null)
+		if (objs != null) {
 			customObject = objs;
+		}
 
 		//boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {
@@ -489,6 +486,8 @@ public final class Battle extends BaseBattle {
 		this.getBattleMode().scoreTurnPoints();
 
 		bullets.clear();
+		
+		items.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
 	}
@@ -523,6 +522,10 @@ public final class Battle extends BaseBattle {
         this.getBattleMode().updateRenderables(customObject);
 
         updateRobots();
+        
+        if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        	checkRobotHitSpike();
+        }
 
         handleDeadRobots();
         if (getBattleMode().respawnsOn()) {
@@ -541,18 +544,18 @@ public final class Battle extends BaseBattle {
         killFreezeRobot();
         
         publishStatuses();
-
+        
 		if (totalTurns % 100 == 0 || totalTurns == 1){
 
 			for (ItemDrop item: items){
-				if (!itemControl.getItems().contains(item)){
+				if (!itemControl.getItems().contains(item)) {
 					itemControl.spawnRandomItem(item);
 					break;
 				}
 			}
 		}
+		currentTurn++;
 
-		 currentTurn++;
         // Robot time!
         wakeupRobots();
 
@@ -719,6 +722,26 @@ public final class Battle extends BaseBattle {
 		// this will load commands, including bullets from last turn
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.performLoadCommands();
+		}
+	}
+	
+	private void checkRobotHitSpike() {
+		int spikeXSize = battleManager.getSpikePosX().size();
+		int spikeYSize = battleManager.getSpikePosY().size();
+		for (int i= 0; i < robotList.size(); i++) {
+			for (int x=0; x < spikeXSize; x++){
+				if ((robotList.get(i).getX() < battleManager.getSpikePosX().get(x) + 64) && (robotList.get(i).getX() > battleManager.getSpikePosX().get(x))) {
+					System.out.println("Battle Manager X: "+battleManager.getSpikePosX().get(x) + " | Battle Manager Y: "+battleManager.getSpikePosY().get(x));
+					System.out.println("Robot X: "+robotList.get(i).getX() + " | Robot Y: "+robotList.get(i).getY());
+					for (int y=0; y < spikeYSize; y++){
+						if((robotList.get(i).getY() < battleManager.getSpikePosY().get(y)) && (robotList.get(i).getY() > battleManager.getSpikePosY().get(y) - 64)){
+							System.out.println("Battle Manager Y: "+battleManager.getSpikePosY().get(y));
+							System.out.println("Robot Y: "+robotList.get(i).getY());
+							robotList.get(i).kill();
+						}
+					}
+				}
+			}
 		}
 	}
 

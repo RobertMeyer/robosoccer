@@ -20,5 +20,8 @@ public interface IHiddenStatusHelper {
 
     RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading,
                              double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining,
-                             double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time);
+                             double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time,
+                             double maxVelocity, double maxBulletPower, double minBulletPower, double acceleration,
+                             double deceleration, double radarScanRadius, double maxTurnRate, double gunTurnRate,
+                             double radarTurnRate, double robotHitDamage, double robotHitAttack);
 }

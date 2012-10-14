@@ -9,10 +9,6 @@ import net.sf.robocode.battle.item.ItemDrop;
 
 import org.junit.*;
 
-import static org.mockito.Mockito.*;
-
-import robocode.BattleRules;
-
 public class ClassicModeTest {
 	
 	private static int TURN_LIMIT = 9000;
