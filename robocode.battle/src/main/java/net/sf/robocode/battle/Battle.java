@@ -123,6 +123,8 @@ import robocode.control.events.*;
 import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.RobotState;
+
 
 /**
  * The {@code Battle} class is used for controlling a battle.
@@ -520,6 +522,10 @@ public final class Battle extends BaseBattle {
         this.getBattleMode().updateRenderables(customObject);
 
         updateRobots();
+        
+        if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        	checkRobotHitSpike();
+        }
 
         handleDeadRobots();
         if (getBattleMode().respawnsOn()) {
@@ -534,7 +540,9 @@ public final class Battle extends BaseBattle {
         inactiveTurnCount++;
 
         computeActiveRobots();
-
+        
+        killFreezeRobot();
+        
         publishStatuses();
         
 		if (totalTurns % 100 == 0 || totalTurns == 1){
@@ -552,6 +560,19 @@ public final class Battle extends BaseBattle {
         wakeupRobots();
 
     }
+	//Method for killing the freeze robot if it one of the last two remaining robots
+	public void killFreezeRobot(){
+		//Checks if number of active robots == 2
+		if(activeRobots == 2){
+			//checks if one of the two remaining robots is a freezeRobot
+			for(int i = 0; i < robotList.size(); i++){
+				if(robotList.get(i).isFreezeRobot()){
+					//kills the freeze robot is it is one of the two remaining robots on the field
+					robotList.get(i).setState(RobotState.DEAD);
+				}
+			}
+		}
+	}
 
 	@Override
     protected void shutdownTurn() {
@@ -701,6 +722,26 @@ public final class Battle extends BaseBattle {
 		// this will load commands, including bullets from last turn
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.performLoadCommands();
+		}
+	}
+	
+	private void checkRobotHitSpike() {
+		int spikeXSize = battleManager.getSpikePosX().size();
+		int spikeYSize = battleManager.getSpikePosY().size();
+		for (int i= 0; i < robotList.size(); i++) {
+			for (int x=0; x < spikeXSize; x++){
+				if ((robotList.get(i).getX() < battleManager.getSpikePosX().get(x) + 64) && (robotList.get(i).getX() > battleManager.getSpikePosX().get(x))) {
+					System.out.println("Battle Manager X: "+battleManager.getSpikePosX().get(x) + " | Battle Manager Y: "+battleManager.getSpikePosY().get(x));
+					System.out.println("Robot X: "+robotList.get(i).getX() + " | Robot Y: "+robotList.get(i).getY());
+					for (int y=0; y < spikeYSize; y++){
+						if((robotList.get(i).getY() < battleManager.getSpikePosY().get(y)) && (robotList.get(i).getY() > battleManager.getSpikePosY().get(y) - 64)){
+							System.out.println("Battle Manager Y: "+battleManager.getSpikePosY().get(y));
+							System.out.println("Robot Y: "+robotList.get(i).getY());
+							robotList.get(i).kill();
+						}
+					}
+				}
+			}
 		}
 	}
 

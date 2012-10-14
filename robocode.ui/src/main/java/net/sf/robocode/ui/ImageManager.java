@@ -47,6 +47,7 @@ public class ImageManager implements IImageManager {
     private HashMap<Integer, RenderImage> robotRadarImageCache;
     private HashMap<String, RenderImage> customImageCache;
 	private Image[] soccerField;
+	private Image spikeImage;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -96,6 +97,12 @@ public class ImageManager implements IImageManager {
             groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
         }
         return groundImages[index];
+    }
+	
+	@Override
+    public Image getSpikeTileImage() {
+		spikeImage = getImage("/net/sf/robocode/ui/images/ground/spike/spike.png");
+        return spikeImage;
     }
 
     @Override
