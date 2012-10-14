@@ -5,40 +5,10 @@ import robocode.util.Utils;
 
 public class BallBot extends Ball {
 
-	/* Bounds for the goal - possibly to be altered at a later date */
-	public static final double GOALXMIN = 200;
-	public static final double GOALXMAX = 600;
-	public static final double GOALYMIN = 100;
-	public static final double GOALYMAX = 400;
-	public static final double XBOUND = 800;
-	public static final double YBOUND = 800;
-	public double team1; //team 1 score
-	public double team2; //team 2 score
+
 
 	public void run() {
-		addCustomEvent(new Condition("scored") {
-			public boolean test() {
-				if ((getX() > GOALXMIN) && (getX() < GOALXMAX)
-						&& ((getY() > GOALYMAX) || (getY() < GOALYMIN))) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		});
-
 		execute();
-	}
-
-	public void onCustomEvent(CustomEvent e) {
-		if (e.getCondition().getName().equals("scored")) {
-			if (getX() < XBOUND/2) {
-				team1++;
-			}
-			else {
-				team2++;
-			}
-		}
 	}
 
 	public void onHitByBullet(HitByBulletEvent e) {
