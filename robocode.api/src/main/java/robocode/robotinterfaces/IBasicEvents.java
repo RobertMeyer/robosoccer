@@ -295,7 +295,7 @@ public interface IBasicEvents {
 	 * You should override it in your robot if you want to be informed of this
 	 * event.
 	 * @param event
-	 * @see onScannedItem
+	 * @see onScannedRobot
 	 */
 	void onScannedItem(ScannedItemEvent event);
 }
