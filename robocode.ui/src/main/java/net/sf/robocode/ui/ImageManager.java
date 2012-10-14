@@ -101,7 +101,7 @@ public class ImageManager implements IImageManager {
 	
 	@Override
     public Image getSpikeTileImage() {
-		spikeImage = getImage("/net/sf/robocode/ui/images/spike/spike.png");
+		spikeImage = getImage("/net/sf/robocode/ui/images/ground/spike/spike.png");
         return spikeImage;
     }
 
