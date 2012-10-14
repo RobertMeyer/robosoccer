@@ -38,19 +38,27 @@ public class RicochetMode extends ClassicMode {
 
 	public double modifyRicochet(BattleRules rules) {
 		double ricochetValue = 1;
+		//try to check the value about ricochet
 		try {
 			ricochetValue = (double) Double.valueOf((String) rules
 				.getModeRules().get("ricochetModifier"));
 		} catch (NumberFormatException e) {
+			//if the value is string not for the number, set as no power 
+			//loss but still has ricochet
 			ricochetValue = 1;
 		}
 		if (ricochetValue < 1) {
+			//the ricochet cannot increase the bullet power, so if the 
+			//ricochetValue less than 1 (power increase), set ricochetValue
+			//to 1 (no power loss)
 			ricochetValue = 1;
 		}
 		return ricochetValue;
 	}
 
 	@SuppressWarnings("serial")
+	//build the rocochet panel that user can make the decision that how many
+	//ricochet they want
 	private class RicochetModeRulesPanel extends JPanel {
 		private JTextField ricochetModifier;
 
@@ -64,6 +72,7 @@ public class RicochetMode extends ClassicMode {
 			add(ricochetModifier);
 		}
 
+		//get ricochet power decrease value
 		public Hashtable<String, Object> getValues() {
 			Hashtable<String, Object> values = new Hashtable<String, Object>();
 			values.put("ricochetModifier", ricochetModifier.getText());

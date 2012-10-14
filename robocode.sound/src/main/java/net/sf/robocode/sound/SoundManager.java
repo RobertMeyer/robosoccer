@@ -32,6 +32,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Mixer;
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.io.Logger;
 import net.sf.robocode.settings.ISettingsListener;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.control.events.BattleAdaptor;
@@ -115,7 +116,6 @@ public class SoundManager implements ISoundManager {
      * @return a SoundCache instance
      */
     private SoundCache getSounds(String path) {
-        if (sounds == null) {
             sounds = new SoundCache(getMixer());
 
             // Sound effects
@@ -124,7 +124,7 @@ public class SoundManager implements ISoundManager {
             }
             else {
             	sounds.addSound("gunshot", properties.getFileGunshotSfx(), 5);
-            }
+           }
            
             sounds.addSound("robot death", properties.getRobotDeathSfx(), 3);
             sounds.addSound("bullet hits robot", properties.getBulletHitsRobotSfx(), 3);
@@ -136,7 +136,7 @@ public class SoundManager implements ISoundManager {
             sounds.addSound("theme", properties.getFileThemeMusic(), 1);
             sounds.addSound("background", properties.getFileBackgroundMusic(), 1);
             sounds.addSound("endOfBattle", properties.getFileEndOfBattleMusic(), 1);
-        }
+        
         return sounds;
     }
 
@@ -184,7 +184,7 @@ public class SoundManager implements ISoundManager {
         if (c == null) {
             return;
         }
-
+        
         if (properties.getOptionsSoundEnableMixerPan() && c.isControlSupported(FloatControl.Type.PAN)) {
             FloatControl panCtrl = (FloatControl) c.getControl(FloatControl.Type.PAN);
             panCtrl.setValue(pan);
@@ -235,6 +235,7 @@ public class SoundManager implements ISoundManager {
         if (properties.getOptionsSoundEnableMixerPan()) {
             pan = calcPan((float) bp.getPaintX(), battleFieldWidth);
         }
+        
         switch (bp.getState()) {
             case FIRED:
                 if (properties.getOptionsSoundEnableGunshot()) {
@@ -378,7 +379,7 @@ public class SoundManager implements ISoundManager {
                 int battleFieldWidth = battleManager.getBattleProperties().getBattlefieldWidth();
                 
                 for (IBulletSnapshot bp : event.getTurnSnapshot().getBullets()) {
-                    if (bp.getFrame() == 0) {
+                    if (bp.getFrame() == 1) {
                         playBulletSound(bp, battleFieldWidth);
                     }
                 }           

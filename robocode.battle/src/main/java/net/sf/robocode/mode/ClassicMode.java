@@ -7,6 +7,7 @@ import java.util.Hashtable;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
 import robocode.BattleResults;
 import robocode.BattleRules;
@@ -31,8 +32,10 @@ import robocode.control.RobotSpecification;
  *
  */
 public class ClassicMode implements IMode {
-
+	
 	protected GuiOptions uiOptions;
+	/* Results table */
+	protected BattleResultsTableModel resultsTable;
 
 	/**
 	 * {@inheritDoc}
@@ -40,34 +43,34 @@ public class ClassicMode implements IMode {
 	public String toString() {
 		return "Classic Mode";
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getDescription() {
 		return "Original robocode mode.";
 	}
-
+	
 	public JPanel getRulesPanel() {
 		return null;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public Hashtable<String, Object> getRulesPanelValues() {
 		return null;
 	}
-
+	
 	// ----- Mode-specific methods below this line ------
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
 		return modifyVelocity(velocityIncrement);
 	}
-
+	
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
 	}
@@ -76,15 +79,16 @@ public class ClassicMode implements IMode {
         return 0;
     }
 
+	
 	/**
-	 * Returns a list of ItemDrop's to
+	 * Returns a list of ItemDrop's to 
 	 * spawn in the beginning of the round
 	 * @return List of items
 	 */
 	public List<? extends ItemDrop> getItems() {
 		return new ArrayList<ItemDrop>();
 	}
-
+	
 	/**
 	 * Create a list of ItemDrop's to
 	 * spawn in the beginning of the round
@@ -100,89 +104,90 @@ public class ClassicMode implements IMode {
 	public void scoreTurnPoints() {
 		/* ClassicMode does not need a score method, optional for overriding */
 	}
-
+	
 	/**
 	 * Override me if you wish to use the CustomObjectAPI.
-	 *
+	 * 
 	 * This function will get called once a frame, you can perform
 	 * functions like moving the image around the battle, changing
 	 * scale, changing alpha level, so on.
-	 *
+	 * 
 	 * Loop over the given ArrayList of objects and perform logic
 	 * on them. To find an object your after look at getName() function.
-	 *
+	 * 
 	 * @param customObject - an ArrayList of all customObjects
 	 */
 	public void updateRenderables(List<IRenderable> renderables) {
-
+		
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean respawnsOn() {
 		return false;
 	}
-
+	
 	/**
 	 * Override me if you wish to use the CustomObjectAPI.
-	 *
+	 * 
 	 * This function should create new CustomObjects which should
 	 * be stored in a ArrayList<CustomObject> and returned.
-	 *
+	 * 
 	 * The returned list will represent all the custom objects in
 	 * the scene to be rendered.
-	 *
-	 * example:-
+	 * 
+	 * example:- 
 	 * 		// Create ArrayList
-	 * 		List<CustomObject> objs = new ArrayList<CustomObject>();
+	 * 		List<CustomObject> objs = new ArrayList<CustomObject>(); 
 	 * 		// Create a new object at (100,100) which will render a flag
-	 *		CustomObject obj = new CustomObject("flag",
+	 *		CustomObject obj = new CustomObject("flag", 
 	 *		"/net/sf/robocode/ui/images/flag.png", 100, 100);
 	 *		// Set Alpha blending to fade 50%
 	 *		obj.setAlpha(0.5f);
 	 *		// Add object to ArrayList
 	 *		objs.add(obj);
 	 *		return objs;
-	 *
+	 * 
 	 * @return a ArrayList<CustomObjects> which are added to the scene.
 	 */
 	public List<IRenderable> createRenderables() {
 		return null;
 	}
-
+	
 	@Override
 	public String addModeRobots(String selectedRobots) {
 		// Don't need to add any extra robots for classic mode
 		return selectedRobots;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public int turnLimit() {
 		return 5*30*60; // 9000 turns is the default
 	}
-
+	
 	/**
 	 * Sets the starting positions for all robot objects.
 	 * Original implementation taken from Battle.
-	 * @param initialPositions String of initial positions. Parsed by
-	 * the original implementation found in Battle. Can be ignored for
+	 * @param initialPositions String of initial positions. Parsed by 
+	 * the original implementation found in Battle. Can be ignored for 
 	 * custom implementations.
-	 * @param battleRules Battle rules.
+	 * @param width Battlefield width.
+	 * @param height Battlefield height.
 	 * @param robotsCount Size of battlingRobotsList
 	 * @return Two dimensional array of coordinates containing
 	 * the starting coordinates and heading for each robot.
 	 */
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, Battle battle, int robotsCount) {
+			double width, double height, int robotsCount) {
 		double[][] initialRobotPositions = null;
 
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
         }
-
+        
         List<String> positions = new ArrayList<String>();
 
         Pattern pattern = Pattern.compile("([^,(]*[(][^)]*[)])?[^,]*,?");
@@ -210,8 +215,8 @@ public class ClassicMode implements IMode {
 
             final Random random = RandomFactory.getRandom();
 
-            x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-            y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+            x = RobotPeer.WIDTH + random.nextDouble() * (width - 2 * RobotPeer.WIDTH);
+            y = RobotPeer.HEIGHT + random.nextDouble() * (height - 2 * RobotPeer.HEIGHT);
             heading = 2 * Math.PI * random.nextDouble();
 
             int len = coords.length;
@@ -243,10 +248,10 @@ public class ClassicMode implements IMode {
             initialRobotPositions[i][1] = y;
             initialRobotPositions[i][2] = heading;
         }
-
+        
         return initialRobotPositions;
 	}
-
+	
 	/**
 	 * Perform scan dictates the scanning behaviour of robots. One parameter
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
@@ -258,7 +263,7 @@ public class ClassicMode implements IMode {
             robotPeer.performScan(getRobotsAtRandom(robots));
         }
 	}
-
+	
 	public boolean isRoundOver(int endTimer, int time) {
 		return (endTimer > 5 * time);
 	}
@@ -304,9 +309,9 @@ public class ClassicMode implements IMode {
 	@Override
 	public void setItems() {
 		// TODO Auto-generated method stub
-
+		
 	}
-
+	
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
@@ -320,11 +325,6 @@ public class ClassicMode implements IMode {
 		uiOptions = new GuiOptions(true, true);
 	}
 
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub
-	}
-
 	/**
 	 * Getter method for the GuiOptions object associated with this
 	 * mode.
@@ -334,11 +334,67 @@ public class ClassicMode implements IMode {
 		return uiOptions;
 	}
 	
+	/**
+	 * Called after the death of a robot that is about to respawn
+	 */
+	public void onRespawnDeath(RobotPeer robot) {
+		
+	}
+
 	@Override
 	public BattleResults[] getFinalResults() {
 		return null;
 	}
 	
+	public void addRobots(int currentTurn, BattlePeers peers){
+		// do nothing
+	}
+	
+	public double modifyVision(double standard) {
+		return standard;
+	}
+	
+	public double modifyVision(double standard, BattleRules rules)
+	{
+		return modifyVision(standard);
+	}
+
+	/**
+	 * Get the customised BattleResultsTableModel
+	 * @return Customised BattleResultsTableModel
+	 */
+	@Override
+	public BattleResultsTableModel getCustomResultsTable() {
+		if (resultsTable == null) {
+			this.setCustomResultsTable();
+		}
+		
+		return resultsTable;
+	}
+	
+	/**
+	 * Setup a default BattleResultsTableModel
+	 */
+	public void setCustomResultsTable() {
+		if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+		
+		/* Set it to show the default scores */
+		resultsTable.showOverallRank(true);
+		resultsTable.showRobotName(true);
+		resultsTable.showTotalScore(true);
+		resultsTable.showSurvival(true);
+		resultsTable.showSurvivalBonus(true);
+		resultsTable.showBulletDamage(true);
+		resultsTable.showBulletBonus(true);
+		resultsTable.showRamDamage(true);
+		resultsTable.showRamBonus(true);
+		resultsTable.showFirsts(true);
+		resultsTable.showSeconds(true);
+		resultsTable.showThirds(true);
+	}
+
 	/**
 	 * Returns null in classic mode. See SoccerMode for details.
 	 * @return null

@@ -3,10 +3,11 @@ package net.sf.robocode.mode;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 
-import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.RenderString;
 import net.sf.robocode.battle.item.BoundingRectangle;
@@ -22,6 +23,7 @@ import robocode.control.RobotSpecification;
 import robocode.control.snapshot.RenderableType;
 
 public class SoccerMode extends ClassicMode implements IMode {	
+	private static final String RenderString = null;
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;
@@ -40,9 +42,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/*TeamPeers for the two soccer teams*/
 	private SoccerTeamPeer team1;
 	private SoccerTeamPeer team2;
-	
-	private RenderString scoreTeam1;
-	private RenderString scoreTeam2;
 	
 	private boolean roundOver = false;
 	
@@ -79,7 +78,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 */
 	@Override
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, Battle battle, int robotsCount) {
+			double width, double height, int robotsCount) {
 		double[][] initialRobotPositions = null;
 		roundOver = false;
 		
@@ -87,12 +86,10 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
 		initialRobotPositions = new double[(count + 1)][3];
  		
- 		fieldHeight = battleRules.getBattlefieldHeight();
- 		fieldWidth = battleRules.getBattlefieldWidth();
+ 		fieldHeight = height;
+ 		fieldWidth = width;
  		
- 		// goal1 on Left side of field
  		goal1 = new BoundingRectangle(0, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
- 		// goal2 on Right side of field
  		goal2 = new BoundingRectangle(fieldWidth - GOALX, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
  		
  		int teamSize = count / 2;
@@ -127,35 +124,67 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public void createPeers(BattlePeers peers,
 			RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
-		Hashtable<String, Integer> duplicates = new Hashtable<String, Integer>();
+		
+		// Duplicate robot hashtables.
+		Hashtable<String, Integer> team1Duplicates = new Hashtable<String, Integer>();
+		Hashtable<String, Integer> team2Duplicates = new Hashtable<String, Integer>();
+		
+		// Team member names.
+		List<String> team1Names = new LinkedList<String>();
+		List<String> team2Names = new LinkedList<String>();
+		
 		int teamSize = peers.getBattle().getRobotsCount() / 2;
+		
 		// Counts the number of duplicates for each robot being used.
 		for(int i = 0; i < peers.getBattle().getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
 			String name = spec.getName();
+			String botName = null;
 			
-			if(duplicates.contains(name)) {
-				duplicates.put(name, duplicates.get(name) + 1);
+			if(i < teamSize) {
+				// Populate duplicates list and member names list for team 1.
+				if(team1Duplicates.contains(name)) {
+					int count = team1Duplicates.get(name);
+					
+					team1Duplicates.put(name, count == 1 ? 3 : count + 1);
+				} else {
+					team1Duplicates.put(name, 1);
+				}
+				
+				botName = name + team1Duplicates.get(name);
+				team1Names.add(botName);
 			} else {
-				duplicates.put(name, 1);
+				// Populate duplicates list and member names list for team 2.
+				if(team2Duplicates.contains(name)) {
+					int count = team2Duplicates.get(name);
+					
+					team2Duplicates.put(name, count == 1 ? 3 : count + 1);
+				} else {
+					team2Duplicates.put(name, 1);
+				}
+				
+				botName = name + team2Duplicates.get(name);
+				team2Names.add(botName);
 			}
 		}
 		
 		// Create teams 1 and 2.
-		team1 = new SoccerTeamPeer("Team 1", null, 0);
-		team2 = new SoccerTeamPeer("Team 2", null, 1);
+		team1 = new SoccerTeamPeer("Team 1", team1Names, 0);
+		team2 = new SoccerTeamPeer("Team 2", team2Names, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
 		
+		// Create robot peer objects, assign teams and add them to the
+		// peer list.
 		for(int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
 			RobotSpecification spec = battlingRobotsList[j];
 			RobotPeer robot = null;
 			
 			if(j < teamSize) {
 				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
-						duplicates.get(spec.getName()), team1, j);
+						team1Duplicates.get(spec.getName()), team1, j);
 			} else {
 				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
-						duplicates.get(spec.getName()), team2, j);
+						team2Duplicates.get(spec.getName()), team2, j);
 			}
 			
 			peers.addRobot(robot);
@@ -189,15 +218,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
         for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
         	// Check to see if ball is in goal
-        	if (robotPeer.isBall() && robotPeer.isAlive()) {
+        	if (robotPeer.isBall()) {
         		if (goal1.intersects(robotPeer.getBoundingBox())) {
         			roundOver = true;
         			scoreTeam = Goal.TEAM1;
-        			robotPeer.kill();
         		} else if (goal2.intersects(robotPeer.getBoundingBox())) {
         			scoreTeam = Goal.TEAM2;
         			roundOver = true;
-        			robotPeer.kill();
         		}
         		robotPeer.performScan(getRobotsAtRandom(robots));
         	} else {
@@ -209,15 +236,11 @@ public class SoccerMode extends ClassicMode implements IMode {
 	@Override
 	public void scoreTurnPoints() {
 		// Which team scored?
-		if (scoreTeam == Goal.TEAM1 && !roundOver) {
+		if (scoreTeam == Goal.TEAM1) {
 			team1.getStatistics().incrementScore();
-			scoreTeam1.setText("Team 1\n" + 
-						(int)team1.getStatistics().getTotalScore());
 			scoreTeam = null;
-		} else if(scoreTeam == Goal.TEAM2 && !roundOver) {
+		} else if(scoreTeam == Goal.TEAM2) {
 			team2.getStatistics().incrementScore();
-			scoreTeam2.setText("Team 2\n         " + 
-					(int)team2.getStatistics().getTotalScore());
 			scoreTeam = null;
 		}
 	}
@@ -238,18 +261,23 @@ public class SoccerMode extends ClassicMode implements IMode {
 	@Override
 	public List<IRenderable> createRenderables() {
 		List<IRenderable> objs = new ArrayList<IRenderable>(); 
-		scoreTeam1 = new RenderString("score2", "Team 1\n" + 
-				(int)team1.getStatistics().getTotalScore());
-		scoreTeam1.setTranslate(25, 50);
-		scoreTeam1.setColour(Color.WHITE);
-		objs.add(scoreTeam1);
-		
-		scoreTeam2 = new RenderString("score1", ("Team 2\n         " + 
-				(int)team2.getStatistics().getTotalScore()));
-		scoreTeam2.setTranslate(fieldWidth - 70, 50);
-		scoreTeam2.setColour(Color.WHITE);
-		objs.add(scoreTeam2);
+		RenderString score = new RenderString("score", "0 : 0");
+		score.setTranslate((fieldWidth/2)-200, 20);
+		score.setScale(2, 2);
+		score.setColour(Color.BLUE);
+		objs.add(score);
 		return objs;
+	}
+
+	@Override
+	public void updateRenderables(List<IRenderable> objects) {
+		for (IRenderable renderable : objects) {
+			if (renderable.getType() == RenderableType.SPRITE_STRING) {
+				RenderString scoreString = (RenderString)renderable;
+				scoreString.setText((int)team1.getStatistics().getTotalScore() +
+						":" + (int)team2.getStatistics().getTotalScore());
+			}
+		}
 	}
 	
 	@Override
@@ -277,4 +305,24 @@ public class SoccerMode extends ClassicMode implements IMode {
 		BoundingRectangle[] goals = {goal1, goal2};
 		return goals;
 	}
+
+	/**
+     * Setup for SoccerMode to just display the rank, the team and the total score
+     */
+    public void setCustomResultsTable() {
+    	/* BRANDONCW */
+    	if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+    	resultsTable.showOverallRank(true);
+    	resultsTable.showTeam(true);
+    	resultsTable.showTotalScore(true);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BattleResultsTableModel getCustomResultsTable() {
+    	return resultsTable;
+    }
 }

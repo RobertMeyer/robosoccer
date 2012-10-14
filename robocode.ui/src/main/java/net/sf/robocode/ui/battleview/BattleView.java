@@ -51,6 +51,7 @@ import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
 import net.sf.robocode.mode.SoccerMode;
+import net.sf.robocode.mode.BotzillaMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -83,43 +84,41 @@ import robocode.control.snapshot.RenderableType;
 @SuppressWarnings("serial")
 public class BattleView extends Canvas {
 
-	private final static String ROBOCODE_SLOGAN = "Build the best, destroy the rest!";
-	private final static Color CANVAS_BG_COLOR = SystemColor.controlDkShadow;
-	private final static Area BULLET_AREA = new Area(new Ellipse2D.Double(-0.5,
-			-0.5, 1, 1));
-	private final static int ROBOT_TEXT_Y_OFFSET = 24;
-	// The battle and battlefield,
-	private BattleField battleField;
-	private boolean initialized;
-	private double scale = 1.0;
-	// Ground
-	private int[][] groundTiles;
-	private final int groundTileWidth = 64;
-	private final int groundTileHeight = 64;
-	private Image groundImage;
-	// Draw option related things
-	private boolean drawRobotName;
-	private boolean drawRobotEnergy;
-	private boolean drawScanArcs;
-	private boolean drawExplosions;
-	private boolean drawGround;
-	private boolean drawExplosionDebris;
-	private boolean drawObstacles;
-	private int numBuffers = 2; // defaults to double buffering
-	private RenderingHints renderingHints;
-	// Fonts and the like
-	private Font smallFont;
-	private FontMetrics smallFontMetrics;
-	private final IImageManager imageManager;
-	private final ISettingsManager properties;
-	private final IWindowManagerExt windowManager;
-	private BufferStrategy bufferStrategy;
-	private final GeneralPath robocodeTextPath = new RobocodeLogo()
-			.getRobocodeText();
-	private static final MirroredGraphics mirroredGraphics = new MirroredGraphics();
-	private final GraphicsState graphicsState = new GraphicsState();
-	private IGraphicsProxy[] robotGraphics;
-	private IBattleManager battleManager;
+    private final static String ROBOCODE_SLOGAN = "Build the best, destroy the rest!";
+    private final static Color CANVAS_BG_COLOR = SystemColor.controlDkShadow;
+    private final static Area BULLET_AREA = new Area(new Ellipse2D.Double(-0.5, -0.5, 1, 1));
+    private final static int ROBOT_TEXT_Y_OFFSET = 24;
+    // The battle and battlefield,
+    private BattleField battleField;
+    private boolean initialized;
+    private double scale = 1.0;
+    // Ground
+    private int[][] groundTiles;
+    private final int groundTileWidth = 64;
+    private final int groundTileHeight = 64;
+    private Image groundImage;
+    // Draw option related things
+    private boolean drawRobotName;
+    private boolean drawRobotEnergy;
+    private boolean drawScanArcs;
+    private boolean drawExplosions;
+    private boolean drawGround;
+    private boolean drawExplosionDebris;
+    private boolean drawObstacles;
+    private int numBuffers = 2; // defaults to double buffering
+    private RenderingHints renderingHints;
+    // Fonts and the like
+    private Font smallFont;
+    private FontMetrics smallFontMetrics;
+    private final IImageManager imageManager;
+    private final ISettingsManager properties;
+    private final IWindowManagerExt windowManager;
+    private BufferStrategy bufferStrategy;
+    private final GeneralPath robocodeTextPath = new RobocodeLogo().getRobocodeText();
+    private static final MirroredGraphics mirroredGraphics = new MirroredGraphics();
+    private final GraphicsState graphicsState = new GraphicsState();
+    private IGraphicsProxy[] robotGraphics;
+    private IBattleManager battleManager;
 
 	// Hold current custom images to be rendered.
 	private HashMap<String, RenderImage> customImage;
@@ -261,22 +260,31 @@ public class BattleView extends Canvas {
 		smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
 		smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
 
-		// Initialize ground image
-		if (drawGround) {
-			if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
-				imageManager.addCustomImage("ball",
-						"/net/sf/robocode/ui/images/ball.png");
-				createSoccerField();
-			} else {
-				createGroundImage();
-			}
+        // Initialize ground image
+        if (drawGround) {
+        	if(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
+        		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
+        		createSoccerField();
+        	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
+        		// Botzilla
+        		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
+        		createGroundImage();
+        	} else {
+        		createGroundImage();
+        	}
 
-		} else {
-			groundImage = null;
-		}
 
-		initialized = true;
-	}
+        } else {
+            groundImage = null;
+        }
+        
+        if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
+        		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
+        	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
+        }
+        
+        initialized = true;
+    }
 
 	private void createSoccerField() {
 		final int NUM_HORZ_TILES = battleField.getWidth() / groundTileWidth + 1;
@@ -672,10 +680,10 @@ public class BattleView extends Canvas {
 			}
 		}
 
-		for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-			if (robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
-				x = robotSnapshot.getX();
-				y = battleFieldHeight - robotSnapshot.getY();
+        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
+        	if (robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
 
 				at = AffineTransform.getTranslateInstance(x, y);
 				at.rotate(robotSnapshot.getBodyHeading());
@@ -685,14 +693,40 @@ public class BattleView extends Canvas {
 
 				robotRenderImage.setTransform(at);
 				robotRenderImage.paint(g);
+        	} else if (robotSnapshot.getName().contains("botzilla")
+        			   || robotSnapshot.getName().contains("Botzilla")) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
 
-			} else if (robotSnapshot.getState().isAlive()) {
-				x = robotSnapshot.getX();
-				y = battleFieldHeight - robotSnapshot.getY();
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
 
-				at = AffineTransform.getTranslateInstance(x, y);
-				at.rotate(robotSnapshot.getBodyHeading());
+                RenderImage robotRenderImage = imageManager.getCustomImage("botzillaImage");
 
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+                
+        	} else if ((robotSnapshot.getName().contains("dispenser")
+        			|| robotSnapshot.getName().contains("Dispenser"))
+        			&& robotSnapshot.getState().isAlive()) {
+        		x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
+
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+
+                RenderImage robotRenderImage = imageManager.getCustomImage("dispenserImage");
+                
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+                
+        	} else if (robotSnapshot.getState().isAlive()) {
+                x = robotSnapshot.getX();
+                y = battleFieldHeight - robotSnapshot.getY();
+
+                at = AffineTransform.getTranslateInstance(x, y);
+                at.rotate(robotSnapshot.getBodyHeading());
+                
 				// sets the body image path to null
 				String bodyPath = null;
 				String weaponPath = null;

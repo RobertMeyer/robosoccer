@@ -96,4 +96,6 @@ public interface IBattleManager extends IBattleManagerBase {
     void setDefaultBattleProperties();
 
     void cleanup();
+
+	<Battle> Battle getBattle();
 }

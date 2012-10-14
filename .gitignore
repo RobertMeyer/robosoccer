@@ -20,3 +20,6 @@
 
 # Maven
 target/
+
+# Robocode config
+robocode.core/config/

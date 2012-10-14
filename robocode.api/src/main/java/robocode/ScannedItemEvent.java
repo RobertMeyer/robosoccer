@@ -1,8 +1,6 @@
 package robocode;
 
-import java.awt.peer.RobotPeer;
 import robocode.Event;
-import robocode.robotinterfaces.IBasicEvents;
 
 /**
  * ScannedItemEvent:
