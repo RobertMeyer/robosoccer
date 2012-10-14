@@ -27,10 +27,7 @@ package robocode;
 
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IBall;
-import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
-
-import java.io.File;
-import java.util.Vector;
+import robocode.robotinterfaces.ISoccerRobot;
 
 
 /**
@@ -52,6 +49,6 @@ import java.util.Vector;
  * @see TeamRobot
  * @see Droid
  */
-public class Ball extends AdvancedRobot implements IBall, IAdvancedEvents {
-
+public class Ball extends SoccerRobot implements IBall, ISoccerRobot, 
+		IAdvancedEvents {
 }

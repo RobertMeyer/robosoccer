@@ -29,7 +29,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/*This stores the width and height of the playing field, plus the current
 	 * x coordinate of the ball bot.
 	 */
-	private final int GOALX = 80;
+	private final int GOALX = 100;
 	private final int GOALY = 236;
 	private double fieldWidth;
 	private double fieldHeight;
@@ -146,9 +146,6 @@ public class SoccerMode extends ClassicMode implements IMode {
 		team2 = new SoccerTeamPeer("Team 2", null, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
 		
-		peers.addContestant(team1);
-		peers.addContestant(team2);
-		
 		for(int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
 			RobotSpecification spec = battlingRobotsList[j];
 			RobotPeer robot = null;
@@ -163,6 +160,9 @@ public class SoccerMode extends ClassicMode implements IMode {
 			
 			peers.addRobot(robot);
 		}
+		
+		peers.addContestant(team1);
+		peers.addContestant(team2);
 		
 		// Create the ball robot and add it to the appropriate peer lists/team.
 		RobotSpecification ballSpec = 
@@ -199,8 +199,10 @@ public class SoccerMode extends ClassicMode implements IMode {
         			roundOver = true;
         			robotPeer.kill();
         		}
+        		robotPeer.performScan(getRobotsAtRandom(robots));
+        	} else {
+        		robotPeer.performScan(ball);
         	}
-            robotPeer.performScan(ball);
         }
 	}
 	
@@ -252,7 +254,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	
 	@Override
 	public void setGuiOptions() {
-		super.uiOptions = new GuiOptions(true, false);
+		super.uiOptions = new GuiOptions(true, true);
 	}
 	
 	@Override 

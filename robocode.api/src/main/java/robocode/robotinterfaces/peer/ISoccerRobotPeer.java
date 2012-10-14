@@ -24,4 +24,6 @@ public interface ISoccerRobotPeer extends ITeamRobotPeer {
 	 * Returns the Rectangle bounds of the Robots own goal.
 	 */
 	public Rectangle2D.Float getEnemyGoal();
+	
+	
 }

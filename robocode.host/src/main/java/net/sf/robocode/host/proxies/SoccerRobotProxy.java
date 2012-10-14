@@ -21,7 +21,6 @@ public class SoccerRobotProxy extends TeamRobotProxy implements
 	 }
 	 
 	 public Rectangle2D.Float getEnemyGoal() {
-		 return peer.getOwnGoal();
+		 return peer.getEnemyGoal();
 	 }
-
 }

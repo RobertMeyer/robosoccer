@@ -2441,9 +2441,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	/**
-	 * Returns the bounding rectangles representing the goals in soccermode. 
-	 * Goal 1 and Goal 2 being index 0 and 1 respectively of the returned 
-	 * array.
+	 * Returns the bounding rectangles representing the enemy goal of this robot
+	 * in SoccerMode. Returns null in other modes.
+	 * @return BoundingRectangle[] - goal boxes
+	 */
+	public BoundingRectangle getEnemyGoal() {
+		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
+		int index = (getTeamIndex() + 1) % 2;
+		return (goals == null) ? null : goals[index];
+	}
+	
+	/**
+	 * Returns the bounding rectangles representing the own goal of this robot
+	 * in SoccerMode. Returns null in other modes.
 	 * @return BoundingRectangle[] - goal boxes
 	 */
 	public BoundingRectangle getOwnGoal() {
@@ -2451,11 +2461,4 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		int index = getTeamIndex() % 2;
 		return (goals == null) ? null : goals[index];
 	}
-	
-	public BoundingRectangle getEnemyGoal() {
-		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
-		int index = (getTeamIndex() + 1) % 2;
-		return (goals == null) ? null : goals[index];
-	}
-
 }
