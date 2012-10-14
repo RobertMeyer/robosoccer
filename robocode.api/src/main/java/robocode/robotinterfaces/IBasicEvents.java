@@ -277,4 +277,25 @@ public interface IBasicEvents {
      * @see Event
      */
     void onWin(WinEvent event);
+
+    /**
+     * This method is called when a robot hits an item.
+     * You should override it in your robot if you want to be informed of this
+     * event.
+     * 
+     * @param hitItemEvent
+     * @see onHitByBullet
+     * @see onHitRobot
+     * @see onHitWall
+     */
+	void onHitItem(HitItemEvent event);
+
+	/**
+	 * This method is called when a robot sees an item.
+	 * You should override it in your robot if you want to be informed of this
+	 * event.
+	 * @param event
+	 * @see onScannedItem
+	 */
+	void onScannedItem(ScannedItemEvent event);
 }
