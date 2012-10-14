@@ -18,9 +18,7 @@ import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
 import robocode.BattleResults;
-import robocode.BattleRules;
 import robocode.control.RobotSpecification;
-import robocode.control.snapshot.RenderableType;
 
 public class SoccerMode extends ClassicMode implements IMode {	
 	private static final String RenderString = null;
@@ -42,6 +40,9 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/*TeamPeers for the two soccer teams*/
 	private SoccerTeamPeer team1;
 	private SoccerTeamPeer team2;
+	
+	private RenderString scoreTeam1;
+	private RenderString scoreTeam2;
 	
 	private boolean roundOver = false;
 	
@@ -169,8 +170,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 		}
 		
 		// Create teams 1 and 2.
-		team1 = new SoccerTeamPeer("Team 1", team1Names, 0);
-		team2 = new SoccerTeamPeer("Team 2", team2Names, 1);
+		team1 = new SoccerTeamPeer("Blue Team", team1Names, 0);
+		team2 = new SoccerTeamPeer("Red Team", team2Names, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
 		
 		// Create robot peer objects, assign teams and add them to the
@@ -237,10 +238,10 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public void scoreRoundPoints() {
 		// Which team scored?
 		if (scoreTeam == Goal.TEAM1) {
-			team1.getStatistics().incrementScore();
+			team2.getStatistics().incrementScore();
 			scoreTeam = null;
 		} else if(scoreTeam == Goal.TEAM2) {
-			team2.getStatistics().incrementScore();
+			team1.getStatistics().incrementScore();
 			scoreTeam = null;
 		}
 	}
@@ -261,25 +262,20 @@ public class SoccerMode extends ClassicMode implements IMode {
 	@Override
 	public List<IRenderable> createRenderables() {
 		List<IRenderable> objs = new ArrayList<IRenderable>(); 
-		RenderString score = new RenderString("score", "0 : 0");
-		score.setTranslate((fieldWidth/2)-200, 20);
-		score.setScale(2, 2);
-		score.setColour(Color.BLUE);
-		objs.add(score);
+		scoreTeam1 = new RenderString("score2", "Blue Team\n" + 
+				(int)team1.getStatistics().getTotalScore());
+		scoreTeam1.setTranslate(25, 50);
+		scoreTeam1.setColour(Color.WHITE);
+		objs.add(scoreTeam1);
+		
+		scoreTeam2 = new RenderString("score1", ("Read Team\n         " + 
+				(int)team2.getStatistics().getTotalScore()));
+		scoreTeam2.setTranslate(fieldWidth - 80, 50);
+		scoreTeam2.setColour(Color.WHITE);
+		objs.add(scoreTeam2);
 		return objs;
 	}
 
-	@Override
-	public void updateRenderables(List<IRenderable> objects) {
-		for (IRenderable renderable : objects) {
-			if (renderable.getType() == RenderableType.SPRITE_STRING) {
-				RenderString scoreString = (RenderString)renderable;
-				scoreString.setText((int)team1.getStatistics().getTotalScore() +
-						":" + (int)team2.getStatistics().getTotalScore());
-			}
-		}
-	}
-	
 	@Override
 	public void setGuiOptions() {
 		super.uiOptions = new GuiOptions(true, true);
