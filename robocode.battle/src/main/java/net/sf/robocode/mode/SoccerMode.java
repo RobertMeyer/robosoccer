@@ -233,7 +233,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	}
 	
 	@Override
-	public void scoreTurnPoints() {
+	public void scoreRoundPoints() {
 		// Which team scored?
 		if (scoreTeam == Goal.TEAM1) {
 			team1.getStatistics().incrementScore();

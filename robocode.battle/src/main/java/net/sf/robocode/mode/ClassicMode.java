@@ -393,4 +393,7 @@ public class ClassicMode implements IMode {
 		resultsTable.showSeconds(true);
 		resultsTable.showThirds(true);
 	}
+
+	public void scoreRoundPoints() {
+	}
 }

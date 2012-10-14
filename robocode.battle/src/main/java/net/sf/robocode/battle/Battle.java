@@ -484,7 +484,7 @@ public final class Battle extends BaseBattle {
 		}
         
         // Increment mode specific points - TODO -team-Telos
-		this.getBattleMode().scoreTurnPoints();
+		this.getBattleMode().scoreRoundPoints();
 
 		bullets.clear();
 		
