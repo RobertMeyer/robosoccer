@@ -879,7 +879,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isDispenser()) {
 			energy = 500;
 		} else if (statics.isFreezeRobot()) {
-			energy = 500;
+			energy = 10000;
+			attributes.get().put(RobotAttribute.SPEED, 0.20);
 		} else {
 			energy = getStartingEnergy();
 		}
