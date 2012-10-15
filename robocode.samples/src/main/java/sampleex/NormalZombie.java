@@ -17,7 +17,7 @@ public class NormalZombie extends ZombieRobot {
     	
 		if(!e.getName().startsWith("sampleex.NormalZombie")){
 			setTurnRight(e.getBearing());
-	    	setAhead(5);
+	    	setAhead(2);
 	    	// reversing radar will keep it going and also pointing to our kill target
 	    	radarDirection = -radarDirection;
 	    	setTurnRadarRight(99999*radarDirection);
