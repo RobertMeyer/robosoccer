@@ -483,8 +483,7 @@ public class BattleView extends Canvas {
         }
         
         /* Save spike position into BattleManager */
-        battleManager.saveSpikePosX(spikePosX);
-        battleManager.saveSpikePosY(spikePosY);
+        battleManager.saveSpikePos(spikePosX, spikePosY);
     }
 
 	private void drawBattle(Graphics2D g, ITurnSnapshot snapShot) {
