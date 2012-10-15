@@ -19,8 +19,8 @@ public class BackgroundMusicCheckbox extends JCheckBox{
             public void actionPerformed(ActionEvent actionEvent) {
               BackgroundMusicCheckbox mbox = (BackgroundMusicCheckbox) actionEvent.getSource();
               //BackgroundMusicTracker b = new BackgroundMusicTracker(); 
-              BackgroundMusicTracker.enableMusic(mbox.getModel().isSelected());
-              BackgroundMusicTracker.updateStatus();
+              //BackgroundMusicTracker.enableMusic(mbox.getModel().isSelected());
+              //BackgroundMusicTracker.updateStatus();
             }
           };	
         this.addActionListener(actionListener);   
