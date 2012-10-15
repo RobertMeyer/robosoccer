@@ -1343,7 +1343,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				// Bounce back
 				double angle = atan2(otherRobot.x - x, otherRobot.y - y);
 
-<<<<<<< HEAD
                 double movedx = velocity * sin(bodyHeading);
                 double movedy = velocity * cos(bodyHeading);
 
@@ -1363,13 +1362,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                 		otherRobot.setEnergy(energy - Rules.getBulletDamage(3), false);
                 		}
                 	}
-=======
-				double movedx = velocity * sin(bodyHeading);
-				double movedy = velocity * cos(bodyHeading);
-
-				boolean atFault;
-				double bearing = normalRelativeAngle(angle - bodyHeading);
->>>>>>> daf408867aaf3e57e571e2a5f4600dc04de1bfbc
+                }
 
 				if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
 						|| (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
