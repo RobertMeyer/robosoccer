@@ -37,7 +37,6 @@ import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IFullScreenListener;
 import net.sf.robocode.ui.IWindowManagerExt;
 import net.sf.robocode.ui.editor.IRobocodeEditor;
-import net.sf.robocode.ui.trackeditor.EditorFrame;
 import static net.sf.robocode.ui.util.ShortcutUtil.MENU_SHORTCUT_KEY_MASK;
 
 /**
@@ -66,7 +65,6 @@ public class MenuBar extends JMenuBar {
     // Robot menu
     private JMenu robotMenu;
     private JMenuItem robotEditorMenuItem;
-    private JMenuItem trackEditorMenuItem;
     private JMenuItem robotImportMenuItem;
     private JMenuItem robotPackagerMenuItem;
     private JMenuItem robotCreateTeamMenuItem;
@@ -125,8 +123,6 @@ public class MenuBar extends JMenuBar {
                 // Robot Editor menu
             } else if (source == mb.getRobotEditorMenuItem()) {
                 robotEditorActionPerformed();
-            } else if (source == mb.getTrackEditorMenuItem()) {
-            	trackEditorActionPerformed();
             } else if (source == mb.getRobotImportMenuItem()) {
                 robotImportActionPerformed();
             } else if (source == mb.getRobotPackagerMenuItem()) {
@@ -821,16 +817,6 @@ public class MenuBar extends JMenuBar {
         }
         return robotEditorMenuItem;
     }
-    
-    private JMenuItem getTrackEditorMenuItem() {
-        if (trackEditorMenuItem == null) {
-        	trackEditorMenuItem = new JMenuItem();
-        	trackEditorMenuItem.setText("Track Editor");
-        	trackEditorMenuItem.setVisible(new EditorFrame() != null);
-        	trackEditorMenuItem.addActionListener(eventHandler);
-        }
-        return trackEditorMenuItem;
-    }
 
     private JMenuItem getRobotImportMenuItem() {
         if (robotImportMenuItem == null) {
@@ -848,7 +834,6 @@ public class MenuBar extends JMenuBar {
             robotMenu.setText("Robot");
             robotMenu.setMnemonic('R');
             robotMenu.add(getRobotEditorMenuItem());
-            robotMenu.add(getTrackEditorMenuItem());
             robotMenu.add(new JSeparator());
             robotMenu.add(getRobotImportMenuItem());
             robotMenu.add(getRobotPackagerMenuItem());
@@ -987,10 +972,6 @@ public class MenuBar extends JMenuBar {
 
     private void robotEditorActionPerformed() {
         windowManager.showRobocodeEditor();
-    }
-    
-    private void trackEditorActionPerformed() {
-        windowManager.showTrackEditor();
     }
 
     private void robotImportActionPerformed() {

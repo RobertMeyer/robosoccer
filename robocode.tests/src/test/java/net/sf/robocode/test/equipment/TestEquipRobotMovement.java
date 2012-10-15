@@ -11,11 +11,6 @@ import robocode.control.snapshot.IRobotSnapshot;
  * moving to the correct place in a given number of turns.  That is the
  * appropriate movement attributes are working.
  * 
- * Tests the following attributes:
- * RobotAttribute#SPEED
- * RobotAttribute#ACCELERATION
- * RobotAttribute#DECELERATION
- * 
  * @author Jayke Anderson
  */
 public class TestEquipRobotMovement extends RobocodeTestBed {

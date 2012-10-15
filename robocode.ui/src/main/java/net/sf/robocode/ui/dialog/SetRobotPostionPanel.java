@@ -6,12 +6,6 @@ import java.util.regex.*;
 
 import javax.swing.*;
 
-/**
- * an panel for user to assign the start off position for robot 
- * the format will be (Xposition,Yposition,Heading) or (Xposition,Yposition) 
- * @author miao
- *
- */
 public class SetRobotPostionPanel extends WizardPanel {
 
 	private JTextArea Input = new JTextArea(20, 10);
@@ -27,13 +21,6 @@ public class SetRobotPostionPanel extends WizardPanel {
 
 	}
 
-	/**
-	 * get the position from the panel and will assign to robot
-	 * position will be assign follow the sequence of robot
-	 * if there is no position in the panel 
-	 * random position will be generated
-	 * @return
-	 */
 	public ArrayList<String> GetPostion() {
 
 		if (Input.getText() == null) {

@@ -14,14 +14,10 @@ public class NormalZombie extends ZombieRobot {
     }
     public void onScannedRobot(ScannedRobotEvent e) {
     	
-    	// only go towards non-zombies
 		if(!e.getName().startsWith("sampleex.NormalZombie")){
-			
-			// head towards scanned robot
 			setTurnRight(e.getBearing());
-	    	setAhead(2);
-	    	
-	    	// stay locked on to our target
+	    	setAhead(5);
+	    	// reversing radar will keep it going and also pointing to our kill target
 	    	radarDirection = -radarDirection;
 	    	setTurnRadarRight(99999*radarDirection);
 		}

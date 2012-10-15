@@ -107,7 +107,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 		
 		if (robotSelectionPanel.getSelectedRobotsCount() == 1 && 
-				!selectedMode.allowsOneRobot()) {
+				!(selectedMode instanceof SoccerMode)) {
 			if (JOptionPane
 					.showConfirmDialog(
 							this,
@@ -167,15 +167,8 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 	}
 
-	/**
-	 * get the input positions then build the been well formated position string 
-	 * when user restart a new battle , all robot's start off position will be
-	 * cleared
-	 * @return Position List.toString()
-	 */
 	private String SetRobotPositionString() {
 		StringBuilder setRobotPositionString = new StringBuilder();
-		//clear the position information from previous battle
 		if(battleProperties.getInitialPositions()!=null)
 		{
 			battleProperties.setInitialPositionToNull();

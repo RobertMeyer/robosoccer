@@ -163,8 +163,8 @@ public final class HitRobotEvent extends Event {
     /**
      * {@inheritDoc}
      */
-   @Override
-   final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+    @Override
+    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
         IBasicEvents listener = robot.getBasicEventListener();
 
         if (listener != null) {
