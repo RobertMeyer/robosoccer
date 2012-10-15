@@ -43,6 +43,13 @@ public interface IBasicRobotPeer {
      * @return the robot's name.
      */
     String getName();
+    
+    /**
+     * Returns the tactic for the soldierBot to implement
+     * 
+     * @return the tactic the soldierBot should be implementing
+     */
+    int getTactic();
 
     /**
      * Returns the game time of the current round, where the time is equal to

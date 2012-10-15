@@ -18,15 +18,5 @@ import robocode.*;
 public interface ISoldierEvents {
     void onWin(WinEvent event);
     
-    void receiveCommand(CommanderEvent e);
-    
     void onCommandRecieved(CommanderEvent event);
-    
-    void pause();
-    void advance(ScannedRobotEvent e);
-    void retreat(ScannedRobotEvent e);
-    void attack(ScannedRobotEvent e);
-    void increasePower();
-    void decreasePower();
-    void taunt();
 }

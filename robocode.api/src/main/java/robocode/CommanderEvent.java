@@ -28,7 +28,7 @@ import robocode.robotinterfaces.ISoldierRobot;
 public class CommanderEvent extends Event {
 
     private static final long serialVersionUID = 1L;
-    private final static int DEFAULT_PRIORITY = 10;
+    private final static int DEFAULT_PRIORITY = 99;
     
     public final int NO_TACTIC = 0;
 	public final int PAUSE = 1;
@@ -40,7 +40,7 @@ public class CommanderEvent extends Event {
 	public final int TAUNT = 7;
     
     private final String name;
-    private final int tactic;
+    protected final int tactic;
 
     /**
      * This constructor is only provided in order to preserve backwards compatibility with old robots that
@@ -74,24 +74,14 @@ public class CommanderEvent extends Event {
     	return tactic;
     }
     
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public final int compareTo(Event event) {
-//        final int res = super.compareTo(event);
-//
-//        if (res != 0) {
-//            return res;
-//        }
-//        // Compare the distance, if the events are ScannedRobotEvents
-//        // The shorter distance to the robot, the higher priority
-//        if (event instanceof CommanderEvent) {
-//            return (int) (this.getDistance() - ((CommanderEvent) event).getDistance());
-//        }
-//        // No difference found
-//        return 0;
-//    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int compareTo(Event event) {
+        //Gives higher preference over comparisons
+        return -1;
+    }
 
     /**
      * {@inheritDoc}
@@ -107,49 +97,9 @@ public class CommanderEvent extends Event {
     @Override
     final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
         
-        //if (statics.isSoldierRobot()) {
-            ISoldierEvents listener = ((ISoldierRobot)robot).getSoldierEventListener();
-            //System.out.println("am i in or able to b in the commanderEvent???");
-            if (listener != null) {
-            	listener.onCommandRecieved(this);
-            }
-        //}
+    	ISoldierEvents listener = ((ISoldierRobot)robot).getSoldierEventListener();
+    	if (listener != null) {
+    		listener.onCommandRecieved(this);
+        }
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    byte getSerializationType() {
-//        return RbSerializer.CommanderEvent_TYPE;
-//    }
-//
-//    static ISerializableHelper createHiddenSerializer() {
-//        return new SerializableHelper();
-//    }
-//
-//    private static class SerializableHelper implements ISerializableHelper {
-//
-//        @Override
-//        public int sizeOf(RbSerializer serializer, Object object) {
-//            CommanderEvent obj = (CommanderEvent) object;
-//
-//            return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.name) + RbSerializer.SIZEOF_INT;
-//        }
-//
-//        @Override
-//        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
-//            CommanderEvent obj = (CommanderEvent) object;
-//
-//            serializer.serialize(buffer, obj.name);
-//            serializer.serialize(buffer, obj.tactic);
-//        }
-//
-//        @Override
-//        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-//            String name = serializer.deserializeString(buffer);
-//            int tactic = buffer.getInt();
-//            return new CommanderEvent(name, tactic);
-//        }
-//    }
 }

@@ -123,7 +123,7 @@ import static robocode.util.Utils.*;
  * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
-
+	
 	public static final int
 			WIDTH = 40,
 			HEIGHT = 40;
@@ -857,7 +857,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = getStartingEnergy();
 		}
 		gunHeat = 3;
-
 		setHalt(false);
 		isExecFinishedAndDisabled = false;
 		isEnergyDrained = false;

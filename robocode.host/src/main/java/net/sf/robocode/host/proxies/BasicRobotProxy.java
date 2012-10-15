@@ -83,7 +83,12 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         setSetCallCount(0);
         setGetCallCount(0);
     }
-
+    
+    @Override
+    public int getTactic() {
+    	return 0;
+    }
+    
     @Override
     public void cleanup() {
         super.cleanup();

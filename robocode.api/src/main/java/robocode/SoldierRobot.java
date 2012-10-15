@@ -8,7 +8,6 @@
 package robocode;
 
 import robocode.Robot;
-import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.ISoldierEvents;
 import robocode.robotinterfaces.ISoldierRobot;
 
@@ -23,48 +22,21 @@ import robocode.robotinterfaces.ISoldierRobot;
  */
 public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents {
 	
-    public final int NO_TACTIC = 0;
-	public final int PAUSE = 1;
-	public final int ADVANCE = 2;
-	public final int RETREAT = 3;
-	public final int ATTACK = 4;
-	public final int INCREASE_POWER = 5;
-	public final int DECREASE_POWER = 6;
-	public final int TAUNT = 7;
+    protected static final int NO_TACTIC = 0;
+	protected static final int PAUSE = 1;
+	protected static final int ADVANCE = 2;
+	protected static final int RETREAT = 3;
+	protected static final int ATTACK = 4;
+	protected static final int INCREASE_POWER = 5;
+	protected static final int DECREASE_POWER = 6;
+	protected static final int TAUNT = 7;
 	
-	private int tactic = 0;
 	protected double power = 1.5;
-	
+
 	public void onCommandRecieved(CommanderEvent e) {
-		System.out.println("I SOMEHOW MADE IT INTO THE onCommandRevieved() function ...");
+		
 	}
 	
-	public void receiveCommand(CommanderEvent e) {
-		tactic = e.getTactic();
-		switch (tactic) {
-			case PAUSE:
-				pause();
-				break;
-				
-			case ADVANCE:
-			case RETREAT:
-			case ATTACK:
-				turnRadarRight(360);
-				break;
-				
-			case INCREASE_POWER:
-				increasePower();
-				break;
-				
-			case DECREASE_POWER:
-				decreasePower();
-				break;
-				
-			case TAUNT:
-				taunt();
-				break;
-		}
-	}
 	
 	/**
 	 * Passes information to the tactic methods on scan.
@@ -72,21 +44,6 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 	 * you should put super.onScannedRobot early in the method, so that
 	 * ScannedRobotEvents can still be passed.
 	 */
-	public void onScannedRobot(ScannedRobotEvent e) {
-		switch (tactic) {
-			case ADVANCE:
-				advance(e);
-				break;
-				
-			case RETREAT:
-				retreat(e);
-				break;
-				
-			case ATTACK:
-				attack(e);
-				break;
-		}
-	}
 	
 	/**
 	 * Stop everything.
@@ -96,60 +53,59 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 	}
 	
 	/**
-	 * Find an enemy and approach them.
+	 * Move forward.
 	 */
-	public void advance(ScannedRobotEvent e) {
-		turnRight(e.getBearing());
-		while(true) ahead(1);
+	public void advance() {
+		ahead(100);
 	}
 	
 	/**
 	 * Back away.
 	 */
-	public void retreat(ScannedRobotEvent e) {
-		turnRight(e.getBearing());
-		while(true) back(1);
+	public void retreat() {
+		back(100);
 	}
 	
 	/**
-	 * Find an enemy and fire at them!
+	 * Fire around randomly!
 	 */
-	public void attack(ScannedRobotEvent e) {
-		turnGunRight(getHeading() - getGunHeading() + e.getBearing());
-		fire(power);
+	public void attack() {
+		turnRight(45);
+		fire(1);
 	}
 	
 	/**
-	 * Increase the power of the robot's shots.
+	 * Increase the power of the robot's shots.  Returns the 
+	 * tactic to continue with after increase.
 	 */
-	public void increasePower() {
+	public int increasePower() {
 		if (power < 2.5) {
 			power += 0.5;
 		} else {
 			power = 3.0;
 		}
+		return RETREAT;
 	}
 	
 	/**
-	 * Decrease the power of your shots to save power.
+	 * Decrease the power of your shots to save power.  Returns the
+	 * tactic to continue with after decrease.
 	 */
-	public void decreasePower() {
+	public int decreasePower() {
 		if (power > 1.0) {
 			power -= 0.5;
 		} else {
 			power = 0.5;
 		}
+		return ADVANCE;
 	}
 	
 	/**
 	 * Degrade your enemies by taunting them.
 	 */
 	public void taunt() {
-    	for (int i = 0; i < 360; i++) {
-    		turnRadarRight(1);
-    		turnGunRight(1);
-    		turnLeft(1);
-    	}
+    	turnRadarRight(360);
+    	turnGunRight(-360);
 	}
 	
 	public final ISoldierEvents getSoldierEventListener() {
