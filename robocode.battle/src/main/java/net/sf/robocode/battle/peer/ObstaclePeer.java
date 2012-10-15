@@ -47,11 +47,6 @@ package net.sf.robocode.battle.peer;
 
 import robocode.*;
 
-import java.awt.geom.Line2D;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import java.util.List;
-
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.item.BoundingRectangle;
 

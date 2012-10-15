@@ -22,6 +22,7 @@ public class Equipment {
         parts.put("Division 9 Plasmaprojector",
                   new EquipmentPart.Builder(EquipmentSlot.WEAPON)
         		.set(RobotAttribute.SPEED, -20)
+        		.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
         		.set(RobotAttribute.GUN_HEAT_RATE, 70)
                 .set(RobotAttribute.BULLET_DAMAGE, 90)
                 .build());
@@ -49,10 +50,65 @@ public class Equipment {
                 .set(RobotAttribute.ENERGY, -60)
                 .build());
         
+        parts.put("Small Radar",
+        		new EquipmentPart.Builder(EquipmentSlot.RADAR)
+        		.set(RobotAttribute.ACCELERATION, 20)
+        		.set(RobotAttribute.RADAR_ANGLE, -25)
+        		.set(RobotAttribute.SCAN_RADIUS, 50)
+        		.set(RobotAttribute.SPEED, 30)
+        		.build());
+
+        parts.put("Twin Turret",
+                new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+              .set(RobotAttribute.SPEED, -10)
+              .set(RobotAttribute.GUN_HEAT_RATE, -50)
+              .set(RobotAttribute.BULLET_SPEED, 100)
+              .set(RobotAttribute.ENERGY, -60)
+              .image("/net/sf/robocode/ui/images/twinturret.png")
+              .build());
+        parts.put("Sword",
+                new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+              .set(RobotAttribute.SPEED, -10)
+              .set(RobotAttribute.GUN_HEAT_RATE, -50)
+              .set(RobotAttribute.BULLET_SPEED, 100)
+              .set(RobotAttribute.ENERGY, -60)
+              .image("/net/sf/robocode/ui/images/Sword.png")
+              .build());
+
+        
         parts.put("Test", 
         		  new EquipmentPart.Builder(EquipmentSlot.WEAPON)
-        		.sound("/robocode.sound/src/main/resources/net/sf/robocode/sound/sounds/zap.wav")
+        		.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
         		.build());
+        
+        
+        /*
+         * Do not remove the following items or change them, as doing so would
+         * likely cause tests to fail. 
+         */
+        // Do not Remove, this will cause tests to fail.
+        parts.put("Plasma Test",
+        		new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+        	.set(RobotAttribute.SPEED, -20)
+        	.set(RobotAttribute.GUN_HEAT_RATE, 70)
+        	.set(RobotAttribute.BULLET_DAMAGE, 90)
+        	.build());
+        
+        // Do not remove, this will cause the tests to fail.
+        parts.put("Pistol Test",
+        		new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+        		.set(RobotAttribute.ACCELERATION, 30)
+        		.set(RobotAttribute.BULLET_DAMAGE, -30)
+        		.set(RobotAttribute.BULLET_SPEED, 20)
+        		.set(RobotAttribute.GUN_HEAT_RATE, -20)
+        		.set(RobotAttribute.GUN_TURN_ANGLE, 40)
+        		.set(RobotAttribute.SPEED, 40)
+        		.set(RobotAttribute.ENERGY_REGEN, 30)
+        		.build());
+        
+        /*
+         * End of Test equipment
+         */
     }
 
     /**

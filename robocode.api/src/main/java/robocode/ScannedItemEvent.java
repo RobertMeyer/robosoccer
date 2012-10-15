@@ -1,8 +1,14 @@
 package robocode;
 
-import java.awt.peer.RobotPeer;
+import java.awt.Graphics2D;
+import java.nio.ByteBuffer;
+
+import net.sf.robocode.peer.IRobotStatics;
+import net.sf.robocode.serialization.ISerializableHelper;
+import net.sf.robocode.serialization.RbSerializer;
 import robocode.Event;
 import robocode.robotinterfaces.IBasicEvents;
+import robocode.robotinterfaces.IBasicRobot;
 
 /**
  * ScannedItemEvent:
@@ -10,10 +16,12 @@ import robocode.robotinterfaces.IBasicEvents;
  *  Returns a ScannedRobotEvent directly after this IF a robot has the item
  *  Tells the robot the location of the item, and the name of robot
  *  that is holding it
- *  
- *  TODO: Needs to be serializable and comparable (all events do apparently).
  *
  * @author team-Telos
+ * 
+ * Contributors:
+ * 
+ * @author Ameer Sabri (Dream Team) (serializables)
  *
  */
 public class ScannedItemEvent extends Event {
@@ -35,7 +43,7 @@ public class ScannedItemEvent extends Event {
 	private final static int DEFAULT_PRIORITY = 20;
 	
 	/**
-	 * New ScannedItemEven
+	 * New ScannedItemEvent
 	 * @param item String representation of the item
 	 * @param robotName Robot's name carrying the item
 	 * @param distance - the distance the robot is from the item
@@ -130,5 +138,58 @@ public class ScannedItemEvent extends Event {
         // No difference found
         return 0;
     }
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+		
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	byte getSerializationType() {
+		return RbSerializer.ScannedItemEvent_TYPE;
+	}
+	
+	static ISerializableHelper createHiddenSerializer() {
+		return new SerializableHelper();
+	}
+	
+	private static class SerializableHelper implements ISerializableHelper {
+		@Override
+        public int sizeOf(RbSerializer serializer, Object object) {
+            ScannedItemEvent obj = (ScannedItemEvent) object;
+
+            return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.item) + serializer.sizeOf(obj.robotName)
+                    + RbSerializer.SIZEOF_DOUBLE + 2 * RbSerializer.SIZEOF_INT;
+        }
+		
+		@Override
+        public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
+            ScannedItemEvent obj = (ScannedItemEvent) object;
+
+            serializer.serialize(buffer, obj.item);
+            serializer.serialize(buffer, obj.robotName);
+            serializer.serialize(buffer, obj.distance);
+            serializer.serialize(buffer, obj.x);
+            serializer.serialize(buffer, obj.y);
+        }
+		
+		@Override
+        public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
+            String item = serializer.deserializeString(buffer);
+            String robotName = serializer.deserializeString(buffer);
+            double distance = serializer.deserializeDouble(buffer);
+            int x = serializer.deserializeInt(buffer);
+            int y = serializer.deserializeInt(buffer);
+
+            return new ScannedItemEvent(item, robotName, distance, x, y);
+		}
+	}
 	
 }
