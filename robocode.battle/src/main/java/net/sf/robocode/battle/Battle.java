@@ -241,10 +241,8 @@ public class Battle extends BaseBattle {
 			} else if (Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) != 0) {
 				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) * robotsCount;
 			}
-
         	System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
         }
-        
 		bp = battleProperties;
 	}
 
@@ -407,13 +405,15 @@ public class Battle extends BaseBattle {
 		/* Start to initialise all the items */
 		this.initialiseItems();
 		effArea.clear();
-		customObject.clear();
 	
 		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null) {
-			customObject = objs;
+			System.out.println("hello");
+			for (IRenderable obj : objs)
+				customObject.add(obj);
 		}
-
+		for (IRenderable obj : customObject)
+			System.out.println(obj.getName());
 		//boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {
 			//clear effect area and recreate every round
@@ -1206,6 +1206,43 @@ public class Battle extends BaseBattle {
 	            }
 	        }
 	    }
+	}
+	/**
+	 * This method adds a IRenderable to the scene.
+	 * 
+	 * @param obj a IRenderable object.
+	 */
+	public void addCustomObject(IRenderable obj) {
+		System.out.println("well");
+		if (obj != null) {
+			System.out.println("added");
+			customObject.add(obj);
+		}
+	}
+	
+	/**
+	 * This method removes a IRenderable in the scene.
+	 * 
+	 * @param obj a IRenderable object to remove.
+	 */
+	public void removeCustomObject(IRenderable obj) {
+		if (obj != null) {
+			customObject.remove(obj);
+		}
+	}
+	
+	/**
+	 * This method removes a IRenderable in the scene.
+	 * 
+	 * @param name of IRenderable to remove.
+	 */
+	public void removeCustomObjectByName(String name) {
+		for (IRenderable obj : customObject) {
+			if (obj.getName().equals(name)) {
+				customObject.remove(obj);
+				return;
+			}
+		}
 	}
 
 }

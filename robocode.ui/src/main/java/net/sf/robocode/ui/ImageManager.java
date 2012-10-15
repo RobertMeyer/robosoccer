@@ -154,6 +154,10 @@ public class ImageManager implements IImageManager {
 
     private Image getImage(String filename) {
         Image image = ImageUtil.getImage(filename);
+        
+        if (image == null) {
+        	return null;
+        }
 
         if (properties.getOptionsRenderingBufferImages()) {
             image = ImageUtil.getBufferedImage(image);
@@ -173,11 +177,12 @@ public class ImageManager implements IImageManager {
     	if (customImageCache.containsKey(name)) {
     		getCustomImage(name);
     	}
-    	// Load image into memory
-    	RenderImage img = new RenderImage(getImage(filename));
     	
-    	// Check to see valid image
-    	if(img != null) {
+    	Image loadImg = getImage(filename);
+    	
+    	if(loadImg != null) {
+    		// Load image into memory
+    		RenderImage img = new RenderImage(loadImg);
     		customImageCache.put(name, img);
     		return img;
     	}
