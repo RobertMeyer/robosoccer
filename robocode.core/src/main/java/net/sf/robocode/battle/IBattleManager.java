@@ -11,6 +11,8 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import java.util.ArrayList;
+
 import robocode.Event;
 
 /**
@@ -96,4 +98,14 @@ public interface IBattleManager extends IBattleManagerBase {
     void setDefaultBattleProperties();
 
     void cleanup();
+
+	<Battle> Battle getBattle();
+	
+	ArrayList<Integer> saveSpikePosX(ArrayList<Integer> spikeArrayPosX);
+	
+	ArrayList<Integer> saveSpikePosY(ArrayList<Integer> spikeArrayPosY);
+	
+	ArrayList<Integer> getSpikePosX();
+
+	ArrayList<Integer> getSpikePosY();
 }

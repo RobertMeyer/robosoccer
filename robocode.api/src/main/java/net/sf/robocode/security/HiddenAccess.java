@@ -224,10 +224,17 @@ public class HiddenAccess {
         specificationHelper.setTeamName(specification, teamName);
     }
 
-    public static RobotStatus createStatus(double energy, double x, double y, double bodyHeading, double gunHeading, double radarHeading, double velocity, double bodyTurnRemaining, double radarTurnRemaining, double gunTurnRemaining, double distanceRemaining, double gunHeat, int others, int roundNum, int numRounds, long time) {
+    public static RobotStatus createStatus(double energy, double x, double y, double bodyHeading, 
+    		double gunHeading, double radarHeading, double velocity, double bodyTurnRemaining, 
+    		double radarTurnRemaining, double gunTurnRemaining, double distanceRemaining, 
+    		double gunHeat, int others, int roundNum, int numRounds, long time, 
+    		double maxVelocity, double maxBulletPower, double minBulletPower, 
+    		double acceleration, double deceleration, double radarScanRadius, double maxTurnRate, 
+    		double gunTurnRate, double radarTurnRate, double robotHitDamage, double robotHitAttack) {
         return statusHelper.createStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity,
                                          bodyTurnRemaining, radarTurnRemaining, gunTurnRemaining, distanceRemaining, gunHeat, others, roundNum,
-                                         numRounds, time);
+                                         numRounds, time, maxVelocity, maxBulletPower, minBulletPower, acceleration, deceleration, radarScanRadius, 
+                                         maxTurnRate, gunTurnRate, radarTurnRate, robotHitDamage, robotHitAttack);
     }
 
     public static BattleRules createRules(int battlefieldWidth, int battlefieldHeight, int numRounds, double gunCoolingRate, long inactivityTime, boolean hideEnemyNames, Hashtable<String, Object> modeRules) {
