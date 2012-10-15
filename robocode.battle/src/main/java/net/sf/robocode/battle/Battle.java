@@ -138,7 +138,7 @@ import robocode.control.snapshot.RobotState;
  * @author Julian Kent (contributor)
  * @author Pavel Savara (contributor)
  */
-public final class Battle extends BaseBattle {
+public class Battle extends BaseBattle {
 
     private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
 
@@ -493,7 +493,7 @@ public final class Battle extends BaseBattle {
 
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.waitForStop();
-			robotPeer.getRobotStatistics().generateTotals();
+			robotPeer.getRobotStatistics().generateTotals(bp);
 		}
         
         // Increment mode specific points - TODO -team-Telos

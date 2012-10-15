@@ -256,6 +256,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					new HashMap<EquipmentSlot, EquipmentPart>()
 			);
 
+	
+	double fullEnergy;
+
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
 
@@ -590,6 +593,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		return false;
 	}
+	
+	/* Team Telos Addition */
+	public RobotPeer getRobotPeer() {
+		return this;
+	}
+
 	// -----------
 	// execute
 	// -----------
@@ -885,6 +894,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else {
 			energy = getStartingEnergy();
 		}
+		fullEnergy = getEnergy();
 		gunHeat = 3;
 
 		setHalt(false);
@@ -2553,6 +2563,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	private boolean isSuperTank() {
 		return isSuperTank;
+	}
+	
+	public double getFullEnergy() {
+		return fullEnergy;
+	}
+
+
+	public boolean isZombie() {
+		return getName() == "sampleex.NormalZombie";
 	}
 }
 

@@ -2,6 +2,7 @@ package net.sf.robocode.mode;
 
 import java.util.Hashtable;
 import javax.swing.JPanel;
+import java.util.HashMap;
 
 import net.sf.robocode.battle.BattleResultsTableModel;
 
