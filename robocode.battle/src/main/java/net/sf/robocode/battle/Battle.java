@@ -290,7 +290,11 @@ public class Battle extends BaseBattle {
 		}
 	}
 
-	//Get list of robots
+	/**
+	 * Returns a list of all robots.
+	 *
+	 * @return a list of all robot peers.
+	 */
 	public List<RobotPeer> getRobotList(){
 		return robotList;
 	}
