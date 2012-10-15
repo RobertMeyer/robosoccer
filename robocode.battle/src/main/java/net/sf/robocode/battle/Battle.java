@@ -870,7 +870,7 @@ public final class Battle extends BaseBattle {
             // Publish death to live robots
             for (RobotPeer robotPeer : getRobotsAtRandom()) {
                 if (robotPeer.isAlive()) {
-             x       robotPeer.addEvent(new RobotDeathEvent(robotPeer.getNameForEvent(deadRobot)));
+                    robotPeer.addEvent(new RobotDeathEvent(robotPeer.getNameForEvent(deadRobot)));
 
                     if (robotPeer.getTeamPeer() == null || robotPeer.getTeamPeer() != deadRobot.getTeamPeer()) {
                         robotPeer.getRobotStatistics().scoreSurvival();

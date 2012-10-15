@@ -8,9 +8,9 @@ import net.sf.robocode.mode.*;
 import java.awt.*;
 import java.util.Hashtable;
 /**
- * This class models a new tab in the Robocode UI for players to select a Mode. 
- * This "Mode tab" consists of two panels: 
- * a left panel that contains a list of game modes that can be selected (only one can be selected at a time) 
+ * This class models a new tab in the Robocode UI for players to select a Mode.
+ * This "Mode tab" consists of two panels:
+ * a left panel that contains a list of game modes that can be selected (only one can be selected at a time)
  * a right panel that shows a mode's description and rules
  *
  */

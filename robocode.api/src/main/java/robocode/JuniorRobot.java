@@ -898,5 +898,10 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
                 }
             }
         }
+
+        @Override
+        public void onWaypointPassed(WaypointPassedEvent event) {
+            // TODO Implement this method.
+        }
     }
 }

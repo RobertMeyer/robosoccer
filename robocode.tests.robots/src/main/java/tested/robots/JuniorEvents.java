@@ -149,4 +149,8 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
         }
         counts.put(name, curr + 1);
     }
+
+    @Override
+    public void onWaypointPassed(WaypointPassedEvent event) {
+    }
 }
