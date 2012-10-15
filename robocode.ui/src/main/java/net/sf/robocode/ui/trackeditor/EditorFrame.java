@@ -1,6 +1,8 @@
 package net.sf.robocode.ui.trackeditor;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -14,21 +16,58 @@ import javax.swing.JMenuItem;
  *
  */
 @SuppressWarnings("serial")
-public class EditorFrame extends JFrame{
+public class EditorFrame extends JFrame {
+	
+    private JMenuItem fileNew;
+    private JMenuItem fileOpen;
+    private JMenuItem fileSave;
+    private JMenuItem fileQuit;
+    private JMenuItem helpAbout;
+	
+    private class EventHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            final Object source = e.getSource();
+            
+            if (source == fileNew) {
+                // New code
+            } else if (source == fileOpen) {
+                // Open code
+            } else if (source == fileSave) {
+                // Save code
+            } else if (source == fileQuit) {
+                dispose();
+                System.exit(0);
+            } else if (source == helpAbout) {
+            	// Help about code
+            }
+        }
+    }
 	
 	public EditorFrame() {
 		
+	    final EventHandler eventHandler = new EventHandler();
+	    
         JMenuBar menubar = new JMenuBar();
         
         JMenu file = new JMenu("File");
         JMenu help = new JMenu("Help");
 
-        JMenuItem fileNew = new JMenuItem("New");
-        JMenuItem fileOpen = new JMenuItem("Open");
-        JMenuItem fileSave = new JMenuItem("Save");
-        JMenuItem fileQuit = new JMenuItem("Quit");
+        fileNew = new JMenuItem("New");
+        fileNew.addActionListener(eventHandler);
         
-        JMenuItem helpAbout = new JMenuItem("About");
+        fileOpen = new JMenuItem("Open");
+        fileOpen.addActionListener(eventHandler);
+        
+        fileSave = new JMenuItem("Save");
+        fileSave.addActionListener(eventHandler);
+        
+        fileQuit = new JMenuItem("Quit");
+        fileQuit.addActionListener(eventHandler);
+        
+        helpAbout = new JMenuItem("About");
+        helpAbout.addActionListener(eventHandler);
         
         file.add(fileNew);
         file.add(fileOpen);
@@ -51,5 +90,5 @@ public class EditorFrame extends JFrame{
 		this.add(toolBar, BorderLayout.EAST);
 		
 	}
-
+	
 }

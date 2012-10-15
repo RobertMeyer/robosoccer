@@ -8,9 +8,12 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 
+import net.sf.robocode.ui.gfx.ImageUtil;
+
 /**
  * Toolbar for the track editor
  * @author Taso s4231811
+ * @author Reinard s4200802
  *
  */
 @SuppressWarnings("serial")
@@ -20,12 +23,12 @@ public class EditBar extends JToolBar{
 		
 		this.setOrientation(JToolBar.VERTICAL);
 		
-        ImageIcon road = new ImageIcon(
-        		"/net/sf/robocode/ui/icons/road.png");
-        ImageIcon waypoint = new ImageIcon(
-        		"/net/sf/robocode/ui/icons/waypoint.png");
-        ImageIcon terrain = new ImageIcon(
-        		"/net/sf/robocode/ui/icons/terrain.png");
+        ImageIcon road = new ImageIcon(ImageUtil.getImage(
+        		"/net/sf/robocode/ui/icons/road.png"));
+        ImageIcon waypoint = new ImageIcon(ImageUtil.getImage(
+        		"/net/sf/robocode/ui/icons/waypoint.png"));
+        ImageIcon terrain = new ImageIcon(ImageUtil.getImage(
+        		"/net/sf/robocode/ui/icons/terrain.png"));
 
         JButton selectb = new JButton(road);
         JButton freehandb = new JButton(waypoint);

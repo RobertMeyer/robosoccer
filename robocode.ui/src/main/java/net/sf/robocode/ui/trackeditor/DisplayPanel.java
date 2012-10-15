@@ -1,5 +1,7 @@
 package net.sf.robocode.ui.trackeditor;
 
+import java.awt.Color;
+
 import javax.swing.JPanel;
 
 /**
@@ -11,7 +13,7 @@ import javax.swing.JPanel;
 public class DisplayPanel extends JPanel {
 	
 	public DisplayPanel() {
-		
+		this.setBackground(Color.BLACK);
 	}
 
 }
