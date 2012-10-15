@@ -19,6 +19,7 @@ package robocode.robotinterfaces.peer;
 
 import java.awt.*;
 import robocode.*;
+import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
 
 /**
@@ -93,7 +94,167 @@ public interface IBasicRobotPeer {
      * @see Rules#MAX_VELOCITY
      */
     double getVelocity();
-
+    
+    /**
+     * Returns the maximum velocity of the robot measured in pixels/turn.
+     * <p/>
+     * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
+     * * {@link RobotAttribute#SPEED}
+     * 
+     * @return the maximum velocity of the robot in pixels/turn
+     * @see Rules#MAX_VELOCITY
+     * @see RobotAttribute#SPEED
+     */
+    double getRealMaxVelocity();
+    
+    /**
+     * Returns the maximum bullet power of the robot.
+     * <p/>
+     * The maximum bullet power is defined as {@link Rules#MAX_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the maximum bullet power of the robot
+     * @see Rules#MAX_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    double getMaxBulletPower();
+    
+    /**
+     * Returns the maximum bullet power of the robot.
+     * <p/>
+     * The maximum bullet power is defined as {@link Rules#MAX_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the maximum bullet power of the robot
+     * @see Rules#MAX_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    double getMinBulletPower();
+    
+    /**
+     * Returns the acceleration of the robot.
+     * <p/>
+     * The acceleration of the robot defined as 
+     * {@link Rules#ACCELERATION} * {@link RobotAttribute#ACCELERATION}
+     * 
+     * @return the acceleration of the robot
+     * @see Rules#ACCELERATION
+     * @see RobotAttribute#ACCELERATION
+     */
+    public double getAcceleration();
+    
+    /**
+     * Returns the deceleration of the robot.
+     * <p/>
+     * The deceleration of the robot defined as 
+     * {@link Rules#DECELERATION} * {@link RobotAttribute#DECELERATION}
+     * 
+     * @return the deceleration of the robot
+     * @see Rules#DECELERATION
+     * @see RobotAttribute#DECELERATION
+     */
+    public double getDeceleration();
+    
+    /**
+     * Returns the radar scan radius of the robot
+     * <p/>
+     * The radar scan radius is defined as {@link Rules#RADAR_SCAN_RADIUS}
+     *  * {@link RobotAttribute#SCAN_RADIUS}
+     *  
+     * @return the radar scan radius of the robot
+     * @see Rules#RADAR_SCAN_RADIUS
+     * @see RobotAttribute#SCAN_RADIUS
+     */
+    public double getRadarScanRadius();
+    
+    /**
+     * Returns the maximum turn rate of the robot in degrees.  The rate at 
+     * which the robot turns also depends on velocity.
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#MAX_TURN_RATE}
+     *  * {@link RobotAttribute#ROBOT_TURN_ANGLE}
+     * 
+     * @return the maximum turn rate of the robot in degrees
+     * @see Rules#MAX_TURN_RATE
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Rules#getTurnRate(double)
+     * @see Rules#getTurnRateRadians(double)
+     */
+    public double getMaxTurnRate();
+    
+    /**
+     * Returns the maximum gun turn rate of the robot in degrees.
+     * 
+     * Note, that if setAdjustGunForRobotTurn(true) has been called, the gun
+     * turn is independent of the robot turn.
+     * In this case the gun moves relatively to the screen. If
+     * setAdjustGunForRobotTurn(false) has been called or
+     * setAdjustGunForRobotTurn() has not been called at all (this is the
+     * default), then the gun turn is dependent on the robot turn, and in this
+     * case the gun moves relatively to the robot body.
+     * 
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#GUN_TURN_RATE}
+     *  * {@link RobotAttribute#GUN_TURN_ANGLE}
+     * 
+     * @return the maximum gun turn rate of the robot in degrees
+     * @see Rules#GUN_TURN_RATE
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     */
+    public double getGunTurnRate();
+    
+    /**
+     * Returns the radar turn rate of the robot in degrees.
+     * 
+     * Note, that if setAdjustRadarForRobotTurn(true) and/or
+     * setAdjustRadarForGunTurn(true) has been called, the radar turn is
+     * independent of the robot and/or gun turn. If both methods has been set to
+     * true, the radar moves relatively to the screen.
+     * If setAdjustRadarForRobotTurn(false) and/or setAdjustRadarForGunTurn(false)
+     * has been called or not called at all (this is the default), then the
+     * radar turn is dependent on the robot and/or gun turn, and in this case
+     * the radar moves relatively to the gun and/or robot body.
+     * 
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#RADAR_TURN_RATE}
+     *  * {@link RobotAttribute#RADAR_ANGLE}
+     * 
+     * @return the radar turn rate of the robot in degrees
+     * @see Rules#RADAR_TURN_RATE_RADIANS
+     * @see RobotAttribute#RADAR_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     * @see Robot#setAdjustRadarForGunTurn(boolean)
+     */
+    public double getRadarTurnRate();
+    
+    /**
+     * The amount of damage taken when a robot hits or is hit by another robot
+     * <p/>
+     * This is defined as {@link Rules#ROBOT_HIT_DAMAGE} * 
+     * {@link RobotAttribute#RAM_DEFENSE}
+     * 
+     * @return the amount of damage taken when a robot hits or is hit by
+     * 			another robot
+     * @see Rules#ROBOT_HIT_DAMAGE
+     * @see RobotAttribute#RAM_DEFENSE
+     */
+    public double getRobotHitDamage();
+    
+    /**
+     * The amount of bonus given when a robot moving forward hits an opponent
+     * robot (ramming)
+     * <p/>
+     * This is defined as {@link Rules#ROBOT_HIT_BONUS} * 
+     * {@link RobotAttribute#RAM_ATTACK}
+     * 
+     * @return the amount of damage taken when a robot hits or is hit by
+     * 			another robot
+     * @see Rules#ROBOT_HIT_BONUS
+     * @see RobotAttribute#RAM_ATTACK
+     */
+    public double getRobotHitAttack();
+    
     /**
      * Returns the direction that the robot's body is facing, in radians.
      * The value returned will be between 0 and 2 * PI (is excluded).
