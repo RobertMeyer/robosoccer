@@ -254,6 +254,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			new AtomicReference<Map<EquipmentSlot, EquipmentPart>>(
 					new HashMap<EquipmentSlot, EquipmentPart>()
 			);
+	
+	double fullEnergy;
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
@@ -883,6 +885,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else {
 			energy = getStartingEnergy();
 		}
+		fullEnergy = getEnergy();
 		gunHeat = 3;
 
 		setHalt(false);
@@ -2539,6 +2542,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	private boolean isSuperTank() {
 		return isSuperTank;
+	}
+	
+	public double getFullEnergy() {
+		return fullEnergy;
 	}
 }
 
