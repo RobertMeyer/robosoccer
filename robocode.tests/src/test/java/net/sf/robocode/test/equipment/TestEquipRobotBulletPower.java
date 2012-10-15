@@ -6,7 +6,14 @@ import robocode.control.snapshot.IRobotSnapshot;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import net.sf.robocode.test.helpers.Assert;
 
-
+/**
+ * A simple test to test the bullet power of equipment robots.
+ * 
+ * Thus, this tests:
+ * RobotAttribute#BULLET_POWER
+ * 
+ * @author Jayke Anderson - CSSE2003
+ */
 public class TestEquipRobotBulletPower extends RobocodeTestBed {
 	
 	@Test
