@@ -50,10 +50,16 @@ public class ResultsDialog extends BaseScoreDialog {
     }
 
     public void setup(BattleResults[] results, int numRounds, IMode battleMode) {
-    	/* BRANDONCW:
-    	 * Using Mode generated Results Table, create and set then add data */
+    	/* BRANDONCW */
+    	/* Clear any data that was previously in the columns */
+    	if (battleMode.getCustomResultsTable() != null) {
+    		battleMode.getCustomResultsTable().clearColumns();
+    	}
+    	/* Set the mode specific data to add */
     	battleMode.setCustomResultsTable();
+    	/* Store updated BattleResultsTableModel in the class */
     	tableModel = battleMode.getCustomResultsTable();
+    	/* Add the data */
     	tableModel.setResults(results);
     	tableModel.setNumberOfRounds(numRounds);
     	

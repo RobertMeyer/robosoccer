@@ -138,7 +138,7 @@ import robocode.control.snapshot.RobotState;
  * @author Julian Kent (contributor)
  * @author Pavel Savara (contributor)
  */
-public final class Battle extends BaseBattle {
+public class Battle extends BaseBattle {
 
     private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
 
@@ -481,7 +481,7 @@ public final class Battle extends BaseBattle {
 
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.waitForStop();
-			robotPeer.getRobotStatistics().generateTotals();
+			robotPeer.getRobotStatistics().generateTotals(bp);
 		}
         
         // Increment mode specific points - TODO -team-Telos
@@ -852,6 +852,12 @@ public final class Battle extends BaseBattle {
         deathRobots.clear();
     }
     
+    /**
+     * Runs the death effect associated with deadRobot.
+     * Effects 1-3 are different sizes of explosions.
+     * Effects 4-6 are different effect areas.
+     * @param deadRobot The robot to enforce death effect from
+     */
     private void deathEffect(RobotPeer deadRobot) {
     	int finalX = 0;
     	int finalY = 0;
@@ -946,12 +952,12 @@ public final class Battle extends BaseBattle {
 			break;
 		case 5:
 			// Effect area 2
-			EffectArea deathEffect2 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 2);
+			EffectArea deathEffect2 = new EffectArea(finalX, finalY, 64, 64, 2);
 			effArea.add(deathEffect2);
 			break;
 		case 6:
 			// Effect area 3
-			EffectArea deathEffect3 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 3);
+			EffectArea deathEffect3 = new EffectArea(finalX, finalY, 64, 64, 3);
 			effArea.add(deathEffect3);
 			break;
 		}

@@ -52,4 +52,5 @@ public class SlowMode extends ClassicMode {
 			return values;
 		}
 	}
+
 }

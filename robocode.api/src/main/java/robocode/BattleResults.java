@@ -39,11 +39,16 @@ public class BattleResults implements java.io.Serializable,
     protected double bulletDamageBonus;
     protected double ramDamage;
     protected double ramDamageBonus;
-    //Team-Telos addition
-    protected double flagScore;
     protected int firsts;
     protected int seconds;
     protected int thirds;
+  //Team-Telos addition
+    protected double flagScore;
+    /* 
+     * Any team that wants their own custom score, it should be added
+     * here as a protected double.
+     */
+    
 
     /**
      * Constructs this BattleResults object.
@@ -61,6 +66,8 @@ public class BattleResults implements java.io.Serializable,
      * @param firsts            the number of rounds this robot placed first.
      * @param seconds           the number of rounds this robot placed second.
      * @param thirds            the number of rounds this robot placed third.
+     * 
+     * Any desired custom score will also be needed to add to BattleResults
      */
     public BattleResults(
             String teamLeaderName,
@@ -209,6 +216,10 @@ public class BattleResults implements java.io.Serializable,
     public int getThirds() {
         return thirds;
     }
+    
+    /**
+     * Any custom scoring options should have a getter method added here
+     */
 
     /**
      * {@inheritDoc}
@@ -280,6 +291,9 @@ public class BattleResults implements java.io.Serializable,
             serializer.serialize(buffer, obj.firsts);
             serializer.serialize(buffer, obj.seconds);
             serializer.serialize(buffer, obj.thirds);
+            /*
+             * Any custom scoring option should be serializable, as above
+             */
         }
 
         @Override
@@ -299,9 +313,16 @@ public class BattleResults implements java.io.Serializable,
             int seconds = buffer.getInt();
             int thirds = buffer.getInt();
 
+            /*
+             * Any custom scoring option should be deserializable as above
+             */
             //Team-Telos: added flagScore into BattleResults
             return new BattleResults(teamLeaderName, rank, score, survival, lastSurvivorBonus, bulletDamage,
                                      bulletDamageBonus, ramDamage, ramDamageBonus, flagScore, firsts, seconds, thirds);
+            /*
+             * Insert custom scoring variable into the BattleResults variable in the same position as it was 
+             * first initialised. Should be at the end.
+             */
         }
     }
 }

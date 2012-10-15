@@ -23,3 +23,5 @@ target/
 
 # Robocode config
 robocode.core/config/
+
+robocode.core/nb-configuration.xml

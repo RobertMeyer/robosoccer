@@ -27,7 +27,7 @@
         <module>robocode.installer</module>
         <module>robocode.repository</module>
         <module>robocode.content</module>
-        <module>robocode.distribution</module>
+        <!-- <module>robocode.distribution</module> -->
     </modules>
 
 </project>

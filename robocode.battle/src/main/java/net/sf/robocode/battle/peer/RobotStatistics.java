@@ -39,6 +39,8 @@ package net.sf.robocode.battle.peer;
 import java.util.HashMap;
 import java.util.Map;
 import robocode.BattleResults;
+import net.sf.robocode.mode.ClassicMode;
+import net.sf.robocode.battle.BattleProperties;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -49,7 +51,7 @@ import robocode.BattleResults;
  * @author Nathaniel Troutman (contributor)
  */
 public class RobotStatistics implements ContestantStatistics {
-
+	private BattleProperties bp = new BattleProperties();
     private final RobotPeer robotPeer;
     private int rank;
     private final int robots;
@@ -123,7 +125,7 @@ public class RobotStatistics implements ContestantStatistics {
         flagScore = 0;
     }
 
-    public void generateTotals() {
+    public void generateTotals(BattleProperties battleProp) {
         totalSurvivalScore += survivalScore;
         totalLastSurvivorBonus += lastSurvivorBonus;
         totalBulletDamageScore += bulletDamageScore;
@@ -133,11 +135,54 @@ public class RobotStatistics implements ContestantStatistics {
         // team-Telos addition
         totalFlagScore += flagScore;
 
-        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
-                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
+        /*TODO Edit this Andrew */
+        /* Set battle Properties */
+        bp = battleProp;
+        System.out.println(bp.toString());
+        ClassicMode mode = (ClassicMode) bp.getBattleMode();
+        totalScore = mode.getCustomOverallScore(this);
+//        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
+//                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
         isInRound = false;
     }
-
+    
+    
+    /**
+     * Begin Team Telos custom overall score additions
+     */
+    
+    public double showBulletDamageScore() {
+    	return totalBulletDamageScore;
+    }
+    
+    public double showRammingDamageScore() {
+    	return totalRammingDamageScore;
+    }
+    
+    public double showSurvivalScore() {
+    	return totalSurvivalScore;
+    }
+    
+    public double showRammingKillBonus() {
+    	return totalRammingKillBonus;
+    }
+    
+    public double showBulletKillBonus() {
+    	return totalBulletKillBonus;
+    }
+    
+    public double showLastSurvivorBonus() {
+    	return totalLastSurvivorBonus;
+    }
+    
+    public double showFlagScore() {
+    	return totalFlagScore;
+    }
+    
+    /**
+     * End Team Telos custom overall score additions
+     */
+    
     @Override
     public double getTotalScore() {
         return totalScore;
