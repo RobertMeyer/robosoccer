@@ -879,7 +879,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isDispenser()) {
 			energy = 500;
 		} else if (statics.isFreezeRobot()) {
-			energy = 10000;
+			energy = 300;
 			attributes.get().put(RobotAttribute.SPEED, 0.20);
 		} else {
 			energy = getStartingEnergy();
@@ -1054,7 +1054,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return;
 		}
 		
-		if (isFrozen()) {
+		if (isFrozen() && energy > 0) {
 			frozen--;
 			if (frozen != 0) {
 				return;
@@ -1412,18 +1412,26 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	protected boolean checkForFreezeBot(RobotPeer otherRobot) {
 		if (otherRobot.isFreezeRobot()) {
-			setState(RobotState.FROZEN);
-			frozen = 100;
+			makeFrozen(this, 100);
 			return true;
 		}
 		
 		if (this.isFreezeRobot()) {
-			otherRobot.setState(RobotState.FROZEN);
-			otherRobot.frozen = 100;
+			makeFrozen(otherRobot, 100);
 			return true;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Freezes robot for length amount of turns 
+	 * @param robot: robot to freeze
+	 * @param turns: turns frozen for
+	 */
+	public void makeFrozen(RobotPeer robot, int turns){
+		robot.setState(RobotState.FROZEN);
+		robot.frozen = turns;
 	}
 
 	protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {

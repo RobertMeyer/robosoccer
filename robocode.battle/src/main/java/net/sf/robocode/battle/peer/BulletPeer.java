@@ -49,6 +49,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.util.List;
 
+import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.KillstreakTracker;
 import net.sf.robocode.peer.BulletStatus;
 import robocode.*;
@@ -204,6 +205,8 @@ public class BulletPeer {
 				if (otherRobot.getEnergy() <= 0) {
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
+						FreezeRobotDeath massFreeze = new FreezeRobotDeath(otherRobot, owner);
+						massFreeze.freezeEverything(robots);
 						if (owner.battle.getBattleMode().respawnsOn()) {
                     		otherRobot.respawn(robots);
                     	}
