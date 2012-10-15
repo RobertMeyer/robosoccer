@@ -52,4 +52,9 @@ public class ZombieMode extends ClassicMode {
 	    	zombie.startRound(0, 0);
     	}
     }
+    
+	@Override
+	public boolean allowsOneRobot() {
+		return true;
+	}
 }
