@@ -4,13 +4,8 @@ import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.teleporters.ITeleporter;
 import net.sf.robocode.teleporters.ITeleporter.Portal;
 
-/**
- * TeleporterPeer is an object which implements teleporter objects or black holes
- * on the battlefield.
- * 
- * @author Team Omega
- */
 public class TeleporterPeer implements ITeleporter {
+	
 	private double width;
 	private double height;
 	
@@ -21,16 +16,6 @@ public class TeleporterPeer implements ITeleporter {
 	private double x2;
 	private double y2;
 	
-	/**
-	 * Creates an instance of a teleporter object. The teleporter object either
-	 * creates a pair of portals or create a black hole. A black hole is
-	 * set by setting the position of the second teleporter, x2 and y2, negative.
-	 * 
-	 * @param x1 is the x position of the first teleporter
-	 * @param y1 is the y position of the first teleporter
-	 * @param x2 is the x position of the second teleporter
-	 * @param y2 is the y position of the second teleporter
-	 */
 	public TeleporterPeer(double x1, double y1, double x2, double y2) {
 		width = 40;
 		height = 40;
@@ -41,8 +26,9 @@ public class TeleporterPeer implements ITeleporter {
 			blackHole = true;
 		}
 	}
+
 	
-	@Override
+	
 	public void setXY(double x, double y, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			x1 = x;
@@ -52,8 +38,7 @@ public class TeleporterPeer implements ITeleporter {
 			y2 = y;
 		}
 	}
-	
-	@Override
+
 	public void setX(double x, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			x1 = x;
@@ -62,7 +47,6 @@ public class TeleporterPeer implements ITeleporter {
 		}
 	}
 
-	@Override
 	public void setY(double y, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			y1 = y;
@@ -81,7 +65,6 @@ public class TeleporterPeer implements ITeleporter {
 		return 0;
 	}
 
-	@Override
 	public double getY(Portal target) {
 		if (target == Portal.PORTAL1) {
 			return y1;
@@ -91,12 +74,8 @@ public class TeleporterPeer implements ITeleporter {
 		return 0;
 	}
 	
-	/**
-	 * Creates a circle object which represents the boundaries of a teleporter.
-	 * 
-	 * @param target 
-	 * @return Ellipe2D 
-	 */
+
+	
 	public java.awt.geom.Ellipse2D.Float getCircle(Portal target){
 		java.awt.geom.Ellipse2D.Float circle = new java.awt.geom.Ellipse2D.Float();
 		if (target == Portal.PORTAL1) {
@@ -117,8 +96,7 @@ public class TeleporterPeer implements ITeleporter {
 		return rect;
 	}
 
-	/** 
-	 * Function is called by RobotPeer to test for teleporter
+	/* Function is called by RobotPeer to test for teleporter
 	 * collision on the pair of teleporters.
 	 * 
 	 * Returns (int x, int y)
@@ -130,6 +108,7 @@ public class TeleporterPeer implements ITeleporter {
 	 * 		
 	 * 
 	 */
+	
 	public double[] getCollisionReaction(net.sf.robocode.battle.item.BoundingRectangle bound){
 		double[] a = {-1, -1};
 		if(this.getCircle(Portal.PORTAL1).intersects(bound)){
@@ -142,19 +121,17 @@ public class TeleporterPeer implements ITeleporter {
 				a[0] = this.getX(Portal.PORTAL2);
 				a[1] = this.getY(Portal.PORTAL2);
 			}
-		} else if(this.getCircle(Portal.PORTAL2).intersects(bound)){
+		}else if(this.getCircle(Portal.PORTAL2).intersects(bound)){
 			a[0] = this.getX(Portal.PORTAL1);
 			a[1] = this.getY(Portal.PORTAL1);
 		}
 		return a;
 	}
 	
-	@Override
 	public boolean isBlackHole() {
 		return blackHole;
 	}
 	
-	@Override
 	public void updateBlackHoleSize() {
 		if (!blackHole) {
 			return;
@@ -163,12 +140,10 @@ public class TeleporterPeer implements ITeleporter {
 		height += 40;
 	}
 	
-	@Override
 	public double getHeight() {
 		return height;
 	}
 	
-	@Override
 	public double getWidth() {
 		return width;
 	}
