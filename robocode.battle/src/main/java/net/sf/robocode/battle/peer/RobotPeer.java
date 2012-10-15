@@ -1010,17 +1010,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 * or very close too.  This is to avoid unnecessary double
 			 * multiplication, which was causing some bugs.
 			 */
-			if((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
-					1.0 < 0.00001){
+			if(Math.abs((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
+					1.0) < 0.00001){
 				firePower = min(energy,
 						min(max(bulletCmd.getPower(), Rules.MIN_BULLET_POWER),
 								Rules.MAX_BULLET_POWER));
 			}
 			else{
 				firePower = min(energy, min(max(bulletCmd.getPower(),
-						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
+						getMinBulletPower()), getMaxBulletPower()));
 			}
-
 			updateEnergy(-firePower);
 
 			gunHeat += getGunHeat(firePower);
