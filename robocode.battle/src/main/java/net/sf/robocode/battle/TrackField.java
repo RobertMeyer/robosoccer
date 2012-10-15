@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Area;
 
+import net.sf.robocode.battle.item.BoundingRectangle;
+
 /**
  * Class that stores Track Data
  * @author Taso s4231811

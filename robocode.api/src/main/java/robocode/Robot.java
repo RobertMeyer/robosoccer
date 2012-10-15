@@ -1920,4 +1920,10 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     @Override
     public void onStatus(StatusEvent e) {
     }
+
+	@Override
+	public void onWaypointPassed(WaypointPassedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }
