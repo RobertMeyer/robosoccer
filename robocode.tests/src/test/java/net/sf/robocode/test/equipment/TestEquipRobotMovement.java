@@ -12,7 +12,7 @@ import robocode.control.snapshot.IRobotSnapshot;
  * appropriate movement attributes are working.
  * 
  * Tests the following attributes:
- * RobotAttribute#VELOCITY
+ * RobotAttribute#SPEED
  * RobotAttribute#ACCELERATION
  * RobotAttribute#DECELERATION
  * 
