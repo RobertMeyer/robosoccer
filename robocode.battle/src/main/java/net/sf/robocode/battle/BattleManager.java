@@ -54,6 +54,7 @@
 package net.sf.robocode.battle;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -102,6 +103,9 @@ public class BattleManager implements IBattleManager {
     private int pauseCount = 0;
     public Boolean effectAreaOn = false;
     private final AtomicBoolean isManagedTPS = new AtomicBoolean(false);
+    
+    private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
+    private ArrayList<Integer> spikePosY = new ArrayList<Integer>();
 
     public BattleManager(ISettingsManager properties, IRepositoryManager repositoryManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher battleEventDispatcher, IRecordManager recordManager) {
         this.properties = properties;
@@ -476,6 +480,28 @@ public class BattleManager implements IBattleManager {
 			}
 		}
 		robotList.get(lowestEnergyIndex).kill();
+	}
+	
+	@Override
+	public ArrayList<Integer> saveSpikePosX(ArrayList<Integer> spikeArrayPosX){
+		spikePosX = spikeArrayPosX;
+		return spikeArrayPosX;
+	}
+	
+	@Override
+	public ArrayList<Integer> saveSpikePosY(ArrayList<Integer> spikeArrayPosY){
+		spikePosY = spikeArrayPosY;
+		return spikeArrayPosY;
+	}
+	
+	@Override
+	public ArrayList<Integer> getSpikePosX(){
+		return spikePosX;
+	}
+	
+	@Override
+	public ArrayList<Integer> getSpikePosY(){
+		return spikePosY;
 	}
 
     /**

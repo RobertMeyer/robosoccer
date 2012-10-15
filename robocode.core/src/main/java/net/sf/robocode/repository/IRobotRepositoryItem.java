@@ -18,33 +18,35 @@ import java.net.URL;
  */
 public interface IRobotRepositoryItem extends IRepositoryItem {
 
-    URL getClassPathURL();
+	URL getClassPathURL();
 
-    String getWritableDirectory();
+	String getWritableDirectory();
 
-    String getReadableDirectory();
+	String getReadableDirectory();
 
-    String getRobotLanguage();
+	String getRobotLanguage();
 
-    boolean isDroid();
+	boolean isDroid();
 	
 	boolean isHouseRobot();
 	
+	boolean isFreezeRobot();
+
 	boolean isBall();
 	
 	boolean isSoccerRobot();
 
-    boolean isTeamRobot();
+	boolean isTeamRobot();
 
-    boolean isAdvancedRobot();
+	boolean isAdvancedRobot();
 
-    boolean isStandardRobot();
+	boolean isStandardRobot();
 
-    boolean isInteractiveRobot();
+	boolean isInteractiveRobot();
 
-    boolean isPaintRobot();
+	boolean isPaintRobot();
 
-    boolean isJuniorRobot();
+	boolean isJuniorRobot();
 
 	boolean isBotzillaBot();
 	

@@ -36,15 +36,15 @@ import robocode.robotinterfaces.*;
  */
 public class JavaHost implements IHost {
 	
-    public IRobotClassLoader createLoader(IRobotRepositoryItem robotRepositoryItem) {
-        return new RobotClassLoader(robotRepositoryItem.getClassPathURL(), robotRepositoryItem.getFullClassName());
-    }
+	public IRobotClassLoader createLoader(IRobotRepositoryItem robotRepositoryItem) {
+		return new RobotClassLoader(robotRepositoryItem.getClassPathURL(), robotRepositoryItem.getFullClassName());
+	}
 
     @Override
-    public IHostingRobotProxy createRobotProxy(IHostManager hostManager, RobotSpecification robotSpecification, IRobotStatics statics, IRobotPeer peer) {
-        IHostingRobotProxy robotProxy;
-        final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
-                robotSpecification);
+	public IHostingRobotProxy createRobotProxy(IHostManager hostManager, RobotSpecification robotSpecification, IRobotStatics statics, IRobotPeer peer) {
+		IHostingRobotProxy robotProxy;
+		final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
+				robotSpecification);
         
         if (specification.isSoccerRobot()) {
         	robotProxy = new SoccerRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
@@ -63,62 +63,63 @@ public class JavaHost implements IHost {
     }
 
     @Override
-    public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
-        IRobotClassLoader loader = null;
+	public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
+		IRobotClassLoader loader = null;
 
-        try {
-            loader = createLoader(robotRepositoryItem);
-            loader.loadRobotMainClass(true);
-            return loader.getReferencedClasses();
+		try {
+			loader = createLoader(robotRepositoryItem);
+			loader.loadRobotMainClass(true);
+			return loader.getReferencedClasses();
 
-        } catch (ClassNotFoundException e) {
-            Logger.logError(e);
-            return new String[0];
-        } finally {
-            if (loader != null) {
-                loader.cleanup();
-            }
-        }
-    }
+		} catch (ClassNotFoundException e) {
+			Logger.logError(e);
+			return new String[0];
+		} finally {
+			if (loader != null) {
+				loader.cleanup();
+			}
+		}
+	}
 
     @Override
-    public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
-        IRobotClassLoader loader = null;
+	public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
+		IRobotClassLoader loader = null;
 
-        try {
-            loader = createLoader(robotRepositoryItem);
-            Class<?> robotClass = loader.loadRobotMainClass(resolve);
+		try {
+			loader = createLoader(robotRepositoryItem);
+			Class<?> robotClass = loader.loadRobotMainClass(resolve);
 
-            if (robotClass == null || java.lang.reflect.Modifier.isAbstract(robotClass.getModifiers())) {
-                // this class is not robot
-                return RobotType.INVALID;
-            }
-            return checkInterfaces(robotClass, robotRepositoryItem);
+			if (robotClass == null || java.lang.reflect.Modifier.isAbstract(robotClass.getModifiers())) {
+				// this class is not robot
+				return RobotType.INVALID;
+			}
+			return checkInterfaces(robotClass, robotRepositoryItem);
 
-        } catch (Throwable t) {
-            if (message) {
-                logError("Got an error with " + robotRepositoryItem.getFullClassName() + ": " + t); // just message here
-                if (t.getMessage() != null && t.getMessage().contains("Bad version number in .class file")) {
-                    logError("Maybe you run robocode with Java 1.5 and robot was compiled for later Java version ?");
-                }
-            }
-            return RobotType.INVALID;
-        } finally {
-            if (loader != null) {
-                loader.cleanup();
-            }
-        }
-    }
+		} catch (Throwable t) {
+			if (message) {
+				logError("Got an error with " + robotRepositoryItem.getFullClassName() + ": " + t); // just message here
+				if (t.getMessage() != null && t.getMessage().contains("Bad version number in .class file")) {
+					logError("Maybe you run robocode with Java 1.5 and robot was compiled for later Java version ?");
+				}
+			}
+			return RobotType.INVALID;
+		} finally {
+			if (loader != null) {
+				loader.cleanup();
+			}
+		}
+	}
 
-    private RobotType checkInterfaces(Class<?> robotClass, IRobotRepositoryItem robotRepositoryItem) {
-        boolean isJuniorRobot = false;
-        boolean isStandardRobot = false;
-        boolean isInteractiveRobot = false;
-        boolean isPaintRobot = false;
-        boolean isAdvancedRobot = false;
-        boolean isTeamRobot = false;
-        boolean isDroid = false;
-        boolean isHouseRobot = false;
+	private RobotType checkInterfaces(Class<?> robotClass, IRobotRepositoryItem robotRepositoryItem) {
+		boolean isJuniorRobot = false;
+		boolean isStandardRobot = false;
+		boolean isInteractiveRobot = false;
+		boolean isPaintRobot = false;
+		boolean isAdvancedRobot = false;
+		boolean isTeamRobot = false;
+		boolean isDroid = false;
+		boolean isHouseRobot = false;
+		boolean isFreezeRobot = false;
         boolean isBall = false;
         boolean isSoccerRobot = false;
         boolean isBotzilla = false;
@@ -133,14 +134,22 @@ public class JavaHost implements IHost {
             isTeamRobot = true;
         }
 
-        if (IAdvancedRobot.class.isAssignableFrom(robotClass)) {
-            isAdvancedRobot = true;
-        }
+		if (ITeamRobot.class.isAssignableFrom(robotClass)) {
+			isTeamRobot = true;
+		}
 
-        if (IHouseRobot.class.isAssignableFrom(robotClass)) {
-            isHouseRobot = true;
-        }
-        
+		if (IAdvancedRobot.class.isAssignableFrom(robotClass)) {
+			isAdvancedRobot = true;
+		}
+		
+		if (IHouseRobot.class.isAssignableFrom(robotClass)) {
+			isHouseRobot = true;
+		}
+		
+		if (IFreezeRobot.class.isAssignableFrom(robotClass)) {
+			isFreezeRobot = true;
+		}
+
         if (IBall.class.isAssignableFrom(robotClass)) {
 			isBall = true;
 		}
@@ -175,12 +184,12 @@ public class JavaHost implements IHost {
                     || checkMethodOverride(robotClass, Robot.class, "onMouseMoved", MouseEvent.class)
                     || checkMethodOverride(robotClass, Robot.class, "onMouseDragged", MouseEvent.class)
                     || checkMethodOverride(robotClass, Robot.class, "onMouseWheelMoved", MouseWheelEvent.class)) {
-                isInteractiveRobot = true;
-            }
-        }
+				isInteractiveRobot = true;
+			}
+		}
 
-        if (IPaintRobot.class.isAssignableFrom(robotClass)) {
-            if (checkMethodOverride(robotClass, Robot.class, "getPaintEventListener")
+		if (IPaintRobot.class.isAssignableFrom(robotClass)) {
+			if (checkMethodOverride(robotClass, Robot.class, "getPaintEventListener")
                     || checkMethodOverride(robotClass, Robot.class, "onPaint", Graphics2D.class)) {
                 isPaintRobot = true;
             }
@@ -205,7 +214,7 @@ public class JavaHost implements IHost {
             }
         }
         return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-                             isTeamRobot, isDroid, isHouseRobot, isBall, isSoccerRobot, isBotzilla, isZombie, isDispenser);
+                             isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isSoccerRobot, isBotzilla, isZombie, isDispenser);
     	}
 
     private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {
@@ -223,5 +232,4 @@ public class JavaHost implements IHost {
         }
         return true;
     }
-
 }
