@@ -91,11 +91,7 @@ public final class HitItemEvent extends Event {
 	 */
 	@Override
 	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		IBasicEvents listener = robot.getBasicEventListener();
-
-        if (listener != null) {
-            listener.onHitItem(this);
-        }
+		
 	}
 	
 	/**

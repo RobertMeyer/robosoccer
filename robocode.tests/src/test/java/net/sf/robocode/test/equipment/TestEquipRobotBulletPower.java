@@ -6,6 +6,7 @@ import robocode.control.snapshot.IRobotSnapshot;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import net.sf.robocode.test.helpers.Assert;
 
+
 public class TestEquipRobotBulletPower extends RobocodeTestBed {
 	
 	@Test

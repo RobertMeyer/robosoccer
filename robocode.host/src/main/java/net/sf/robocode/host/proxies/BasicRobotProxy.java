@@ -72,6 +72,12 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         setSetCallCount(0);
         setGetCallCount(0);
     }
+    
+    @Override
+    public boolean checkSword() {
+		return super.checkSword();
+	}
+  
 
     @Override
     protected void initializeRound(ExecCommands commands, RobotStatus status) {

@@ -252,6 +252,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			new AtomicReference<Map<EquipmentSlot, EquipmentPart>>(
 					new HashMap<EquipmentSlot, EquipmentPart>()
 			);
+	
+	double fullEnergy;
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
 		super();
@@ -300,7 +302,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.statistics = new RobotStatistics(this, battle.getRobotsCount());
 
 		this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
+
 	}
+
 
 	public void println(String s) {
 		synchronized (proxyText) {
@@ -309,6 +313,22 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+/**
+ * check whether robot equip Sword
+ * by checking the equipment.get(Weapon)==Equipment.getPart("Sword")
+ */
+    public boolean checkSword()
+    {
+    	EquipmentPart part = Equipment.getPart("Sword");
+    	if(equipment.get().get(part.getSlot())==part)
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    }
 	public void print(Throwable ex) {
 		println(ex.toString());
 		StackTraceElement[] trace = ex.getStackTrace();
@@ -881,6 +901,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else {
 			energy = getStartingEnergy();
 		}
+		fullEnergy = getEnergy();
 		gunHeat = 3;
 
 		setHalt(false);
@@ -1281,6 +1302,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 		}
 	}
+	
+	private void checkDeFence(RobotPeer robot)
+	{
+		
+	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
@@ -1314,11 +1340,26 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				// Bounce back
 				double angle = atan2(otherRobot.x - x, otherRobot.y - y);
 
-				double movedx = velocity * sin(bodyHeading);
-				double movedy = velocity * cos(bodyHeading);
+                double movedx = velocity * sin(bodyHeading);
+                double movedy = velocity * cos(bodyHeading);
 
-				boolean atFault;
-				double bearing = normalRelativeAngle(angle - bodyHeading);
+                boolean atFault;
+                double bearing = normalRelativeAngle(angle - bodyHeading);
+                //count the bearing between attack angle and defense angle
+                double defenceBearing=normalRelativeAngle(angle - radarHeading);
+
+                if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
+                        || (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
+                	//if robot equip sword , damage counting will be different as bullet
+                	if(checkSword())
+                	{
+                		//check whether sword attack whether been defenced by other robot's radar
+                		if(defenceBearing> PI / 2)
+                		{
+                		otherRobot.setEnergy(energy - Rules.getBulletDamage(3), false);
+                		}
+                	}
+                }
 
 				if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
 						|| (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
@@ -2542,6 +2583,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	private boolean isSuperTank() {
 		return isSuperTank;
+	}
+	
+	public double getFullEnergy() {
+		return fullEnergy;
 	}
 }
 

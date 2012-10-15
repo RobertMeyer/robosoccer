@@ -211,7 +211,7 @@ public class ImageManager implements IImageManager {
         	try{
         	bodyImage = getImage(imagePath);
         	}catch(NullPointerException e) {
-        		gunImage = getImage("/net/sf/robocode/ui/images/body.png");
+        		bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
         	}
         }
         return bodyImage;
@@ -252,7 +252,7 @@ public class ImageManager implements IImageManager {
         	try{
         	radarImage = getImage(imagePath);
         	}catch(NullPointerException e) {
-        		gunImage = getImage("/net/sf/robocode/ui/images/radar.png");
+        		radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
         	}
         }
         return radarImage;
