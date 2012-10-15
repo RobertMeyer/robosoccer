@@ -43,11 +43,11 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import net.sf.robocode.battle.BallBot;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
@@ -76,6 +76,8 @@ import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.RenderableType;
+
+import java.io.*;
 
 
 /**
@@ -125,137 +127,141 @@ public class BattleView extends Canvas {
     // Hold current custom images to be rendered.
     private HashMap<String, RenderImage> customImage;
 
-    public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
-        this.properties = properties;
-        this.windowManager = (IWindowManagerExt) windowManager;
-        this.imageManager = imageManager;
+    //To store spike position
+    private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
+    private ArrayList<Integer> spikePosY = new ArrayList<Integer>();
+
+	public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
+		this.properties = properties;
+		this.windowManager = (IWindowManagerExt) windowManager;
+		this.imageManager = imageManager;
         this.battleManager = windowManager.getBattleManager();
         this.customImage = new HashMap<String, RenderImage>();
 
-        battleField = new BattleField(800, 600);
+		battleField = new BattleField(800, 600);
 
-        new BattleObserver(windowManager);
+		new BattleObserver(windowManager);
 
-        properties.addPropertyListener(new ISettingsListener() {
+		properties.addPropertyListener(new ISettingsListener() {
             @Override
-            public void settingChanged(String property) {
-                loadDisplayOptions();
-                if (property.startsWith("robocode.options.rendering")) {
-                    initialized = false;
-                    reinitialize();
-                }
-            }
-        });
+			public void settingChanged(String property) {
+				loadDisplayOptions();
+				if (property.startsWith("robocode.options.rendering")) {
+					initialized = false;
+					reinitialize();
+				}
+			}
+		});
 
-        addComponentListener(new ComponentAdapter() {
+		addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(ComponentEvent e) {
-                initialized = false;
-                reinitialize();
-            }
-        });
-    }
+			public void componentResized(ComponentEvent e) {
+				initialized = false;
+				reinitialize();
+			}
+		});
+	}
 
-    @Override
-    public void update(Graphics g) {
-        paint(g);
-    }
+	@Override
+	public void update(Graphics g) {
+		paint(g);
+	}
 
-    @Override
-    public void paint(Graphics g) {
-        final ITurnSnapshot lastSnapshot = windowManager.getLastSnapshot();
+	@Override
+	public void paint(Graphics g) {
+		final ITurnSnapshot lastSnapshot = windowManager.getLastSnapshot();
 
-        if (lastSnapshot != null) {
-            update(lastSnapshot);
-        } else {
-            paintRobocodeLogo((Graphics2D) g);
-        }
-    }
+		if (lastSnapshot != null) {
+			update(lastSnapshot);
+		} else {
+			paintRobocodeLogo((Graphics2D) g);
+		}
+	}
 
-    public BufferedImage getScreenshot() {
-        BufferedImage screenshot = getGraphicsConfiguration().createCompatibleImage(getWidth(), getHeight());
+	public BufferedImage getScreenshot() {
+		BufferedImage screenshot = getGraphicsConfiguration().createCompatibleImage(getWidth(), getHeight());
 
-        if (windowManager.getLastSnapshot() == null) {
-            paintRobocodeLogo((Graphics2D) screenshot.getGraphics());
-        } else {
-            drawBattle((Graphics2D) screenshot.getGraphics(), windowManager.getLastSnapshot());
-        }
-        return screenshot;
-    }
+		if (windowManager.getLastSnapshot() == null) {
+			paintRobocodeLogo((Graphics2D) screenshot.getGraphics());
+		} else {
+			drawBattle((Graphics2D) screenshot.getGraphics(), windowManager.getLastSnapshot());
+		}
+		return screenshot;
+	}
 
-    private void update(ITurnSnapshot snapshot) {
-        if (!initialized) {
-            initialize();
-        }
+	private void update(ITurnSnapshot snapshot) {
+		if (!initialized) {
+			initialize();
+		}
 
-        if (!isDisplayable() || (getWidth() <= 0) || (getHeight() <= 0)) {
-            return;
-        }
+		if (!isDisplayable() || (getWidth() <= 0) || (getHeight() <= 0)) {
+			return;
+		}
 
-        if (bufferStrategy != null) {
-            try {
-                Graphics2D g2 = (Graphics2D) bufferStrategy.getDrawGraphics();
+		if (bufferStrategy != null) {
+			try {
+				Graphics2D g2 = (Graphics2D) bufferStrategy.getDrawGraphics();
 
-                if (g2 != null) {
-                    do {
-                        try {
-                            g2.setRenderingHints(renderingHints);
+				if (g2 != null) {
+					do {
+						try {
+							g2.setRenderingHints(renderingHints);
 
-                            drawBattle(g2, snapshot);
-                        } finally {
-                            g2.dispose();
-                        }
-                        bufferStrategy.show();
-                    } while (bufferStrategy.contentsLost());
+							drawBattle(g2, snapshot);
+						} finally {
+							g2.dispose();
+						}
+						bufferStrategy.show();
+					} while (bufferStrategy.contentsLost());
 
-                    Toolkit.getDefaultToolkit().sync(); // Update like... now!
-                }
+					Toolkit.getDefaultToolkit().sync(); // Update like... now!
+				}
             } catch (NullPointerException e) {
             }
-        }
-    }
+		}
+	}
 
-    private void loadDisplayOptions() {
-        ISettingsManager props = properties;
+	private void loadDisplayOptions() {
+		ISettingsManager props = properties;
 
-        drawRobotName = props.getOptionsViewRobotNames();
-        drawRobotEnergy = props.getOptionsViewRobotEnergy();
-        drawScanArcs = props.getOptionsViewScanArcs();
-        drawGround = props.getOptionsViewGround();
-        drawExplosions = props.getOptionsViewExplosions();
-        drawExplosionDebris = props.getOptionsViewExplosionDebris();
+		drawRobotName = props.getOptionsViewRobotNames();
+		drawRobotEnergy = props.getOptionsViewRobotEnergy();
+		drawScanArcs = props.getOptionsViewScanArcs();
+		drawGround = props.getOptionsViewGround();
+		drawExplosions = props.getOptionsViewExplosions();
+		drawExplosionDebris = props.getOptionsViewExplosionDebris();
 
-        renderingHints = props.getRenderingHints();
-        numBuffers = props.getOptionsRenderingNoBuffers();
-    }
+		renderingHints = props.getRenderingHints();
+		numBuffers = props.getOptionsRenderingNoBuffers();
+	}
 
-    private void reinitialize() {
-        initialized = false;
-        bufferStrategy = null;
-    }
+	private void reinitialize() {
+		initialized = false;
+		bufferStrategy = null;
+	}
 
-    private void initialize() {
-        loadDisplayOptions();
+	private void initialize() {
+		loadDisplayOptions();
 
-        if (bufferStrategy == null) {
-            createBufferStrategy(numBuffers);
-            bufferStrategy = getBufferStrategy();
-        }
+		if (bufferStrategy == null) {
+			createBufferStrategy(numBuffers);
+			bufferStrategy = getBufferStrategy();
+		}
 
-        // If we are scaled...
-        if (getWidth() < battleField.getWidth() || getHeight() < battleField.getHeight()) {
-            // Use the smaller scale.
-            // Actually we don't need this, since
-            // the RobocodeFrame keeps our aspect ratio intact.
+		// If we are scaled...
+		if (getWidth() < battleField.getWidth() || getHeight() < battleField.getHeight()) {
+			// Use the smaller scale.
+			// Actually we don't need this, since
+			// the RobocodeFrame keeps our aspect ratio intact.
 
-            scale = min((double) getWidth() / battleField.getWidth(), (double) getHeight() / battleField.getHeight());
-        } else {
-            scale = 1;
-        }
+			scale = min((double) getWidth() / battleField.getWidth(), (double) getHeight() / battleField.getHeight());
+		} else {
+			scale = 1;
+		}
 
-        // Scale font
-        smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
-        smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
+		// Scale font
+		smallFont = new Font("Dialog", Font.PLAIN, (int) (10 / scale));
+		smallFontMetrics = bufferStrategy.getDrawGraphics().getFontMetrics();
 
         // Initialize ground image
         if (drawGround) {
@@ -266,6 +272,8 @@ public class BattleView extends Canvas {
         		// Botzilla
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
+        	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        		createSpikeGround();
         	} else {
         		createGroundImage();
         	}
@@ -274,14 +282,15 @@ public class BattleView extends Canvas {
         } else {
             groundImage = null;
         }
-        
+
         if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
         		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
         	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
         }
-        
+
         initialized = true;
     }
+
 
 	private void createSoccerField() {
 		final int NUM_HORZ_TILES = battleField.getWidth() / groundTileWidth + 1;
@@ -359,7 +368,49 @@ public class BattleView extends Canvas {
 		img.paint(groundGfx);
 	}
 
-    private void createGroundImage() {
+	private void createGroundImage() {
+		// Reinitialize ground tiles
+
+		Random r = new Random(); // independent
+
+		final int NUM_HORZ_TILES = battleField.getWidth() / groundTileWidth + 1;
+		final int NUM_VERT_TILES = battleField.getHeight() / groundTileHeight + 1;
+
+		if ((groundTiles == null) || (groundTiles.length != NUM_VERT_TILES) || (groundTiles[0].length != NUM_HORZ_TILES)) {
+
+			groundTiles = new int[NUM_VERT_TILES][NUM_HORZ_TILES];
+			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
+				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+					groundTiles[y][x] = (int) round(r.nextDouble() * 4);
+				}
+			}
+		}
+
+		// Create new buffered image with the ground pre-rendered
+
+		int groundWidth = (int) (battleField.getWidth() * scale);
+		int groundHeight = (int) (battleField.getHeight() * scale);
+
+		groundImage = new BufferedImage(groundWidth, groundHeight, BufferedImage.TYPE_INT_RGB);
+
+		Graphics2D groundGfx = (Graphics2D) groundImage.getGraphics();
+
+		groundGfx.setRenderingHints(renderingHints);
+
+		groundGfx.setTransform(AffineTransform.getScaleInstance(scale, scale));
+
+		for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
+			for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+				Image img = imageManager.getGroundTileImage(groundTiles[y][x]);
+
+                if (img != null) {
+                    groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                }
+            }
+        }
+    }
+
+    private void createSpikeGround(){
         // Reinitialize ground tiles
 
         Random r = new Random(); // independent
@@ -390,50 +441,84 @@ public class BattleView extends Canvas {
 
         groundGfx.setTransform(AffineTransform.getScaleInstance(scale, scale));
 
+        int count = 0;
+
+        spikePosX.clear();
+        spikePosY.clear();
+
         for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
             for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+
                 Image img = imageManager.getGroundTileImage(groundTiles[y][x]);
+                Image spikeImg = imageManager.getSpikeTileImage();
 
                 if (img != null) {
-                    groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+
+                	int randomNum = r.nextInt(100);
+
+                	if(randomNum > 95){
+                		if (count == 0){
+                			groundGfx.drawImage(spikeImg, x * groundTileWidth, y * groundTileHeight, null);
+
+                			count = count + 1;
+                			spikePosX.add(x * groundTileWidth);
+                			int opposite = Math.abs(y * groundTileHeight - battleField.getHeight());
+                			spikePosY.add(opposite);
+                			System.out.println("Tile X: "+x * groundTileWidth);
+                			System.out.println("Tile Y: "+opposite);
+                		} else {
+                			groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                		}
+                	} else {
+                		groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                	}
                 }
             }
         }
+
+        System.out.println(spikePosX);
+        System.out.println(spikePosY);
+
+        battleManager.saveSpikePosX(spikePosX);
+        battleManager.saveSpikePosY(spikePosY);
     }
 
-    private void drawBattle(Graphics2D g, ITurnSnapshot snapShot) {
-        // Save the graphics state
-        graphicsState.save(g);
+	private void drawBattle(Graphics2D g, ITurnSnapshot snapShot) {
+		// Save the graphics state
+		graphicsState.save(g);
 
-        // Reset transform
-        g.setTransform(new AffineTransform());
+		// Reset transform
+		g.setTransform(new AffineTransform());
 
-        // Reset clip
-        g.setClip(null);
+		// Reset clip
+		g.setClip(null);
 
-        // Clear canvas
-        g.setColor(CANVAS_BG_COLOR);
-        g.fillRect(0, 0, getWidth(), getHeight());
+		// Clear canvas
+		g.setColor(CANVAS_BG_COLOR);
+		g.fillRect(0, 0, getWidth(), getHeight());
 
-        // Calculate border space
-        double dx = (getWidth() - scale * battleField.getWidth()) / 2;
-        double dy = (getHeight() - scale * battleField.getHeight()) / 2;
+		// Calculate border space
+		double dx = (getWidth() - scale * battleField.getWidth()) / 2;
+		double dy = (getHeight() - scale * battleField.getHeight()) / 2;
 
-        // Scale and translate the graphics
-        AffineTransform at = AffineTransform.getTranslateInstance(dx, dy);
+		// Scale and translate the graphics
+		AffineTransform at = AffineTransform.getTranslateInstance(dx, dy);
 
-        at.concatenate(AffineTransform.getScaleInstance(scale, scale));
-        g.setTransform(at);
+		at.concatenate(AffineTransform.getScaleInstance(scale, scale));
+		g.setTransform(at);
 
-        // Set the clip rectangle
-        g.setClip(0, 0, battleField.getWidth(), battleField.getHeight());
+		// Set the clip rectangle
+		g.setClip(0, 0, battleField.getWidth(), battleField.getHeight());
+
+		// Draw ground
+		drawGround(g);
 
         // Draw ground
         drawGround(g);
 
-        if (snapShot != null) {
-            // Draw scan arcs
-            drawScanArcs(g, snapShot);
+		if (snapShot != null) {
+			// Draw scan arcs
+			drawScanArcs(g, snapShot);
 
             drawEffectAreas(g, snapShot);
 
@@ -447,12 +532,12 @@ public class BattleView extends Canvas {
             drawRobotPaint(g, snapShot);
         }
 
-        // Draw the border of the battlefield
-        drawBorder(g);
+		// Draw the border of the battlefield
+		drawBorder(g);
 
-        if (snapShot != null) {
-            // Draw all bullets
-            drawBullets(g, snapShot);
+		if (snapShot != null) {
+			// Draw all bullets
+			drawBullets(g, snapShot);
 
             // Draw all text
             drawText(g, snapShot);
@@ -461,38 +546,39 @@ public class BattleView extends Canvas {
             drawObstacles(g, snapShot);
         }
 
-        // Restore the graphics state
-        graphicsState.restore(g);
-    }
+		// Restore the graphics state
+		graphicsState.restore(g);
+	}
 
-    private void drawGround(Graphics2D g) {
-        if (!drawGround) {
-            // Ground should not be drawn
-            g.setColor(Color.BLACK);
-            g.fillRect(0, 0, battleField.getWidth(), battleField.getHeight());
-        } else {
-            // Create pre-rendered ground image if it is not available
-            if (groundImage == null) {
-                createGroundImage();
-            }
+	private void drawGround(Graphics2D g) {
+		if (!drawGround) {
+			// Ground should not be drawn
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, battleField.getWidth(), battleField.getHeight());
+		} else {
+			// Create pre-rendered ground image if it is not available
+			if (groundImage == null) {
+				createGroundImage();
+			}
 
-            // Draw the pre-rendered ground if it is available
-            if (groundImage != null) {
-                int groundWidth = (int) (battleField.getWidth() * scale) + 1;
-                int groundHeight = (int) (battleField.getHeight() * scale) + 1;
+			// Draw the pre-rendered ground if it is available
+			if (groundImage != null) {
+				int groundWidth = (int) (battleField.getWidth() * scale) + 1;
+				int groundHeight = (int) (battleField.getHeight() * scale) + 1;
 
-                int dx = (getWidth() - groundWidth) / 2;
-                int dy = (getHeight() - groundHeight) / 2;
+				int dx = (getWidth() - groundWidth) / 2;
+				int dy = (getHeight() - groundHeight) / 2;
 
                 final AffineTransform savedTx = g.getTransform();
 
                 g.setTransform(new AffineTransform());
                 g.drawImage(groundImage, dx, dy, groundWidth, groundHeight, null);
-
-                g.setTransform(savedTx);
-            }
-        }
-    }
+				g.setTransform(new AffineTransform());
+				g.drawImage(groundImage, dx, dy, groundWidth, groundHeight, null);
+				g.setTransform(savedTx);
+			}
+		}
+	}
 
     private void drawObstacles(Graphics2D g, ITurnSnapshot snapShot) {
     	for (IObstacleSnapshot obstacleSnapshot : snapShot.getObstacles()) {
@@ -504,28 +590,29 @@ public class BattleView extends Canvas {
     	}
     }
 
-    private void drawBorder(Graphics2D g) {
-        final Shape savedClip = g.getClip();
 
-        g.setClip(null);
+	private void drawBorder(Graphics2D g) {
+		final Shape savedClip = g.getClip();
 
-        g.setColor(Color.RED);
-        g.drawRect(-1, -1, battleField.getWidth() + 2, battleField.getHeight() + 2);
+		g.setClip(null);
 
-        g.setClip(savedClip);
-    }
+		g.setColor(Color.RED);
+		g.drawRect(-1, -1, battleField.getWidth() + 2, battleField.getHeight() + 2);
 
-    private void drawScanArcs(Graphics2D g, ITurnSnapshot snapShot) {
-        if (drawScanArcs) {
-            for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-                if (robotSnapshot.getState().isAlive()) {
-                    drawScanArc(g, robotSnapshot);
-                }
-            }
-        }
-    }
+		g.setClip(savedClip);
+	}
 
-    //TODO Update graphic display of item
+	private void drawScanArcs(Graphics2D g, ITurnSnapshot snapShot) {
+		if (drawScanArcs) {
+			for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
+				if (robotSnapshot.getState().isAlive()) {
+					drawScanArc(g, robotSnapshot);
+				}
+			}
+		}
+	}
+
+	//TODO Update graphic display of item
     private void drawItems(Graphics2D g, ITurnSnapshot snapShot) {
         double x, y;
         AffineTransform at;
@@ -627,26 +714,26 @@ public class BattleView extends Canvas {
 		return (img != null) ? img : null;
 	}
 
-    private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
-        double x, y;
-        AffineTransform at;
-        int battleFieldHeight = battleField.getHeight();
+	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
+		double x, y;
+		AffineTransform at;
+		int battleFieldHeight = battleField.getHeight();
 
-        if (drawGround && drawExplosionDebris) {
-            RenderImage explodeDebrise = imageManager.getExplosionDebriseRenderImage();
+		if (drawGround && drawExplosionDebris) {
+			RenderImage explodeDebrise = imageManager.getExplosionDebriseRenderImage();
 
-            for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
-                if (robotSnapshot.getState().isDead()) {
-                    x = robotSnapshot.getX();
-                    y = battleFieldHeight - robotSnapshot.getY();
+			for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
+				if (robotSnapshot.getState().isDead()) {
+					x = robotSnapshot.getX();
+					y = battleFieldHeight - robotSnapshot.getY();
 
-                    at = AffineTransform.getTranslateInstance(x, y);
+					at = AffineTransform.getTranslateInstance(x, y);
 
-                    explodeDebrise.setTransform(at);
-                    explodeDebrise.paint(g);
-                }
-            }
-        }
+					explodeDebrise.setTransform(at);
+					explodeDebrise.paint(g);
+				}
+			}
+		}
 
         for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
         	if (robotSnapshot.getName().equals("soccer.BallBot* (1)")) {
@@ -672,7 +759,7 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
-                
+
         	} else if ((robotSnapshot.getName().contains("dispenser")
         			|| robotSnapshot.getName().contains("Dispenser"))
         			&& robotSnapshot.getState().isAlive()) {
@@ -683,23 +770,24 @@ public class BattleView extends Canvas {
                 at.rotate(robotSnapshot.getBodyHeading());
 
                 RenderImage robotRenderImage = imageManager.getCustomImage("dispenserImage");
-                
+
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
-                
+
         	} else if (robotSnapshot.getState().isAlive()) {
-                x = robotSnapshot.getX();
-                y = battleFieldHeight - robotSnapshot.getY();
+				x = robotSnapshot.getX();
+				y = battleFieldHeight - robotSnapshot.getY();
 
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
-                
-             // sets the body image path to null
+
+                // sets the image paths to null
                 String bodyPath = null;
                 String weaponPath = null;
                 String radarPath = null;
-                
-                
+                double fullEnergy = robotSnapshot.getFullEnergy();
+                double currentEnergy = robotSnapshot.getEnergy();
+
                 // If a custom body part is present in the robots equipment
                 // then the body image path is changed to the custom one.
                 Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
@@ -707,7 +795,7 @@ public class BattleView extends Canvas {
                 	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
                 	bodyPath = part.getImagePath();
                 }
-                
+
                 if(partsMap.containsKey(EquipmentSlot.WEAPON)) {
                 	EquipmentPart part = partsMap.get(EquipmentSlot.WEAPON);
                 	weaponPath = part.getImagePath();
@@ -715,81 +803,71 @@ public class BattleView extends Canvas {
 
                 RenderImage robotRenderImage = imageManager.getColoredBodyRenderImage(robotSnapshot.getBodyColor(), bodyPath);
 
-                robotRenderImage.setTransform(at);
-                robotRenderImage.paint(g);
+				robotRenderImage.setTransform(at);
+				robotRenderImage.paint(g);
 
-                at = AffineTransform.getTranslateInstance(x, y);
-                at.rotate(robotSnapshot.getGunHeading());
+				if (!robotSnapshot.isFreezeRobot()) {
+					at = AffineTransform.getTranslateInstance(x, y);
+					at.rotate(robotSnapshot.getGunHeading());
 
-                RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor(), weaponPath);
+					RenderImage gunRenderImage = imageManager.getColoredGunRenderImage(robotSnapshot.getGunColor(), weaponPath);
 
-                gunRenderImage.setTransform(at);
-                gunRenderImage.paint(g);
+					gunRenderImage.setTransform(at);
+					gunRenderImage.paint(g);
+				}
 
-                if (!robotSnapshot.isDroid()) {
-                    at = AffineTransform.getTranslateInstance(x, y);
-                    at.rotate(robotSnapshot.getRadarHeading());
-                    
-                    if(partsMap.containsKey(EquipmentSlot.RADAR)) {
-                    	EquipmentPart part = partsMap.get(EquipmentSlot.RADAR);
-                    	radarPath = part.getImagePath();
-                    }
+				if (!robotSnapshot.isDroid()) {
+					at = AffineTransform.getTranslateInstance(x, y);
+					at.rotate(robotSnapshot.getRadarHeading());
 
-                    RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor(), radarPath);
+					RenderImage radarRenderImage = imageManager.getColoredRadarRenderImage(robotSnapshot.getRadarColor(), radarPath);
 
-                    radarRenderImage.setTransform(at);
-                    radarRenderImage.paint(g);
-                }
-            }
-        }
-    }
+					radarRenderImage.setTransform(at);
+					radarRenderImage.paint(g);
+				}
+			}
+		}
+	}
 
-    private void drawText(Graphics2D g, ITurnSnapshot snapShot) {
-        final Shape savedClip = g.getClip();
 
-	     g.setClip(null);
+	private void drawText(Graphics2D g, ITurnSnapshot snapShot) {
+		final Shape savedClip = g.getClip();
 
-        for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) { 
-        	if (robotSnapshot.getState().isDead()) {
-                continue;
-            }
-            int x = (int) robotSnapshot.getX();
-            int y = battleField.getHeight() - (int) robotSnapshot.getY();
-            if (battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode) {
-            	if (robotSnapshot.getName().contains("BallBot")) {
-            		
-            	} else {
-            	g.setColor(Color.white);
-                centerString(g, robotSnapshot.getVeryShortName(), x,
-                             y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
-            	}
-            } else {
-            if (drawRobotEnergy) {
-                g.setColor(Color.white);
-                int ll = (int) robotSnapshot.getEnergy();
-                int rl = (int) ((robotSnapshot.getEnergy() - ll + .001) * 10.0);
+		g.setClip(null);
 
-                if (rl == 10) {
-                    rl = 9;
-                }
-                String energyString = ll + "." + rl;
+		for (IRobotSnapshot robotSnapshot : snapShot.getRobots()) {
+			if (robotSnapshot.getState().isDead()) {
+				continue;
+			}
+			int x = (int) robotSnapshot.getX();
+			int y = battleField.getHeight() - (int) robotSnapshot.getY();
 
-                if (robotSnapshot.getEnergy() == 0 && robotSnapshot.getState().isAlive()) {
-                    energyString = "Disabled";
-                }
-                centerString(g, energyString, x, y - ROBOT_TEXT_Y_OFFSET - smallFontMetrics.getHeight() / 2, smallFont,
-                             smallFontMetrics);
-            }
-            if (drawRobotName) {
-                g.setColor(Color.white);
-                centerString(g, robotSnapshot.getVeryShortName(), x,
-                             y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
-            }
-            }
-        }
 
-        g.setClip(savedClip);
-    }
+			if (drawRobotEnergy) {
+				g.setColor(Color.white);
+				int ll = (int) robotSnapshot.getEnergy();
+				int rl = (int) ((robotSnapshot.getEnergy() - ll + .001) * 10.0);
+
+				if (rl == 10) {
+					rl = 9;
+				}
+				String energyString = ll + "." + rl;
+
+				if (robotSnapshot.getEnergy() == 0 && robotSnapshot.getState().isAlive()) {
+					energyString = "Disabled";
+				}
+				centerString(g, energyString, x, y - ROBOT_TEXT_Y_OFFSET - smallFontMetrics.getHeight() / 2, smallFont,
+						smallFontMetrics);
+			}
+			if (drawRobotName) {
+				g.setColor(Color.white);
+				centerString(g, robotSnapshot.getVeryShortName(), x,
+						y + ROBOT_TEXT_Y_OFFSET + smallFontMetrics.getHeight() / 2, smallFont, smallFontMetrics);
+			}
+		}
+
+		g.setClip(savedClip);
+	}
 
 
 	private void drawEffectAreas(Graphics2D g, ITurnSnapshot snapShot) {
@@ -814,207 +892,207 @@ public class BattleView extends Canvas {
 		}
 	}
 
-    private void drawRobotPaint(Graphics2D g, ITurnSnapshot turnSnapshot) {
+	private void drawRobotPaint(Graphics2D g, ITurnSnapshot turnSnapshot) {
 
-        int robotIndex = 0;
+		int robotIndex = 0;
 
-        for (IRobotSnapshot robotSnapshot : turnSnapshot.getRobots()) {
-            final Object graphicsCalls = ((RobotSnapshot) robotSnapshot).getGraphicsCalls();
+		for (IRobotSnapshot robotSnapshot : turnSnapshot.getRobots()) {
+			final Object graphicsCalls = ((RobotSnapshot) robotSnapshot).getGraphicsCalls();
 
-            if (graphicsCalls == null || !robotSnapshot.isPaintEnabled()) {
-                continue;
-            }
+			if (graphicsCalls == null || !robotSnapshot.isPaintEnabled()) {
+				continue;
+			}
 
-            // Save the graphics state
-            GraphicsState gfxState = new GraphicsState();
+			// Save the graphics state
+			GraphicsState gfxState = new GraphicsState();
 
-            gfxState.save(g);
+			gfxState.save(g);
 
-            g.setClip(null);
-            g.setComposite(AlphaComposite.SrcAtop);
+			g.setClip(null);
+			g.setComposite(AlphaComposite.SrcAtop);
 
-            IGraphicsProxy gfxProxy = getRobotGraphics(robotIndex);
+			IGraphicsProxy gfxProxy = getRobotGraphics(robotIndex);
 
-            if (robotSnapshot.isSGPaintEnabled()) {
-                gfxProxy.processTo(g, graphicsCalls);
-            } else {
-                mirroredGraphics.bind(g, battleField.getHeight());
-                gfxProxy.processTo(mirroredGraphics, graphicsCalls);
-                mirroredGraphics.release();
-            }
+			if (robotSnapshot.isSGPaintEnabled()) {
+				gfxProxy.processTo(g, graphicsCalls);
+			} else {
+				mirroredGraphics.bind(g, battleField.getHeight());
+				gfxProxy.processTo(mirroredGraphics, graphicsCalls);
+				mirroredGraphics.release();
+			}
 
-            // Restore the graphics state
-            gfxState.restore(g);
+			// Restore the graphics state
+			gfxState.restore(g);
 
-            robotIndex++;
-        }
-    }
+			robotIndex++;
+		}
+	}
 
-    private IGraphicsProxy getRobotGraphics(int robotIndex) {
-        if (robotGraphics[robotIndex] == null) {
-            robotGraphics[robotIndex] = new Graphics2DSerialized();
-            robotGraphics[robotIndex].setPaintingEnabled(true);
-        }
-        return robotGraphics[robotIndex];
-    }
+	private IGraphicsProxy getRobotGraphics(int robotIndex) {
+		if (robotGraphics[robotIndex] == null) {
+			robotGraphics[robotIndex] = new Graphics2DSerialized();
+			robotGraphics[robotIndex].setPaintingEnabled(true);
+		}
+		return robotGraphics[robotIndex];
+	}
 
-    private void drawBullets(Graphics2D g, ITurnSnapshot snapShot) {
-        final Shape savedClip = g.getClip();
+	private void drawBullets(Graphics2D g, ITurnSnapshot snapShot) {
+		final Shape savedClip = g.getClip();
 
-        g.setClip(null);
+		g.setClip(null);
 
-        double x, y;
+		double x, y;
 
-        for (IBulletSnapshot bulletSnapshot : snapShot.getBullets()) {
-            x = bulletSnapshot.getPaintX();
-            y = battleField.getHeight() - bulletSnapshot.getPaintY();
+		for (IBulletSnapshot bulletSnapshot : snapShot.getBullets()) {
+			x = bulletSnapshot.getPaintX();
+			y = battleField.getHeight() - bulletSnapshot.getPaintY();
 
-            AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+			AffineTransform at = AffineTransform.getTranslateInstance(x, y);
 
-            if (bulletSnapshot.getState().isActive()) {
+			if (bulletSnapshot.getState().isActive()) {
 
-                // radius = sqrt(x^2 / 0.1 * power), where x is the width of 1 pixel for a minimum 0.1 bullet
-                double scale = max(2 * sqrt(2.5 * bulletSnapshot.getPower()), 2 / this.scale);
+				// radius = sqrt(x^2 / 0.1 * power), where x is the width of 1 pixel for a minimum 0.1 bullet
+				double scale = max(2 * sqrt(2.5 * bulletSnapshot.getPower()), 2 / this.scale);
 
-                at.scale(scale, scale);
-                Area bulletArea = BULLET_AREA.createTransformedArea(at);
+				at.scale(scale, scale);
+				Area bulletArea = BULLET_AREA.createTransformedArea(at);
 
-                Color bulletColor;
+				Color bulletColor;
 
-                if (properties.getOptionsRenderingForceBulletColor()) {
-                    bulletColor = Color.WHITE;
-                } else {
-                    bulletColor = new Color(bulletSnapshot.getColor());
-                }
-                g.setColor(bulletColor);
-                g.fill(bulletArea);
+				if (properties.getOptionsRenderingForceBulletColor()) {
+					bulletColor = Color.WHITE;
+				} else {
+					bulletColor = new Color(bulletSnapshot.getColor());
+				}
+				g.setColor(bulletColor);
+				g.fill(bulletArea);
 
-            } else if (drawExplosions) {
-                if (!bulletSnapshot.isExplosion()) {
-                    double scale = sqrt(1000 * bulletSnapshot.getPower()) / 128;
+			} else if (drawExplosions) {
+				if (!bulletSnapshot.isExplosion()) {
+					double scale = sqrt(1000 * bulletSnapshot.getPower()) / 128;
 
-                    at.scale(scale, scale);
-                }
+					at.scale(scale, scale);
+				}
 
-                RenderImage explosionRenderImage = imageManager.getExplosionRenderImage(
-                        bulletSnapshot.getExplosionImageIndex(), bulletSnapshot.getFrame());
+				RenderImage explosionRenderImage = imageManager.getExplosionRenderImage(
+						bulletSnapshot.getExplosionImageIndex(), bulletSnapshot.getFrame());
 
-                explosionRenderImage.setTransform(at);
-                explosionRenderImage.paint(g);
-            }
-        }
-        g.setClip(savedClip);
-    }
+				explosionRenderImage.setTransform(at);
+				explosionRenderImage.paint(g);
+			}
+		}
+		g.setClip(savedClip);
+	}
 
-    private void centerString(Graphics2D g, String s, int x, int y, Font font, FontMetrics fm) {
-        g.setFont(font);
+	private void centerString(Graphics2D g, String s, int x, int y, Font font, FontMetrics fm) {
+		g.setFont(font);
 
-        int width = fm.stringWidth(s);
-        int height = fm.getHeight();
-        int descent = fm.getDescent();
+		int width = fm.stringWidth(s);
+		int height = fm.getHeight();
+		int descent = fm.getDescent();
 
-        double left = x - width / 2;
-        double top = y - height / 2;
+		double left = x - width / 2;
+		double top = y - height / 2;
 
-        double scaledViewWidth = getWidth() / scale;
-        double scaledViewHeight = getHeight() / scale;
+		double scaledViewWidth = getWidth() / scale;
+		double scaledViewHeight = getHeight() / scale;
 
-        double borderWidth = (scaledViewWidth - battleField.getWidth()) / 2;
-        double borderHeight = (scaledViewHeight - battleField.getHeight()) / 2;
+		double borderWidth = (scaledViewWidth - battleField.getWidth()) / 2;
+		double borderHeight = (scaledViewHeight - battleField.getHeight()) / 2;
 
-        if (left + width > scaledViewWidth) {
-            left = scaledViewWidth - width;
-        }
-        if (top + height > scaledViewHeight) {
-            top = scaledViewHeight - height;
-        }
-        if (left < -borderWidth) {
-            left = -borderWidth;
-        }
-        if (top < -borderHeight) {
-            top = -borderHeight;
-        }
-        g.drawString(s, (int) (left + 0.5), (int) (top + height - descent + 0.5));
-    }
+		if (left + width > scaledViewWidth) {
+			left = scaledViewWidth - width;
+		}
+		if (top + height > scaledViewHeight) {
+			top = scaledViewHeight - height;
+		}
+		if (left < -borderWidth) {
+			left = -borderWidth;
+		}
+		if (top < -borderHeight) {
+			top = -borderHeight;
+		}
+		g.drawString(s, (int) (left + 0.5), (int) (top + height - descent + 0.5));
+	}
 
-    private void drawScanArc(Graphics2D g, IRobotSnapshot robotSnapshot) {
-        Arc2D.Double scanArc = (Arc2D.Double) ((RobotSnapshot) robotSnapshot).getScanArc();
+	private void drawScanArc(Graphics2D g, IRobotSnapshot robotSnapshot) {
+		Arc2D.Double scanArc = (Arc2D.Double) ((RobotSnapshot) robotSnapshot).getScanArc();
 
-        if (scanArc == null) {
-            return;
-        }
+		if (scanArc == null) {
+			return;
+		}
 
-        final Composite savedComposite = g.getComposite();
+		final Composite savedComposite = g.getComposite();
 
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
 
-        scanArc.setAngleStart((360 - scanArc.getAngleStart() - scanArc.getAngleExtent()) % 360);
+		scanArc.setAngleStart((360 - scanArc.getAngleStart() - scanArc.getAngleExtent()) % 360);
         scanArc.y = battleField.getHeight() - robotSnapshot.getY() - robotSnapshot.getScanRadius();
 
-        int scanColor = robotSnapshot.getScanColor();
+		int scanColor = robotSnapshot.getScanColor();
 
-        g.setColor(new Color(scanColor, true));
+		g.setColor(new Color(scanColor, true));
 
-        if (abs(scanArc.getAngleExtent()) >= .5) {
-            g.fill(scanArc);
-        } else {
-            g.draw(scanArc);
-        }
+		if (abs(scanArc.getAngleExtent()) >= .5) {
+			g.fill(scanArc);
+		} else {
+			g.draw(scanArc);
+		}
 
-        g.setComposite(savedComposite);
-    }
+		g.setComposite(savedComposite);
+	}
 
-    private void paintRobocodeLogo(Graphics2D g) {
-        setBackground(Color.BLACK);
-        g.clearRect(0, 0, getWidth(), getHeight());
+	private void paintRobocodeLogo(Graphics2D g) {
+		setBackground(Color.BLACK);
+		g.clearRect(0, 0, getWidth(), getHeight());
 
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.transform(AffineTransform.getTranslateInstance((getWidth() - 320) / 2.0, (getHeight() - 46) / 2.0));
-        g.setColor(new Color(0, 0x40, 0));
-        g.fill(robocodeTextPath);
+		g.transform(AffineTransform.getTranslateInstance((getWidth() - 320) / 2.0, (getHeight() - 46) / 2.0));
+		g.setColor(new Color(0, 0x40, 0));
+		g.fill(robocodeTextPath);
 
-        Font font = new Font("Dialog", Font.BOLD, 14);
-        int width = g.getFontMetrics(font).stringWidth(ROBOCODE_SLOGAN);
+		Font font = new Font("Dialog", Font.BOLD, 14);
+		int width = g.getFontMetrics(font).stringWidth(ROBOCODE_SLOGAN);
 
-        g.setTransform(new AffineTransform());
-        g.setFont(font);
-        g.setColor(new Color(0, 0x50, 0));
-        g.drawString(ROBOCODE_SLOGAN, (float) ((getWidth() - width) / 2.0), (float) (getHeight() / 2.0 + 50));
-    }
+		g.setTransform(new AffineTransform());
+		g.setFont(font);
+		g.setColor(new Color(0, 0x50, 0));
+		g.drawString(ROBOCODE_SLOGAN, (float) ((getWidth() - width) / 2.0), (float) (getHeight() / 2.0 + 50));
+	}
 
-    private class BattleObserver extends BattleAdaptor {
+	private class BattleObserver extends BattleAdaptor {
 
-        public BattleObserver(IWindowManager windowManager) {
-            windowManager.addBattleListener(this);
-        }
+		public BattleObserver(IWindowManager windowManager) {
+			windowManager.addBattleListener(this);
+		}
+
+		@Override
+		public void onBattleStarted(BattleStartedEvent event) {
+			battleField = new BattleField(event.getBattleRules().getBattlefieldWidth(),
+					event.getBattleRules().getBattlefieldHeight());
+
+			initialized = false;
+			setVisible(true);
+
+			super.onBattleStarted(event);
+
+			robotGraphics = new IGraphicsProxy[event.getRobotsCount()];
+		}
+
+		@Override
+		public void onBattleFinished(BattleFinishedEvent event) {
+			super.onBattleFinished(event);
+			robotGraphics = null;
+		}
 
         @Override
-        public void onBattleStarted(BattleStartedEvent event) {
-            battleField = new BattleField(event.getBattleRules().getBattlefieldWidth(),
-                                          event.getBattleRules().getBattlefieldHeight());
-
-            initialized = false;
-            setVisible(true);
-
-            super.onBattleStarted(event);
-
-            robotGraphics = new IGraphicsProxy[event.getRobotsCount()];
-        }
-
-        @Override
-        public void onBattleFinished(BattleFinishedEvent event) {
-            super.onBattleFinished(event);
-            robotGraphics = null;
-        }
-
-        @Override
-        public void onTurnEnded(final TurnEndedEvent event) {
-            if (event.getTurnSnapshot() == null) {
-                repaint();
-            } else {
-                update(event.getTurnSnapshot());
-            }
-        }
-    }
+		public void onTurnEnded(final TurnEndedEvent event) {
+			if (event.getTurnSnapshot() == null) {
+				repaint();
+			} else {
+				update(event.getTurnSnapshot());
+			}
+		}
+	}
 }

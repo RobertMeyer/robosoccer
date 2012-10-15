@@ -10,49 +10,47 @@ import robocode.BattleRules;
 
 public class SlowMode extends ClassicMode {
 
-    private SlowModeRulesPanel rulesPanel;
+	private SlowModeRulesPanel rulesPanel;
 
-    public String toString() {
-        return "Slow Mode";
-    }
+	public String toString() {
+		return "Slow Mode";
+	}
 
-    public String getDescription() {
-        return "Robots move at half speed.";
-    }
+	public String getDescription() {
+		return "Robots move at half speed.";
+	}
 
-    public JPanel getRulesPanel() {
-        if (rulesPanel == null) {
-            rulesPanel = new SlowModeRulesPanel();
-        }
-        return rulesPanel;
-    }
+	public JPanel getRulesPanel(){
+		if(rulesPanel == null){
+			rulesPanel = new SlowModeRulesPanel();
+		}
+		return rulesPanel;
+	}
 
-    public Hashtable<String, Object> getRulesPanelValues() {
-        return rulesPanel.getValues();
-    }
+	public Hashtable<String, Object> getRulesPanelValues() {
+		return rulesPanel.getValues();
+	}
 
-    public double modifyVelocity(double velocityIncrement, BattleRules rules) {
-        return velocityIncrement * (double) Double.parseDouble((String) rules.getModeRules().get("speedModifier"));
-    }
+	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
+		return velocityIncrement * (double) Double.parseDouble((String) rules.getModeRules().get("speedModifier"));
+	}
 
-    @SuppressWarnings("serial")
-    private class SlowModeRulesPanel extends JPanel {
+	@SuppressWarnings("serial")
+	private class SlowModeRulesPanel extends JPanel {
+		private JTextField speedModifier;
+		public SlowModeRulesPanel() {
+			super();
 
-        private JTextField speedModifier;
+			add(new JLabel("Speed modifier:"), BorderLayout.NORTH);
 
-        public SlowModeRulesPanel() {
-            super();
+			speedModifier = new JTextField(5);
+			add(speedModifier);
+		}
 
-            add(new JLabel("Speed modifier:"), BorderLayout.NORTH);
-
-            speedModifier = new JTextField(5);
-            add(speedModifier);
-        }
-
-        public Hashtable<String, Object> getValues() {
-            Hashtable<String, Object> values = new Hashtable<String, Object>();
-            values.put("speedModifier", speedModifier.getText());
-            return values;
-        }
-    }
+		public Hashtable<String, Object> getValues() {
+			Hashtable<String, Object> values = new Hashtable<String, Object>();
+			values.put("speedModifier", speedModifier.getText());
+			return values;
+		}
+	}
 }

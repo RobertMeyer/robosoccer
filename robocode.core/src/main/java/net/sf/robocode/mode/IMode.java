@@ -93,4 +93,10 @@ public interface IMode {
 	public GuiOptions getGuiOptions();
 
 	public BattleResults[] getFinalResults();
+	
+	/**
+	 * For disabling the dialogue that says "You have only selected one robot"
+	 * @return
+	 */
+	public boolean allowsOneRobot();
 }

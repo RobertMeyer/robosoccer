@@ -128,6 +128,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import robocode.control.snapshot.RobotState;
+
 /**
  * The {@code Battle} class is used for controlling a battle.
  *
@@ -522,6 +524,10 @@ public final class Battle extends BaseBattle {
 
         updateRobots();
 
+        if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        	checkRobotHitSpike();
+        }
+
         handleDeadRobots();
         if (getBattleMode().respawnsOn()) {
             if (super.getTime() > getBattleMode().turnLimit()) {
@@ -535,6 +541,8 @@ public final class Battle extends BaseBattle {
         inactiveTurnCount++;
 
         computeActiveRobots();
+
+        killFreezeRobot();
 
         publishStatuses();
 
@@ -553,6 +561,19 @@ public final class Battle extends BaseBattle {
         wakeupRobots();
 
     }
+	//Method for killing the freeze robot if it one of the last two remaining robots
+	public void killFreezeRobot(){
+		//Checks if number of active robots == 2
+		if(activeRobots == 2){
+			//checks if one of the two remaining robots is a freezeRobot
+			for(int i = 0; i < robotList.size(); i++){
+				if(robotList.get(i).isFreezeRobot()){
+					//kills the freeze robot is it is one of the two remaining robots on the field
+					robotList.get(i).setState(RobotState.DEAD);
+				}
+			}
+		}
+	}
 
     @Override
     protected void shutdownTurn() {
@@ -659,63 +680,83 @@ public final class Battle extends BaseBattle {
         return results.toArray(new BattleResults[results.size()]);
     }
 
-    /**
-     * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
-     * so that a robot placed before another robot in the list will not gain any benefit when the game
-     * checks if a robot has won, is dead, etc.
-     * This method was introduced as two equal robots like sample.RamFire got different scores even
-     * though the code was exactly the same.
-     *
-     * @return a list of robot peers.
-     */
-    private List<RobotPeer> getRobotsAtRandom() {
-        List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(peers.getRobots());
+	/**
+	 * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
+	 * so that a robot placed before another robot in the list will not gain any benefit when the game
+	 * checks if a robot has won, is dead, etc.
+	 * This method was introduced as two equal robots like sample.RamFire got different scores even
+	 * though the code was exactly the same.
+	 *
+	 * @return a list of robot peers.
+	 */
+	private List<RobotPeer> getRobotsAtRandom() {
+		List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(peers.getRobots());
 
-        Collections.shuffle(shuffledList, RandomFactory.getRandom());
-        return shuffledList;
-    }
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
-    /**
-     * Returns a list of all bullets in random order. This method is used to gain fair play in Robocode.
-     *
-     * @return a list of bullet peers.
-     */
-    private List<BulletPeer> getBulletsAtRandom() {
-        List<BulletPeer> shuffledList = new ArrayList<BulletPeer>(bullets);
+	/**
+	 * Returns a list of all bullets in random order. This method is used to gain fair play in Robocode.
+	 *
+	 * @return a list of bullet peers.
+	 */
+	private List<BulletPeer> getBulletsAtRandom() {
+		List<BulletPeer> shuffledList = new ArrayList<BulletPeer>(bullets);
 
-        Collections.shuffle(shuffledList, RandomFactory.getRandom());
-        return shuffledList;
-    }
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
-    /**
-     * Returns a list of all death robots in random order. This method is used to gain fair play in Robocode.
-     *
-     * @return a list of robot peers.
-     */
-    private List<RobotPeer> getDeathRobotsAtRandom() {
-        List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(deathRobots);
+	/**
+	 * Returns a list of all death robots in random order. This method is used to gain fair play in Robocode.
+	 *
+	 * @return a list of robot peers.
+	 */
+	private List<RobotPeer> getDeathRobotsAtRandom() {
+		List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(deathRobots);
 
-        Collections.shuffle(shuffledList, RandomFactory.getRandom());
-        return shuffledList;
-    }
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
-    private void loadCommands() {
-        // this will load commands, including bullets from last turn
-        for (RobotPeer robotPeer : peers.getRobots()) {
-            robotPeer.performLoadCommands();
-        }
-    }
+	private void loadCommands() {
+		// this will load commands, including bullets from last turn
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			robotPeer.performLoadCommands();
+		}
+	}
 
-    private void updateBullets() {
-        for (BulletPeer bullet : getBulletsAtRandom()) {
-            bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList());
-            if (bullet.getState() == BulletState.INACTIVE) {
-                bullets.remove(bullet);
-            }
-        }
-    }
+	private void checkRobotHitSpike() {
+		int spikeXSize = battleManager.getSpikePosX().size();
+		int spikeYSize = battleManager.getSpikePosY().size();
+		for (int i= 0; i < robotList.size(); i++) {
+			for (int x=0; x < spikeXSize; x++){
+				if ((robotList.get(i).getX() < battleManager.getSpikePosX().get(x) + 64) && (robotList.get(i).getX() > battleManager.getSpikePosX().get(x))) {
+					System.out.println("Battle Manager X: "+battleManager.getSpikePosX().get(x) + " | Battle Manager Y: "+battleManager.getSpikePosY().get(x));
+					System.out.println("Robot X: "+robotList.get(i).getX() + " | Robot Y: "+robotList.get(i).getY());
+					for (int y=0; y < spikeYSize; y++){
+						if((robotList.get(i).getY() < battleManager.getSpikePosY().get(y)) && (robotList.get(i).getY() > battleManager.getSpikePosY().get(y) - 64)){
+							System.out.println("Battle Manager Y: "+battleManager.getSpikePosY().get(y));
+							System.out.println("Robot Y: "+robotList.get(i).getY());
+							robotList.get(i).kill();
+						}
+					}
+				}
+			}
+		}
+	}
 
-    private void updateRobots() {
+	private void updateBullets() {
+		for (BulletPeer bullet : getBulletsAtRandom()) {
+			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList());
+			if (bullet.getState() == BulletState.INACTIVE) {
+				bullets.remove(bullet);
+			}
+		}
+	}
+
+	private void updateRobots() {
         boolean zap = (inactiveTurnCount > battleRules.getInactivityTime());
 
         final double zapEnergy = isAborted() ? 5 : zap ? .1 : 0;
@@ -829,7 +870,7 @@ public final class Battle extends BaseBattle {
             // Publish death to live robots
             for (RobotPeer robotPeer : getRobotsAtRandom()) {
                 if (robotPeer.isAlive()) {
-                    robotPeer.addEvent(new RobotDeathEvent(robotPeer.getNameForEvent(deadRobot)));
+             x       robotPeer.addEvent(new RobotDeathEvent(robotPeer.getNameForEvent(deadRobot)));
 
                     if (robotPeer.getTeamPeer() == null || robotPeer.getTeamPeer() != deadRobot.getTeamPeer()) {
                         robotPeer.getRobotStatistics().scoreSurvival();
@@ -913,6 +954,117 @@ public final class Battle extends BaseBattle {
                 robotPeer.checkSkippedTurn();
             }
         }
+    }
+
+    /**
+     * Runs the death effect associated with deadRobot.
+     * Effects 1-3 are different sizes of explosions.
+     * Effects 4-6 are different effect areas.
+     * @param deadRobot The robot to enforce death effect from
+     */
+    private void deathEffect(RobotPeer deadRobot) {
+    	int finalX = 0;
+    	int finalY = 0;
+		int yOffset = bp.getBattlefieldHeight() % 64;
+
+		// distance and damage variables used for case 1, 2 and 3
+		int damage = -5;
+		int explosionDistance = 75;
+
+		if (deadRobot.getDeathEffect() > 3) {
+			// Round off to closest X and Y tiles
+			// Only applicable to case 4, 5 and 6
+			finalX = (int)deadRobot.getX()-(int)deadRobot.getX()%64;
+
+			finalY = (int)deadRobot.getY()-yOffset+64;
+			finalY = (finalY/64)*64;
+			finalY = finalY+yOffset;
+		}
+
+		switch(deadRobot.getDeathEffect()) {
+		case 1:
+			// Large explosion - small damage
+			explosionDistance *= 3;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 2:
+			// Medium explosion - medium damage
+			explosionDistance *= 2;
+			damage *= 2;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 3:
+			// Small explosion - large damage
+			damage *= 3;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 4:
+			// Effect area 1
+			EffectArea deathEffect1 = new EffectArea(finalX, finalY, 64, 64, 1);
+			effArea.add(deathEffect1);
+			break;
+		case 5:
+			// Effect area 2
+			EffectArea deathEffect2 = new EffectArea(finalX, finalY, 64, 64, 2);
+			effArea.add(deathEffect2);
+			break;
+		case 6:
+			// Effect area 3
+			EffectArea deathEffect3 = new EffectArea(finalX, finalY, 64, 64, 3);
+			effArea.add(deathEffect3);
+			break;
+		}
     }
 
     private int getActiveContestantCount(RobotPeer peer) {
