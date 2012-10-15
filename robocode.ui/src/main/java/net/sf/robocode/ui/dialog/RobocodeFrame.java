@@ -1068,6 +1068,7 @@ public class RobocodeFrame extends JFrame {
             		setEliminateHashTable  = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
             		eliminate = (String) setEliminateHashTable.get("eliminate");
             		
+            		//If elimination counter is 0, get user specified time.
             		if (eliminateCounter == 0) {
             			eliminateCounter = Integer.parseInt(eliminate);
             		}
