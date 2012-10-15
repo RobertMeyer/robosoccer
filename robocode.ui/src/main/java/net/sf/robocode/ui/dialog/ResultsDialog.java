@@ -20,6 +20,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import net.sf.robocode.battle.BattleResultsTableModel;
+import net.sf.robocode.mode.IMode;
 import net.sf.robocode.ui.IWindowManager;
 import robocode.BattleResults;
 
@@ -48,8 +49,20 @@ public class ResultsDialog extends BaseScoreDialog {
         addCancelByEscapeKey();
     }
 
-    public void setup(BattleResults[] results, int numRounds) {
-        tableModel = new BattleResultsTableModel(results, numRounds);
+    public void setup(BattleResults[] results, int numRounds, IMode battleMode) {
+    	/* BRANDONCW */
+    	/* Clear any data that was previously in the columns */
+    	if (battleMode.getCustomResultsTable() != null) {
+    		battleMode.getCustomResultsTable().clearColumns();
+    	}
+    	/* Set the mode specific data to add */
+    	battleMode.setCustomResultsTable();
+    	/* Store updated BattleResultsTableModel in the class */
+    	tableModel = battleMode.getCustomResultsTable();
+    	/* Add the data */
+    	tableModel.setResults(results);
+    	tableModel.setNumberOfRounds(numRounds);
+    	
         setTitle(((BattleResultsTableModel) getTableModel()).getTitle());
         setResultsData();
 

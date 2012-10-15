@@ -24,6 +24,8 @@ public interface IImageManager {
 	Image getGroundTileImage(int index);
 	
 	Image getFieldTileImage(int index);
+
+	Image getSpikeTileImage();
 	
 	RenderImage getCustomImage(String name);
 	

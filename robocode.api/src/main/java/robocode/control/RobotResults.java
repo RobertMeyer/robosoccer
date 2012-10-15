@@ -44,6 +44,7 @@ public class RobotResults extends BattleResults {
      * @param firsts			the number of rounds this robot placed first
      * @param seconds		   the number of rounds this robot placed second
      * @param thirds			the number of rounds this robot placed third
+     * @param flagScore			The amount of points scored by this robot by holding the flag
      */
     public RobotResults(
             RobotSpecification robot,

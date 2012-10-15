@@ -54,6 +54,7 @@
 package net.sf.robocode.battle;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -102,6 +103,10 @@ public class BattleManager implements IBattleManager {
     private int pauseCount = 0;
     public Boolean effectAreaOn = false;
     private final AtomicBoolean isManagedTPS = new AtomicBoolean(false);
+    
+    //To store the Spike position
+    private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
+    private ArrayList<Integer> spikePosY = new ArrayList<Integer>();
 
     public BattleManager(ISettingsManager properties, IRepositoryManager repositoryManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher battleEventDispatcher, IRecordManager recordManager) {
         this.properties = properties;
@@ -423,13 +428,23 @@ public class BattleManager implements IBattleManager {
         }
     }
     
-    //Eliminate all robots except the top health robot
+    public Battle getBattle() {
+    	return (Battle) battle;
+    }
+    
+	/**
+	 * Retrieve the list of all robots and do a comparison on the energy level of all the robots.
+	 * During the comparison, kill the robot with the lower energy level.
+	 * If both robot have the same energy level, randomly pick and kill one robot.
+	 * Only the top energy level robot will survive. 
+	 */
 	@Override
 	public void getTopRobot() {
 		List<RobotPeer> robotList = ((Battle) battle).getRobotList();
 		double currentRobotEnergy = 0;
 		double topRobotEnergy = 0;
 		int topRobotIndex = 0;
+		
 		for(int i=0; i < robotList.size(); i++){
 			if(i == 0){
 				topRobotEnergy = robotList.get(i).getEnergy();
@@ -458,7 +473,11 @@ public class BattleManager implements IBattleManager {
 		}
 	}
 	
-	//Eliminate the weakest robot
+	/**
+	 * Retrieve the list of all robots and do a comparison on the energy level of all the robots.
+	 * During the comparison, save the index of the robot with the lowest energy level.
+	 * After the comparison, kill the robot with the lowest energy level.
+	 */
 	@Override
 	public void eliminateWeakestRobot() {
 		List<RobotPeer> robotList = ((Battle) battle).getRobotList();
@@ -472,6 +491,35 @@ public class BattleManager implements IBattleManager {
 			}
 		}
 		robotList.get(lowestEnergyIndex).kill();
+	}
+	
+	/**
+	 * Save the position of all spikes for Spike mode
+	 */
+	@Override
+	public void saveSpikePos(ArrayList<Integer> spikeArrayPosX, ArrayList<Integer> spikeArrayPosY){
+		spikePosX = spikeArrayPosX;
+		spikePosY = spikeArrayPosY;
+	}
+
+	/**
+	 * Return the X-axis of all spikes for Spike mode
+	 * 
+	 * @return X-axis of all spikes
+	 */
+	@Override
+	public ArrayList<Integer> getSpikePosX(){
+		return spikePosX;
+	}
+	
+	/**
+	 * Return the Y-axis of all spikes for Spike mode
+	 * 
+	 * @return Y-axis of all spikes
+	 */
+	@Override
+	public ArrayList<Integer> getSpikePosY(){
+		return spikePosY;
 	}
 
     /**

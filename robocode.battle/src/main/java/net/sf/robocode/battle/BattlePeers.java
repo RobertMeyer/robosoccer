@@ -165,7 +165,6 @@ public class BattlePeers {
             Integer duplicate = robotDuplicates.get(i);
             // TODO Follow back from here to RobotPeer etc, to
             RobotPeer robotPeer = new RobotPeer(battle, hostManager, specification, duplicate, team, robotIndex);
-
             robots.add(robotPeer);
             if (team == null) {
                 contestants.add(robotPeer);
@@ -184,7 +183,10 @@ public class BattlePeers {
 	public Battle getBattle(){
 		return battle;
 	}
-
+	
+	public IHostManager getHostManager(){
+		return hostManager;
+	}
 
 	public void addRobot(RobotPeer peer) {
 		botzillaRobot = peer;

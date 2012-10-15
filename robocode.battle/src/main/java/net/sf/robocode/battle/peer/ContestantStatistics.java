@@ -38,6 +38,8 @@ public interface ContestantStatistics {
     double getTotalRammingDamageScore();
 
     double getTotalRammingKillBonus();
+    
+    double getTotalFlagScore();
 
     int getTotalFirsts();
 
@@ -58,8 +60,12 @@ public interface ContestantStatistics {
     double getCurrentRammingDamageScore();
 
     double getCurrentRammingKillBonus();
-
+    
+    double getCurrentFlagScore();
+    
     BattleResults getFinalResults();
 
     void setRank(int rank);
+
+	void incrementScore();
 }

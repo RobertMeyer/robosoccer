@@ -213,7 +213,15 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
-    @Override
+    public double getCurrentFlagScore() {
+    	double d = 0;
+
+        for (RobotPeer teammate : teamPeer) {
+            d += teammate.getRobotStatistics().getCurrentFlagScore();
+        }
+        return d;
+    }
+    
     public double getCurrentRammingKillBonus() {
         double d = 0;
 
@@ -230,4 +238,8 @@ public class TeamStatistics implements ContestantStatistics {
                                  getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFlagScore(), getTotalFirsts(), getTotalSeconds(),
                                  getTotalThirds());
     }
+
+	@Override
+	public void incrementScore() {	
+	}
 }

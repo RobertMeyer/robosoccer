@@ -28,6 +28,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.util.List;
 import javax.swing.*;
+
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.mode.*;
@@ -99,7 +100,14 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 				return;
 			}
 		}
-		if (robotSelectionPanel.getSelectedRobotsCount() == 1) {
+		
+		IMode selectedMode = getBattleModeTab().getSelectedMode();
+		if (selectedMode == null) {
+			selectedMode = new ClassicMode();
+		}
+		
+		if (robotSelectionPanel.getSelectedRobotsCount() == 1 && 
+				!selectedMode.allowsOneRobot()) {
 			if (JOptionPane
 					.showConfirmDialog(
 							this,
@@ -109,13 +117,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 				return;
 			}
 		}
-		IMode selectedMode = getBattleModeTab().getSelectedMode();
-		if (selectedMode == null) {
-			selectedMode = new ClassicMode();
-		}
 		
-		
-
 		battleProperties.setSelectedRobots(getRobotSelectionPanel()
 				.getSelectedRobotsAsString());
 		battleProperties.setBattlefieldWidth(getBattleFieldTab()
@@ -132,18 +134,31 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
 		// Display soccer mode team selection dialog
 		if (selectedMode instanceof SoccerMode) {
+			if(getRobotSelectionPanel().getSelectedRobots().size() < 2) {
+				JOptionPane.showMessageDialog(this, 
+						"You must select at least two robots " +
+						"for Soccer Mode.", "Invalid selection.", 
+						JOptionPane.WARNING_MESSAGE);
+			} else {
+				final SoccerTeamSelectDialog teamSelect = 
+					new SoccerTeamSelectDialog(window);
+				
+				teamSelect.setup(getRobotSelectionPanel().getRobotsList());
+				
+				if(teamSelect.checkReadyToBattle() == true) {
+					battleProperties.setSelectedRobots(
+							teamSelect.getSelectedRobotsAsString());
+				
+					dispose();
+					
+					battleManager.startNewBattle(battleProperties, false, false);
+				}
+			}
 			
-			final SoccerTeamSelectDialog teamSelect = new SoccerTeamSelectDialog(window);
-			teamSelect.setup(getRobotSelectionPanel().getRobotsList());
-			battleProperties.setSelectedRobots(teamSelect.getSelectedRobotsAsString());
-			
-			dispose();
-			
-			battleManager.startNewBattle(battleProperties, false, false);
 		} else {
 		
-			// Dispose this dialog before starting the battle due to pause/resume
-			// battle state
+			// Dispose this dialog before starting the battle due to 
+			// pause/resume battle state
 			dispose();
 	
 			// Start new battle after the dialog has been disposed and hence has
@@ -152,8 +167,15 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 	}
 
+	/**
+	 * get the input positions then build the been well formated position string 
+	 * when user restart a new battle , all robot's start off position will be
+	 * cleared
+	 * @return Position List.toString()
+	 */
 	private String SetRobotPositionString() {
 		StringBuilder setRobotPositionString = new StringBuilder();
+		//clear the position information from previous battle
 		if(battleProperties.getInitialPositions()!=null)
 		{
 			battleProperties.setInitialPositionToNull();

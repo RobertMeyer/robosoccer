@@ -34,13 +34,14 @@ import net.sf.robocode.battle.IBattleManager;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.io.FileUtil;
-import net.sf.robocode.mode.SoccerMode;
+import net.sf.robocode.mode.IMode;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.battle.AwtBattleAdaptor;
 import net.sf.robocode.ui.dialog.*;
 import net.sf.robocode.ui.editor.IRobocodeEditor;
 import net.sf.robocode.ui.packager.RobotPackager;
+import net.sf.robocode.ui.trackeditor.EditorFrame;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.events.BattleCompletedEvent;
 import robocode.control.events.IBattleListener;
@@ -317,12 +318,17 @@ public class WindowManager implements IWindowManagerExt {
 
     @Override
     public void showResultsDialog(BattleCompletedEvent event) {
-    	if(battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowResults()) {
-    		final ResultsDialog dialog = Container.getComponent(ResultsDialog.class);
-
-    		dialog.setup(event.getSortedResults(), event.getBattleRules().getNumRounds());
-    		packCenterShow(dialog, true);
+    	IMode battleMode = battleManager.getBattleProperties().getBattleMode();
+    	ResultsDialog dialog = null;
+    	if (battleMode.toString().equals("Soccer Mode")) {
+    		 dialog = Container.getComponent(ResultsDialog.class);
+    		dialog.setup(battleMode.getFinalResults(), event.getBattleRules().getNumRounds(), battleMode);
     	}
+    	else if(battleMode.getGuiOptions().getShowResults()) {
+    		dialog = Container.getComponent(ResultsDialog.class);
+    		dialog.setup(event.getSortedResults(), event.getBattleRules().getNumRounds(), battleMode);
+    	}
+    	packCenterShow(dialog, true);
     }
 
     @Override
@@ -363,6 +369,17 @@ public class WindowManager implements IWindowManagerExt {
             WindowUtil.packCenterShow(editor);
         } else {
             editor.setVisible(true);
+        }
+    }
+    
+    @Override
+    public void showTrackEditor() {
+        JFrame trackEditor = new EditorFrame();
+
+        if (!trackEditor.isVisible()) {
+            WindowUtil.packCenterShow(trackEditor);
+        } else {
+        	trackEditor.setVisible(true);
         }
     }
 

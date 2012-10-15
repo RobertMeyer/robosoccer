@@ -1,7 +1,6 @@
 package soccer;
 
 import robocode.*;
-import robocode.control.events.BattleAdaptor;
 import robocode.util.Utils;
 
 public class BallBot extends Ball {

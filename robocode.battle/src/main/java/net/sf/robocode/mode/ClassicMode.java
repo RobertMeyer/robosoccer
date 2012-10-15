@@ -7,7 +7,9 @@ import java.util.Hashtable;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
+import robocode.BattleResults;
 import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -31,6 +33,12 @@ import robocode.control.RobotSpecification;
 public class ClassicMode implements IMode {
 
 	protected GuiOptions uiOptions;
+	/* Results table */
+	protected BattleResultsTableModel resultsTable;
+    /* Overall Score variables */
+	protected RobotPeer rPeer;
+	protected int numRobots;
+	protected RobotStatistics robotStatistics;
 
 	/**
 	 * {@inheritDoc}
@@ -174,8 +182,9 @@ public class ClassicMode implements IMode {
 	 * the starting coordinates and heading for each robot.
 	 */
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, Battle battle, int robotsCount) {
+                                              BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
+        this.numRobots = robotsCount;
 
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
@@ -270,7 +279,7 @@ public class ClassicMode implements IMode {
 	 * @return true/false if a ricochet should occur
 	 */
 	public boolean shouldRicochet(double power, double minBulletPower,
-			double ricochetValue) {
+                                  double ricochetValue) {
 		return false;
 	}
 
@@ -280,10 +289,10 @@ public class ClassicMode implements IMode {
 	 * @return ricochet value as provided by user or 1 if value provided < 1
 	 */
 	public double modifyRicochet(BattleRules rules) {
-			return 1;
-		}
+        return 1;
+    }
 
-	 /**
+    /**
      * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
      * so that a robot placed before another robot in the list will not gain any benefit when the game
      * checks if a robot has won, is dead, etc.
@@ -305,13 +314,8 @@ public class ClassicMode implements IMode {
 
 	}
 
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub
-	}
-
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			IRepositoryManager repositoryManager) {
+                            IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
 	}
 
@@ -330,5 +334,92 @@ public class ClassicMode implements IMode {
 	 */
 	public GuiOptions getGuiOptions() {
 		return uiOptions;
+	}
+
+	/**
+	 * Called after the death of a robot that is about to respawn
+	 */
+	public void onRespawnDeath(RobotPeer robot) {
+
+	}
+
+	@Override
+	public BattleResults[] getFinalResults() {
+		return null;
+	}
+
+	public void addRobots(int currentTurn, BattlePeers peers){
+		// do nothing
+	}
+
+	public double modifyVision(double standard) {
+		return standard;
+	}
+
+	public double modifyVision(double standard, BattleRules rules)
+	{
+		return modifyVision(standard);
+	}
+
+	/**
+	 * Get the customised BattleResultsTableModel
+	 * @return Customised BattleResultsTableModel
+	 */
+	@Override
+	public BattleResultsTableModel getCustomResultsTable() {
+		if (resultsTable == null) {
+			this.setCustomResultsTable();
+		}
+
+		return resultsTable;
+	}
+
+	/**
+	 * Setup a default BattleResultsTableModel
+	 */
+	public void setCustomResultsTable() {
+		if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+
+		/* Set it to show the default scores */
+		resultsTable.showOverallRank(true);
+		resultsTable.showRobotName(true);
+		resultsTable.showTotalScore(true);
+		resultsTable.showSurvival(true);
+		resultsTable.showSurvivalBonus(true);
+		resultsTable.showBulletDamage(true);
+		resultsTable.showBulletBonus(true);
+		resultsTable.showRamDamage(true);
+		resultsTable.showRamBonus(true);
+		resultsTable.showFirsts(true);
+		resultsTable.showSeconds(true);
+		resultsTable.showThirds(true);
+	}
+
+    /**
+	 * Setup so the default overall score is affected by all scores
+	 * @param score
+	 * @return HashMap containing the scores
+	 */
+	public Double getCustomOverallScore(RobotStatistics score) {
+            /*
+		Double scores = 0.0;
+		scores += scores.showBulletDamageScore();
+		scores += scores.showBulletKillBonus();
+		scores += scores.showRammingDamageScore();
+		scores += scores.showRammingKillBonus();
+		scores += scores.showBulletKillBonus();
+                scores += scores.showSurvivalScore();
+		scores += scores.showLastSurvivorBonus(); */
+          return   score.getTotalSurvivalScore() + score.getTotalLastSurvivorBonus()
+                    + score.getTotalBulletDamageScore() + score.getTotalBulletKillBonus() + score.getTotalRammingDamageScore()
+                    + score.getTotalRammingKillBonus();
+		//return score;
+	}
+
+	@Override
+	public boolean allowsOneRobot() {
+		return false;
 	}
 }
