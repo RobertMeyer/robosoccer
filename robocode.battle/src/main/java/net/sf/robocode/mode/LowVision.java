@@ -23,7 +23,7 @@ public class LowVision extends ClassicMode{
 	private LowVisionRulesPanel rulesPanel;
 	
 	private final String title = "Low Vision Mode";
-    private final String description = "This mode will reduce the vision of the Robots by a user specified amount.";
+    private final String description = "Modify all robots' vision. (0 = blind, 100 = standard vision)";
 
     public String toString() {
         return title;
@@ -78,13 +78,13 @@ public class LowVision extends ClassicMode{
 		public LowVisionRulesPanel() {
 			super();
 			
-			add(new JLabel("Vision modifier in percentage:"), BorderLayout.NORTH);
+			add(new JLabel("Vision:"), BorderLayout.NORTH);
 			
 			VisionModifier = new JTextField(5);
 			VisionModifier.setText("100");
 			add(VisionModifier);
 			
-			add(new JLabel("100 is standard"));
+			add(new JLabel("%"));
 		}
 		
 		public Hashtable<String, Object> getValues() {
