@@ -19,6 +19,7 @@ public class ZombieMode extends ClassicMode {
             + "a swarm of zombie enemies. Survive as long as you can!";
     
     final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
+    private BattlePeers peers;
 
     /**
      * {@inheritDoc}
@@ -37,6 +38,9 @@ public class ZombieMode extends ClassicMode {
     }
     
     public void addRobots(int currentTurn, BattlePeers peers){
+    	if (peers == null){
+    		this.peers = peers;
+    	}
     	if(currentTurn % 50 == 0) {
 	    	RobotSpecification[] specs = repository.loadSelectedRobots("sampleex.NormalZombie");
 	    	
@@ -56,5 +60,24 @@ public class ZombieMode extends ClassicMode {
 	@Override
 	public boolean allowsOneRobot() {
 		return true;
+	}
+	
+	@Override
+	public boolean isRoundOver(int endTimer, int time) {
+		boolean roundOver = false;
+		if (peers != null){
+			roundOver = true;
+			for (RobotPeer robotPeer : peers.getRobots()) {
+				if (!robotPeer.isZombie()){
+					roundOver = false;
+				}
+			}
+		}
+		if (roundOver) {
+			for (RobotPeer robotPeer : peers.getRobots()) {
+				robotPeer.kill();
+			}
+		}
+		return endTimer > 5*time;
 	}
 }

@@ -2588,5 +2588,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public double getFullEnergy() {
 		return fullEnergy;
 	}
+
+
+	public boolean isZombie() {
+		return getName() == "sampleex.NormalZombie";
+	}
 }
 
