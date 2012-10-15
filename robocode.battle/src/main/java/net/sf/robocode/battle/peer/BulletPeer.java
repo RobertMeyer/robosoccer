@@ -205,8 +205,10 @@ public class BulletPeer {
 				if (otherRobot.getEnergy() <= 0) {
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
+						
 						FreezeRobotDeath massFreeze = new FreezeRobotDeath(otherRobot, owner);
 						massFreeze.freezeEverything(robots);
+						
 						if (owner.battle.getBattleMode().respawnsOn()) {
                     		otherRobot.respawn(robots);
                     	}

@@ -83,6 +83,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
@@ -880,7 +881,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 500;
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
-			attributes.get().put(RobotAttribute.SPEED, 0.20);
+			attributes.get().put(RobotAttribute.SPEED, 0.40);
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1374,6 +1375,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     if (otherRobot.energy == 0) {
                         if (otherRobot.isAlive()) {
                             otherRobot.kill();
+                            
+                            FreezeRobotDeath massFreeze = new FreezeRobotDeath(otherRobot, this);
+    						massFreeze.freezeEverything(robots);
+    						
                             if (battle.getBattleMode().respawnsOn()) {
                             	otherRobot.respawn(robots);
                             }
