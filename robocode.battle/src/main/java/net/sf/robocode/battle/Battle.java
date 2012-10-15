@@ -523,6 +523,7 @@ public class Battle extends BaseBattle {
 
         updateRobots();
         
+        //Check for Spike mode
         if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
         	checkRobotHitSpike();
         }
@@ -725,18 +726,20 @@ public class Battle extends BaseBattle {
 		}
 	}
 	
+	/**
+	 * Check the whether robot is on top the spike.
+	 * If robot is on top of the spike, kill it instantly.
+	 * If not, do nothing.
+	 */
 	private void checkRobotHitSpike() {
 		int spikeXSize = battleManager.getSpikePosX().size();
 		int spikeYSize = battleManager.getSpikePosY().size();
+		
 		for (int i= 0; i < robotList.size(); i++) {
 			for (int x=0; x < spikeXSize; x++){
 				if ((robotList.get(i).getX() < battleManager.getSpikePosX().get(x) + 64) && (robotList.get(i).getX() > battleManager.getSpikePosX().get(x))) {
-					System.out.println("Battle Manager X: "+battleManager.getSpikePosX().get(x) + " | Battle Manager Y: "+battleManager.getSpikePosY().get(x));
-					System.out.println("Robot X: "+robotList.get(i).getX() + " | Robot Y: "+robotList.get(i).getY());
 					for (int y=0; y < spikeYSize; y++){
 						if((robotList.get(i).getY() < battleManager.getSpikePosY().get(y)) && (robotList.get(i).getY() > battleManager.getSpikePosY().get(y) - 64)){
-							System.out.println("Battle Manager Y: "+battleManager.getSpikePosY().get(y));
-							System.out.println("Robot Y: "+robotList.get(i).getY());
 							robotList.get(i).kill();
 						}
 					}
