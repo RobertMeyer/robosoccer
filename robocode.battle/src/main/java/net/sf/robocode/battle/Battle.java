@@ -196,7 +196,9 @@ public final class Battle extends BaseBattle {
 	// Objects in the battle
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
-	//List of teleporters in the arena
+	// Object to keep status of whether teleporters are enabled or not 
+	private TeleporterEnabler teleporterEnabler = new TeleporterEnabler();
+	// List of teleporters in the arena
 	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private BattlePeers peers;
 
@@ -478,6 +480,7 @@ public final class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.startRound(waitMillis, waitNanos);
         }
+        
         createTeleporters(); /*COMMENT THIS OUT BEFORE MERGE*/
         Logger.logMessage(""); // puts in a new-line in the log message
 
@@ -783,8 +786,9 @@ public final class Battle extends BaseBattle {
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
-        	//spawn blackhole on dead robot is there was not one there already
-			if (!deadRobot.collidedWithBlackHole()) {
+        	//spawn blackhole on dead robot is there was not one there already and
+        	//black holes are enabled.
+			if (teleporterEnabler.isBlackholesEnabled() && !deadRobot.collidedWithBlackHole()) {
 				double y2 = -2;
 				double x2 = -2;
 				double x1 = deadRobot.getX();
@@ -1020,6 +1024,10 @@ public final class Battle extends BaseBattle {
     }
 
 	private void createTeleporters(){
+		//do nothing if teleporters are not enabled
+		if (!teleporterEnabler.isTeleportersEnabled())
+			return;
+		
 		//randomise some x and y co-ordinates that are away from the walls by 5
 		double x1 = Math.random()*(width-80)+40;
 		double x2 = Math.random()*(width-80)+40;
