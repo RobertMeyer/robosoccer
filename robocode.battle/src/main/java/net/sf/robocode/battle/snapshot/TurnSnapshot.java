@@ -20,6 +20,7 @@ import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.TeleporterPeer;
 import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.XmlReader;
@@ -59,6 +60,9 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	/** Current round in the battle */
 	private int round;
 
+	/*List of snapshots for teleporters on the current battefield*/
+	private List<ITeleporterSnapshot> teleports;
+	
 	/** Current turn in the battle round */
 	private int turn;
     /** Current TPS (turns per second) */
@@ -78,14 +82,15 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
      * @param readoutText {@code true} if the output text from the robots must be included in the snapshot;
      *                    {@code false} otherwise.
      */
-    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<IRenderable> customObjects, List<ItemDrop> battleItems, List<ObstaclePeer> battleObstacle, boolean readoutText) {
+    public TurnSnapshot(Battle battle, List<RobotPeer> battleRobots, List<BulletPeer> battleBullets, List<EffectArea> effectAreas, List<IRenderable> customObjects, List<ItemDrop> battleItems, List<ObstaclePeer> battleObstacle, List<TeleporterPeer> battleTeleporters, boolean readoutText) {
         robots = new ArrayList<IRobotSnapshot>();
         bullets = new ArrayList<IBulletSnapshot>();
         items = new ArrayList<IItemSnapshot>();
         obstacles = new ArrayList<IObstacleSnapshot>();
 		effArea = new ArrayList<IEffectAreaSnapshot>();
 		customObj = new ArrayList<IRenderableSnapshot>();
-
+		teleports = new ArrayList<ITeleporterSnapshot>();
+		
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
 		}
@@ -94,6 +99,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 			bullets.add(new BulletSnapshot(bulletPeer));
 		}
 
+		for (TeleporterPeer teleporterPeer : battleTeleporters) {
+			teleports.add(new TeleporterSnapshot(teleporterPeer));
+		}
+		
 		/*--ItemController--*/
 		for (ItemDrop item : battleItems) {
 			items.add(new ItemSnapshot(item));
@@ -362,6 +371,10 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 				return snapshot;
 			}
 		});
+	}
+
+	public ITeleporterSnapshot[] getTeleporters() {
+		return teleports.toArray(new ITeleporterSnapshot[teleports.size()]);
 	}
 
 

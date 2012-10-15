@@ -9,16 +9,12 @@ import net.sf.robocode.battle.item.ItemDrop;
 
 import org.junit.*;
 
-import static org.mockito.Mockito.*;
-
-import robocode.BattleRules;
-
 public class ClassicModeTest {
 	
 	private static int TURN_LIMIT = 9000;
 	private final static int TURNS_DISPLAYED_AFTER_ENDING = 30;
 	
-	ClassicMode cm;
+	private ClassicMode cm;
 	
 	@Before
 	public void setup() {
@@ -27,12 +23,12 @@ public class ClassicModeTest {
 	
 	@Test
 	public void testToString() {
-		assertEquals("Incorrect String Representation", "Classic Mode", cm.toString());
+		assertTrue(toStringIsString(cm, "Classic Mode"));
 	}
 	
 	@Test
 	public void testDescription() {
-		assertEquals("Incorrect Description", "Original robocode mode.", cm.getDescription());
+		assertTrue(descriptionIsString(cm, "Original robocode mode."));
 	}
 	
 	@Test
@@ -89,5 +85,19 @@ public class ClassicModeTest {
 	public void testIsRoundOver() {
 		int endTimer = TURNS_DISPLAYED_AFTER_ENDING * 5 + 1, time = TURNS_DISPLAYED_AFTER_ENDING;
 		assertTrue("For current time "+endTimer+" and end time "+ time +" expected true.", cm.isRoundOver(endTimer, time));
+	}
+	
+	public boolean toStringIsString(ClassicMode cm, String s) {
+		if (cm.toString().equals(s)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean descriptionIsString(ClassicMode cm, String s) {
+		if (cm.getDescription().equals(s)) {
+			return true;
+		}
+		return false;
 	}
 }

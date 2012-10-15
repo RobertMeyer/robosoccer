@@ -3,7 +3,6 @@ package net.sf.robocode.ui.battleview;
 import java.awt.RenderingHints;
 
 import net.sf.robocode.ui.IImageManager;
-import net.sf.robocode.ui.ImageManager;
 
 public interface ICustomBattleViewEvent {
 	double scale = 1.0;
