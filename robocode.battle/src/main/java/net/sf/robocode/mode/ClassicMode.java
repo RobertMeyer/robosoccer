@@ -7,7 +7,9 @@ import java.util.Hashtable;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IRenderable;
+import robocode.BattleResults;
 import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -31,6 +33,8 @@ import robocode.control.RobotSpecification;
 public class ClassicMode implements IMode {
 
 	protected GuiOptions uiOptions;
+	/* Results table */
+	protected BattleResultsTableModel resultsTable;
 
 	/**
 	 * {@inheritDoc}
@@ -304,12 +308,7 @@ public class ClassicMode implements IMode {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub
-	}
-
+	
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
@@ -330,5 +329,66 @@ public class ClassicMode implements IMode {
 	 */
 	public GuiOptions getGuiOptions() {
 		return uiOptions;
+	}
+	
+	/**
+	 * Called after the death of a robot that is about to respawn
+	 */
+	public void onRespawnDeath(RobotPeer robot) {
+		
+	}
+
+	@Override
+	public BattleResults[] getFinalResults() {
+		return null;
+	}
+	
+	public void addRobots(int currentTurn, BattlePeers peers){
+		// do nothing
+	}
+	
+	public double modifyVision(double standard) {
+		return standard;
+	}
+	
+	public double modifyVision(double standard, BattleRules rules)
+	{
+		return modifyVision(standard);
+	}
+
+	/**
+	 * Get the customised BattleResultsTableModel
+	 * @return Customised BattleResultsTableModel
+	 */
+	@Override
+	public BattleResultsTableModel getCustomResultsTable() {
+		if (resultsTable == null) {
+			this.setCustomResultsTable();
+		}
+		
+		return resultsTable;
+	}
+	
+	/**
+	 * Setup a default BattleResultsTableModel
+	 */
+	public void setCustomResultsTable() {
+		if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+		
+		/* Set it to show the default scores */
+		resultsTable.showOverallRank(true);
+		resultsTable.showRobotName(true);
+		resultsTable.showTotalScore(true);
+		resultsTable.showSurvival(true);
+		resultsTable.showSurvivalBonus(true);
+		resultsTable.showBulletDamage(true);
+		resultsTable.showBulletBonus(true);
+		resultsTable.showRamDamage(true);
+		resultsTable.showRamBonus(true);
+		resultsTable.showFirsts(true);
+		resultsTable.showSeconds(true);
+		resultsTable.showThirds(true);
 	}
 }

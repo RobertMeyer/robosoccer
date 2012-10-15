@@ -1,11 +1,8 @@
 package net.sf.robocode.battle.peer;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.min;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
-import robocode.Rules;
 import robocode.control.RobotSpecification;
 import static robocode.util.Utils.normalAbsoluteAngle;
 import static robocode.util.Utils.normalNearAbsoluteAngle;
@@ -101,4 +98,9 @@ public final class BallPeer extends RobotPeer {
             Logger.realErr.println("HOW IS HEADING NAN HERE");
         }
     }
+	
+	@Override
+	public double getEnergy() {
+		return 200.0;
+	}
 }

@@ -1,9 +1,11 @@
 package net.sf.robocode.mode;
 
 import java.util.Hashtable;
-import java.util.List;
 import javax.swing.JPanel;
 
+import net.sf.robocode.battle.BattleResultsTableModel;
+
+import robocode.BattleResults;
 import robocode.BattleRules;
 
 /**
@@ -63,14 +65,12 @@ public interface IMode {
 	 */
 	public int turnLimit();
 
-	public void setItems();
-	
 	/**
-	 * Increments the score specific to the different modes
+	 * Create items for the specific mode
 	 */
-	public void scorePoints();
+	public void setItems();
 
- 	/* Add's mode specific robots to the list of selected robots.
+ 	/** Add's mode specific robots to the list of selected robots.
 	 * 
 	 * @param current list of selected robots in the form: 
 	 * "robots.myRobot*,robots.yourRobot*"...
@@ -90,4 +90,17 @@ public interface IMode {
 	 * @return GuiOptions object associated with this mode.
 	 */
 	public GuiOptions getGuiOptions();
+
+	/**
+	 * Get the mode's custom results table format
+	 * @return Table model of the mode's results
+	 */
+	public BattleResultsTableModel getCustomResultsTable();
+	
+	/**
+	 * Set the Mode's custom results table format
+	 */
+	public void setCustomResultsTable();
+	
+	public BattleResults[] getFinalResults();
 }
