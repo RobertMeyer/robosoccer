@@ -838,8 +838,8 @@ public class BattleView extends Canvas {
 				y2 = teleportSnapshot.getPortal2Y();
 				
 				RenderImage teleporterRenderImage = imageManager.getTeleporterRenderImage();
-				AffineTransform at = AffineTransform.getTranslateInstance(x1-20, battleField.getHeight() - y1-20);
-				AffineTransform at2 = AffineTransform.getTranslateInstance(x2-20, battleField.getHeight() - y2-20);
+				AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight() - y1);
+				AffineTransform at2 = AffineTransform.getTranslateInstance(x2, battleField.getHeight() - y2);
 				    
 				teleporterRenderImage.setTransform(at);
 				teleporterRenderImage.paint(g);
