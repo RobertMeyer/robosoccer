@@ -253,6 +253,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
     }
 	
 	/**
+	 * Clears the columns to be populated again
+	 */
+	public void clearColumns() {
+		this.columns.clear();
+	}
+	
+	/**
 	 * Sum up the total scores by all the robots
 	 * @return Total sum
 	 */
@@ -264,6 +271,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		}
 		return totalScore;
 	}
+
 	
 	/**
 	 * Get the Title of the Highscores
