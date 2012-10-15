@@ -81,12 +81,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
+import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -223,6 +223,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final Arc2D scanArc;
 	protected final BoundingRectangle boundingBox;
 	protected final RbSerializer rbSerializer;
+	
+	//raceMode int
+	protected int currentWaypointIndex; 
 
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
@@ -1159,15 +1162,50 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				}
 
 				final String currentClassName = member.statics.getFullClassName();
-
 				if ((currentClassName.length() >= nl && currentClassName.substring(0, nl).equals(recipient))) {
 					return true;
 				}
-
 			}
 		}
 		return false;
 	}
+	
+
+	/**
+     * 
+     * @param waypoint The Maps Waypoint Object.
+     * @param waypointDistance The maximum perpendicular distance from the robot that a waypoint
+     * can be and still be scanned.
+     */
+    private void checkWaypointPass(Waypoint waypoint, Double waypointDistance){
+    	//todo //line perpendicular to robot 3/4 track width 
+    	//check if that lien intersects with a waypoint 
+
+    	//calculate the bearing to the waypoint relative to the robots Heading.
+    	 double relativeBearingtoWaypoint = bodyHeading + ((Math.PI/2)-atan2(waypoint.getSingleWaypointY(
+    			currentWaypointIndex)-y, waypoint.getSingleWaypointX(currentWaypointIndex)-x));
+    	
+    	if(robocode.util.Utils.isNear(relativeBearingtoWaypoint, bodyHeading - (Math.PI/2)) | 
+    			robocode.util.Utils.isNear(relativeBearingtoWaypoint, bodyHeading + (Math.PI/2))){
+    		double dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
+    		double dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
+    		double  distToWay = Math.hypot(dx, dy);
+
+    		//Check if the waypoint is at the maximum distance from the robot or closer.
+    		if(robocode.util.Utils.isNear(distToWay, waypointDistance) | distToWay < waypointDistance){
+    			currentWaypointIndex += 1;
+    			relativeBearingtoWaypoint = bodyHeading + ((Math.PI/2)-atan2( waypoint.getSingleWaypointY(
+    					currentWaypointIndex)-y, waypoint.getSingleWaypointX(currentWaypointIndex)-x));
+    			dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
+        		dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
+        		//create the new WaypointPassedEvent
+    			addEvent(new WaypointPassedEvent(currentWaypointIndex, waypoint.getSingleWaypointX(
+    					 currentWaypointIndex), waypoint.getSingleWaypointY(currentWaypointIndex), 
+    					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
+    		}
+    	}
+    	
+    }
 
 	public String getNameForEvent(RobotPeer otherRobot) {
 		if (battleRules.getHideEnemyNames() && !isTeamMate(otherRobot)) {
