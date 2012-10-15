@@ -298,7 +298,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
 	}
-
+/**
+ * check whether robot equip Sword
+ * by checking the equipment.get(Weapon)==Equipment.getPart("Sword")
+ */
+    public boolean checkSword()
+    {
+    	EquipmentPart part = Equipment.getPart("Sword");
+    	if(equipment.get().get(part.getSlot())==part)
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    }
+	
 	public void println(String s) {
 		synchronized (proxyText) {
 			battleText.append(s);
@@ -1242,6 +1258,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 		}
 	}
+	
+	private void checkDeFence(RobotPeer robot)
+	{
+		
+	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
@@ -1272,9 +1293,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
                 boolean atFault;
                 double bearing = normalRelativeAngle(angle - bodyHeading);
+                //count the bearing between attack angle and defense angle
+                double defenceBearing=normalRelativeAngle(angle - radarHeading);
 
                 if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
                         || (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
+                	//if robot equip sword , damage counting will be different as bullet
+                	if(checkSword())
+                	{
+                		//check whether sword attack whether been defenced by other robot's radar
+                		if(defenceBearing> PI / 2)
+                		{
+                		otherRobot.setEnergy(energy - Rules.getBulletDamage(3), false);
+                		}
+                	}
 
                     inCollision = true;
                     atFault = true;

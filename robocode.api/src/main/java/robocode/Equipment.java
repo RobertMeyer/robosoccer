@@ -66,12 +66,15 @@ public class Equipment {
               .set(RobotAttribute.ENERGY, -60)
               .image("/net/sf/robocode/ui/images/twinturret.png")
               .build());
+        
+        //add an new weapon option for robot and the RobotAttribute 
+        //will be set for the system to run properly
         parts.put("Sword",
                 new EquipmentPart.Builder(EquipmentSlot.WEAPON)
-              .set(RobotAttribute.SPEED, -10)
-              .set(RobotAttribute.GUN_HEAT_RATE, -50)
-              .set(RobotAttribute.BULLET_SPEED, 100)
-              .set(RobotAttribute.ENERGY, -60)
+        .set(RobotAttribute.ACCELERATION, 20)
+		.set(RobotAttribute.RADAR_ANGLE, -25)
+		.set(RobotAttribute.SCAN_RADIUS, 50)
+		.set(RobotAttribute.SPEED, 30)
               .image("/net/sf/robocode/ui/images/Sword.png")
               .build());
 
