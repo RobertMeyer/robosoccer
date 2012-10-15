@@ -142,15 +142,11 @@ public class ScannedItemEvent extends Event {
 	/**
 	 * {@inheritDoc}
 	 */
-	/*@Override
+	@Override
 	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		IBasicEvents listener = robot.getBasicEventListener();
-
-        if (listener != null) {
-            listener.onScannedItem(this);
-        }
+		
 	}
-	*/
+	
 	
 	/**
 	 * {@inheritDoc}
