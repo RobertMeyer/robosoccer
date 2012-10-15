@@ -269,7 +269,7 @@ public class BulletPeer {
 
 	
 	private void checkTeleporterCollsion(List<TeleporterPeer> teleporters) {
-		//x & y are the final result on where to place teleported bullets after checking new teleported location is within bounds of the battlefield
+		/*//x & y are the final result on where to place teleported bullets after checking new teleported location is within bounds of the battlefield
 		double x, y;	
 		for (TeleporterPeer t : teleporters) {
 			if(t.getCircle(Portal.PORTAL1).intersects(boundingBox)){
@@ -307,6 +307,7 @@ public class BulletPeer {
 			}
 		
 		}
+		*/
 	}
 	
 	private void updateBoundingBox() {

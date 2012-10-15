@@ -827,11 +827,16 @@ public class BattleView extends Canvas {
 			y1 = teleportSnapshot.getPortal1Y();
 			//if thise teleport is a blackhole draw it, else draw the second teleport
 			if (teleportSnapshot.isBlackHole()) {
-				g.setColor(Color.BLACK);
+				/*g.setColor(Color.BLACK);
 			    Shape portal1 = new Ellipse2D.Double(x1-teleportSnapshot.getWidth()/2, battleField.getHeight() - y1-teleportSnapshot.getHeight()/2, 
 			    		teleportSnapshot.getWidth(), teleportSnapshot.getHeight());
 			    g.fill(portal1);
-			    
+			    */
+			    int size = (int)teleportSnapshot.getWidth()/40-1;
+			    RenderImage blackHoleRenderImage = imageManager.getBlackHoleRenderImage(size);
+			    AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight()-y1);
+			    blackHoleRenderImage.setTransform(at);
+			    blackHoleRenderImage.paint(g);
 			} else {
 				
 				x2 = teleportSnapshot.getPortal2X();

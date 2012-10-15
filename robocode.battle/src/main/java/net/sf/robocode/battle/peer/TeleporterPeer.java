@@ -11,6 +11,8 @@ public class TeleporterPeer implements ITeleporter {
 	
 	private boolean blackHole;
 	
+	private double maxHoleSize = 120;
+	
 	private double x1;
 	private double y1;
 	private double x2;
@@ -136,8 +138,8 @@ public class TeleporterPeer implements ITeleporter {
 		if (!blackHole) {
 			return;
 		}
-		width += 40;
-		height += 40;
+		width = Math.min(width+40,maxHoleSize);
+		height = Math.min(height+40,maxHoleSize);
 	}
 	
 	public double getHeight() {

@@ -40,4 +40,7 @@ public interface IImageManager {
     RenderImage getColoredRadarRenderImage(Integer color, String imagePath);
 
 	RenderImage getTeleporterRenderImage();
+	
+	RenderImage getBlackHoleRenderImage(int size);
+
 }

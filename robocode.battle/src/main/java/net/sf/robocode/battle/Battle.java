@@ -786,8 +786,7 @@ public final class Battle extends BaseBattle {
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
-        	//spawn blackhole on dead robot is there was not one there already and
-        	//black holes are enabled.
+        	//spawn blackhole on dead robot is there was not one there already
 			if (teleporterEnabler.isBlackholesEnabled() && !deadRobot.collidedWithBlackHole()) {
 				double y2 = -2;
 				double x2 = -2;

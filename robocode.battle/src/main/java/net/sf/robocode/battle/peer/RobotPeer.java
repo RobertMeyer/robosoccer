@@ -219,7 +219,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private boolean isSuperTank = false;
 	
 	//blackhole
-	private boolean collidedWithBlackHole;
+	private boolean collidedWithBlackHole = false;
 
 	// killstreak timers
 	private int radarJammerTimeout;
@@ -1011,12 +1011,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	
 	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy, List<TeleporterPeer> teleporters) {
-
+		
+		
+		
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
 			return;
 		}
 
+		collidedWithBlackHole = false;
+		
 		if (isSuperTank && (battle.getTotalTurns() >= superTankTimeout)) {
 			setSuperTank(false);
 		}

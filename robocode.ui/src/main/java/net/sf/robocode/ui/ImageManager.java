@@ -38,6 +38,8 @@ public class ImageManager implements IImageManager {
     private RenderImage[][] explosionRenderImages;
     private RenderImage debriseRenderImage;
 	private RenderImage teleporterImage;
+	private RenderImage[] blackHoleImages;
+	
 	
     private Image bodyImage;
     private Image gunImage;
@@ -62,6 +64,7 @@ public class ImageManager implements IImageManager {
         groundImages = new Image[9];
 		soccerField = new Image[2];
         explosionRenderImages = null;
+
         debriseRenderImage = null;
         bodyImage = null;
         gunImage = null;
@@ -328,5 +331,15 @@ public class ImageManager implements IImageManager {
 			teleporterImage = new RenderImage(getImage("/net/sf/robocode/ui/images/portal.png"));
 		}
 		return teleporterImage;
+	}
+	
+	public RenderImage getBlackHoleRenderImage(int size){
+		if(blackHoleImages == null){
+			blackHoleImages = new RenderImage[3];
+			blackHoleImages[0] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole40.png"));
+			blackHoleImages[1] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole80.png"));
+			blackHoleImages[2] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole120.png"));
+		}
+		return blackHoleImages[size];
 	}
 }
