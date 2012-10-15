@@ -59,13 +59,21 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class RobocodeFrame extends JFrame {
 
+	//Used for counting the number of updates in RoboCode (2 updates every 1 second)
 	private int timerCount = 0;
+	//Hashtable for timer mode.
 	private Hashtable<String, Object> setTimeHashTable;
+	//Used for counting the number of seconds for timer mode
 	private int counter = 1;
+	//To store user specified time for timer mode.
 	private String userSetTime;
+	//Used for counting down for elimination mode.
 	private int eliminateCounter;
+	//To store user specified time for elimination mode.
 	private String eliminate;
+	//Hashtable for elimination mode.
 	private Hashtable<String, Object> setEliminateHashTable;
+	
     private final static int MAX_TPS = 10000;
     private final static int MAX_TPS_SLIDER_VALUE = 61;
     private final static int UPDATE_TITLE_INTERVAL = 500; // milliseconds
@@ -1040,6 +1048,8 @@ public class RobocodeFrame extends JFrame {
 	            		setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
 	            		userSetTime = (String) setTimeHashTable.get("timer");
 	            		
+	            		//If time is up, call getTopRobot() method, which kill all other robots except for the robot with
+	            		//the highest energy
 	            		if (counter == Integer.parseInt(userSetTime)) {
 	            			battleManager.getTopRobot();
 	            			counter = 0;
@@ -1050,12 +1060,15 @@ public class RobocodeFrame extends JFrame {
 	            		}
 	            	}
             	}
+            	
             	//Create counter if it is in Elimination Mode.
             	if (battleManager.getBattleProperties().getBattleMode().toString() == "Elimination Mode") {
             		timerCount = timerCount + 1;
             		//Retrieve user specified time
             		setEliminateHashTable  = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
             		eliminate = (String) setEliminateHashTable.get("eliminate");
+            		
+            		//If elimination counter is 0, get user specified time.
             		if (eliminateCounter == 0) {
             			eliminateCounter = Integer.parseInt(eliminate);
             		}
@@ -1064,6 +1077,7 @@ public class RobocodeFrame extends JFrame {
             			timerCount = 0;
             			eliminateCounter = eliminateCounter - 1;
             			
+            			//If elimination counter is 0, call eliminateWeakestRobot() method, which eliminate the weakest robot
                 		if (eliminateCounter == 0) {
                 			battleManager.eliminateWeakestRobot();
                 		}
@@ -1072,8 +1086,9 @@ public class RobocodeFrame extends JFrame {
             		if (eliminateCounter > Integer.parseInt(eliminate)) {
             			eliminateCounter = Integer.parseInt(eliminate);
             		}
-            		
-            	}            	
+       
+            	}  
+            	
                 updateTitle();
             }
         }
