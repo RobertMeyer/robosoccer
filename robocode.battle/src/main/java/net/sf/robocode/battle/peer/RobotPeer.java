@@ -2043,9 +2043,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void updateEnergy(double delta) {
 		if ((!isExecFinishedAndDisabled && !isEnergyDrained) || delta < 0) {
 			setEnergy(energy + (delta * getEnergyRegen()), true);
+			
+			//If selected battle mode is Team energy sharing mode, activate distribution of energy level
 			if (battle.getBattleMode().toString() == "Energy Sharing Mode"){
 				distributeEnergy();
 			}
+			
 		}
 	}
 
@@ -2063,9 +2066,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	//Get total team energy for team energy sharing mode
+	/**
+	 * Calculate the team total energy level with the given team index and size.
+	 * 
+	 * @param teamIndex index of the team
+	 * @param teamSize size of the team
+	 * @return team's total energy level
+	 */
 	public int getTotalTeamEnergy(int teamIndex, int teamSize){
 		int totalTeamEnergy = 0;
+		
 		for (int i=0; i < teamSize; i++){
 			if (teamList.getTeamIndex() == teamIndex){
 				totalTeamEnergy += teamList.get(i).getEnergy();
@@ -2074,10 +2084,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return totalTeamEnergy;
 	}
 
-	//Assign robots energy based on the distributed team energy
+	/**
+	 * Assign robot energy level based on the distributed team energy level
+	 */
 	public void distributeEnergy(){
 		int totalTeamEnergy = 0;
 		double distribute = 0;
+		
+		//Distribute energy only if there is more than one robot in the team
 		if (statics.getTeamSize() > 1) {
 			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
 			distribute = totalTeamEnergy / statics.getTeamSize();
