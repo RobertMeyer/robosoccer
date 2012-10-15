@@ -120,7 +120,7 @@ import static robocode.util.Utils.*;
  * @author Patrick Cupka (contributor)
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
- * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
+ * @author CSSE2003 Team Forkbomb (contributor - attributes, equipment)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
@@ -210,11 +210,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	// The number of turns the robot is frozen for, 0 if not frozen
 	protected int frozen = 0;
-
 	
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
-	
 
 	// killstreak booleans
 	private boolean isScannable = true;
@@ -1033,17 +1031,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 * or very close too.  This is to avoid unnecessary double
 			 * multiplication, which was causing some bugs.
 			 */
-			if((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
-					1.0 < 0.00001){
+			if(Math.abs((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
+					1.0) < 0.00001){
 				firePower = min(energy,
 						min(max(bulletCmd.getPower(), Rules.MIN_BULLET_POWER),
 								Rules.MAX_BULLET_POWER));
 			}
 			else{
 				firePower = min(energy, min(max(bulletCmd.getPower(),
-						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
+						getMinBulletPower()), getMaxBulletPower()));
 			}
-
 			updateEnergy(-firePower);
 
 			gunHeat += getGunHeat(firePower);
@@ -2152,31 +2149,34 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
-	 *
-	 * @param partName the name of the part to equip
+	 * 
+	 * @param partName
+	 *            the name of the part to equip
 	 * @see Equipment
 	 */
 	public void equip(String partName) {
 		EquipmentPart part = Equipment.getPart(partName);
 
-		// Unequip whatever's currently occupying this slot (if anything)
+		// Do nothing if there's no part with the given name.
+		// TODO: display an error or warning when the part doesn't exist?
+		if (part == null) {
+			return;
+		}
+
+		// Unequip anything currently occupying the slot of this part.
 		unequip(part.getSlot());
 
-		// Add the part to the map of equipped items
+		// Associate this part's slot with the given part.
 		equipment.get().put(part.getSlot(), part);
 
-		/* Add all the attribute modifiers of the part to the current
-		 * attribute modifiers (many attributes of the part may be 0).
-		 */
+		// Add all the attribute modifiers of the part to the current
+		// attribute modifiers (many attributes of the part may be 0).
 		for (RobotAttribute attribute : RobotAttribute.values()) {
-
 			double partValue = part.get(attribute);
 			double currentValue = attributes.get().get(attribute);
 
-			/* Part modifiers are represented as 1=+1% effectiveness, hence
-			 * the division by 100 (as this.attributes represents 1.0 as 100%
-			 * effectiveness for easy multiplication).
-			 */
+			// Part modifiers represent 1 as equal to +1% effectiveness, and
+			// 100% effectiveness is represented in this.attributes as 1.0.
 			double newValue = currentValue + (partValue / 100.0);
 
 			attributes.get().put(attribute, newValue);
@@ -2187,39 +2187,40 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * Unequips the part equipped to the given slot, if any, and resets all
 	 * attributes provided by the part.
-	 *
-	 * @param slot the slot to clear
+	 * 
+	 * @param slot
+	 *            the slot to clear
 	 */
 	public void unequip(EquipmentSlot slot) {
 		EquipmentPart part = equipment.get().get(slot);
 
-		/* If there is any part in the given slot, add all the attribute
-		 * modifiers of the part to the current attribute modifiers (many
-		 * attributes of the part may be 0).
-		 */
-		if (part != null) {
-			for (RobotAttribute attribute : RobotAttribute.values()) {
-				double partValue = part.get(attribute);
-				double currentValue = attributes.get().get(attribute);
+		// Do nothing if there's no part with the given name.
+		// TODO: display an error or warning when the part doesn't exist?
+		if (part == null) {
+			return;
+		}
 
-				/* Part modifiers are represented as 1=+1% effectiveness,
-				 * hence the division by 100 (as this.attributes represents
-				 * 1.0 as 100% effectiveness for easy multiplication).
-				 */
-				double newValue = currentValue - (partValue / 100.0);
+		// Remove all the attribute modifiers of the part from the current
+		// attribute modifiers (many attributes of the part may be 0).
+		for (RobotAttribute attribute : RobotAttribute.values()) {
+			double partValue = part.get(attribute);
+			double currentValue = attributes.get().get(attribute);
 
-				attributes.get().put(attribute, newValue);
-			}
+			// Part modifiers represent 1 as equal to +1% effectiveness, and
+			// 100% effectiveness is represented in this.attributes as 1.0.
+			double newValue = currentValue - (partValue / 100.0);
+
+			attributes.get().put(attribute, newValue);
 		}
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
 	}
 
-	 /**
-     * @return a collection of all equipment parts equipped to the robot
-     */
-    public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
-        return equipment;
-    }
+	/**
+	 * @return a collection of all equipment parts equipped to the robot
+	 */
+	public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+		return equipment;
+	}
 
 	/**
 	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
@@ -2273,12 +2274,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return The turning rate of the gun of the robot associated with this
 	 * 			peer in degrees.
 	 */
-	public double getGunTurnRate(){
+	public double getGunTurnRate() {
 		// Avoid multiplying doubles if it is not needed
-		if(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001){
-			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
+		if (attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001) {
+			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE)
+					* Rules.GUN_TURN_RATE;
+		} else {
+			return Rules.GUN_TURN_RATE;
 		}
-		else return Rules.GUN_TURN_RATE;
 	}
 
 	/**
