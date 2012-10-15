@@ -31,53 +31,57 @@ import robocode.control.RobotSpecification;
  *
  */
 public class ClassicMode implements IMode {
-
+    
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
-
+    /* Overall Score variables */
+	protected RobotPeer rPeer;
+	protected int numRobots;
+	protected RobotStatistics robotStatistics;
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public String toString() {
 		return "Classic Mode";
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getDescription() {
 		return "Original robocode mode.";
 	}
-
+    
 	public JPanel getRulesPanel() {
 		return null;
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public Hashtable<String, Object> getRulesPanelValues() {
 		return null;
 	}
-
+    
 	// ----- Mode-specific methods below this line ------
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
 		return modifyVelocity(velocityIncrement);
 	}
-
+    
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
 	}
-
+    
     public int setNumObstacles(BattleRules rules) {
         return 0;
     }
-
+    
 	/**
 	 * Returns a list of ItemDrop's to
 	 * spawn in the beginning of the round
@@ -86,7 +90,7 @@ public class ClassicMode implements IMode {
 	public List<? extends ItemDrop> getItems() {
 		return new ArrayList<ItemDrop>();
 	}
-
+    
 	/**
 	 * Create a list of ItemDrop's to
 	 * spawn in the beginning of the round
@@ -95,14 +99,14 @@ public class ClassicMode implements IMode {
 	public void setItems(Battle battle) {
 		/* No items needed for Classic Mode */
 	}
-
+    
 	/**
 	 * Increments the score for the mode per turn
 	 */
 	public void scoreTurnPoints() {
 		/* ClassicMode does not need a score method, optional for overriding */
 	}
-
+    
 	/**
 	 * Override me if you wish to use the CustomObjectAPI.
 	 *
@@ -116,16 +120,16 @@ public class ClassicMode implements IMode {
 	 * @param customObject - an ArrayList of all customObjects
 	 */
 	public void updateRenderables(List<IRenderable> renderables) {
-
+        
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean respawnsOn() {
 		return false;
 	}
-
+    
 	/**
 	 * Override me if you wish to use the CustomObjectAPI.
 	 *
@@ -152,20 +156,20 @@ public class ClassicMode implements IMode {
 	public List<IRenderable> createRenderables() {
 		return null;
 	}
-
+    
 	@Override
 	public String addModeRobots(String selectedRobots) {
 		// Don't need to add any extra robots for classic mode
 		return selectedRobots;
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public int turnLimit() {
 		return 5*30*60; // 9000 turns is the default
 	}
-
+    
 	/**
 	 * Sets the starting positions for all robot objects.
 	 * Original implementation taken from Battle.
@@ -178,60 +182,61 @@ public class ClassicMode implements IMode {
 	 * the starting coordinates and heading for each robot.
 	 */
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, Battle battle, int robotsCount) {
+                                              BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
-
+        this.numRobots = robotsCount;
+        
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
         }
-
+        
         List<String> positions = new ArrayList<String>();
-
+        
         Pattern pattern = Pattern.compile("([^,(]*[(][^)]*[)])?[^,]*,?");
         Matcher matcher = pattern.matcher(initialPositions);
-
+        
         while (matcher.find()) {
             String pos = matcher.group();
-
+            
             if (pos.length() > 0) {
                 positions.add(pos);
             }
         }
-
+        
         if (positions.isEmpty()) {
             return null;
         }
-
+        
         initialRobotPositions = new double[positions.size()][3];
-
+        
         String[] coords;
         double x, y, heading;
-
+        
         for (int i = 0; i < positions.size(); i++) {
             coords = positions.get(i).split(",");
-
+            
             final Random random = RandomFactory.getRandom();
-
+            
             x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
             y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
             heading = 2 * Math.PI * random.nextDouble();
-
+            
             int len = coords.length;
-
+            
             if (len >= 1) {
                 // noinspection EmptyCatchBlock
                 try {
                     x = Double.parseDouble(coords[0].replaceAll("[\\D]", ""));
                 } catch (NumberFormatException e) {
                 }
-
+                
                 if (len >= 2) {
                     // noinspection EmptyCatchBlock
                     try {
                         y = Double.parseDouble(coords[1].replaceAll("[\\D]", ""));
                     } catch (NumberFormatException e) {
                     }
-
+                    
                     if (len >= 3) {
                         // noinspection EmptyCatchBlock
                         try {
@@ -245,10 +250,10 @@ public class ClassicMode implements IMode {
             initialRobotPositions[i][1] = y;
             initialRobotPositions[i][2] = heading;
         }
-
+        
         return initialRobotPositions;
 	}
-
+    
 	/**
 	 * Perform scan dictates the scanning behaviour of robots. One parameter
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
@@ -260,11 +265,11 @@ public class ClassicMode implements IMode {
             robotPeer.performScan(getRobotsAtRandom(robots));
         }
 	}
-
+    
 	public boolean isRoundOver(int endTimer, int time) {
 		return (endTimer > 5 * time);
 	}
-
+    
 	/**
 	 * Determines if the bullet being dealt with should ricochet
 	 * @param power Power of current bullet being dealt with
@@ -274,20 +279,20 @@ public class ClassicMode implements IMode {
 	 * @return true/false if a ricochet should occur
 	 */
 	public boolean shouldRicochet(double power, double minBulletPower,
-			double ricochetValue) {
+                                  double ricochetValue) {
 		return false;
 	}
-
+    
 	/**
 	 * Checks user input for Ricochet is acceptable
 	 * @param rules Current battle rules
 	 * @return ricochet value as provided by user or 1 if value provided < 1
 	 */
 	public double modifyRicochet(BattleRules rules) {
-			return 1;
-		}
-
-	 /**
+        return 1;
+    }
+    
+    /**
      * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
      * so that a robot placed before another robot in the list will not gain any benefit when the game
      * checks if a robot has won, is dead, etc.
@@ -298,22 +303,22 @@ public class ClassicMode implements IMode {
      */
     protected List<RobotPeer> getRobotsAtRandom(List<RobotPeer> robots) {
         List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(robots);
-
+        
         Collections.shuffle(shuffledList, RandomFactory.getRandom());
         return shuffledList;
     }
-
+    
 	@Override
 	public void setItems() {
 		// TODO Auto-generated method stub
-
+        
 	}
 	
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			IRepositoryManager repositoryManager) {
+                            IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
 	}
-
+    
 	/**
 	 * Initialises the GuiOptions object with the visibility options
 	 * applicable to this mode.
@@ -321,7 +326,7 @@ public class ClassicMode implements IMode {
 	public void setGuiOptions() {
 		uiOptions = new GuiOptions(true, true);
 	}
-
+    
 	/**
 	 * Getter method for the GuiOptions object associated with this
 	 * mode.
@@ -337,7 +342,7 @@ public class ClassicMode implements IMode {
 	public void onRespawnDeath(RobotPeer robot) {
 		
 	}
-
+    
 	@Override
 	public BattleResults[] getFinalResults() {
 		return null;
@@ -355,7 +360,7 @@ public class ClassicMode implements IMode {
 	{
 		return modifyVision(standard);
 	}
-
+    
 	/**
 	 * Get the customised BattleResultsTableModel
 	 * @return Customised BattleResultsTableModel
@@ -390,5 +395,26 @@ public class ClassicMode implements IMode {
 		resultsTable.showFirsts(true);
 		resultsTable.showSeconds(true);
 		resultsTable.showThirds(true);
+	}
+    
+    /**
+	 * Setup so the default overall score is affected by all scores
+	 * @param robotStatistics
+	 * @return HashMap containing the scores
+	 */
+	public Double getCustomOverallScore(RobotStatistics robotStatistics) {
+		Double scores = 0.0;
+		scores += robotStatistics.showBulletDamageScore();
+		scores += robotStatistics.showBulletKillBonus();
+		scores += robotStatistics.showRammingDamageScore();
+		scores += robotStatistics.showRammingKillBonus();
+		scores += robotStatistics.showBulletKillBonus();
+		scores += robotStatistics.showLastSurvivorBonus();
+		return scores;
+	}
+    
+	@Override
+	public boolean allowsOneRobot() {
+		return false;
 	}
 }

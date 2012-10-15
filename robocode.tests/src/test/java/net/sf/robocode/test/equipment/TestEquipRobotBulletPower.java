@@ -11,6 +11,7 @@ import net.sf.robocode.test.helpers.Assert;
  * 
  * Thus, this tests:
  * RobotAttribute#BULLET_POWER
+ * RobotAttribute#ENERGY_REGEN
  * 
  * @author Jayke Anderson - CSSE2003
  */

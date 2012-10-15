@@ -107,7 +107,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 		
 		if (robotSelectionPanel.getSelectedRobotsCount() == 1 && 
-				!(selectedMode instanceof SoccerMode)) {
+				!selectedMode.allowsOneRobot()) {
 			if (JOptionPane
 					.showConfirmDialog(
 							this,

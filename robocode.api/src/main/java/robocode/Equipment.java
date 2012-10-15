@@ -74,6 +74,17 @@ public class Equipment {
 						.set(RobotAttribute.BULLET_SPEED, 100)
 						.set(RobotAttribute.ENERGY, -60).build());
 
+		// add an new weapon option for robot and the RobotAttribute
+		// will be set for the system to run properly
+		parts.put(
+				"Sword",
+				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+						.image("/net/sf/robocode/ui/images/Sword.png")
+						.set(RobotAttribute.ACCELERATION, 20)
+						.set(RobotAttribute.RADAR_ANGLE, -25)
+						.set(RobotAttribute.SCAN_RADIUS, 50)
+						.set(RobotAttribute.SPEED, 30).build());
+
 		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
 				.sound("/net/sf/robocode/sound/sounds/pewpew.wav").build());
 
@@ -101,14 +112,21 @@ public class Equipment {
 						.set(RobotAttribute.SPEED, 40)
 						.set(RobotAttribute.ENERGY_REGEN, 30).build());
 
+		// Do not remove, this will cause the tests to fail.
+		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+				.sound("Test1").build());
+
+		// Do not remove, this will cause the tests to fail.
+		parts.put("Test2", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+				.sound("Test2").build());
+
 		/*
 		 * End of Test equipment
 		 */
 	}
 
 	/**
-	 * @param name
-	 *            the name of the part
+	 * @param name the name of the part
 	 * @return the part associated with the given name, or null if none
 	 */
 	public static EquipmentPart getPart(String name) {
