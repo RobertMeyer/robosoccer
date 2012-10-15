@@ -571,6 +571,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		return false;
 	}
+	
+	/* Team Telos Addition */
+	public RobotPeer getRobotPeer() {
+		return this;
+	}
 
 	// -----------
 	// execute

@@ -140,7 +140,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	}
 	
 	/**
-	 * Get the amount of columns to appear
+	 * Get the amount of columns
 	 * @return
 	 */
 	public int getColumnCount() {
@@ -292,7 +292,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	/*********** PRINTER METHODS ***********/
 	/**
 	 * Print the highscores results to an output stream
-	 * @param out The ouput stream
+	 * @param out The output stream
 	 */
 	public void print(PrintStream out) {
 		out.println(getTitle());

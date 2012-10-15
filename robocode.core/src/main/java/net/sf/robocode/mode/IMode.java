@@ -2,6 +2,7 @@ package net.sf.robocode.mode;
 
 import java.util.Hashtable;
 import javax.swing.JPanel;
+import java.util.HashMap;
 
 import net.sf.robocode.battle.BattleResultsTableModel;
 
@@ -103,4 +104,11 @@ public interface IMode {
 	public void setCustomResultsTable();
 	
 	public BattleResults[] getFinalResults();
+	
+	/**
+	 * Set the Mode's custom method of overall scoring
+	 * @return a HashMap containing each score to add to the final score
+	 */
+	//public HashMap<Integer, Double> setCustomOverallScore(RobotPeer robotPeer, int numRobots);
+	
 }

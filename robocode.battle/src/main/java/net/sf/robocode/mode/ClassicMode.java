@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Hashtable;
+import java.util.HashMap;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
@@ -35,6 +36,10 @@ public class ClassicMode implements IMode {
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
+	/* Overall Score variables */
+	protected RobotPeer rPeer;
+	protected int numRobots;
+	protected RobotStatistics robotStatistics;
 
 	/**
 	 * {@inheritDoc}
@@ -180,6 +185,7 @@ public class ClassicMode implements IMode {
 	public double[][] computeInitialPositions(String initialPositions,
 			BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
+		this.numRobots = robotsCount;
 
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
@@ -381,5 +387,25 @@ public class ClassicMode implements IMode {
 		resultsTable.showFirsts(true);
 		resultsTable.showSeconds(true);
 		resultsTable.showThirds(true);
+	}
+	
+	/**
+	 * Setup a default overall Score that calculates total score normally
+	 * @param robotStatistics
+	 * @return HashMap containing the scores
+	 */
+	public HashMap<Integer, Double> setCustomOverallScore(RobotStatistics robotStatistics) {
+		/* Set robotpeer */
+		final HashMap<Integer, Double> Scores;
+		Scores = new HashMap<Integer, Double>();
+		Scores.put(0, robotStatistics.showBDScore(true));
+		Scores.put(1, robotStatistics.showRDScore(true));
+		Scores.put(2, robotStatistics.showSurvScore(true));
+		Scores.put(3, robotStatistics.showRKBonus(true));
+		Scores.put(4, robotStatistics.showBKBonus(true));
+		Scores.put(5, robotStatistics.showLSBonus(true));
+		Scores.put(6, robotStatistics.showFlagScore(false));
+		
+		return Scores;
 	}
 }

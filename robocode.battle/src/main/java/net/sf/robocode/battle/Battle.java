@@ -477,7 +477,7 @@ public final class Battle extends BaseBattle {
 
 		for (RobotPeer robotPeer : peers.getRobots()) {
 			robotPeer.waitForStop();
-			robotPeer.getRobotStatistics().generateTotals();
+			robotPeer.getRobotStatistics().generateTotals(bp);
 		}
         
         // Increment mode specific points - TODO -team-Telos
