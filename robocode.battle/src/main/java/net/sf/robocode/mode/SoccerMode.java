@@ -278,7 +278,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 
 	@Override
 	public void setGuiOptions() {
-		super.uiOptions = new GuiOptions(true, true);
+		super.uiOptions = new GuiOptions(true, false);
 	}
 	
 	@Override 
