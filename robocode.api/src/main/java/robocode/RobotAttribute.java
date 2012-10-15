@@ -10,7 +10,6 @@ package robocode;
  *
  */
 public enum RobotAttribute {
-
     /** The acceleration of the robot */
     ACCELERATION,
     /** The deceleration of the robot */

@@ -1,7 +1,9 @@
-package robocode;
+package robocode.equipment;
 
 import java.util.Map;
 import java.util.HashMap;
+
+import robocode.RobotAttribute;
 
 /**
  * A piece of equipment. This class defines all the stats that a piece of
@@ -23,10 +25,7 @@ public class EquipmentPart {
 	 * decrease in the effectiveness of that attribute for the robot equipping
 	 * this part.
 	 */
-	private Map<RobotAttribute, Double> attributes =
-			new HashMap<RobotAttribute, Double>();
-	
-	
+	private Map<RobotAttribute, Double> attributes = new HashMap<RobotAttribute, Double>();
 
 	public static class Builder {
 		// Required for builder initialization
@@ -34,8 +33,7 @@ public class EquipmentPart {
 		private String soundPath;
 		private String imagePath;
 
-		private Map<RobotAttribute, Double> attributes =
-				new HashMap<RobotAttribute, Double>();
+		private Map<RobotAttribute, Double> attributes = new HashMap<RobotAttribute, Double>();
 
 		public Builder(EquipmentSlot slot) {
 			this.slot = slot;
@@ -44,22 +42,22 @@ public class EquipmentPart {
 		public EquipmentPart build() {
 			return new EquipmentPart(this);
 		}
-		
-		public Builder sound(String path){
+
+		public Builder sound(String path) {
 			this.soundPath = path;
 			return this;
 		}
-		
-		public Builder image(String path){
+
+		public Builder image(String path) {
 			this.imagePath = path;
 			return this;
 		}
-		
+
 		public Builder set(RobotAttribute attribute, double value) {
 			attributes.put(attribute, value);
 			return this;
 		}
-		
+
 		public Double get(RobotAttribute attribute) {
 			return attributes.get(attribute);
 		}
@@ -69,7 +67,7 @@ public class EquipmentPart {
 		slot = builder.slot;
 		soundPath = builder.soundPath;
 		imagePath = builder.imagePath;
-		
+
 		// Copy attributes from builder; default to 0 if attribute wasn't set.
 		for (RobotAttribute attribute : RobotAttribute.values()) {
 			Double value = builder.get(attribute);
@@ -79,11 +77,19 @@ public class EquipmentPart {
 			attributes.put(attribute, value);
 		}
 	}
-	
-	public String getSoundPath(){
+
+	/**
+	 * @return the filepath of the sound to be used for this part, or null if no
+	 *         sound file was specified.
+	 */
+	public String getSoundPath() {
 		return soundPath;
 	}
-	
+
+	/**
+	 * @return the filepath of the image to be used for this part, or null if no
+	 *         image file was specified.
+	 */
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -94,10 +100,10 @@ public class EquipmentPart {
 	public EquipmentSlot getSlot() {
 		return slot;
 	}
-	
+
 	/**
-	 * Returns the part's modifier for the given attribute. Part modifiers
-	 * are defined as 1=+1% effectiveness.
+	 * Returns the part's modifier for the given attribute. Part modifiers are
+	 * defined as 1=+1% effectiveness.
 	 * 
 	 * @param attribute the attribute modifier value to return
 	 * @return the part's modifier value for the given attribute

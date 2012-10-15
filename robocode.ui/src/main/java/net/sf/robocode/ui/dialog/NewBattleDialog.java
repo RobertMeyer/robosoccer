@@ -131,6 +131,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		battleProperties.setModeRules(selectedMode.getRulesPanelValues());
 		battleProperties.setBattleMode(selectedMode);
 		battleProperties.setInitialPositions(SetRobotPositionString());
+		battleProperties.setEquipment("fake/path");
 
 		// Display soccer mode team selection dialog
 		if (selectedMode instanceof SoccerMode) {

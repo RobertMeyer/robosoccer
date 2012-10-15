@@ -148,6 +148,7 @@ public class BattleManager implements IBattleManager {
         battleProperties.setSelectedRobots(spec.getRobots());
         battleProperties.setInitialPositions(initialPositions);
         battleProperties.setBattleMode(new ClassicMode());
+        battleProperties.setEquipment("/fake/path.txt");
 
         final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(spec.getRobots());
 

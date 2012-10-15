@@ -124,6 +124,7 @@ import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.RobotState;
+import robocode.equipment.EquipmentPart;
 
 
 /**
@@ -170,7 +171,6 @@ public class Battle extends BaseBattle {
     RobotPeer botzillaPeer;
     RobotSpecification botzilla;
     private Hashtable<String, Object> setTimeHashTable;
-
 
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
@@ -1205,4 +1205,7 @@ public class Battle extends BaseBattle {
 	    }
 	}
 
+	public EquipmentPart getEquipmentPart(String partName) {
+		return bp.getEquipmentPart(partName);
+	}
 }

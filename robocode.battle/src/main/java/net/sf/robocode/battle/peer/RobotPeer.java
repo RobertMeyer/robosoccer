@@ -102,6 +102,8 @@ import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.RobotState;
+import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSlot;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.WinException;
@@ -231,6 +233,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	//For calculation of team's total energy (Team energy sharing mode)
 	private TeamPeer teamList;
+	
 	/**
 	 * An association of values to every RobotAttribute, such that game
 	 * mechanics can be uniquely determined for each robot based on a variety
@@ -318,22 +321,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-/**
- * check whether robot equip Sword
- * by checking the equipment.get(Weapon)==Equipment.getPart("Sword")
- */
-    public boolean checkSword()
-    {
-    	EquipmentPart part = Equipment.getPart("Sword");
-    	if(equipment.get().get(part.getSlot())==part)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-    }
+	/**
+	 * check whether robot equip Sword by checking the
+	 * equipment.get(Weapon)==Equipment.getPart("Sword")
+	 */
+	public boolean checkSword() {
+		EquipmentPart sword = battle.getEquipmentPart("Sword");
+		if (equipment.get().get(sword.getSlot()) == sword) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public void print(Throwable ex) {
 		println(ex.toString());
 		StackTraceElement[] trace = ex.getStackTrace();
@@ -2201,7 +2201,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @see Equipment
 	 */
 	public void equip(String partName) {
-		EquipmentPart part = Equipment.getPart(partName);
+		EquipmentPart part = battle.getEquipmentPart(partName);
 
 		// Do nothing if there's no part with the given name.
 		// TODO: display an error or warning when the part doesn't exist?

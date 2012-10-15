@@ -25,6 +25,8 @@ import net.sf.robocode.mode.*;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.control.RobotSpecification;
+import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSpecification;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -56,6 +58,7 @@ public class BattleProperties implements Serializable {
 	private Hashtable<String, Object> modeRules;
 	private Boolean effectAreaOn = false;
 	private final Properties props = new Properties();
+	private EquipmentSpecification equipment;
 
 	/**
 	 * Gets the battlefieldWidth.
@@ -266,7 +269,27 @@ public class BattleProperties implements Serializable {
 		this.initialPositions=null;
 
 	}
-	
+
+	/**
+	 * Sets the set of equipment that robots may equip during the battle.
+	 * 
+	 * @param path
+	 *            the set of equipment that robots may equip during the battle
+	 */
+	public void setEquipment(String path) {
+		this.equipment = EquipmentSpecification.fromFile(path);
+	}
+
+	/**
+	 * Returns the equipment part associated with the given name.
+	 * 
+	 * @param name the name associated with the desired equipment part
+	 * @return the equipment part associated with the given name
+	 */
+	public EquipmentPart getEquipmentPart(String name) {
+		return equipment.getPart(name);
+	}
+
 	/**
 	 * Gets the current battle mode.
 	 * @return mode as a ModeContext object
