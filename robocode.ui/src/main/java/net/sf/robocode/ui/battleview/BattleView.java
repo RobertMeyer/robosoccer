@@ -273,6 +273,7 @@ public class BattleView extends Canvas {
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
         	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        		//Create ground field with spike for Spike Mode
         		createSpikeGround();
         	} else {
         		createGroundImage();

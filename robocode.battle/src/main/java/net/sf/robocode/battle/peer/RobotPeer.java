@@ -2085,7 +2085,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * Assign robot energy level based on the distributed team energy level
+	 * Assign robot energy level based on the calculated average robot energy level in the team
 	 */
 	public void distributeEnergy(){
 		int totalTeamEnergy = 0;
