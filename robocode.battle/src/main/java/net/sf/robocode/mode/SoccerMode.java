@@ -90,8 +90,8 @@ public class SoccerMode extends ClassicMode implements IMode {
  		fieldHeight = height;
  		fieldWidth = width;
  		
- 		goal1 = new BoundingRectangle(GOALX/2, (fieldHeight/2), GOALX, GOALY);
- 		goal2 = new BoundingRectangle(fieldWidth - (GOALX/2), (fieldHeight/2), GOALX, GOALY);
+ 		goal1 = new BoundingRectangle(0, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
+ 		goal2 = new BoundingRectangle(fieldWidth - GOALX, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
  		
  		int teamSize = count / 2;
  		
@@ -270,7 +270,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 		
 		scoreTeam2 = new RenderString("score1", ("Red Team\n         " + 
 				(int)team2.getStatistics().getTotalScore()));
-		scoreTeam2.setTranslate(fieldWidth - 80, 50);
+		scoreTeam2.setTranslate(fieldWidth - 75, 50);
 		scoreTeam2.setColour(Color.WHITE);
 		objs.add(scoreTeam2);
 		return objs;
