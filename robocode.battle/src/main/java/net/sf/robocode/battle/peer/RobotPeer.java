@@ -1426,14 +1426,18 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return true if one of the robots is a FreezeRobot, false otherwise
 	 */
 	protected boolean checkForFreezeBot(RobotPeer otherRobot) {
-		if (otherRobot.isFreezeRobot()) {
-			makeFrozen(this, 100);
-			return true;
-		}
-		
-		if (this.isFreezeRobot()) {
-			makeFrozen(otherRobot, 100);
-			return true;
+		// Make sure that at least one of the robots is not a FreezeRobot
+		// FreezeRobot cannot freeze another FreezeRobot
+		if (!this.isFreezeRobot() || !otherRobot.isFreezeRobot()) {
+			if (otherRobot.isFreezeRobot()) {
+				makeFrozen(this, 100);
+				return true;
+			}
+			
+			if (this.isFreezeRobot()) {
+				makeFrozen(otherRobot, 100);
+				return true;
+			}
 		}
 		
 		return false;
