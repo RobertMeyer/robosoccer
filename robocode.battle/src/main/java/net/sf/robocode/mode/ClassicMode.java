@@ -35,10 +35,6 @@ public class ClassicMode implements IMode {
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
-    /* Overall Score variables */
-	protected RobotPeer rPeer;
-	protected int numRobots;
-	protected RobotStatistics robotStatistics;
     
 	/**
 	 * {@inheritDoc}
@@ -184,7 +180,6 @@ public class ClassicMode implements IMode {
 	public double[][] computeInitialPositions(String initialPositions,
                                               BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
-        this.numRobots = robotsCount;
         
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
@@ -400,7 +395,7 @@ public class ClassicMode implements IMode {
     /**
 	 * Setup so the default overall score is affected by all scores
 	 * @param robotStatistics
-	 * @return HashMap containing the scores
+	 * @return Double representing the scores
 	 */
 	public Double getCustomOverallScore(RobotStatistics robotStatistics) {
 		Double scores = 0.0;
