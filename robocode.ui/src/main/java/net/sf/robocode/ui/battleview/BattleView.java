@@ -43,7 +43,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import static java.lang.Math.*;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -75,6 +77,8 @@ import robocode.control.snapshot.IObstacleSnapshot;
 import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.IEffectAreaSnapshot;
+import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.RenderableType;
 
 import java.io.*;
@@ -538,6 +542,9 @@ public class BattleView extends Canvas {
 
             // Draw obstacles
             drawObstacles(g, snapShot);
+            
+            // Draw all teleporters
+            drawTeleporters(g, snapShot);
         }
 
 		// Restore the graphics state
@@ -930,8 +937,59 @@ public class BattleView extends Canvas {
 		return robotGraphics[robotIndex];
 	}
 
-	private void drawBullets(Graphics2D g, ITurnSnapshot snapShot) {
+    private void drawTeleporters(Graphics2D g, ITurnSnapshot snapShot) {
 		final Shape savedClip = g.getClip();
+
+		g.setClip(null);
+		
+		double x1, y1, x2, y2;
+		for (ITeleporterSnapshot teleportSnapshot : snapShot.getTeleporters()) {
+			x1 = teleportSnapshot.getPortal1X();
+			y1 = teleportSnapshot.getPortal1Y();
+			//if thise teleport is a blackhole draw it, else draw the second teleport
+			if (teleportSnapshot.isBlackHole()) {
+				/*g.setColor(Color.BLACK);
+			    Shape portal1 = new Ellipse2D.Double(x1-teleportSnapshot.getWidth()/2, battleField.getHeight() - y1-teleportSnapshot.getHeight()/2, 
+			    		teleportSnapshot.getWidth(), teleportSnapshot.getHeight());
+			    g.fill(portal1);
+			    */
+			    int size = (int)teleportSnapshot.getWidth()/40-1;
+			    RenderImage blackHoleRenderImage = imageManager.getBlackHoleRenderImage(size);
+			    AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight()-y1);
+			    blackHoleRenderImage.setTransform(at);
+			    blackHoleRenderImage.paint(g);
+			} else {
+				
+				x2 = teleportSnapshot.getPortal2X();
+				y2 = teleportSnapshot.getPortal2Y();
+				
+				RenderImage teleporterRenderImage = imageManager.getTeleporterRenderImage();
+				AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight() - y1);
+				AffineTransform at2 = AffineTransform.getTranslateInstance(x2, battleField.getHeight() - y2);
+				    
+				teleporterRenderImage.setTransform(at);
+				teleporterRenderImage.paint(g);
+				teleporterRenderImage.setTransform(at2);
+				teleporterRenderImage.paint(g);
+				
+				//lindon's ellipse stuff
+				/*g.setColor(Color.GREEN);
+			    Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
+			    Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
+			    
+				g.fill(portal1);
+				g.fill(portal2);
+				*/
+				 
+			}
+			
+		}
+		
+		g.setClip(savedClip);
+	}
+    
+    private void drawBullets(Graphics2D g, ITurnSnapshot snapShot) {
+        final Shape savedClip = g.getClip();
 
 		g.setClip(null);
 

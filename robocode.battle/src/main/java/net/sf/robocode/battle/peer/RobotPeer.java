@@ -107,6 +107,21 @@ import robocode.exception.DeathException;
 import robocode.exception.WinException;
 import static robocode.util.Utils.*;
 
+import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import static java.lang.Math.*;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
+
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
  * sure that robots abides the rules.
@@ -223,6 +238,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private boolean isScannable = true;
 	private boolean isFrozen = false;
 	private boolean isSuperTank = false;
+	
+	//blackhole
+	private boolean collidedWithBlackHole = false;
 
 	// killstreak timers
 	private int radarJammerTimeout;
@@ -1049,8 +1067,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 								Rules.MAX_BULLET_POWER));
 			}
 			else{
-				firePower = min(energy, min(max(bulletCmd.getPower(),
-						getMinBulletPower()), getMaxBulletPower()));
+				firePower = min(energy, min(max(bulletCmd.getPower(), 
+						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
 			}
 			updateEnergy(-firePower);
 
@@ -1075,13 +1093,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	@Override
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
-		
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy, List<TeleporterPeer> teleporters) {
+
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
 			return;
 		}
-		
+		collidedWithBlackHole = false;
+
 		if (isFrozen()) {
 			frozen--;
 			if (frozen != 0) {
@@ -1126,7 +1145,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		updateGunHeading();
 		updateRadarHeading();
 		updateMovement();
-
+		
+		checkTeleporterCollision(teleporters);
 		// do not move frozen robots
 		if (isFrozen()) {
 			setVelocityEffect(0.1);
@@ -2584,6 +2604,42 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}
+	
+	/**
+	 * Checks whether a robot has collided with a teleporter
+	 * @param teleporters list of teleporters
+	 */
+	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
+		BoundingRectangle bound = getBoundingBox();
+		double newHeading = getBodyHeading()+PI;
+		double[] xy;
+		double[] fail = {-1.0, -1.0};
+		double[] death = {-2.0, -2.0};
+		while(newHeading>(2*PI)){
+			newHeading -=(2*PI);
+		}
+		for(TeleporterPeer teleporter : teleporters){
+			xy = teleporter.getCollisionReaction(bound);
+			if(xy.equals(fail)){
+				
+			}else if(xy[0] == -2 && xy[1] == -2){
+				//if there is a collision with a black hole, update size, set
+				//the collision to true and kill the robot
+				teleporter.updateBlackHoleSize();
+				collidedWithBlackHole = true;
+				kill();
+				
+			}else if(xy[0]>0 && xy[1]>0){
+				this.x = xy[0]+(Math.sin(newHeading)*50);
+				this.y = xy[1]+(Math.cos(newHeading)*50);
+				this.bodyHeading = newHeading;
+				//update bounding box to prevent neverending teleportation
+				updateBoundingBox();
+				
+			}
+		}
+		
+	}
 
 	/**
 	 * Enables the RadarJamming ability for jamTime amount of turns. Robots who
@@ -2646,6 +2702,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return isSuperTank;
 	}
 	
+	/**
+	 * @return true if is a blackhole
+	 */
+	public boolean collidedWithBlackHole() {
+		return collidedWithBlackHole;
+	}
+
 	public double getFullEnergy() {
 		return fullEnergy;
 	}
@@ -2654,5 +2717,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isZombie() {
 		return getName() == "sampleex.NormalZombie";
 	}
-}
 
+
+}
