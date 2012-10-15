@@ -1,5 +1,8 @@
 package net.sf.robocode.sound;
 
+import java.io.File;
+import java.util.logging.Logger;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -19,7 +22,7 @@ public class BackgroundMusicTracker {
 		
 		 if(music){
 			 try{ 
-				AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BackgroundMusicTracker().getClass().getClassLoader().getResourceAsStream("net/sf/robocode/sound/sounds/theme1.wav"));
+				AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BackgroundMusicTracker().getClass().getClassLoader().getResourceAsStream("net/sf/robocode/sound/sounds/testing.wav"));
          		clip = AudioSystem.getClip(); 
          		clip.open(audioIn); 
          		clip.start();

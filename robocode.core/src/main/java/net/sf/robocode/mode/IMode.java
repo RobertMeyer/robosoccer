@@ -106,9 +106,16 @@ public interface IMode {
 	public BattleResults[] getFinalResults();
 	
 	/**
+<<<<<<< HEAD
 	 * Set the Mode's custom method of overall scoring
 	 * @return a HashMap containing each score to add to the final score
 	 */
 	//public HashMap<Integer, Double> setCustomOverallScore(RobotPeer robotPeer, int numRobots);
 	
+=======
+	 * For disabling the dialogue that says "You have only selected one robot"
+	 * @return
+	 */
+	public boolean allowsOneRobot();
+>>>>>>> master
 }

@@ -47,6 +47,7 @@ public class ImageManager implements IImageManager {
     private HashMap<Integer, RenderImage> robotRadarImageCache;
     private HashMap<String, RenderImage> customImageCache;
 	private Image[] soccerField;
+	private Image spikeImage;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -96,6 +97,12 @@ public class ImageManager implements IImageManager {
             groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
         }
         return groundImages[index];
+    }
+	
+	@Override
+    public Image getSpikeTileImage() {
+		spikeImage = getImage("/net/sf/robocode/ui/images/ground/spike/spike.png");
+        return spikeImage;
     }
 
     @Override
@@ -201,7 +208,11 @@ public class ImageManager implements IImageManager {
         if (bodyImage == null || imagePath == null) {
             bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
         } else {
+        	try{
         	bodyImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
+        	}
         }
         return bodyImage;
     }
@@ -218,7 +229,11 @@ public class ImageManager implements IImageManager {
         if (gunImage == null || imagePath == null) {
             gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
         } else {
-        	gunImage = getImage(imagePath);
+        	try{
+        		gunImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
+        	}
         }
         return gunImage;
     }
@@ -234,7 +249,11 @@ public class ImageManager implements IImageManager {
         if (radarImage == null || imagePath == null) {
             radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
         } else {
+        	try{
         	radarImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
+        	}
         }
         return radarImage;
     }
