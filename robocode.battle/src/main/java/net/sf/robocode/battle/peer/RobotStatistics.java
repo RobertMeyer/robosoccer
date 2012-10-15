@@ -41,7 +41,6 @@ import java.util.Map;
 import robocode.BattleResults;
 import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.battle.BattleProperties;
-import net.sf.robocode.battle.BattleManager;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -52,8 +51,6 @@ import net.sf.robocode.battle.BattleManager;
  * @author Nathaniel Troutman (contributor)
  */
 public class RobotStatistics implements ContestantStatistics {
-
-	
 	private BattleProperties bp = new BattleProperties();
     private final RobotPeer robotPeer;
     private int rank;
@@ -142,12 +139,8 @@ public class RobotStatistics implements ContestantStatistics {
         /* Set battle Properties */
         bp = battleProp;
         System.out.println(bp.toString());
-        final HashMap<Integer, Double> Scores;
         ClassicMode mode = (ClassicMode) bp.getBattleMode();
-        Scores = mode.setCustomOverallScore(this);
-        for (int i=0; i < Scores.size(); i++) {
-        	totalScore += Scores.get(i);
-        }
+        totalScore = mode.getCustomOverallScore(this);
 //        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
 //                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
         isInRound = false;
@@ -158,67 +151,32 @@ public class RobotStatistics implements ContestantStatistics {
      * Begin Team Telos custom overall score additions
      */
     
-    public double showBDScore(boolean show) {
-    	if (show) {
-    		return totalBulletDamageScore;
-    	}
-    	else {
-    		return 0;
-    	}
+    public double showBulletDamageScore() {
+    	return totalBulletDamageScore;
     }
     
-    public double showRDScore(boolean show) {
-    	if (show) {
-    		return totalRammingDamageScore;
-    	}
-    	else {
-    		return 0;
-    	}
+    public double showRammingDamageScore() {
+    	return totalRammingDamageScore;
     }
     
-    public double showSurvScore(boolean show) {
-    	if (show) {
-    		return totalSurvivalScore;
-    	}
-    	else {
-    		return 0;
-    	}
+    public double showSurvivalScore() {
+    	return totalSurvivalScore;
     }
     
-    public double showRKBonus(boolean show) {
-    	if (show) {
-    		return totalRammingKillBonus;
-    	}
-    	else {
-    		return 0;
-    	}
+    public double showRammingKillBonus() {
+    	return totalRammingKillBonus;
     }
     
-    public double showBKBonus(boolean show) {
-    	if (show) {
-    		return totalBulletKillBonus;
-    	}
-    	else {
-    		return 0;
-    	}
+    public double showBulletKillBonus() {
+    	return totalBulletKillBonus;
     }
     
-    public double showLSBonus(boolean show) {
-    	if (show) {
-    		return totalLastSurvivorBonus;
-    	}
-    	else {
-    		return 0;
-    	}
+    public double showLastSurvivorBonus() {
+    	return totalLastSurvivorBonus;
     }
     
-    public double showFlagScore(boolean show) {
-    	if (show) {
-    		return totalFlagScore;
-    	}
-    	else {
-    		return 0;
-    	}
+    public double showFlagScore() {
+    	return totalFlagScore;
     }
     
     /**

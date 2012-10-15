@@ -256,7 +256,9 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * Clears the columns to be populated again
 	 */
 	public void clearColumns() {
-		this.columns.clear();
+		if (columns != null) {
+			this.columns.clear();
+		}
 	}
 	
 	/**

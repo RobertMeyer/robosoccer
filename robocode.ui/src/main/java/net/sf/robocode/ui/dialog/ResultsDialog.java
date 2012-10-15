@@ -52,7 +52,9 @@ public class ResultsDialog extends BaseScoreDialog {
     public void setup(BattleResults[] results, int numRounds, IMode battleMode) {
     	/* BRANDONCW */
     	/* Clear any data that was previously in the columns */
-    	battleMode.getCustomResultsTable().clearColumns();
+    	if (battleMode.getCustomResultsTable() != null) {
+    		battleMode.getCustomResultsTable().clearColumns();
+    	}
     	/* Set the mode specific data to add */
     	battleMode.setCustomResultsTable();
     	/* Store updated BattleResultsTableModel in the class */

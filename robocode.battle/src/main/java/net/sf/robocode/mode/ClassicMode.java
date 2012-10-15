@@ -390,22 +390,18 @@ public class ClassicMode implements IMode {
 	}
 	
 	/**
-	 * Setup a default overall Score that calculates total score normally
+	 * Setup so the default overall score is affected by all scores
 	 * @param robotStatistics
 	 * @return HashMap containing the scores
 	 */
-	public HashMap<Integer, Double> setCustomOverallScore(RobotStatistics robotStatistics) {
-		/* Set robotpeer */
-		final HashMap<Integer, Double> Scores;
-		Scores = new HashMap<Integer, Double>();
-		Scores.put(0, robotStatistics.showBDScore(true));
-		Scores.put(1, robotStatistics.showRDScore(true));
-		Scores.put(2, robotStatistics.showSurvScore(true));
-		Scores.put(3, robotStatistics.showRKBonus(true));
-		Scores.put(4, robotStatistics.showBKBonus(true));
-		Scores.put(5, robotStatistics.showLSBonus(true));
-		Scores.put(6, robotStatistics.showFlagScore(false));
-		
-		return Scores;
+	public Double getCustomOverallScore(RobotStatistics robotStatistics) {
+		Double scores = 0.0;
+		scores += robotStatistics.showBulletDamageScore();
+		scores += robotStatistics.showBulletKillBonus();
+		scores += robotStatistics.showRammingDamageScore();
+		scores += robotStatistics.showRammingKillBonus();
+		scores += robotStatistics.showBulletKillBonus();
+		scores += robotStatistics.showLastSurvivorBonus();
+		return scores;
 	}
 }
