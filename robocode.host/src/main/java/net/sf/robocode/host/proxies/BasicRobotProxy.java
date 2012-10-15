@@ -529,7 +529,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
             return null;
         }
 
-        power = min(getEnergyImpl(), min(max(power, Rules.MIN_BULLET_POWER), Rules.MAX_BULLET_POWER));
+        power = min(getEnergyImpl(), min(max(power, getMinBulletPower()), getMaxBulletPower()));
 
         Bullet bullet;
         BulletCommand wrapper;
