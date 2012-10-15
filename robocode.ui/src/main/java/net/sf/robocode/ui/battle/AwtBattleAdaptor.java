@@ -109,15 +109,16 @@ public final class AwtBattleAdaptor {
                     if (readoutText) {
                         synchronized (snapshot) {
                             robots = lastSnapshot.getRobots();
-
                             for (int i = 0; i < robots.length; i++) {
                                 RobotSnapshot robot = (RobotSnapshot) robots[i];
-
-                                final StringBuilder cache = outCache[i];
-
-                                if (cache.length() > 0) {
-                                    robot.setOutputStreamSnapshot(cache.toString());
-                                    outCache[i].setLength(0);
+                                
+                                if(outCache.length >= robots.length){
+	                                final StringBuilder cache = outCache[i];
+	
+	                                if (cache.length() > 0) {
+	                                    robot.setOutputStreamSnapshot(cache.toString());
+	                                    outCache[i].setLength(0);
+	                                }
                                 }
                             }
                         }
@@ -189,7 +190,7 @@ public final class AwtBattleAdaptor {
                 final int r = i;
                 final String text = robot.getOutputStreamSnapshot();
 
-                if (text != null && text.length() != 0) {
+                if (text != null && text.length() != 0 && outCache.length >= robots.length) {
                     robot.setOutputStreamSnapshot(null);
                     EventQueue.invokeLater(new Runnable() {
                         @Override
@@ -236,8 +237,8 @@ public final class AwtBattleAdaptor {
                     isRunning.set(true);
                     isPaused.set(false);
                     synchronized (snapshot) {
-                        outCache = new StringBuilder[event.getRobotsCount()];
-                        for (int i = 0; i < event.getRobotsCount(); i++) {
+                        outCache = new StringBuilder[event.getRobotsCount() + 1];
+                        for (int i = 0; i < event.getRobotsCount() + 1; i++) {
                             outCache[i] = new StringBuilder(1024);
                         }
                     }

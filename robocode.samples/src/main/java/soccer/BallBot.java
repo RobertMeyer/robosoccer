@@ -6,12 +6,12 @@ import robocode.util.Utils;
 public class BallBot extends Ball {
 
 	/* Bounds for the goal - possibly to be altered at a later date */
-	public static final double GOALXMIN = 200;
-	public static final double GOALXMAX = 600;
-	public static final double GOALYMIN = 100;
-	public static final double GOALYMAX = 400;
+	public static final double GOALXMIN = 150;
+	public static final double GOALXMAX = 650;
+	public static final double GOALYMIN = 150;
+	public static final double GOALYMAX = 450;
 	public static final double XBOUND = 800;
-	public static final double YBOUND = 800;
+	public static final double YBOUND = 600;
 	public double team1; //team 1 score
 	public double team2; //team 2 score
 
@@ -28,17 +28,6 @@ public class BallBot extends Ball {
 		});
 
 		execute();
-	}
-
-	public void onCustomEvent(CustomEvent e) {
-		if (e.getCondition().getName().equals("scored")) {
-			if (getX() < XBOUND/2) {
-				team1++;
-			}
-			else {
-				team2++;
-			}
-		}
 	}
 
 	public void onHitByBullet(HitByBulletEvent e) {
@@ -86,10 +75,9 @@ public class BallBot extends Ball {
 		finalVBall[0] = finalVBallN[0] + finalVBallT[0];
 		finalVBall[1] = finalVBallN[1] + finalVBallT[1];
 
-		double finalVelocity = Math.sqrt(Math.pow(finalVBall[0], 2) + Math.pow(finalVBall[1], 2));
+		//double finalVelocity = Math.sqrt(Math.pow(finalVBall[0], 2) + Math.pow(finalVBall[1], 2));
 		double finalHeading = Math.atan(finalVBall[1]/finalVBall[0]);
 
-		setMaxVelocity(finalVelocity);
 		setTurnRightRadians(Utils.normalRelativeAngle(finalHeading - getHeadingRadians()));
 		setTurnRight(e.getBearing() + 180);
 		setAhead(200);

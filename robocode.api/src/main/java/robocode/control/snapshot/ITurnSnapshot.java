@@ -23,12 +23,15 @@ package robocode.control.snapshot;
  */
 public interface ITurnSnapshot {
 
-    /**
-     * Returns a list of snapshots for the robots participating in the battle.
-     *
-     * @return a list of snapshots for the robots participating in the battle.
-     */
-    IRobotSnapshot[] getRobots();
+	/**
+	 * Returns a list of snapshots for the robots participating in the battle. 
+	 *
+	 * @return a list of snapshots for the robots participating in the battle. 
+	 */
+	IRobotSnapshot[] getRobots();
+
+	
+	IItemSnapshot[] getItems();
 
     /**
      * Returns a list of snapshots for the bullets that are currently on the battlefield.
@@ -38,6 +41,13 @@ public interface ITurnSnapshot {
     IBulletSnapshot[] getBullets();
 
     /**
+     * Returns a list of snapshots for the obstacles that are currently on the battlefield.
+     *
+     * @return a list of snapshots for the obstacles that are currently on the battlefield.
+     */
+    IObstacleSnapshot[] getObstacles();
+    
+    /**
      * Returns the current TPS (turns per second) rate.
      *
      * @return the current TPS (turns per second) rate.
@@ -45,6 +55,8 @@ public interface ITurnSnapshot {
     int getTPS();
 
 	IEffectAreaSnapshot[] getEffectAreas();
+	
+	IRenderableSnapshot[] getCustomObjects();
 
     /**
      * Returns the current round of the battle.
@@ -70,13 +82,15 @@ public interface ITurnSnapshot {
      */
     IScoreSnapshot[] getSortedTeamScores();
 
-    /**
-     * Returns an array of indexed scores grouped by teams that can be used to determine the score
-     * for the individual team based on the team index.
-     *
-     * @return an array of indexed IScoreSnapshots, where each index matches an index of a specific team.
-     *
-     * @see #getSortedTeamScores()
-     */
-    IScoreSnapshot[] getIndexedTeamScores();
+	/**
+	 * Returns an array of indexed scores grouped by teams that can be used to determine the score
+	 * for the individual team based on the team index.
+	 *
+	 * @return an array of indexed IScoreSnapshots, where each index matches an index of a specific team.
+	 * 
+	 * @see #getSortedTeamScores()
+	 */
+	IScoreSnapshot[] getIndexedTeamScores();
+
+
 }

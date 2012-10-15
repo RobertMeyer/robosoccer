@@ -29,9 +29,10 @@ public class RobotType implements Serializable {
 	transient public static final RobotType PAINTING = new RobotType(64);
 	transient public static final RobotType HOUSE = new RobotType(128);
 	transient public static final RobotType BALL = new RobotType(256);
-  transient public static final RobotType BOTZILLA = new RobotType(256);
-	
-
+	transient public static final RobotType BOTZILLA = new RobotType(512);
+	transient public static final RobotType ZOMBIE = new RobotType(1024);
+	transient public static final RobotType DISPENSER = new RobotType(2048);
+	transient public static final RobotType FREEZE = new RobotType(4096);
 	private int code;
 
 	public RobotType(int code) {
@@ -47,8 +48,11 @@ public class RobotType implements Serializable {
 			boolean isTeamRobot,
 			boolean isDroid,
 			boolean isHouse,
+			boolean isFreeze,
 			boolean isBall,
-      boolean isBotzilla
+			boolean isBotzilla,
+			boolean isZombie,
+			boolean isDispenser
 			) {
 		this.code = 0;
 		if (isJuniorRobot) {
@@ -75,12 +79,22 @@ public class RobotType implements Serializable {
 		if (isHouse) {
 			code += HOUSE.getCode();
 		}
+		if (isFreeze) {
+			code += FREEZE.getCode();
+		}
 		if (isBall) {
 			code += BALL.getCode();
 		}
-    if (isBotzilla) {
-          code += BOTZILLA.getCode();
-    }
+
+	    if (isBotzillaBot()) {
+	    	code += BOTZILLA.getCode();
+	    }
+		if (isZombie) {
+			code += ZOMBIE.getCode();
+		}
+		if (isDispenser) {
+			code += DISPENSER.getCode();
+		}
 	}
 
 	public int getCode() {
@@ -123,13 +137,25 @@ public class RobotType implements Serializable {
 		return (code & HOUSE.code) != 0;
 	}
 	
+	public boolean isFreezeRobot() {
+		return (code & FREEZE.code) != 0;
+    }
+
 	public boolean isBall() {
 		return (code & BALL.code) != 0;
 	}
 
-  public boolean isBotzilla() {
-        return (code & BOTZILLA.code) != 0;
-  }
+	public boolean isBotzillaBot() {
+		return (code & BOTZILLA.code) != 0;
+	}
+	
+	public boolean isZombie() {
+		return (code & ZOMBIE.code) != 0;
+	}
+	
+	public boolean isDispenser() {
+		return (code & DISPENSER.code) != 0;
+	}
 
 	@Override
 	public int hashCode() {

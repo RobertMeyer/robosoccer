@@ -24,6 +24,8 @@ public interface IImageManager {
 	Image getGroundTileImage(int index);
 	
 	Image getFieldTileImage(int index);
+
+	Image getSpikeTileImage();
 	
 	RenderImage getCustomImage(String name);
 	
@@ -33,9 +35,9 @@ public interface IImageManager {
 
     RenderImage getExplosionDebriseRenderImage();
 
-    RenderImage getColoredBodyRenderImage(Integer color);
+    RenderImage getColoredBodyRenderImage(Integer color, String imagePath);
 
-    RenderImage getColoredGunRenderImage(Integer color);
+    RenderImage getColoredGunRenderImage(Integer color, String imagePath);
 
-    RenderImage getColoredRadarRenderImage(Integer color);
+    RenderImage getColoredRadarRenderImage(Integer color, String imagePath);
 }

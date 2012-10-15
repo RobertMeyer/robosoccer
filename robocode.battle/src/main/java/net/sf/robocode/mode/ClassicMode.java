@@ -1,21 +1,26 @@
 package net.sf.robocode.mode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Hashtable;
+
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
+import net.sf.robocode.battle.IRenderable;
+import robocode.BattleResults;
+import robocode.BattleRules;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
-import net.sf.robocode.battle.*;
+import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.security.HiddenAccess;
-import robocode.BattleRules;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 
@@ -26,67 +31,146 @@ import robocode.control.RobotSpecification;
  *
  */
 public class ClassicMode implements IMode {
-	
+
+	protected GuiOptions uiOptions;
+	/* Results table */
+	protected BattleResultsTableModel resultsTable;
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String toString() {
 		return "Classic Mode";
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getDescription() {
 		return "Original robocode mode.";
 	}
-	
+
 	public JPanel getRulesPanel() {
 		return null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Hashtable<String, Object> getRulesPanelValues() {
 		return null;
 	}
-	
+
 	// ----- Mode-specific methods below this line ------
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
 		return modifyVelocity(velocityIncrement);
 	}
-	
+
 	public double modifyVelocity(double velocityIncrement) {
 		return velocityIncrement;
 	}
-	
+
+    public int setNumObstacles(BattleRules rules) {
+        return 0;
+    }
+
 	/**
-	 * {@inheritDoc}
+	 * Returns a list of ItemDrop's to
+	 * spawn in the beginning of the round
+	 * @return List of items
 	 */
-	public List<String> getItems() {
-		return new ArrayList<String>();
+	public List<? extends ItemDrop> getItems() {
+		return new ArrayList<ItemDrop>();
 	}
-	
-	@Override
-	public void setItems() {
+
+	/**
+	 * Create a list of ItemDrop's to
+	 * spawn in the beginning of the round
+	 * @param battle The Battle to add the items to
+	 */
+	public void setItems(Battle battle) {
 		/* No items needed for Classic Mode */
 	}
 
-	@Override
-	public void scorePoints() {
-		// TODO Auto-generated method stub	
+	/**
+	 * Increments the score for the mode per turn
+	 */
+	public void scoreTurnPoints() {
+		/* ClassicMode does not need a score method, optional for overriding */
 	}
-	
+
+	/**
+	 * Override me if you wish to use the CustomObjectAPI.
+	 *
+	 * This function will get called once a frame, you can perform
+	 * functions like moving the image around the battle, changing
+	 * scale, changing alpha level, so on.
+	 *
+	 * Loop over the given ArrayList of objects and perform logic
+	 * on them. To find an object your after look at getName() function.
+	 *
+	 * @param customObject - an ArrayList of all customObjects
+	 */
+	public void updateRenderables(List<IRenderable> renderables) {
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean respawnsOn() {
+		return false;
+	}
+
+	/**
+	 * Override me if you wish to use the CustomObjectAPI.
+	 *
+	 * This function should create new CustomObjects which should
+	 * be stored in a ArrayList<CustomObject> and returned.
+	 *
+	 * The returned list will represent all the custom objects in
+	 * the scene to be rendered.
+	 *
+	 * example:-
+	 * 		// Create ArrayList
+	 * 		List<CustomObject> objs = new ArrayList<CustomObject>();
+	 * 		// Create a new object at (100,100) which will render a flag
+	 *		CustomObject obj = new CustomObject("flag",
+	 *		"/net/sf/robocode/ui/images/flag.png", 100, 100);
+	 *		// Set Alpha blending to fade 50%
+	 *		obj.setAlpha(0.5f);
+	 *		// Add object to ArrayList
+	 *		objs.add(obj);
+	 *		return objs;
+	 *
+	 * @return a ArrayList<CustomObjects> which are added to the scene.
+	 */
+	public List<IRenderable> createRenderables() {
+		return null;
+	}
+
+	@Override
+	public String addModeRobots(String selectedRobots) {
+		// Don't need to add any extra robots for classic mode
+		return selectedRobots;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int turnLimit() {
+		return 5*30*60; // 9000 turns is the default
+	}
+
 	/**
 	 * Sets the starting positions for all robot objects.
 	 * Original implementation taken from Battle.
-	 * @param initialPositions String of initial positions. Parsed by 
-	 * the original implementation found in Battle. Can be ignored for 
+	 * @param initialPositions String of initial positions. Parsed by
+	 * the original implementation found in Battle. Can be ignored for
 	 * custom implementations.
 	 * @param battleRules Battle rules.
 	 * @param robotsCount Size of battlingRobotsList
@@ -94,7 +178,7 @@ public class ClassicMode implements IMode {
 	 * the starting coordinates and heading for each robot.
 	 */
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, int robotsCount) {
+			BattleRules battleRules, Battle battle, int robotsCount) {
 		double[][] initialRobotPositions = null;
 
         if (initialPositions == null || initialPositions.trim().length() == 0) {
@@ -161,154 +245,155 @@ public class ClassicMode implements IMode {
             initialRobotPositions[i][1] = y;
             initialRobotPositions[i][2] = heading;
         }
-        
+
         return initialRobotPositions;
 	}
 
-	/**
-	 * The initial setup for robot and contestant lists based on the given
-	 * list of robots, battleRobotsList. Overriding this will allow for 
-	 * predefined team creation. Original implementation taken from Battle.
-	 * @param battle The battle object associated with every game mode
-	 * @param battlingRobotsList List of robots to be sorted.
-	 * @param hostManager Host manager.
-	 * @param robots List of RobotPeers objects.
-	 * @param contestants List of ContestantPeer objects.
-	 * @param repositoryManager Allows creation of RobotSpecification objects
-	 * allowing users to add predefined robots to the battle.
-	 */
-	public void createPeers(Battle battle,
-			RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			List<RobotPeer> robots, List<ContestantPeer> contestants,
-			IRepositoryManager repositoryManager) {
-		// create teams
-        Hashtable<String, Integer> countedNames = new Hashtable<String, Integer>();
-        List<String> teams = new ArrayList<String>();
-        List<String> teamDuplicates = new ArrayList<String>();
-        List<Integer> robotDuplicates = new ArrayList<Integer>();
-
-        // count duplicate robots, enumerate teams, enumerate team members
-        for (RobotSpecification specification : battlingRobotsList) {
-            final String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
-
-            if (countedNames.containsKey(name)) {
-                int value = countedNames.get(name);
-
-                countedNames.put(name, value == 1 ? 3 : value + 1);
-            } else {
-                countedNames.put(name, 1);
-            }
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            if (teamFullName != null) {
-                if (!teams.contains(teamFullName)) {
-                    teams.add(teamFullName);
-                    String teamName = teamFullName.substring(0, teamFullName.length() - 6);
-
-                    if (countedNames.containsKey(teamName)) {
-                        int value = countedNames.get(teamName);
-
-                        countedNames.put(teamName, value == 1 ? 3 : value + 1);
-                    } else {
-                        countedNames.put(teamName, 1);
-                    }
-                }
-            }
-        }
-
-        Hashtable<String, List<String>> teamMembers = new Hashtable<String, List<String>>();
-
-        // name teams
-        for (int i = teams.size() - 1; i >= 0; i--) {
-            String teamFullName = teams.get(i);
-            String name = teamFullName.substring(0, teamFullName.length() - 6);
-            Integer order = countedNames.get(name);
-            String newTeamName = name;
-
-            if (order > 1) {
-                newTeamName = name + " (" + (order - 1) + ")";
-            }
-            teamDuplicates.add(0, newTeamName);
-            teamMembers.put(teamFullName, new ArrayList<String>());
-            countedNames.put(name, order - 1);
-        }
-
-        // name robots
-        for (int i = battlingRobotsList.length - 1; i >= 0; i--) {
-            RobotSpecification specification = battlingRobotsList[i];
-            String name = ((IRobotRepositoryItem) HiddenAccess.getFileSpecification(specification)).getUniqueFullClassNameWithVersion();
-            Integer order = countedNames.get(name);
-            int duplicate = -1;
-
-            String newName = name;
-
-            if (order > 1) {
-                duplicate = (order - 2);
-                newName = name + " (" + (order - 1) + ")";
-            }
-            countedNames.put(name, (order - 1));
-            robotDuplicates.add(0, duplicate);
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            if (teamFullName != null) {
-                List<String> members = teamMembers.get(teamFullName);
-
-                members.add(newName);
-            }
-        }
-
-        // create teams
-        Hashtable<String, TeamPeer> namedTeams = new Hashtable<String, TeamPeer>();
-
-        // create robots
-        for (int i = 0; i < battlingRobotsList.length; i++) {
-            RobotSpecification specification = battlingRobotsList[i];
-            TeamPeer team = null;
-
-            String teamFullName = HiddenAccess.getRobotTeamName(specification);
-
-            // The team index and robot index depends on current sizes of the contestant list and robot list
-            int teamIndex = contestants.size();
-            int robotIndex = robots.size();
-
-            if (teamFullName != null) {
-                if (!namedTeams.containsKey(teamFullName)) {
-                    String newTeamName = teamDuplicates.get(teams.indexOf(teamFullName));
-
-                    team = new TeamPeer(newTeamName, teamMembers.get(teamFullName), teamIndex);
-
-                    namedTeams.put(teamFullName, team);
-                    contestants.add(team);
-
-                } else {
-                    team = namedTeams.get(teamFullName);
-                    if (team != null) {
-                        teamIndex = team.getTeamIndex();
-                    }
-                }
-            }
-            Integer duplicate = robotDuplicates.get(i);
-            // TODO Follow back from here to RobotPeer etc, to
-            RobotPeer robotPeer = new RobotPeer(battle, hostManager, specification, duplicate, team, robotIndex);
-
-            robots.add(robotPeer);
-            if (team == null) {
-                contestants.add(robotPeer);
-            }
-        }
-	}
-	
 	/**
 	 * Perform scan dictates the scanning behaviour of robots. One parameter
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
 	 * Useful for making some robots invisible to radar.
 	 */
-	public void updateRobotScans(List<RobotPeer> robotPeers) {
+	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-        for (RobotPeer robotPeer : robotPeers) {
-            robotPeer.performScan(robotPeers);
+        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
+            robotPeer.performScan(getRobotsAtRandom(robots));
         }
+	}
+
+	public boolean isRoundOver(int endTimer, int time) {
+		return (endTimer > 5 * time);
+	}
+
+	/**
+	 * Determines if the bullet being dealt with should ricochet
+	 * @param power Power of current bullet being dealt with
+	 * @param minBulletPower Minimum bullet power from the battle rules
+	 * @param ricochetValue User provided variable that power is divided by
+	 * each ricochet
+	 * @return true/false if a ricochet should occur
+	 */
+	public boolean shouldRicochet(double power, double minBulletPower,
+			double ricochetValue) {
+		return false;
+	}
+
+	/**
+	 * Checks user input for Ricochet is acceptable
+	 * @param rules Current battle rules
+	 * @return ricochet value as provided by user or 1 if value provided < 1
+	 */
+	public double modifyRicochet(BattleRules rules) {
+			return 1;
+		}
+
+	 /**
+     * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
+     * so that a robot placed before another robot in the list will not gain any benefit when the game
+     * checks if a robot has won, is dead, etc.
+     * This method was introduced as two equal robots like sample.RamFire got different scores even
+     * though the code was exactly the same.
+     *
+     * @return a list of robot peers.
+     */
+    protected List<RobotPeer> getRobotsAtRandom(List<RobotPeer> robots) {
+        List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(robots);
+
+        Collections.shuffle(shuffledList, RandomFactory.getRandom());
+        return shuffledList;
+    }
+
+	@Override
+	public void setItems() {
+		// TODO Auto-generated method stub
+
+	}
+	
+	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
+			IRepositoryManager repositoryManager) {
+		peers.createPeers(battlingRobotsList);
+	}
+
+	/**
+	 * Initialises the GuiOptions object with the visibility options
+	 * applicable to this mode.
+	 */
+	public void setGuiOptions() {
+		uiOptions = new GuiOptions(true, true);
+	}
+
+	/**
+	 * Getter method for the GuiOptions object associated with this
+	 * mode.
+	 * @return GuiOptions object associated with this mode.
+	 */
+	public GuiOptions getGuiOptions() {
+		return uiOptions;
+	}
+	
+	/**
+	 * Called after the death of a robot that is about to respawn
+	 */
+	public void onRespawnDeath(RobotPeer robot) {
+		
+	}
+
+	@Override
+	public BattleResults[] getFinalResults() {
+		return null;
+	}
+	
+	public void addRobots(int currentTurn, BattlePeers peers){
+		// do nothing
+	}
+	
+	public double modifyVision(double standard) {
+		return standard;
+	}
+	
+	public double modifyVision(double standard, BattleRules rules)
+	{
+		return modifyVision(standard);
+	}
+
+	/**
+	 * Get the customised BattleResultsTableModel
+	 * @return Customised BattleResultsTableModel
+	 */
+	@Override
+	public BattleResultsTableModel getCustomResultsTable() {
+		if (resultsTable == null) {
+			this.setCustomResultsTable();
+		}
+		
+		return resultsTable;
+	}
+	
+	/**
+	 * Setup a default BattleResultsTableModel
+	 */
+	public void setCustomResultsTable() {
+		if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+		
+		/* Set it to show the default scores */
+		resultsTable.showOverallRank(true);
+		resultsTable.showRobotName(true);
+		resultsTable.showTotalScore(true);
+		resultsTable.showSurvival(true);
+		resultsTable.showSurvivalBonus(true);
+		resultsTable.showBulletDamage(true);
+		resultsTable.showBulletBonus(true);
+		resultsTable.showRamDamage(true);
+		resultsTable.showRamBonus(true);
+		resultsTable.showFirsts(true);
+		resultsTable.showSeconds(true);
+		resultsTable.showThirds(true);
+	}
+
+	@Override
+	public boolean allowsOneRobot() {
+		return false;
 	}
 }

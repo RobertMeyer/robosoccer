@@ -36,89 +36,92 @@ import robocode.robotinterfaces.*;
  */
 public class JavaHost implements IHost {
 	
-    public IRobotClassLoader createLoader(IRobotRepositoryItem robotRepositoryItem) {
-        return new RobotClassLoader(robotRepositoryItem.getClassPathURL(), robotRepositoryItem.getFullClassName());
-    }
+	public IRobotClassLoader createLoader(IRobotRepositoryItem robotRepositoryItem) {
+		return new RobotClassLoader(robotRepositoryItem.getClassPathURL(), robotRepositoryItem.getFullClassName());
+	}
 
     @Override
-    public IHostingRobotProxy createRobotProxy(IHostManager hostManager, RobotSpecification robotSpecification, IRobotStatics statics, IRobotPeer peer) {
-        IHostingRobotProxy robotProxy;
-        final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
-                robotSpecification);
+	public IHostingRobotProxy createRobotProxy(IHostManager hostManager, RobotSpecification robotSpecification, IRobotStatics statics, IRobotPeer peer) {
+		IHostingRobotProxy robotProxy;
+		final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
+				robotSpecification);
 
-        if (specification.isTeamRobot()) {
-            robotProxy = new TeamRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-        } else if (specification.isAdvancedRobot()) {
-            robotProxy = new AdvancedRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-        } else if (specification.isStandardRobot()) {
-            robotProxy = new StandardRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-        } else if (specification.isJuniorRobot()) {
-            robotProxy = new JuniorRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-        } else {
-            throw new AccessControlException("Unknown robot type");
-        }
-        return robotProxy;
-    }
-
-    @Override
-    public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
-        IRobotClassLoader loader = null;
-
-        try {
-            loader = createLoader(robotRepositoryItem);
-            loader.loadRobotMainClass(true);
-            return loader.getReferencedClasses();
-
-        } catch (ClassNotFoundException e) {
-            Logger.logError(e);
-            return new String[0];
-        } finally {
-            if (loader != null) {
-                loader.cleanup();
-            }
-        }
-    }
+		if (specification.isTeamRobot()) {
+			robotProxy = new TeamRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+		} else if (specification.isAdvancedRobot()) {
+			robotProxy = new AdvancedRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+		} else if (specification.isStandardRobot()) {
+			robotProxy = new StandardRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+		} else if (specification.isJuniorRobot()) {
+			robotProxy = new JuniorRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+		} else {
+			throw new AccessControlException("Unknown robot type");
+		}
+		return robotProxy;
+	}
 
     @Override
-    public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
-        IRobotClassLoader loader = null;
+	public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
+		IRobotClassLoader loader = null;
 
-        try {
-            loader = createLoader(robotRepositoryItem);
-            Class<?> robotClass = loader.loadRobotMainClass(resolve);
+		try {
+			loader = createLoader(robotRepositoryItem);
+			loader.loadRobotMainClass(true);
+			return loader.getReferencedClasses();
 
-            if (robotClass == null || java.lang.reflect.Modifier.isAbstract(robotClass.getModifiers())) {
-                // this class is not robot
-                return RobotType.INVALID;
-            }
-            return checkInterfaces(robotClass, robotRepositoryItem);
+		} catch (ClassNotFoundException e) {
+			Logger.logError(e);
+			return new String[0];
+		} finally {
+			if (loader != null) {
+				loader.cleanup();
+			}
+		}
+	}
 
-        } catch (Throwable t) {
-            if (message) {
-                logError("Got an error with " + robotRepositoryItem.getFullClassName() + ": " + t); // just message here
-                if (t.getMessage() != null && t.getMessage().contains("Bad version number in .class file")) {
-                    logError("Maybe you run robocode with Java 1.5 and robot was compiled for later Java version ?");
-                }
-            }
-            return RobotType.INVALID;
-        } finally {
-            if (loader != null) {
-                loader.cleanup();
-            }
-        }
-    }
+    @Override
+	public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
+		IRobotClassLoader loader = null;
 
-    private RobotType checkInterfaces(Class<?> robotClass, IRobotRepositoryItem robotRepositoryItem) {
-        boolean isJuniorRobot = false;
-        boolean isStandardRobot = false;
-        boolean isInteractiveRobot = false;
-        boolean isPaintRobot = false;
-        boolean isAdvancedRobot = false;
-        boolean isTeamRobot = false;
-        boolean isDroid = false;
-        boolean isHouseRobot = false;
+		try {
+			loader = createLoader(robotRepositoryItem);
+			Class<?> robotClass = loader.loadRobotMainClass(resolve);
+
+			if (robotClass == null || java.lang.reflect.Modifier.isAbstract(robotClass.getModifiers())) {
+				// this class is not robot
+				return RobotType.INVALID;
+			}
+			return checkInterfaces(robotClass, robotRepositoryItem);
+
+		} catch (Throwable t) {
+			if (message) {
+				logError("Got an error with " + robotRepositoryItem.getFullClassName() + ": " + t); // just message here
+				if (t.getMessage() != null && t.getMessage().contains("Bad version number in .class file")) {
+					logError("Maybe you run robocode with Java 1.5 and robot was compiled for later Java version ?");
+				}
+			}
+			return RobotType.INVALID;
+		} finally {
+			if (loader != null) {
+				loader.cleanup();
+			}
+		}
+	}
+
+	private RobotType checkInterfaces(Class<?> robotClass, IRobotRepositoryItem robotRepositoryItem) {
+		boolean isJuniorRobot = false;
+		boolean isStandardRobot = false;
+		boolean isInteractiveRobot = false;
+		boolean isPaintRobot = false;
+		boolean isAdvancedRobot = false;
+		boolean isTeamRobot = false;
+		boolean isDroid = false;
+		boolean isHouseRobot = false;
+		boolean isFreezeRobot = false;
         boolean isBall = false;
         boolean isBotzilla = false;
+        boolean isZombie = false;
+        boolean isDispenser = false;
 
         if (Droid.class.isAssignableFrom(robotClass)) {
             isDroid = true;
@@ -128,20 +131,36 @@ public class JavaHost implements IHost {
             isTeamRobot = true;
         }
 
-        if (IAdvancedRobot.class.isAssignableFrom(robotClass)) {
-            isAdvancedRobot = true;
-        }
+		if (ITeamRobot.class.isAssignableFrom(robotClass)) {
+			isTeamRobot = true;
+		}
 
-        if (IHouseRobot.class.isAssignableFrom(robotClass)) {
-            isHouseRobot = true;
-        }
-        
+		if (IAdvancedRobot.class.isAssignableFrom(robotClass)) {
+			isAdvancedRobot = true;
+		}
+		
+		if (IHouseRobot.class.isAssignableFrom(robotClass)) {
+			isHouseRobot = true;
+		}
+		
+		if (IFreezeRobot.class.isAssignableFrom(robotClass)) {
+			isFreezeRobot = true;
+		}
+
         if (IBall.class.isAssignableFrom(robotClass)) {
 			isBall = true;
 		}
         
         if (IBotzilla.class.isAssignableFrom(robotClass)) {
         	isBotzilla = true;
+        }   
+        
+        if (IZombie.class.isAssignableFrom(robotClass)) {
+        	isZombie = true;
+        }
+        
+        if (IDispenser.class.isAssignableFrom(robotClass)) {
+        	isDispenser = true;
         }
 
         if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
@@ -158,12 +177,12 @@ public class JavaHost implements IHost {
                     || checkMethodOverride(robotClass, Robot.class, "onMouseMoved", MouseEvent.class)
                     || checkMethodOverride(robotClass, Robot.class, "onMouseDragged", MouseEvent.class)
                     || checkMethodOverride(robotClass, Robot.class, "onMouseWheelMoved", MouseWheelEvent.class)) {
-                isInteractiveRobot = true;
-            }
-        }
+				isInteractiveRobot = true;
+			}
+		}
 
-        if (IPaintRobot.class.isAssignableFrom(robotClass)) {
-            if (checkMethodOverride(robotClass, Robot.class, "getPaintEventListener")
+		if (IPaintRobot.class.isAssignableFrom(robotClass)) {
+			if (checkMethodOverride(robotClass, Robot.class, "getPaintEventListener")
                     || checkMethodOverride(robotClass, Robot.class, "onPaint", Graphics2D.class)) {
                 isPaintRobot = true;
             }
@@ -188,7 +207,7 @@ public class JavaHost implements IHost {
             }
         }
         return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-                             isTeamRobot, isDroid, isHouseRobot, isBall, isBotzilla);
+                             isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isBotzilla, isZombie, isDispenser);
     	}
 
     private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {
@@ -206,5 +225,4 @@ public class JavaHost implements IHost {
         }
         return true;
     }
-
 }

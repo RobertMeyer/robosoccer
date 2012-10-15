@@ -50,7 +50,6 @@ import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.util.StringUtil;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.events.*;
-
 /**
  * Robocode - A programming game involving battling AI tanks.<br>
  * Copyright (c) 2001-2012 Mathew A. Nelson and Robocode contributors
@@ -130,7 +129,9 @@ public final class RobocodeMain extends RobocodeMainBase {
             properties.setOptionsBattleDesiredTPS(setup.tps);
 
             battleManager.addListener(battleObserver);
-
+            
+            
+            
             if (windowManager != null && windowManager.isGUIEnabled()) {
                 if (!setup.minimize && setup.battleFilename == null && soundManager != null) {
                     soundManager.playThemeMusic();
@@ -138,14 +139,15 @@ public final class RobocodeMain extends RobocodeMainBase {
                 }
                 windowManager.showRobocodeFrame(true, setup.minimize);
 
-                // Play the intro battle if a battle file is not specified and this is the first time Robocode is being run
-
                 if (setup.battleFilename == null && versionManager.isLastRunVersionChanged()) {
                     properties.saveProperties();
                     windowManager.runIntroBattle();
                 }
             }
 
+            
+           
+            
             final boolean enableCLIRecording = (setup.recordFilename != null || setup.recordXmlFilename != null);
 
             // Note: At this point the GUI should be opened (if enabled) before starting the battle from a battle file
@@ -350,6 +352,7 @@ public final class RobocodeMain extends RobocodeMainBase {
                 }
             }
             if (out != null) {
+            	/* TODO BRANDONCW */
                 BattleResultsTableModel resultsTable = new BattleResultsTableModel(event.getSortedResults(),
                                                                                    event.getBattleRules().getNumRounds());
 

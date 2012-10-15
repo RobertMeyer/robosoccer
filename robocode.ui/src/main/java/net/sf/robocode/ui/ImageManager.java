@@ -22,7 +22,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import robocode.CustomEvent;
 import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.gfx.ImageUtil;
 import net.sf.robocode.ui.gfx.RenderImage;
@@ -48,6 +47,7 @@ public class ImageManager implements IImageManager {
     private HashMap<Integer, RenderImage> robotRadarImageCache;
     private HashMap<String, RenderImage> customImageCache;
 	private Image[] soccerField;
+	private Image spikeImage;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -59,7 +59,7 @@ public class ImageManager implements IImageManager {
 
         // Reset image cache
         groundImages = new Image[9];
-		soccerField = new Image[130];
+		soccerField = new Image[2];
         explosionRenderImages = null;
         debriseRenderImage = null;
         bodyImage = null;
@@ -73,15 +73,20 @@ public class ImageManager implements IImageManager {
 
 
         // Read images into the cache
-		getBodyImage();
-		getGunImage();
-		getRadarImage();
+		getBodyImage(null);
+		getGunImage(null);
+		getRadarImage(null);
 		getExplosionRenderImage(0, 0);
 	}
 	
 	public Image getFieldTileImage(int index) {
 		if (soccerField[index] == null) {
-			soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/field_tile-" + index + ".png");
+			switch (index) {
+			case 0: soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/grass_tile.png");
+					break;
+			case 1: soccerField[index] = getImage("/net/sf/robocode/ui/images/ground/soccer_field/line.png");
+					break;
+			}
 		}
 		return soccerField[index];
 	}
@@ -92,6 +97,12 @@ public class ImageManager implements IImageManager {
             groundImages[index] = getImage("/net/sf/robocode/ui/images/ground/blue_metal/blue_metal_" + index + ".png");
         }
         return groundImages[index];
+    }
+	
+	@Override
+    public Image getSpikeTileImage() {
+		spikeImage = getImage("/net/sf/robocode/ui/images/ground/spike/spike.png");
+        return spikeImage;
     }
 
     @Override
@@ -150,13 +161,22 @@ public class ImageManager implements IImageManager {
         return image;
     }
     
+    /**
+     * This method loads in a image from a given file path. 
+     * 
+     * @param String name - Key name for hashmap.
+     * @param String filename - path to file.
+     */
     @SuppressWarnings("unused")
 	public RenderImage addCustomImage(String name, String filename) {
+    	// Check if already cached
     	if (customImageCache.containsKey(name)) {
     		getCustomImage(name);
     	}
+    	// Load image into memory
     	RenderImage img = new RenderImage(getImage(filename));
     	
+    	// Check to see valid image
     	if(img != null) {
     		customImageCache.put(name, img);
     		return img;
@@ -165,6 +185,11 @@ public class ImageManager implements IImageManager {
     	return null;
     }
     
+    /**
+     * Returns a custom image from cache.
+     * 
+     * @param String name - Name of key to return.
+     */
     public RenderImage getCustomImage(String name) {
     	if (customImageCache.containsKey(name)) {
     		return customImageCache.get(name);
@@ -175,12 +200,19 @@ public class ImageManager implements IImageManager {
     /**
      * Gets the body image
      * Loads from disk if necessary.
+     * @param imagePath 
      *
      * @return the body image
      */
-    private Image getBodyImage() {
-        if (bodyImage == null) {
+    private Image getBodyImage(String imagePath) {
+        if (bodyImage == null || imagePath == null) {
             bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
+        } else {
+        	try{
+        	bodyImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
+        	}
         }
         return bodyImage;
     }
@@ -188,12 +220,20 @@ public class ImageManager implements IImageManager {
     /**
      * Gets the gun image
      * Loads from disk if necessary.
+     * @param imagePath 
      *
      * @return the gun image
      */
-    private Image getGunImage() {
-        if (gunImage == null) {
+    private Image getGunImage(String imagePath) {
+        
+        if (gunImage == null || imagePath == null) {
             gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
+        } else {
+        	try{
+        		gunImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
+        	}
         }
         return gunImage;
     }
@@ -201,12 +241,19 @@ public class ImageManager implements IImageManager {
     /**
      * Gets the radar image
      * Loads from disk if necessary.
+     * @param imagePath 
      *
      * @return the radar image
      */
-    private Image getRadarImage() {
-        if (radarImage == null) {
+    private Image getRadarImage(String imagePath) {
+        if (radarImage == null || imagePath == null) {
             radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
+        } else {
+        	try{
+        	radarImage = getImage(imagePath);
+        	}catch(NullPointerException e) {
+        		radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
+        	}
         }
         return radarImage;
     }
@@ -219,33 +266,33 @@ public class ImageManager implements IImageManager {
     }
     
     @Override
-    public RenderImage getColoredBodyRenderImage(Integer color) {
+    public RenderImage getColoredBodyRenderImage(Integer color, String imagePath) {
         RenderImage img = robotBodyImageCache.get(color);
-
+        
         if (img == null) {
-            img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(), new Color(color, true)));
+            img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(imagePath), new Color(color, true)));
             robotBodyImageCache.put(color, img);
         }
         return img;
     }
 
     @Override
-    public RenderImage getColoredGunRenderImage(Integer color) {
+    public RenderImage getColoredGunRenderImage(Integer color, String imagePath) {
         RenderImage img = robotGunImageCache.get(color);
 
         if (img == null) {
-            img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(), new Color(color, true)));
+            img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(imagePath), new Color(color, true)));
             robotGunImageCache.put(color, img);
         }
         return img;
     }
 
     @Override
-    public RenderImage getColoredRadarRenderImage(Integer color) {
+    public RenderImage getColoredRadarRenderImage(Integer color, String imagePath) {
         RenderImage img = robotRadarImageCache.get(color);
 
         if (img == null) {
-            img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(), new Color(color, true)));
+            img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(imagePath), new Color(color, true)));
             robotRadarImageCache.put(color, img);
         }
         return img;

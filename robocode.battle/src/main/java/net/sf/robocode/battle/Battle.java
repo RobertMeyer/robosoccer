@@ -96,13 +96,15 @@
 package net.sf.robocode.battle;
 
 import static java.lang.Math.round;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-import net.sf.robocode.battle.peer.BallPeer;
+import net.sf.robocode.battle.item.BoundingRectangle;
+import net.sf.robocode.battle.item.ItemController;
+import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
@@ -111,7 +113,6 @@ import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.*;
 import net.sf.robocode.repository.IRepositoryManager;
-import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.*;
@@ -122,6 +123,8 @@ import robocode.control.events.*;
 import robocode.control.events.RoundEndedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.RobotState;
+
 
 /**
  * The {@code Battle} class is used for controlling a battle.
@@ -138,255 +141,307 @@ import robocode.control.snapshot.ITurnSnapshot;
 public final class Battle extends BaseBattle {
 
     private static final int DEBUG_TURN_WAIT_MILLIS = 10 * 60 * 1000; // 10 seconds
+
     private final IHostManager hostManager;
     private IRepositoryManager repositoryManager;
     private final long cpuConstant;
     // Inactivity related items
     private int inactiveTurnCount;
     private double inactivityEnergy;
-    // Turn skip related items
-    private boolean parallelOn;
-    private long millisWait;
-    private int nanoWait;
-    /*--ItemController--*/
-    private ItemController itemControl;// = new ItemController();
     // Objects in the battle
 	private BattleProperties bp;
-    private int robotsCount;
-    private List<RobotPeer> robots = new ArrayList<RobotPeer>();
-    private List<ContestantPeer> contestants = new ArrayList<ContestantPeer>();
-    private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+	private List<IRenderable> customObject = new ArrayList<IRenderable>();
     private int activeRobots;
-    /* List of items that are going to be dropped */
-    private List<ItemDrop> items = new ArrayList<ItemDrop>();
     // Death events
     private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
+    // For retrieval of robot in timer mode
+    private List<RobotPeer> robotList;
+
     // Flag specifying if debugging is enabled thru the debug command line option
     private final boolean isDebugging;
     // Initial robot start positions (if any)
-    protected double[][] initialRobotPositions;
-   
+    private double[][] initialRobotPositions;
+    //Botzilla specific variables
+    private int currentTurn;
+    private Boolean botzillaActive;
+    private int botzillaSpawnTime = 750;
+    RobotPeer botzillaPeer;
+    RobotSpecification botzilla;
+    private Hashtable<String, Object> setTimeHashTable;
+
+
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
 
-    public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
-        super(properties, battleManager, eventDispatcher);
-        isDebugging = System.getProperty("debug", "false").equals("true");
-        this.hostManager = hostManager;
-        this.cpuConstant = cpuManager.getCpuConstant();
-        this.repositoryManager = repositoryManager;
-        this.killstreakTracker = new KillstreakTracker(this);
-    }
+	// Turn skip related items
+	private boolean parallelOn;
+	private long millisWait;
+	private int nanoWait;
 
-    public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
-        isPaused = paused;
+	/*--ItemController--*/
+	private ItemController itemControl;// = new ItemController();
+	private List<ItemDrop> items = new ArrayList<ItemDrop>();
+	private int itemCursor;
+	// Objects in the battle
+	private int robotsCount;
+	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
+	private BattlePeers peers;
+
+	/** List of obstacles in the battlefield */
+    private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+    private int numObstacles;
+
+	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
+		super(properties, battleManager, eventDispatcher);
+		isDebugging = System.getProperty("debug", "false").equals("true");
+		this.hostManager = hostManager;
+		this.cpuConstant = cpuManager.getCpuConstant();
+		this.killstreakTracker = new KillstreakTracker(this);
         this.repositoryManager = repositoryManager;
-        battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
-                                               battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
-                                               battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
-        robotsCount = battlingRobotsList.length;
+
+	}
+
+	public void setup(RobotSpecification[] battlingRobotsList, BattleProperties battleProperties, boolean paused, IRepositoryManager repositoryManager) {
+		isPaused = paused;
+		battleRules = HiddenAccess.createRules(battleProperties.getBattlefieldWidth(),
+				battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
+				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
+		robotsCount = battlingRobotsList.length;
 
         battleMode = (ClassicMode) battleProperties.getBattleMode();
-        
+		System.out.println("Battle mode: " + battleMode.toString());
+        //TODO Just testing spawning any bot for now
+        final RobotSpecification[] temp = repositoryManager.getSpecifications();
+        for(int i = 0; i < temp.length; i++) {
+        	String className = temp[i].getClassName();
+        	if(className.equals("sampleex.Botzilla")) {
+        		botzilla = temp[i];
+        		break;
+        	}
+        }
+
+        botzillaActive = false;
+
+        bp = battleProperties;
+        numObstacles = battleMode.setNumObstacles(battleRules);
+        obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
+
+        this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
-        		battleProperties.getInitialPositions(), battleRules, 
+        		battleProperties.getInitialPositions(), battleRules, this,
         		robotsCount);
-        this.getBattleMode().createPeers(this, battlingRobotsList, hostManager, robots, contestants, this.repositoryManager);
-		bp = battleProperties;
-    }
 
-    public void registerDeathRobot(RobotPeer r) {
-        deathRobots.add(r);
-    }
+        peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
 
-    public BattleRules getBattleRules() {
-        return battleRules;
-    }
+		if (battleMode.toString() == "Botzilla Mode") {
+        	setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
+			if (Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn"));
+			} else if (Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String)setTimeHashTable.get("botzillaModifier")) * robotsCount;
+			}
 
-    public int getRobotsCount() {
-        return robotsCount;
-    }
-
-    public boolean isDebugging() {
-        return isDebugging;
-    }
-
-    public void addBullet(BulletPeer bullet) {
-        bullets.add(bullet);
-    }
-
-    public void resetInactiveTurnCount(double energyLoss) {
-        if (energyLoss < 0) {
-            return;
+        	System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
         }
-        inactivityEnergy += energyLoss;
-        while (inactivityEnergy >= 10) {
-            inactivityEnergy -= 10;
-            inactiveTurnCount = 0;
-        }
-    }
+	}
 
-    /**
-     * Gets the activeRobots.
-     *
-     * @return Returns a int
-     */
-    public int getActiveRobots() {
-        return activeRobots;
-    }
+	public void registerDeathRobot(RobotPeer r) {
+		deathRobots.add(r);
+	}
 
-    /**
+	public BattleRules getBattleRules() {
+		return battleRules;
+	}
+
+	public int getRobotsCount() {
+		return robotsCount;
+	}
+
+	public List<IRenderable> getCustomObject(){
+		return customObject;
+	}
+
+	public ItemController getItemControl(){
+		return itemControl;
+	}
+
+	public List<ObstaclePeer> getObstacleList() {
+		return new ArrayList<ObstaclePeer>(obstacles);
+	}
+
+	public boolean isDebugging() {
+		return isDebugging;
+	}
+
+	public void addBullet(BulletPeer bullet) {
+		bullets.add(bullet);
+	}
+
+	public void resetInactiveTurnCount(double energyLoss) {
+		if (energyLoss < 0) {
+			return;
+		}
+		inactivityEnergy += energyLoss;
+		while (inactivityEnergy >= 10) {
+			inactivityEnergy -= 10;
+			inactiveTurnCount = 0;
+		}
+	}
+
+	//Get list of robots
+	public List<RobotPeer> getRobotList(){
+		return robotList;
+	}
+
+	/**
+	 * Gets the activeRobots.
+	 *
+	 * @return Returns a int
+	 */
+	public int getActiveRobots() {
+		return activeRobots;
+	}
+
+	/**
      * Gets the killstreak Tracker
      * @return Returns the KillstreakTracker for this battle
      */
-    
+
     public KillstreakTracker getKillstreakTracker() {
     	return killstreakTracker;
     }
-    @Override
-    public void cleanup() {
 
-        if (contestants != null) {
-            contestants.clear();
-            contestants = null;
-        }
 
-        if (robots != null) {
-            robots.clear();
-            robots = null;
-        }
+	@Override
+	public void cleanup() {
+		peers.cleanup();
 
-        super.cleanup();
+		super.cleanup();
 
-        battleManager = null;
+		items.clear();
+		
+		customObject.clear();
 
-        // Request garbage collecting
-        for (int i = 4; i >= 0; i--) { // Make sure it is run
-            System.gc();
-        }
+		battleManager = null;
+
+		// Request garbage collecting
+		for (int i = 4; i >= 0; i--) { // Make sure it is run
+			System.gc();
+		}
+
+	}
+
+	@Override
+	protected void initializeBattle() {
+		super.initializeBattle();
+
+		parallelOn = System.getProperty("PARALLEL", "false").equals("true");
+		if (parallelOn) {
+			// how could robots share CPUs ?
+			double parallelConstant = peers.getRobots().size() / Runtime.getRuntime().availableProcessors();
+
+			// four CPUs can't run two single threaded robot faster than two CPUs
+			if (parallelConstant < 1) {
+				parallelConstant = 1;
+			}
+			final long waitTime = (long) (cpuConstant * parallelConstant);
+
+			millisWait = waitTime / 1000000;
+			nanoWait = (int) (waitTime % 1000000);
+		} else {
+			millisWait = cpuConstant / 1000000;
+			nanoWait = (int) (cpuConstant % 1000000);
+		}
+		if (nanoWait == 0) {
+			nanoWait = 1;
+		}
+	}
+
+	@Override
+	protected void finalizeBattle() {
+		eventDispatcher.onBattleFinished(new BattleFinishedEvent(isAborted()));
+
+		if (!isAborted()) {
+			eventDispatcher.onBattleCompleted(new BattleCompletedEvent(battleRules, computeBattleResults()));
+		}
+
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			robotPeer.cleanup();
+		}
+
+		hostManager.resetThreadManager();
+
+		super.finalizeBattle();
+	}
+
+
+    @SuppressWarnings("unchecked")
+	protected void initialiseItems() {
+    	/* (team-Telos) Create the items */
+    	this.getBattleMode().setItems(this);
+    	items = (List<ItemDrop>) this.getBattleMode().getItems();
+    	Collections.shuffle(items);
     }
 
-    @Override
-    protected void initializeBattle() {
-        super.initializeBattle();
+	@Override
+	protected void preloadRound() {
+		super.preloadRound();
 
-        parallelOn = System.getProperty("PARALLEL", "false").equals("true");
-        if (parallelOn) {
-            // how could robots share CPUs ?
-            double parallelConstant = robots.size() / Runtime.getRuntime().availableProcessors();
+		//TODO reset currentTurn
+		currentTurn = 0;
 
-            // four CPUs can't run two single threaded robot faster than two CPUs
-            if (parallelConstant < 1) {
-                parallelConstant = 1;
-            }
-            final long waitTime = (long) (cpuConstant * parallelConstant);
+		/*--ItemController--*/
+		itemControl = new ItemController();
+		itemControl.updateRobots(peers.getRobots());
 
-            millisWait = waitTime / 1000000;
-            nanoWait = (int) (waitTime % 1000000);
-        } else {
-            millisWait = cpuConstant / 1000000;
-            nanoWait = (int) (cpuConstant % 1000000);
-        }
-        if (nanoWait == 0) {
-            nanoWait = 1;
-        }
-    }
+		// At this point the unsafe loader thread will now set itself to wait for a notify
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			robotPeer.initializeRound(peers.getRobots(), initialRobotPositions);
+			robotPeer.println("=========================");
+			robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
+			robotPeer.println("=========================");
+		}
 
-    @Override
-    protected void finalizeBattle() {
-        eventDispatcher.onBattleFinished(new BattleFinishedEvent(isAborted()));
-
-        if (!isAborted()) {
-            eventDispatcher.onBattleCompleted(new BattleCompletedEvent(battleRules, computeBattleResults()));
-        }
-
-        for (RobotPeer robotPeer : robots) {
-            robotPeer.cleanup();
-        }
-        hostManager.resetThreadManager();
-
-        super.finalizeBattle();
-    }
-
-    protected void initialiseItems() {
-        /* Get the item IDs needed for the mode and add them to items */
-        for (String item : this.getBattleMode().getItems()) {
-            try {
-                /* Get the item's class
-                 * Get the classes 'createForMode' method with parameters of type
-                 * IMode and Battle
-                 * Invoke the method as a static method (null means call on no object)
-                 * using this kind of Mode and this Battle
-                 */
-                items.add((ItemDrop) item
-                        .getClass()
-                        .getMethod("createForMode", IMode.class, Battle.class)
-                        .invoke(null, this.getBattleMode(), this));
-            } catch (NoSuchMethodException x) {
-                x.printStackTrace();
-                System.err.printf("Item '%s' has not implemented createForMode."
-                        + "Modify the class so this method is overrided.\n", item);
-            } catch (InvocationTargetException x) {
-                x.printStackTrace();
-                x.getCause();
-            } catch (IllegalAccessException x) {
-                x.printStackTrace();
-                x.getCause();
-            }
-        }
-
-        for (ItemDrop itemDrop : items) {
-            itemDrop.initialiseRoundItems(robots, items);
-        }
-    }
-
-    @Override
-    protected void preloadRound() {
-        super.preloadRound();
-
-        /*--ItemController--*/
-        itemControl = new ItemController();
-        itemControl.updateRobots(robots);
-
-        // At this point the unsafe loader thread will now set itself to wait for a notify
-        for (RobotPeer robotPeer : robots) {
-            robotPeer.initializeRound(robots, initialRobotPositions);
-            robotPeer.println("=========================");
-            robotPeer.println("Round " + (getRoundNum() + 1) + " of " + getNumRounds());
-            robotPeer.println("=========================");
-        }
-
-        /* Start to initialise all the items */
-        this.initialiseItems();
-
+		/* Start to initialise all the items */
+		this.initialiseItems();
 		effArea.clear();
+		customObject.clear();
+
+		List<IRenderable> objs = this.getBattleMode().createRenderables();
+		if (objs != null) {
+			customObject = objs;
+		}
+
 		//boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {
 			//clear effect area and recreate every round
 			createEffectAreas();
 		}
-        if (getRoundNum() == 0) {
-            eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, robots.size(), false));
-            if (isPaused()) {
-                eventDispatcher.onBattlePaused(new BattlePausedEvent());
-            }
-        }
+		if (getRoundNum() == 0) {
+			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules, peers.getRobots().size(), false));
+			if (isPaused()) {
+				eventDispatcher.onBattlePaused(new BattlePausedEvent());
+			}
+		}
 
-        computeActiveRobots();
+		computeActiveRobots();
 
-        hostManager.resetThreadManager();
-    }
+		hostManager.resetThreadManager();
+	}
 
-    @Override
+	@Override
     protected void initializeRound() {
         super.initializeRound();
 
         inactiveTurnCount = 0;
 
         /*--ItemController--*/
-        itemControl.updateRobots(robots);
+        itemControl.updateRobots(peers.getRobots());
+
+        //Put list of robots into robotList
+        robotList = peers.getRobots();
 
         // Start robots
 
@@ -409,50 +464,75 @@ public final class Battle extends BaseBattle {
 
         Logger.logMessage(""); // puts in a new-line in the log message
 
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, robots, bullets, effArea, false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, false);
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
 
-    @Override
-    protected void finalizeRound() {
-        super.finalizeRound();
+	@Override
+	protected void finalizeRound() {
+		super.finalizeRound();
 
-        for (RobotPeer robotPeer : robots) {
-            robotPeer.waitForStop();
-            robotPeer.getRobotStatistics().generateTotals();
+		if(botzillaActive) {
+			removeBotzilla();
+		}
+
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			robotPeer.waitForStop();
+			robotPeer.getRobotStatistics().generateTotals();
+		}
+        
+        // Increment mode specific points - TODO -team-Telos
+		this.getBattleMode().scoreTurnPoints();
+
+		bullets.clear();
+		
+		items.clear();
+
+		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
+	}
+
+	@Override
+	protected void initializeTurn() {
+		//TODO check if this works
+        if (currentTurn == botzillaSpawnTime &&
+        		battleMode.toString() == "Botzilla Mode" &&
+        		!botzillaActive) {
+        	addBotzilla();
         }
 
-        bullets.clear();
+		super.initializeTurn();
 
-        eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
-    }
+		eventDispatcher.onTurnStarted(new TurnStartedEvent());
+	}
 
-    @Override
-    protected void initializeTurn() {
-        super.initializeTurn();
-
-        eventDispatcher.onTurnStarted(new TurnStartedEvent());
-    }
-
-    @Override
+	@Override
     protected void runTurn() {
         super.runTurn();
-
 
         loadCommands();
 
         /*--ItemController--*/
-        itemControl.updateRobots(robots);
+        itemControl.updateRobots(peers.getRobots());
 
         updateBullets();
-        
+
         updateEffectAreas();
-        
+
+        this.getBattleMode().updateRenderables(customObject);
+
         updateRobots();
+        
+        if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
+        	checkRobotHitSpike();
+        }
 
         handleDeadRobots();
-
+        if (getBattleMode().respawnsOn()) {
+        	if (super.getTime() > getBattleMode().turnLimit()) {
+        		shutdownTurn();
+        	}
+        }
         if (isAborted() || oneTeamRemaining()) {
             shutdownTurn();
         }
@@ -460,14 +540,41 @@ public final class Battle extends BaseBattle {
         inactiveTurnCount++;
 
         computeActiveRobots();
-
+        
+        killFreezeRobot();
+        
         publishStatuses();
+        
+		if (totalTurns % 100 == 0 || totalTurns == 1){
+
+			for (ItemDrop item: items){
+				if (!itemControl.getItems().contains(item)) {
+					itemControl.spawnRandomItem(item);
+					break;
+				}
+			}
+		}
+		currentTurn++;
 
         // Robot time!
         wakeupRobots();
-    }
 
-    @Override
+    }
+	//Method for killing the freeze robot if it one of the last two remaining robots
+	public void killFreezeRobot(){
+		//Checks if number of active robots == 2
+		if(activeRobots == 2){
+			//checks if one of the two remaining robots is a freezeRobot
+			for(int i = 0; i < robotList.size(); i++){
+				if(robotList.get(i).isFreezeRobot()){
+					//kills the freeze robot is it is one of the two remaining robots on the field
+					robotList.get(i).setState(RobotState.DEAD);
+				}
+			}
+		}
+	}
+
+	@Override
     protected void shutdownTurn() {
         if (getEndTimer() == 0) {
             if (isAborted()) {
@@ -508,12 +615,12 @@ public final class Battle extends BaseBattle {
 
         if (getEndTimer() == 1 && (isAborted() || isLastRound())) {
 
-            List<RobotPeer> orderedRobots = new ArrayList<RobotPeer>(robots);
+            List<RobotPeer> orderedRobots = new ArrayList<RobotPeer>(peers.getRobots());
 
             Collections.sort(orderedRobots);
             Collections.reverse(orderedRobots);
 
-            for (int rank = 0; rank < robots.size(); rank++) {
+            for (int rank = 0; rank < peers.getRobots().size(); rank++) {
                 RobotPeer robotPeer = orderedRobots.get(rank);
 
                 robotPeer.getStatistics().setRank(rank + 1);
@@ -524,7 +631,7 @@ public final class Battle extends BaseBattle {
         }
 
         if (getEndTimer() > 4 * 30) {
-            for (RobotPeer robotPeer : robots) {
+            for (RobotPeer robotPeer : peers.getRobots()) {
                 robotPeer.setHalt(true);
             }
         }
@@ -532,9 +639,9 @@ public final class Battle extends BaseBattle {
         super.shutdownTurn();
     }
 
-    @Override
+	 @Override
     protected void finalizeTurn() {
-        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, robots, bullets, effArea, true)));
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, true)));
 
         super.finalizeTurn();
     }
@@ -542,16 +649,18 @@ public final class Battle extends BaseBattle {
     private BattleResults[] computeBattleResults() {
         ArrayList<BattleResults> results = new ArrayList<BattleResults>();
 
-        List<ContestantPeer> orderedContestants = new ArrayList<ContestantPeer>(contestants);
+        List<ContestantPeer> orderedContestants = new ArrayList<ContestantPeer>(peers.getContestants());
+
+        System.out.println(orderedContestants.size());
 
         Collections.sort(orderedContestants);
         Collections.reverse(orderedContestants);
 
         // noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < contestants.size(); i++) {
+        for (int i = 0; i < peers.getContestants().size(); i++) {
             results.add(null);
         }
-        for (int rank = 0; rank < contestants.size(); rank++) {
+        for (int rank = 0; rank < peers.getContestants().size(); rank++) {
             RobotSpecification robotSpec = null;
             ContestantPeer contestant = orderedContestants.get(rank);
 
@@ -569,102 +678,159 @@ public final class Battle extends BaseBattle {
 
         return results.toArray(new BattleResults[results.size()]);
     }
+	/**
+	 * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
+	 * so that a robot placed before another robot in the list will not gain any benefit when the game
+	 * checks if a robot has won, is dead, etc.
+	 * This method was introduced as two equal robots like sample.RamFire got different scores even
+	 * though the code was exactly the same.
+	 *
+	 * @return a list of robot peers.
+	 */
+	private List<RobotPeer> getRobotsAtRandom() {
+		List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(peers.getRobots());
 
-    /**
-     * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
-     * so that a robot placed before another robot in the list will not gain any benefit when the game
-     * checks if a robot has won, is dead, etc.
-     * This method was introduced as two equal robots like sample.RamFire got different scores even
-     * though the code was exactly the same.
-     *
-     * @return a list of robot peers.
-     */
-    private List<RobotPeer> getRobotsAtRandom() {
-        List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(robots);
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
-        Collections.shuffle(shuffledList, RandomFactory.getRandom());
-        return shuffledList;
-    }
+	/**
+	 * Returns a list of all bullets in random order. This method is used to gain fair play in Robocode.
+	 *
+	 * @return a list of bullet peers.
+	 */
+	private List<BulletPeer> getBulletsAtRandom() {
+		List<BulletPeer> shuffledList = new ArrayList<BulletPeer>(bullets);
 
-    /**
-     * Returns a list of all bullets in random order. This method is used to gain fair play in Robocode.
-     *
-     * @return a list of bullet peers.
-     */
-    private List<BulletPeer> getBulletsAtRandom() {
-        List<BulletPeer> shuffledList = new ArrayList<BulletPeer>(bullets);
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
-        Collections.shuffle(shuffledList, RandomFactory.getRandom());
-        return shuffledList;
-    }
+	/**
+	 * Returns a list of all death robots in random order. This method is used to gain fair play in Robocode.
+	 *
+	 * @return a list of robot peers.
+	 */
+	private List<RobotPeer> getDeathRobotsAtRandom() {
+		List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(deathRobots);
 
-    /**
-     * Returns a list of all death robots in random order. This method is used to gain fair play in Robocode.
-     *
-     * @return a list of robot peers.
-     */
-    private List<RobotPeer> getDeathRobotsAtRandom() {
-        List<RobotPeer> shuffledList = new ArrayList<RobotPeer>(deathRobots);
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
-        Collections.shuffle(shuffledList, RandomFactory.getRandom());
-        return shuffledList;
-    }
+	private void loadCommands() {
+		// this will load commands, including bullets from last turn
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			robotPeer.performLoadCommands();
+		}
+	}
+	
+	private void checkRobotHitSpike() {
+		int spikeXSize = battleManager.getSpikePosX().size();
+		int spikeYSize = battleManager.getSpikePosY().size();
+		for (int i= 0; i < robotList.size(); i++) {
+			for (int x=0; x < spikeXSize; x++){
+				if ((robotList.get(i).getX() < battleManager.getSpikePosX().get(x) + 64) && (robotList.get(i).getX() > battleManager.getSpikePosX().get(x))) {
+					System.out.println("Battle Manager X: "+battleManager.getSpikePosX().get(x) + " | Battle Manager Y: "+battleManager.getSpikePosY().get(x));
+					System.out.println("Robot X: "+robotList.get(i).getX() + " | Robot Y: "+robotList.get(i).getY());
+					for (int y=0; y < spikeYSize; y++){
+						if((robotList.get(i).getY() < battleManager.getSpikePosY().get(y)) && (robotList.get(i).getY() > battleManager.getSpikePosY().get(y) - 64)){
+							System.out.println("Battle Manager Y: "+battleManager.getSpikePosY().get(y));
+							System.out.println("Robot Y: "+robotList.get(i).getY());
+							robotList.get(i).kill();
+						}
+					}
+				}
+			}
+		}
+	}
 
-    private void loadCommands() {
-        // this will load commands, including bullets from last turn
-        for (RobotPeer robotPeer : robots) {
-            robotPeer.performLoadCommands();
-        }
-    }
+	private void updateBullets() {
+		for (BulletPeer bullet : getBulletsAtRandom()) {
+			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList());
+			if (bullet.getState() == BulletState.INACTIVE) {
+				bullets.remove(bullet);
+			}
+		}
+	}
 
-    private void updateBullets() {
-        for (BulletPeer bullet : getBulletsAtRandom()) {
-            bullet.update(getRobotsAtRandom(), getBulletsAtRandom());
-            if (bullet.getState() == BulletState.INACTIVE) {
-                bullets.remove(bullet);
-            }
-        }
-    }
-
-    private void updateRobots() {
+	private void updateRobots() {
         boolean zap = (inactiveTurnCount > battleRules.getInactivityTime());
 
         final double zapEnergy = isAborted() ? 5 : zap ? .1 : 0;
 
         // Move all bots
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
-            robotPeer.performMove(getRobotsAtRandom(), items, zapEnergy);
+            robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
         }
 
-        // Increment mode specific points - TODO -team-Telos
-        scoreModePoints();
+        if (currentTurn >= botzillaSpawnTime &&
+        		battleMode.toString() == "Botzilla Mode" &&
+        		!botzillaActive) {
+        	addBotzilla();
+        }
         
-        getBattleMode().updateRobotScans(getRobotsAtRandom());
-       
+        getBattleMode().addRobots(currentTurn, peers);
+
+        // Increment mode specific points - TODO -team-Telos
+		this.getBattleMode().scoreTurnPoints();
+
+        getBattleMode().updateRobotScans(peers.getRobots());
     }
 
-    private void scoreModePoints() {
-        // Increment mode specific points
-        this.getBattleMode().scorePoints();
-    }
+	private void removeBotzilla() {
+		botzillaActive = false;
+        peers.removeBotzilla();
+        //botzillaPeer.cleanup();
+        robotsCount--;
+	}
+
+	private void addBotzilla() {
+		System.out.println("BOTZILLA JUST APPEARED");
+		botzillaActive = true;
+
+		botzillaPeer = new RobotPeer(this,
+				hostManager,
+				botzilla,
+				0,
+				null,
+				getRobotsCount());
+		robotsCount++;
+		peers.addRobot(botzillaPeer);
+		peers.addContestant(botzillaPeer);
+		botzillaPeer.initializeRound(peers.getRobots() , null);
+		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+
+        final long waitMillis = waitTime / 1000000;
+        final int waitNanos = (int) (waitTime % 1000000);
+		botzillaPeer.startRound(waitMillis, waitNanos);
+		// TODO make appear and running
+
+	}
 
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
+        	
+        	// Death effect
+        	if (battleManager.getBattleProperties().getEffectArea()) {
+        		deathEffect(deadRobot);
+        	}
+        	
             // Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
-                deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+                deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
             } else {
                 boolean teammatesalive = false;
 
-                for (RobotPeer tm : robots) {
+                for (RobotPeer tm : peers.getRobots()) {
                     if (tm.getTeamPeer() == deadRobot.getTeamPeer() && tm.isAlive()) {
                         teammatesalive = true;
                         break;
                     }
                 }
                 if (!teammatesalive) {
-                    deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot));
+                    deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
                 }
             }
 
@@ -682,85 +848,196 @@ public final class Battle extends BaseBattle {
 
         deathRobots.clear();
     }
+    
+    /**
+     * Runs the death effect associated with deadRobot.
+     * Effects 1-3 are different sizes of explosions.
+     * Effects 4-6 are different effect areas.
+     * @param deadRobot The robot to enforce death effect from
+     */
+    private void deathEffect(RobotPeer deadRobot) {
+    	int finalX = 0;
+    	int finalY = 0;
+		int yOffset = bp.getBattlefieldHeight() % 64;
 
-    private void publishStatuses() {
-        for (RobotPeer robotPeer : robots) {
-            robotPeer.publishStatus(currentTime);
-        }
+		// distance and damage variables used for case 1, 2 and 3
+		int damage = -5;
+		int explosionDistance = 75;
+		
+		if (deadRobot.getDeathEffect() > 3) {
+			// Round off to closest X and Y tiles
+			// Only applicable to case 4, 5 and 6
+			finalX = (int)deadRobot.getX()-(int)deadRobot.getX()%64;
+
+			finalY = (int)deadRobot.getY()-yOffset+64;
+			finalY = (finalY/64)*64;
+			finalY = finalY+yOffset;
+		}
+		
+		switch(deadRobot.getDeathEffect()) {
+		case 1:
+			// Large explosion - small damage
+			explosionDistance *= 3;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+					
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 2:
+			// Medium explosion - medium damage
+			explosionDistance *= 2;
+			damage *= 2;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+					
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 3:
+			// Small explosion - large damage
+			damage *= 3;
+			for (RobotPeer aliveRobot : getRobotsAtRandom()) {
+				if (aliveRobot.isAlive()) {
+					// Check distance
+					// Simple pythagoras math
+					double xDist = deadRobot.getX()-aliveRobot.getX();
+					if (xDist < 0)
+						xDist = xDist*(-1);
+					double yDist = deadRobot.getY()-aliveRobot.getY();
+					if (yDist < 0)
+						yDist = yDist*(-1);
+					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
+					
+					if (robotDistance <= explosionDistance) {
+						// robot is within explosion range
+						aliveRobot.updateEnergy(damage);
+					}
+				}
+			}
+			break;
+		case 4:
+			// Effect area 1
+			EffectArea deathEffect1 = new EffectArea(finalX, finalY, 64, 64, 1);
+			effArea.add(deathEffect1);
+			break;
+		case 5:
+			// Effect area 2
+			EffectArea deathEffect2 = new EffectArea(finalX, finalY, 64, 64, 2);
+			effArea.add(deathEffect2);
+			break;
+		case 6:
+			// Effect area 3
+			EffectArea deathEffect3 = new EffectArea(finalX, finalY, 64, 64, 3);
+			effArea.add(deathEffect3);
+			break;
+		}
     }
 
-    private void computeActiveRobots() {
-        int ar = 0;
+	private void publishStatuses() {
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			robotPeer.publishStatus(currentTime);
+		}
+	}
 
-        // Compute active robots
-        for (RobotPeer robotPeer : robots) {
-            if (robotPeer.isAlive()) {
-                ar++;
-            }
-        }
-        this.activeRobots = ar;
-    }
+	private void computeActiveRobots() {
+		int ar = 0;
 
-    private void wakeupRobots() {
-        // Wake up all robot threads
-        final List<RobotPeer> robotsAtRandom = getRobotsAtRandom();
+		// Compute active robots
+		for (RobotPeer robotPeer : peers.getRobots()) {
+			if (robotPeer.isAlive()) {
+				ar++;
+			}
+		}
+		this.activeRobots = ar;
+	}
 
-        if (parallelOn) {
-            wakeupParallel(robotsAtRandom);
-        } else {
-            wakeupSerial(robotsAtRandom);
-        }
-    }
+	private void wakeupRobots() {
+		// Wake up all robot threads
+		final List<RobotPeer> robotsAtRandom = getRobotsAtRandom();
 
-    private void wakeupSerial(List<RobotPeer> robotsAtRandom) {
-        for (RobotPeer robotPeer : robotsAtRandom) {
-            if (robotPeer.isRunning()) {
-                // This call blocks until the robot's thread actually wakes up.
-                robotPeer.waitWakeup();
+		if (parallelOn) {
+			wakeupParallel(robotsAtRandom);
+		} else {
+			wakeupSerial(robotsAtRandom);
+		}
+	}
 
-                if (robotPeer.isAlive()) {
-                    if (isDebugging || robotPeer.isPaintEnabled()) {
-                        robotPeer.waitSleeping(DEBUG_TURN_WAIT_MILLIS, 1);
-                    } else if (currentTime == 1) {
-                        robotPeer.waitSleeping(millisWait * 10, 1);
-                    } else {
-                        robotPeer.waitSleeping(millisWait, nanoWait);
-                    }
-                    robotPeer.checkSkippedTurn();
-                }
-            }
-        }
-    }
+	private void wakeupSerial(List<RobotPeer> robotsAtRandom) {
+		for (RobotPeer robotPeer : robotsAtRandom) {
+			if (robotPeer.isRunning()) {
+				// This call blocks until the robot's thread actually wakes up.
+				robotPeer.waitWakeup();
 
-    private void wakeupParallel(List<RobotPeer> robotsAtRandom) {
-        for (RobotPeer robotPeer : robotsAtRandom) {
-            if (robotPeer.isRunning()) {
-                // This call blocks until the robot's thread actually wakes up.
-                robotPeer.waitWakeup();
-            }
-        }
-        for (RobotPeer robotPeer : robotsAtRandom) {
-            if (robotPeer.isRunning() && robotPeer.isAlive()) {
-                if (isDebugging || robotPeer.isPaintEnabled()) {
-                    robotPeer.waitSleeping(DEBUG_TURN_WAIT_MILLIS, 1);
-                } else if (currentTime == 1) {
-                    robotPeer.waitSleeping(millisWait * 10, 1);
-                } else {
-                    robotPeer.waitSleeping(millisWait, nanoWait);
-                }
-            }
-        }
-        for (RobotPeer robotPeer : robotsAtRandom) {
-            if (robotPeer.isAlive()) {
-                robotPeer.checkSkippedTurn();
-            }
-        }
-    }
+				if (robotPeer.isAlive()) {
+					if (isDebugging || robotPeer.isPaintEnabled()) {
+						robotPeer.waitSleeping(DEBUG_TURN_WAIT_MILLIS, 1);
+					} else if (currentTime == 1) {
+						robotPeer.waitSleeping(millisWait * 10, 1);
+					} else {
+						robotPeer.waitSleeping(millisWait, nanoWait);
+					}
+					robotPeer.checkSkippedTurn();
+				}
+			}
+		}
+	}
 
-    private int getActiveContestantCount(RobotPeer peer) {
+	private void wakeupParallel(List<RobotPeer> robotsAtRandom) {
+		for (RobotPeer robotPeer : robotsAtRandom) {
+			if (robotPeer.isRunning()) {
+				// This call blocks until the robot's thread actually wakes up.
+				robotPeer.waitWakeup();
+			}
+		}
+		for (RobotPeer robotPeer : robotsAtRandom) {
+			if (robotPeer.isRunning() && robotPeer.isAlive()) {
+				if (isDebugging || robotPeer.isPaintEnabled()) {
+					robotPeer.waitSleeping(DEBUG_TURN_WAIT_MILLIS, 1);
+				} else if (currentTime == 1) {
+					robotPeer.waitSleeping(millisWait * 10, 1);
+				} else {
+					robotPeer.waitSleeping(millisWait, nanoWait);
+				}
+			}
+		}
+		for (RobotPeer robotPeer : robotsAtRandom) {
+			if (robotPeer.isAlive()) {
+				robotPeer.checkSkippedTurn();
+			}
+		}
+	}
+
+	 private int getActiveContestantCount(RobotPeer peer) {
         int count = 0;
 
-        for (ContestantPeer c : contestants) {
+        for (ContestantPeer c : peers.getContestants()) {
             if (c instanceof RobotPeer && ((RobotPeer) c).isAlive()) {
                 count++;
             } else if (c instanceof TeamPeer && c != peer.getTeamPeer()) {
@@ -774,94 +1051,92 @@ public final class Battle extends BaseBattle {
         }
         return count;
     }
-    
-    private boolean oneTeamRemaining() {
-        if (getActiveRobots() <= 1) {
-            return true;
-        }
 
-        boolean found = false;
-        TeamPeer currentTeam = null;
+	 private boolean oneTeamRemaining() {
+	        if (getActiveRobots() <= 1) {
+	            return true;
+	        }
 
-        for (RobotPeer currentRobot : robots) {
-            if (currentRobot.isAlive()) {
-                if (!found) {
-                    found = true;
-                    currentTeam = currentRobot.getTeamPeer();
-                } else {
-                    if (currentTeam == null && currentRobot.getTeamPeer() == null) {
-                        return false;
-                    }
-                    if (currentTeam != currentRobot.getTeamPeer()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+	        boolean found = false;
+	        TeamPeer currentTeam = null;
 
-    // --------------------------------------------------------------------------
-    // Processing and maintaining robot and battle controls
-    // --------------------------------------------------------------------------
-    public void killRobot(int robotIndex) {
-        sendCommand(new KillRobotCommand(robotIndex));
-    }
+	        for (RobotPeer currentRobot : peers.getRobots()) {
+	            if (currentRobot.isAlive()) {
+	                if (!found) {
+	                    found = true;
+	                    currentTeam = currentRobot.getTeamPeer();
+	                } else {
+	                    if (currentTeam == null && currentRobot.getTeamPeer() == null) {
+	                        return false;
+	                    }
+	                    if (currentTeam != currentRobot.getTeamPeer()) {
+	                        return false;
+	                    }
+	                }
+	            }
+	        }
+	        return true;
+	    }
 
-    @Override
-    public void setPaintEnabled(int robotIndex, boolean enable) {
-        sendCommand(new EnableRobotPaintCommand(robotIndex, enable));
-    }
 
-    public void setSGPaintEnabled(int robotIndex, boolean enable) {
-        sendCommand(new EnableRobotSGPaintCommand(robotIndex, enable));
-    }
+	// --------------------------------------------------------------------------
+	// Processing and maintaining robot and battle controls
+	// --------------------------------------------------------------------------
 
-    public void sendInteractiveEvent(Event e) {
-        sendCommand(new SendInteractiveEventCommand(e));
-    }
+	public void killRobot(int robotIndex) {
+		sendCommand(new KillRobotCommand(robotIndex));
+	}
 
-    private class KillRobotCommand extends RobotCommand {
+	public void setPaintEnabled(int robotIndex, boolean enable) {
+		sendCommand(new EnableRobotPaintCommand(robotIndex, enable));
+	}
 
-        KillRobotCommand(int robotIndex) {
-            super(robotIndex);
-        }
+	public void setSGPaintEnabled(int robotIndex, boolean enable) {
+		sendCommand(new EnableRobotSGPaintCommand(robotIndex, enable));
+	}
 
-        @Override
-        public void execute() {
-            robots.get(robotIndex).kill();
-        }
-    }
+	public void sendInteractiveEvent(Event e) {
+		sendCommand(new SendInteractiveEventCommand(e));
+	}
 
-    private class EnableRobotPaintCommand extends RobotCommand {
+	private class KillRobotCommand extends RobotCommand {
+		KillRobotCommand(int robotIndex) {
+			super(robotIndex);
+		}
 
-        final boolean enablePaint;
+		public void execute() {
+			peers.getRobots().get(robotIndex).kill();
+		}
+	}
 
-        EnableRobotPaintCommand(int robotIndex, boolean enablePaint) {
-            super(robotIndex);
-            this.enablePaint = enablePaint;
-        }
 
-        @Override
-        public void execute() {
-            robots.get(robotIndex).setPaintEnabled(enablePaint);
-        }
-    }
+	private class EnableRobotPaintCommand extends RobotCommand {
+		final boolean enablePaint;
 
-    private class EnableRobotSGPaintCommand extends RobotCommand {
+		EnableRobotPaintCommand(int robotIndex, boolean enablePaint) {
+			super(robotIndex);
+			this.enablePaint = enablePaint;
+		}
 
-        final boolean enableSGPaint;
+		public void execute() {
+			peers.getRobots().get(robotIndex).setPaintEnabled(enablePaint);
+		}
+	}
 
-        EnableRobotSGPaintCommand(int robotIndex, boolean enableSGPaint) {
-            super(robotIndex);
-            this.enableSGPaint = enableSGPaint;
-        }
 
-        @Override
-        public void execute() {
-            robots.get(robotIndex).setSGPaintEnabled(enableSGPaint);
-        }
-    }
+	private class EnableRobotSGPaintCommand extends RobotCommand {
+		final boolean enableSGPaint;
+
+		EnableRobotSGPaintCommand(int robotIndex, boolean enableSGPaint) {
+			super(robotIndex);
+			this.enableSGPaint = enableSGPaint;
+		}
+
+		public void execute() {
+			peers.getRobots().get(robotIndex).setSGPaintEnabled(enableSGPaint);
+		}
+	}
+
 
     private class SendInteractiveEventCommand extends Command {
 
@@ -873,14 +1148,14 @@ public final class Battle extends BaseBattle {
 
         @Override
         public void execute() {
-            for (RobotPeer robotPeer : robots) {
+            for (RobotPeer robotPeer : peers.getRobots()) {
                 if (robotPeer.isInteractiveRobot()) {
                     robotPeer.addEvent(event);
                 }
             }
         }
     }
-    
+
 
 	private void createEffectAreas(){
 		int tileWidth = 64;
@@ -892,7 +1167,7 @@ public final class Battle extends BaseBattle {
 		int numEffectAreas = (int) round((bp.getBattlefieldWidth()*bp.getBattlefieldHeight()/numEffectAreasModifier));
 		Random effectAreaR = new Random();
 		int effectAreaRandom;
-		
+
 		while(numEffectAreas > 0){
 			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
 				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
@@ -908,27 +1183,26 @@ public final class Battle extends BaseBattle {
 			}
 		}
 	}
-	
-	 private void updateEffectAreas() { 
-		    //update robots with effect areas
-		    for (EffectArea effAreas : effArea) {
-		        int collided = 0;
-		        for (RobotPeer r : robots) {
-		            //for all effect areas, check if all robots collide
-		            if (effAreas.collision(r)) {
-		                if (effAreas.getActiveEffect() == 0)
-		                {
-		                    //if collide, give a random effect
-		                    Random effR = new Random();
-		                    collided = effR.nextInt(3) + 1;
-		                    effAreas.setActiveEffect(collided);
-		                }
-		                //handle effect
-		                effAreas.handleEffect(r);
-		            }
-		        }
-		    }
-		}
 
+	 private void updateEffectAreas() {
+	    //update robots with effect areas
+	    for (EffectArea effAreas : effArea) {
+	        int collided = 0;
+	        for (RobotPeer r : peers.getRobots()) {
+	            //for all effect areas, check if all robots collide
+	            if (effAreas.collision(r)) {
+	                if (effAreas.getActiveEffect() == 0)
+	                {
+	                    //if collide, give a random effect
+	                    Random effR = new Random();
+	                    collided = effR.nextInt(3) + 1;
+	                    effAreas.setActiveEffect(collided);
+	                }
+	                //handle effect
+	                effAreas.handleEffect(r);
+	            }
+	        }
+	    }
+	}
 
 }

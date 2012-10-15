@@ -2,7 +2,6 @@ package robocode;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * A piece of equipment. This class defines all the stats that a piece of
@@ -17,6 +16,7 @@ public class EquipmentPart {
 	/** The position that the part occupes on the robot. */
 	private final EquipmentSlot slot;
 	private final String soundPath;
+	private final String imagePath;
 	/**
 	 * This map holds various attributes of the robot that the part modifies,
 	 * where the attribute's value represents a percentage-based increase or
@@ -32,6 +32,7 @@ public class EquipmentPart {
 		// Required for builder initialization
 		private final EquipmentSlot slot;
 		private String soundPath;
+		private String imagePath;
 
 		private Map<RobotAttribute, Double> attributes =
 				new HashMap<RobotAttribute, Double>();
@@ -49,6 +50,11 @@ public class EquipmentPart {
 			return this;
 		}
 		
+		public Builder image(String path){
+			this.imagePath = path;
+			return this;
+		}
+		
 		public Builder set(RobotAttribute attribute, double value) {
 			attributes.put(attribute, value);
 			return this;
@@ -62,6 +68,7 @@ public class EquipmentPart {
 	private EquipmentPart(Builder builder) {
 		slot = builder.slot;
 		soundPath = builder.soundPath;
+		imagePath = builder.imagePath;
 		
 		// Copy attributes from builder; default to 0 if attribute wasn't set.
 		for (RobotAttribute attribute : RobotAttribute.values()) {
@@ -75,6 +82,10 @@ public class EquipmentPart {
 	
 	public String getSoundPath(){
 		return soundPath;
+	}
+	
+	public String getImagePath() {
+		return imagePath;
 	}
 
 	/**

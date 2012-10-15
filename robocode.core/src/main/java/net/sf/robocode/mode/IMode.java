@@ -1,9 +1,11 @@
 package net.sf.robocode.mode;
 
 import java.util.Hashtable;
-import java.util.List;
 import javax.swing.JPanel;
 
+import net.sf.robocode.battle.BattleResultsTableModel;
+
+import robocode.BattleResults;
 import robocode.BattleRules;
 
 /**
@@ -48,21 +50,63 @@ public interface IMode {
 	public Hashtable<String, Object> getRulesPanelValues();
 	
 	/**
-	 * Returns a list of String of the item to 
-	 * spawn in the beginning of the round
-	 * @return list of items
+	 * Returns true if robots are to respawn instantly on death
+	 * @return boolean representing respawns on or off
 	 */
-	public List<String> getItems();
+	public boolean respawnsOn();
 	
 	/**
-	 * Create a list of Strings representing the items to
-	 * spawn in the beginning of the round
+	 * Returns the turn number each round will end on.  Automatically enabled
+	 * when respawns are.  Default set to 9000 turns (5 mins at 30 TPS)
+	 * Note: You do not have to implement this if respawns are on unless
+	 * you want to change the turn limit.
+	 * @return the turn number that each round will end on if respawns are
+	 * enabled
+	 */
+	public int turnLimit();
+
+	/**
+	 * Create items for the specific mode
 	 */
 	public void setItems();
+
+ 	/** Add's mode specific robots to the list of selected robots.
+	 * 
+	 * @param current list of selected robots in the form: 
+	 * "robots.myRobot*,robots.yourRobot*"...
+	 * @return list of selected robots plus any modeSpecific robots appended.
+	 */
+	public String addModeRobots(String selectedRobots);
+
+	/**
+	 * Initialises the GuiOptions object with the visibility options
+	 * applicable to this mode.
+	 */
+	public void setGuiOptions();
 	
 	/**
-	 * Increments the score specific to the different modes
+	 * Getter method for the GuiOptions object associated with this
+	 * mode.
+	 * @return GuiOptions object associated with this mode.
 	 */
-	public void scorePoints();
+	public GuiOptions getGuiOptions();
+
+	/**
+	 * Get the mode's custom results table format
+	 * @return Table model of the mode's results
+	 */
+	public BattleResultsTableModel getCustomResultsTable();
 	
+	/**
+	 * Set the Mode's custom results table format
+	 */
+	public void setCustomResultsTable();
+	
+	public BattleResults[] getFinalResults();
+	
+	/**
+	 * For disabling the dialogue that says "You have only selected one robot"
+	 * @return
+	 */
+	public boolean allowsOneRobot();
 }

@@ -55,8 +55,6 @@ public class RobotStatistics implements ContestantStatistics {
     private final int robots;
     private boolean isActive;
     private boolean isInRound;
-    /* Does the Robot have the flag */
-    private boolean hasFlag;
     private double survivalScore;
     private double lastSurvivorBonus;
     private double bulletDamageScore;
@@ -111,7 +109,6 @@ public class RobotStatistics implements ContestantStatistics {
 
         isActive = true;
         isInRound = true;
-        hasFlag = false;
     }
 
     public void resetScores() {
@@ -133,13 +130,11 @@ public class RobotStatistics implements ContestantStatistics {
         totalBulletKillBonus += bulletKillBonus;
         totalRammingDamageScore += rammingDamageScore;
         totalRammingKillBonus += rammingKillBonus;
-        // FIXME - team-Telos
+        // team-Telos addition
         totalFlagScore += flagScore;
 
-        // Unsure as to whether or not we should add flagScore into totalScore
-
         totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
-                + totalBulletKillBonus + totalLastSurvivorBonus;
+                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
         isInRound = false;
     }
 
@@ -233,7 +228,11 @@ public class RobotStatistics implements ContestantStatistics {
     public double getCurrentRammingKillBonus() {
         return rammingKillBonus;
     }
-
+    
+    public double getCurrentFlagScore() {
+    	return flagScore;
+    }
+    
     public void scoreSurvival() {
         if (isActive) {
             survivalScore += 50;
@@ -306,7 +305,10 @@ public class RobotStatistics implements ContestantStatistics {
         return 0;
     }
 
-    public void scoreRobotDeath(int enemiesRemaining) {
+    public void scoreRobotDeath(int enemiesRemaining, Boolean botzillaActive) {
+    	if (botzillaActive) {
+    		enemiesRemaining--;
+    	}
         switch (enemiesRemaining) {
             case 0:
                 if (!robotPeer.isWinner()) {
@@ -328,15 +330,23 @@ public class RobotStatistics implements ContestantStatistics {
      * Team-Telos - Score the flag points
      */
     public void scoreFlag() {
-        if (hasFlag) {
-            // FIXME
-            flagScore++;
-        }
+        flagScore++;
     }
 
     public void scoreFirsts() {
         if (isActive) {
             totalFirsts++;
+        }
+    }
+    
+    /**
+     * Circumventing the fancy cumulative score. This is for Dispenser's sake,
+     * who scores with a functionality not shared with other robots.
+     * @param robot The robot's name - preferably getName() from a Dispenser Bot
+     */
+    public void incrementTotalScore(String robot) {
+        if (isActive) {
+            totalScore++;
         }
     }
 
@@ -373,4 +383,8 @@ public class RobotStatistics implements ContestantStatistics {
     public boolean isInRound() {
         return isInRound;
     }
+
+	@Override
+	public void incrementScore() {	
+	}
 }

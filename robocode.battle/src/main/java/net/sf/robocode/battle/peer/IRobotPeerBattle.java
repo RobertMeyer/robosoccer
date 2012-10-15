@@ -12,7 +12,8 @@
 package net.sf.robocode.battle.peer;
 
 import java.util.List;
-import net.sf.robocode.battle.ItemDrop;
+
+import net.sf.robocode.battle.item.ItemDrop;
 import robocode.Event;
 
 /**
@@ -66,7 +67,7 @@ public interface IRobotPeerBattle extends ContestantPeer {
 
     void performLoadCommands();
 
-    void performMove(List<RobotPeer> robots, List<ItemDrop> items, double zapEnergy);
+    void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy);
 
     void performScan(List<RobotPeer> robots);
 }

@@ -9,7 +9,7 @@
  *     Pavel Savara
  *     - Initial implementation
  *******************************************************************************/
-package net.sf.robocode.sound;
+package net.sf.robocode.sound;  
 
 /**
  * @author Pavel Savara (original)

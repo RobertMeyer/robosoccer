@@ -166,7 +166,7 @@ public abstract class RobocodeTestBed extends BattleAdaptor {
         engine.removeBattleListener(this);
     }
 
-    @Test(timeout=20000)
+    @Test(timeout=30000)
     public void run() {
         runSetup();
         runBattle(getRobotNames(), getNumRounds(), getInitialPositions());
