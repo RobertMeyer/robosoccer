@@ -456,8 +456,16 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      */
     public void fire(double power) {
         if (peer != null) {
-            peer.setFire(power);
-            peer.execute();
+        	if(peer.checkSword()==false)
+        	{
+        		 peer.setFire(power);
+                 peer.execute();
+        	}
+        	else
+        	{
+        		peer.execute();
+        	}
+           
         } else {
             uninitializedException();
         }

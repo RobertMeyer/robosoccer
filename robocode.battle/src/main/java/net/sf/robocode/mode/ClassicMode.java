@@ -391,4 +391,9 @@ public class ClassicMode implements IMode {
 		resultsTable.showSeconds(true);
 		resultsTable.showThirds(true);
 	}
+
+	@Override
+	public boolean allowsOneRobot() {
+		return false;
+	}
 }

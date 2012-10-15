@@ -37,6 +37,8 @@ import robocode.robotinterfaces.IBasicEvents;
  * @since 1.6
  */
 public interface IBasicRobotPeer {
+	
+	boolean checkSword();
 
     /**
      * Returns the robot's name.
