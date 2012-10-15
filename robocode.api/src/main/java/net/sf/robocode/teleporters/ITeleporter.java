@@ -11,17 +11,17 @@ public interface ITeleporter {
 	
 	/**
 	 * Enumerator used to distinguish between the two teleporters.
-	 * Use Portal.PORTAL1 for the first and Portal.PORTAL2 for the second.
-	 * 
+	 * Use PORTAL1 for the first and PORTAL2 for the second.
 	 */
 	public enum Portal {PORTAL1, PORTAL2};
 	
 	/**
-	 * Sets the teleporter's position to x & y coordinates. Requires both x and
-	 * y coordinates. Use setX or setY for individual axes.
+	 * Sets the teleporter's position to x & y coordinates. 
+	 * Use setX or setY for individual axes.
 	 * 
-	 * @param x
-	 * @param y
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param target 
 	 */
 	void setXY(double x, double y, Portal target);
 	
