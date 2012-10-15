@@ -1108,8 +1108,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
      * can be and still be scanned.
      */
     private void checkWaypointPass(Waypoint waypoint, Double waypointDistance){
-    	//todo //line perpendicular to robot 3/4 track width 
-    	//check if that lien intersects with a waypoint 
 
     	//calculate the bearing to the waypoint relative to the robots Heading.
     	 double relativeBearingtoWaypoint = bodyHeading + ((Math.PI/2)-atan2(waypoint.getSingleWaypointY(

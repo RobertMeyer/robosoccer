@@ -40,11 +40,18 @@ public class RaceMode extends ClassicMode{
 		System.out.println("Race Mode.");
 	}
 	
-	//overwriting toString() method so our "mode" name is now returned
+	
+	@override
 	public String toString(){
+		//overwriting toString() method so our "mode" name is now returned
 		return new String("Race Mode");
 	}
 	
+	/**
+	 * Returns the description of RaceMODE.
+	 * 
+	 * @return Returns the description of RaceMODE.
+	 */
 	public String getDescription(){
 		return new String("Race mode allows you to race your robot to be first across the finish line.");
 	}
