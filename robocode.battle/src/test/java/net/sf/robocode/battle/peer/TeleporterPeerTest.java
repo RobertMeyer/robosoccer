@@ -14,7 +14,7 @@ public class TeleporterPeerTest {
 
 	@Test
 	public void test() {
-		pass("Not yet implemented");
+		//pass("Not yet implemented");
 	}
 
 }
