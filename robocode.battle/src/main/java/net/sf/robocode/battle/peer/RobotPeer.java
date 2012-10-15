@@ -1067,8 +1067,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 								Rules.MAX_BULLET_POWER));
 			}
 			else{
-				firePower = min(energy, min(max(bulletCmd.getPower(), 
-						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
+				firePower = min(energy, min(max(bulletCmd.getPower(),
+						getMinBulletPower()), getMaxBulletPower()));
 			}
 			updateEnergy(-firePower);
 
