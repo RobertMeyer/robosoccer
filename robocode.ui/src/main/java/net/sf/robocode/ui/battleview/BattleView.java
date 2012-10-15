@@ -410,6 +410,11 @@ public class BattleView extends Canvas {
         }
     }
     
+    /**
+     * Create the ground field with a single spike.
+     * Spike will be location in the middle of the ground field.
+     * Position of the spike will be stored into battleManager.
+     */
     private void createSpikeGround(){
         // Reinitialize ground tiles
 
@@ -440,47 +445,35 @@ public class BattleView extends Canvas {
         groundGfx.setRenderingHints(renderingHints);
 
         groundGfx.setTransform(AffineTransform.getScaleInstance(scale, scale));
-
-        int count = 0;
         
+        /* Clear all previously stored spike position */
         spikePosX.clear();
         spikePosY.clear();
         
         for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
             for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
-            	
                 Image img = imageManager.getGroundTileImage(groundTiles[y][x]);
                 Image spikeImg = imageManager.getSpikeTileImage();
                 
                 if (img != null) {
+                	int yMiddleTile = NUM_VERT_TILES / 2;
+                	int xMiddleTile = NUM_HORZ_TILES / 2;
                 	
-                	int randomNum = r.nextInt(100);
-                	
-                	if(randomNum > 95){
-                		if (count == 0){
-                			groundGfx.drawImage(spikeImg, x * groundTileWidth, y * groundTileHeight, null);
-                		
-                			count = count + 1;
-                			spikePosX.add(x * groundTileWidth);
-                			int opposite = Math.abs(y * groundTileHeight - battleField.getHeight());
-                			spikePosY.add(opposite);
-                			System.out.println("Tile X: "+x * groundTileWidth);
-                			System.out.println("Tile Y: "+opposite);
-                		} else {
-                			groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
-                		}
-                	} else {
-                		groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
-                	}
+                	if (y == yMiddleTile && x == xMiddleTile){
+                		int opposite = Math.abs(y * groundTileHeight - battleField.getHeight());
+                		spikePosX.add(x * groundTileWidth);
+               			spikePosY.add(opposite);
+               			
+               			groundGfx.drawImage(spikeImg, x * groundTileWidth, y * groundTileHeight, null);
+               		} else {
+               			groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+               		}
                 }
             }
         }
         
-        System.out.println(spikePosX);
-        System.out.println(spikePosY);
-        
-        battleManager.saveSpikePosX(spikePosX);
-        battleManager.saveSpikePosY(spikePosY);
+        /* Save spike position into BattleManager */
+        battleManager.saveSpikePos(spikePosX, spikePosY);
     }
 
 	private void drawBattle(Graphics2D g, ITurnSnapshot snapShot) {
