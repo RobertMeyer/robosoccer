@@ -786,6 +786,7 @@ public class BattleView extends Canvas {
                 String weaponPath = null;
                 String radarPath = null;
                 double fullEnergy = robotSnapshot.getFullEnergy();
+                double currentEnergy = robotSnapshot.getEnergy();
                 
                 // If a custom body part is present in the robots equipment
                 // then the body image path is changed to the custom one.
