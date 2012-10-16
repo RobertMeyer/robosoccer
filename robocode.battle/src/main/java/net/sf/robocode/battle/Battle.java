@@ -828,11 +828,16 @@ public class Battle extends BaseBattle {
 
 	}
 	
+	/**
+	 * Checks the battlefield for any dead frozen robots, and removes the ice
+	 * cube image, and force ends the freeze for the next round
+	 */
 	private void handleDeadFrozenRobots() {
         for (RobotPeer robot : robotList) {
         	if (!robot.isAlive()) {
 	    		if (robot.containsImage("freeze")) {
 	        		robot.removeImage("freeze");
+	        		robot.setKsFrozen(false);
 	    		}
         	}
         }
