@@ -442,7 +442,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public boolean isBotzilla() {
-    	return statics.isBotzilla();
+    	//return statics.isBotzilla();
+		return (robotSpecification.getName().equals("sampleex.Botzilla"));
     }
 
 	public boolean isDispenser() {
@@ -927,7 +928,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//TODO: Change to actual starting spots [Team Awesome]
 			x = 0;
 			y = 0;
-		} else if (statics.isBotzilla()){
+		//} else if (statics.isBotzilla()){
+		} else if (isBotzilla()){
 			energy = 500;
 		} else if (statics.isDispenser()) {
 			energy = 500;
@@ -1463,14 +1465,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
         		// Bounce back
                 double angle = atan2(otherRobot.x - x, otherRobot.y - y);
-            }
-        }
-        
-		for (RobotPeer otherRobot : robots) {
-			if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
-					&& boundingBox.intersects(otherRobot.boundingBox)) {
-				// Bounce back
-				double angle = atan2(otherRobot.x - x, otherRobot.y - y);
 
                 double movedx = velocity * sin(bodyHeading);
                 double movedy = velocity * cos(bodyHeading);
@@ -2735,13 +2729,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * @param isFrozen the isFrozen to set
+	 * @param isKsFrozen the isKsFrozen to set
 	 */
-	 public void setKsFrozen(boolean isFrozen) {
-		if (!isFrozen) {
+	 public void setKsFrozen(boolean isKsFrozen) {
+		if (!isKsFrozen) {
 			this.println("KILLSTREAK: Freeze expired");
 		}
-		this.isKsFrozen = isFrozen;
+		this.isKsFrozen = isKsFrozen;
 	}
 	 
 	/**
