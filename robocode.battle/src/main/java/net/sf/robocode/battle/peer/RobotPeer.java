@@ -1218,6 +1218,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+	/*
+	 * Called by Dispenser bots, for giving health to robots which enter the immediate area.
+	 * Healing effect intensifies with proximity to Dispenser. 
+	 * Dispenser scores points for healing other robots, and also earns some energy back.
+	 * Healing effect is not applied to Botzilla or other Dispensers.
+	 * robots List of robots in the current game
+	 */
 	protected void dispenseHealth(List<RobotPeer> robots) {
 		double amount = 0;
 
@@ -1290,8 +1297,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     }
 
                     //Use a factor of the armor if it has been changed
+
                     //This Robot
                     if (isBotzilla()) {
+                    	//If this robot is botzilla the other robot dies instantly
                     	otherRobot.updateEnergy(-(otherRobot.energy + 1));
                     } else if (getRobotArmor() - 1.0 < 0.00001) {
                         this.updateEnergy(-(this.getRamDamage()));
@@ -1302,6 +1311,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
                     // Other Robot
                     if (otherRobot.isBotzilla()) {
+                    	//If the other robot is botzilla then this robot dies instantly
                     	updateEnergy(-(energy + 1));
                     } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
                         otherRobot.updateEnergy(-(otherRobot.getRamDamage()));

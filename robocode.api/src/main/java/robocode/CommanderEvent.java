@@ -28,7 +28,7 @@ import robocode.robotinterfaces.ISoldierRobot;
 public class CommanderEvent extends Event {
 
     private static final long serialVersionUID = 1L;
-    private final static int DEFAULT_PRIORITY = 99;
+    private final static int DEFAULT_PRIORITY = 50;
     
     public final int NO_TACTIC = 0;
 	public final int PAUSE = 1;
@@ -77,11 +77,11 @@ public class CommanderEvent extends Event {
     /**
      * {@inheritDoc}
      */
-    @Override
+   /* @Override
     public final int compareTo(Event event) {
         //Gives higher preference over comparisons
         return -1;
-    }
+    }*/
 
     /**
      * {@inheritDoc}

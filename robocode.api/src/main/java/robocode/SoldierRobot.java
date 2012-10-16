@@ -10,6 +10,7 @@ package robocode;
 import robocode.Robot;
 import robocode.robotinterfaces.ISoldierEvents;
 import robocode.robotinterfaces.ISoldierRobot;
+import java.awt.Color;
 
 /**
  * An extension of the basic robot class, containing methods for behaviours
@@ -32,9 +33,10 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 	protected static final int TAUNT = 7;
 	
 	protected double power = 1.5;
-
+	private int tactic = 0;
+	
 	public void onCommandRecieved(CommanderEvent e) {
-		
+		tactic = e.getTactic();
 	}
 	
 	
@@ -46,6 +48,13 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 	 */
 	
 	/**
+	 * Default code for the default behaviour (No tactic given).
+	 */
+	public void defaultBehaviour() {
+		turnRight(360);
+	}
+	
+	/**
 	 * Stop everything.
 	 */
 	public void pause() {
@@ -53,30 +62,32 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 	}
 	
 	/**
-	 * Move forward.
+	 * Default code for the advance behaviour
 	 */
 	public void advance() {
 		ahead(100);
 	}
 	
 	/**
-	 * Back away.
+	 * Default code for the retreating behaviour
 	 */
 	public void retreat() {
 		back(100);
 	}
 	
 	/**
-	 * Fire around randomly!
+	 * Default attacking behavious
 	 */
 	public void attack() {
 		turnRight(45);
-		fire(1);
+		fire(power);
 	}
 	
 	/**
 	 * Increase the power of the robot's shots.  Returns the 
 	 * tactic to continue with after increase.
+	 * 
+	 * @return the tactic to be used immediately after the increase
 	 */
 	public int increasePower() {
 		if (power < 2.5) {
@@ -84,12 +95,14 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 		} else {
 			power = 3.0;
 		}
-		return RETREAT;
+		return ADVANCE;
 	}
 	
 	/**
 	 * Decrease the power of your shots to save power.  Returns the
 	 * tactic to continue with after decrease.
+	 * 
+	 * @return The tactic to be used immediately after the decrease
 	 */
 	public int decreasePower() {
 		if (power > 1.0) {
@@ -97,11 +110,11 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 		} else {
 			power = 0.5;
 		}
-		return ADVANCE;
+		return RETREAT;
 	}
 	
 	/**
-	 * Degrade your enemies by taunting them.
+	 * The default taunt behaviour to provoke your enemy
 	 */
 	public void taunt() {
     	turnRadarRight(360);
