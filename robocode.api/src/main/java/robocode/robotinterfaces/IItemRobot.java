@@ -4,7 +4,7 @@ package robocode.robotinterfaces;
  * A robot interface for creating an item-interactable robot like
  * {@link robocode.ItemRobot} that is able to handle robot item events.
  * 
- * @author Ameer Sabri
+ * @author Ameer Sabri (Dream Team)
  * @see robocode.ItemRobot
  * @see IBasicRobot
  * @see IJuniorRobot
