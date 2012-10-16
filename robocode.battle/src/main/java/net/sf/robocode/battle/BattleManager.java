@@ -447,12 +447,15 @@ public class BattleManager implements IBattleManager {
 		int topRobotIndex = 0;
 		
 		for(int i=0; i < robotList.size(); i++){
+			//Get first robot energy level for comparison
 			if(i == 0){
 				topRobotEnergy = robotList.get(i).getEnergy();
 				topRobotIndex= i;
 			}
+			//Do robot energy level comparison
 			if(i > 0){
 				currentRobotEnergy = robotList.get(i).getEnergy();
+				//Randomly pick and kill one robot if their energy level is the same
 				if(topRobotEnergy == currentRobotEnergy){
 					Random random = new Random();
 					int ranNum = random.nextInt(5);
@@ -463,6 +466,7 @@ public class BattleManager implements IBattleManager {
 						topRobotIndex = i;
 						topRobotEnergy = robotList.get(i).getEnergy();
 					}
+				//Kill the robot with a lower energy level
 				}else if(topRobotEnergy > currentRobotEnergy){
 					robotList.get(i).kill();
 				}else{
@@ -484,6 +488,8 @@ public class BattleManager implements IBattleManager {
 		List<RobotPeer> robotList = ((Battle) battle).getRobotList();
 		double lowestEnergy = 101;
 		int lowestEnergyIndex = 0;
+		
+		//Find the robot with the lowest energy level
 		for(int i=0; i < robotList.size(); i++){
 			if(robotList.get(i).getEnergy() <= lowestEnergy && robotList.get(i).getEnergy() != 0)
 			{	
@@ -491,11 +497,15 @@ public class BattleManager implements IBattleManager {
 				lowestEnergy = robotList.get(i).getEnergy();
 			}
 		}
+		//Kill robot with the lowest energy level
 		robotList.get(lowestEnergyIndex).kill();
 	}
 	
 	/**
 	 * Save the position of all spikes for Spike mode
+	 * 
+	 * @param spikeArrayPosX the X-axis of all spikes
+	 * @param spikeArrayPosY the Y-axis of all spikes 
 	 */
 	@Override
 	public void saveSpikePos(ArrayList<Integer> spikeArrayPosX, ArrayList<Integer> spikeArrayPosY){

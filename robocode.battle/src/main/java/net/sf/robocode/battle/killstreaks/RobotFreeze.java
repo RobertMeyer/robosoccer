@@ -26,7 +26,7 @@ public class RobotFreeze implements IKillstreakAbility {
 						+ FREEZE_TIME + " turns");
 				continue;
 			} else {
-				robot.enableFreeze(FREEZE_TIME);
+				robot.enableKsFreeze(FREEZE_TIME);
 				robot.println("KILLSTREAK: Robot has been frozen for "
 						+ FREEZE_TIME + " turns");
 			}

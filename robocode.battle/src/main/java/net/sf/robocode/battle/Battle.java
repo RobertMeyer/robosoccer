@@ -107,6 +107,7 @@ import net.sf.robocode.battle.peer.ContestantPeer;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
+import net.sf.robocode.battle.peer.TeleporterPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
@@ -151,6 +152,9 @@ public class Battle extends BaseBattle {
     private double inactivityEnergy;
     // Objects in the battle
 	private BattleProperties bp;
+	//Height and width of the battefield
+	private int height;
+	private int width;
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
 	private List<IRenderable> customObject = new ArrayList<IRenderable>();
@@ -187,6 +191,10 @@ public class Battle extends BaseBattle {
 	// Objects in the battle
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
+	// Object to keep status of whether teleporters are enabled or not 
+	private TeleporterEnabler teleporterEnabler = new TeleporterEnabler();
+	// List of teleporters in the arena
+	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private BattlePeers peers;
 
 	/** List of obstacles in the battlefield */
@@ -209,7 +217,9 @@ public class Battle extends BaseBattle {
 				battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
 				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
 		robotsCount = battlingRobotsList.length;
-
+		//get width and height of the battlefield
+		width = battleProperties.getBattlefieldWidth();
+		height = battleProperties.getBattlefieldHeight();
         battleMode = (ClassicMode) battleProperties.getBattleMode();
 		System.out.println("Battle mode: " + battleMode.toString());
         //TODO Just testing spawning any bot for now
@@ -465,10 +475,11 @@ public class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.startRound(waitMillis, waitNanos);
         }
-
+        
+        createTeleporters();
         Logger.logMessage(""); // puts in a new-line in the log message
 
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, teleporters, false);
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -490,8 +501,8 @@ public class Battle extends BaseBattle {
 		this.getBattleMode().scoreTurnPoints();
 
 		bullets.clear();
-		
 		items.clear();
+		teleporters.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
 	}
@@ -646,7 +657,7 @@ public class Battle extends BaseBattle {
 
 	 @Override
     protected void finalizeTurn() {
-        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, true)));
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, teleporters, true)));
 
         super.finalizeTurn();
     }
@@ -754,7 +765,7 @@ public class Battle extends BaseBattle {
 
 	private void updateBullets() {
 		for (BulletPeer bullet : getBulletsAtRandom()) {
-			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList());
+			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList(), teleporters);
 			if (bullet.getState() == BulletState.INACTIVE) {
 				bullets.remove(bullet);
 			}
@@ -768,7 +779,7 @@ public class Battle extends BaseBattle {
 
         // Move all bots
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
-            robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
+            robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy, teleporters);
         }
 
         if (currentTurn >= botzillaSpawnTime &&
@@ -818,13 +829,20 @@ public class Battle extends BaseBattle {
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
-        	
-        	// Death effect
+		//spawn blackhole on dead robot is there was not one there already
+		if (teleporterEnabler.isBlackholesEnabled() && !deadRobot.collidedWithBlackHole()) {
+				double y2 = -2;
+				double x2 = -2;
+				double x1 = deadRobot.getX();
+				double y1 = deadRobot.getY();
+				teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
+			}	
+		
+		// Death effect
         	if (battleManager.getBattleProperties().getEffectArea()) {
         		deathEffect(deadRobot);
         	}
-        	
-            // Compute scores for dead robots
+		// Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
                 deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
             } else {
@@ -1163,7 +1181,23 @@ public class Battle extends BaseBattle {
         }
     }
 
-
+	private void createTeleporters(){
+		//do nothing if teleporters are not enabled
+		if (!teleporterEnabler.isTeleportersEnabled())
+			return;
+		
+		//randomise some x and y co-ordinates that are away from the walls by 5
+		double x1 = Math.random()*(width-80)+40;
+		double x2 = Math.random()*(width-80)+40;
+		double y1 = Math.random()*(height-80)+40;
+		double y2 = Math.random()*(height-80)+40;
+		
+		
+		//add a new TeleporterPeer
+		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
+	}
+	
+	
 	private void createEffectAreas(){
 		int tileWidth = 64;
 		int tileHeight = 64;
