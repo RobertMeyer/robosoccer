@@ -21,7 +21,7 @@ public class RobotFreeze implements IKillstreakAbility {
 	 */
 	public void callAbility(RobotPeer robotPeer, Battle battle) {
 		for (RobotPeer robot : battle.getRobotList()) {
-			if (robot == robotPeer) {
+			if (robot.equals(robotPeer)) {
 				robot.println("KILLSTREAK: Freezing all other robots for "
 						+ FREEZE_TIME + " turns");
 				continue;
