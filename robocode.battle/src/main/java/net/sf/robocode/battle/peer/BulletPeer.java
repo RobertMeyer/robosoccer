@@ -206,7 +206,9 @@ public class BulletPeer {
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
+				//only damage the robot if not in team
 				if (!teamFire) {
+					otherRobot.updateEnergy(-damage);
 					owner.getRobotStatistics().scoreBulletDamage(
 							otherRobot.getName(), score);
 				}
