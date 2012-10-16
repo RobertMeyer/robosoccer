@@ -96,6 +96,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.RenderObject;
+import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -113,7 +115,6 @@ import net.sf.robocode.peer.ExecResults;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.peer.TeamMessage;
 import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.BattleRules;
