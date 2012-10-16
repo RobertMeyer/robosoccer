@@ -14,7 +14,7 @@ public class ClassicModeTest {
 	private static int TURN_LIMIT = 9000;
 	private final static int TURNS_DISPLAYED_AFTER_ENDING = 30;
 	
-	private ClassicMode cm;
+	ClassicMode cm;
 	
 	@Before
 	public void setup() {
@@ -23,12 +23,12 @@ public class ClassicModeTest {
 	
 	@Test
 	public void testToString() {
-		assertTrue(toStringIsString(cm, "Classic Mode"));
+		assertEquals("Incorrect String Representation", "Classic Mode", cm.toString());
 	}
 	
 	@Test
 	public void testDescription() {
-		assertTrue(descriptionIsString(cm, "Original robocode mode."));
+		assertEquals("Incorrect Description", "Original robocode mode.", cm.getDescription());
 	}
 	
 	@Test
@@ -85,19 +85,5 @@ public class ClassicModeTest {
 	public void testIsRoundOver() {
 		int endTimer = TURNS_DISPLAYED_AFTER_ENDING * 5 + 1, time = TURNS_DISPLAYED_AFTER_ENDING;
 		assertTrue("For current time "+endTimer+" and end time "+ time +" expected true.", cm.isRoundOver(endTimer, time));
-	}
-	
-	public boolean toStringIsString(ClassicMode cm, String s) {
-		if (cm.toString().equals(s)) {
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean descriptionIsString(ClassicMode cm, String s) {
-		if (cm.getDescription().equals(s)) {
-			return true;
-		}
-		return false;
 	}
 }

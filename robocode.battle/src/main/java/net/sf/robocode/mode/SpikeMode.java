@@ -1,12 +1,5 @@
 package net.sf.robocode.mode;
 
-/**
- * Mode Class used for Spike Mode. 
- * 
- * @author Team - MCJJ
- * @author Jake Ching Leong Ong
- */
-
 public class SpikeMode extends ClassicMode {
 	
 	private final String title = "Spike Mode";

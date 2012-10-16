@@ -91,8 +91,6 @@ public interface ITurnSnapshot {
 	 * @see #getSortedTeamScores()
 	 */
 	IScoreSnapshot[] getIndexedTeamScores();
-	
-	ITeleporterSnapshot[] getTeleporters();
 
 
 }

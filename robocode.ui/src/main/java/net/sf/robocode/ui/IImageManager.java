@@ -40,9 +40,4 @@ public interface IImageManager {
     RenderImage getColoredGunRenderImage(Integer color, String imagePath);
 
     RenderImage getColoredRadarRenderImage(Integer color, String imagePath);
-
-	RenderImage getTeleporterRenderImage();
-	
-	RenderImage getBlackHoleRenderImage(int size);
-
 }
