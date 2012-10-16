@@ -544,6 +544,8 @@ public class Battle extends BaseBattle {
         }
 
         handleDeadRobots();
+        handleDeadFrozenRobots();
+        
         if (getBattleMode().respawnsOn()) {
         	if (super.getTime() > getBattleMode().turnLimit()) {
         		shutdownTurn();
@@ -824,6 +826,16 @@ public class Battle extends BaseBattle {
 		botzillaPeer.startRound(waitMillis, waitNanos);
 		// TODO make appear and running
 
+	}
+	
+	private void handleDeadFrozenRobots() {
+        for (RobotPeer robot : robotList) {
+        	if (!robot.isAlive()) {
+	    		if (robot.containsImage("freeze")) {
+	        		robot.removeImage("freeze");
+	    		}
+        	}
+        }
 	}
 
     private void handleDeadRobots() {

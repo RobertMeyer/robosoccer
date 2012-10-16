@@ -1166,6 +1166,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				ksImages.get("freeze").setTranslate(this.getX(), this.getY());
 			}
 		}
+		
+		/* check if a robot has died while frozen */
+		if (isKsFrozen() && !isAlive()) {
+			/* remove the image from the battle */
+            battle.removeCustomObject(ksImages.get("freeze"));
+            
+            /* remove the image from the robot */
+            ksImages.remove("freeze");
+		}
 
 		// apply super tank bonuses
 		if (isSuperTank()) {
@@ -2835,5 +2844,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public boolean isZombie() {
 		return getName() == "sampleex.NormalZombie";
+	}
+
+
+	public void removeImage(String image) {
+		ksImages.remove(image);
+		battle.removeCustomObjectByName(image);
+	}
+
+
+	public boolean containsImage(String image) {
+		if (ksImages.containsKey(image)) {
+			return true;
+		}
+		
+		return false;
 	}
 }
