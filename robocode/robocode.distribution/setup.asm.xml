@@ -1,0 +1,82 @@
+<assembly>
+    <id>setup</id>
+    <formats>
+        <format>dir</format>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <!-- robocode.api -> robocode.jar -->
+        <dependencySet>
+            <includes>
+                <include>au.edu.uq.csse2003:robocode.api</include>
+            </includes>
+            <outputDirectory>libs</outputDirectory>
+            <unpack>false</unpack>
+            <outputFileNameMapping>robocode.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+        <!-- robocode.roborumble -> roborumble.jar -->
+        <dependencySet>
+            <includes>
+                <include>au.edu.uq.csse2003:robocode.roborumble</include>
+            </includes>
+            <outputDirectory>libs</outputDirectory>
+            <unpack>false</unpack>
+            <outputFileNameMapping>roborumble.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+        <!-- other libraries -->
+        <dependencySet>
+            <excludes>
+                <!-- Used for creating this assembly -->
+                <exclude>au.edu.uq.csse2003:robocode.distribution</exclude>
+                <!-- These are unpacked in distribution files -->
+                <exclude>au.edu.uq.csse2003:robocode.installer</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.content</exclude>
+                <exclude>au.edu.uq.csse2003:robocode.samples</exclude>
+                <!-- Handled independently and renamed into robocode.jar -->
+                <exclude>au.edu.uq.csse2003:robocode.api</exclude>
+                <!-- Handled independently and renamed into roborumble.jar -->
+                <exclude>au.edu.uq.csse2003:robocode.roborumble</exclude>
+            </excludes>
+            <outputDirectory>libs</outputDirectory>
+            <unpack>false</unpack>
+        </dependencySet>
+        <!-- installer and content -->
+        <dependencySet>
+            <includes>
+                <include>au.edu.uq.csse2003:robocode.content</include>
+                <include>au.edu.uq.csse2003:robocode.installer</include>
+            </includes>
+            <unpack>true</unpack>
+            <unpackOptions>
+                <excludes>
+                    <exclude>**/META-INF/**</exclude>
+                </excludes>
+            </unpackOptions>
+        </dependencySet>
+        <!-- robot samples -->
+        <dependencySet>
+            <includes>
+                <include>au.edu.uq.csse2003:robocode.samples</include>
+            </includes>
+            <unpack>true</unpack>
+            <unpackOptions>
+                <excludes>
+                    <exclude>**/META-INF/**</exclude>
+                </excludes>
+            </unpackOptions>
+            <outputDirectory>robots</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>../robocode.api/target/site/apidocs</directory>
+            <outputDirectory>javadoc</outputDirectory>
+        </fileSet>
+    </fileSets>
+    <files>
+        <file>
+            <source>../versions.txt</source>
+        </file>
+    </files>
+</assembly>
