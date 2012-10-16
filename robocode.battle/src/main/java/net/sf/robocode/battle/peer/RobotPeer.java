@@ -1143,7 +1143,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
             /* remove the image from the robot */
             ksImages.remove("freeze");
 		} else if (isKsFrozen() && (battle.getTotalTurns() <= frozenTimeout)) {
-			ksImages.get("freeze").setTranslate(this.getX(), this.getY());
+			if (ksImages.containsKey("freeze")) {
+				ksImages.get("freeze").setTranslate(this.getX(), this.getY());
+			}
 		}
 
 		// apply super tank bonuses
