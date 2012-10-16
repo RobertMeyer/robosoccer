@@ -68,6 +68,7 @@ package net.sf.robocode.battle.peer;
 
 import static net.sf.robocode.io.Logger.logMessage;
 
+
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -96,6 +97,7 @@ import net.sf.robocode.host.proxies.IHostingRobotProxy;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.peer.*;
 import net.sf.robocode.repository.IRobotRepositoryItem;
+import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.*;
@@ -1024,6 +1026,22 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (!isSleeping() && !battle.isDebugging()) {
 			logMessage("\n" + getName() + " still has not started after " + waitMillis + " ms... giving up.");
 		}
+		
+		/*
+		 * check if at the start of the round any of the killstreaks are still
+		 * persistent and redraw them
+		 */
+		if (isSuperTank()) {
+			battle.addCustomObject(ksImages.get("tank"));
+		}
+		
+		if (!isScannable()) {
+			battle.addCustomObject(ksImages.get("jammer"));
+		}
+		
+		if (isKsFrozen()) {
+			battle.addCustomObject(ksImages.get("freeze"));
+		}
 	}
 
 
@@ -1130,6 +1148,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
             /* check if robot has image */
             if (ksImages.containsKey("jammer")) {
                     /* move the image to the robots coordinates */
+            		
                     ksImages.get("jammer").setTranslate(this.getX(), this.getY());
             }
 		}
@@ -1152,6 +1171,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isSuperTank()) {
 			setGunHeatEffect(0.1);
 			setEnergyEffect(getStartingEnergy() * 2, inCollision);
+			
+			/* move the image with the robot */
 			ksImages.get("tank").setTranslate(this.getX(), this.getY());
 		} else {
 			if (ksImages.containsKey("tank")) {
@@ -2720,7 +2741,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the frozen (killstreak) status
 	 */
 	public boolean isKsFrozen() {
-		return this.isKsFrozen;
+		if (this.isAlive()) {
+			return this.isKsFrozen;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -2730,23 +2755,25 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 *            the amount of time to freeze the robot
 	 */
 	public void enableKsFreeze(int freezeTime) {
-		setKsFrozen(true);
-		/* create image */
-        RenderObject freeze = new RenderObject(
-                        "freeze",
-                        "/net/sf/robocode/ui/images/cube.png",
-                        this.getX(), this.getY());
-        
-        /* make it transparent */
-        freeze.setAlpha(0.3f);
-        
-        /* add it to the battle */
-        battle.addCustomObject(freeze);
-        
-        /* add it to the robot */
-        ksImages.put(freeze.getName(), freeze);
-
-		frozenTimeout = battle.getTotalTurns() + freezeTime;
+		if (this.isAlive()) {
+			setKsFrozen(true);
+			/* create image */
+	        RenderObject freeze = new RenderObject(
+	                        "freeze",
+	                        "/net/sf/robocode/ui/images/cube.png",
+	                        this.getX(), this.getY());
+	        
+	        /* make it transparent */
+	        freeze.setAlpha(0.3f);
+	        
+	        /* add it to the battle */
+	        battle.addCustomObject(freeze);
+	        
+	        /* add it to the robot */
+	        ksImages.put(freeze.getName(), freeze);
+	
+			frozenTimeout = battle.getTotalTurns() + freezeTime;
+		}
 	}
 
 	/**
@@ -2809,6 +2836,4 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isZombie() {
 		return getName() == "sampleex.NormalZombie";
 	}
-
-
 }
