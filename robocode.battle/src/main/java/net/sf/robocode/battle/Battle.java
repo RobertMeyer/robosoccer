@@ -834,11 +834,9 @@ public class Battle extends BaseBattle {
 	 */
 	private void handleDeadFrozenRobots() {
         for (RobotPeer robot : robotList) {
-        	if (!robot.isAlive()) {
-	    		if (robot.containsImage("freeze")) {
+        	if (robot.containsImage("freeze") && robot.isDead()) {
 	        		robot.removeImage("freeze");
 	        		robot.setKsFrozen(false);
-	    		}
         	}
         }
 	}
