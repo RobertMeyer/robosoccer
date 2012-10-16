@@ -2654,13 +2654,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * @param isFrozen the isFrozen to set
+	 * @param isKsFrozen the isKsFrozen to set
 	 */
-	 public void setKsFrozen(boolean isFrozen) {
-		if (!isFrozen) {
+	 public void setKsFrozen(boolean isKsFrozen) {
+		if (!isKsFrozen) {
 			this.println("KILLSTREAK: Freeze expired");
 		}
-		this.isKsFrozen = isFrozen;
+		this.isKsFrozen = isKsFrozen;
 	}
 	 
 	/**
