@@ -35,10 +35,10 @@ public class KillstreakTracker {
 		killstreakAbilities = new HashMap<Integer, IKillstreakAbility>();
 
 		/* add the default killstreak abilities to the map */
-		addKillstreakAbility(1, new RadarJammer());
+		addKillstreakAbility(3, new RadarJammer());
 		addKillstreakAbility(5, new AirStrike());
-		addKillstreakAbility(2, new RobotFreeze());
-		addKillstreakAbility(3, new SuperTank());
+		addKillstreakAbility(7, new RobotFreeze());
+		addKillstreakAbility(9, new SuperTank());
 
 	}
 
