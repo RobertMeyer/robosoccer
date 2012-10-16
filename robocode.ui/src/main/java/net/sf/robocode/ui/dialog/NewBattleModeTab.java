@@ -44,7 +44,8 @@ public class NewBattleModeTab extends JPanel {
 		new TimerMode(),
 		new EliminationMode(),
 		new SharingMode(),
-		new LowVision()
+		new LowVision(),
+		new SpikeMode()
 	};
 
 	public NewBattleModeTab() {

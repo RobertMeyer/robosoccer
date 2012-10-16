@@ -14,15 +14,8 @@
 package robocode;
 
 import java.awt.*;
-import java.nio.ByteBuffer;
 import net.sf.robocode.peer.IRobotStatics;
-import net.sf.robocode.serialization.ISerializableHelper;
-import net.sf.robocode.serialization.RbSerializer;
 import robocode.Event;
-import robocode.Robot;
-import robocode.robotinterfaces.IAdvancedEvents;
-import robocode.robotinterfaces.IAdvancedRobot;
-import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.ISoldierEvents;
 import robocode.robotinterfaces.ISoldierRobot;

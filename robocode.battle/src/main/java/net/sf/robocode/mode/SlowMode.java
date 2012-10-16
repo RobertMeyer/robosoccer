@@ -1,7 +1,6 @@
 package net.sf.robocode.mode;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.util.Hashtable;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -53,4 +52,5 @@ public class SlowMode extends ClassicMode {
 			return values;
 		}
 	}
+
 }

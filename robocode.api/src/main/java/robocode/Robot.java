@@ -456,8 +456,16 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      */
     public void fire(double power) {
         if (peer != null) {
-            peer.setFire(power);
-            peer.execute();
+        	if(peer.checkSword()==false)
+        	{
+        		 peer.setFire(power);
+                 peer.execute();
+        	}
+        	else
+        	{
+        		peer.execute();
+        	}
+           
         } else {
             uninitializedException();
         }
@@ -680,6 +688,305 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
         uninitializedException();
         return 0; // never called
     }
+    
+    /**
+     * Returns the maximum velocity of the robot measured in pixels/turn.
+     * <p/>
+     * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
+     * * {@link RobotAttribute#SPEED}
+     * 
+     * @return the maximum velocity of the robot in pixels/turn
+     * @see Rules#MAX_VELOCITY
+     * @see RobotAttribute#SPEED
+     */
+    public double getMaxVelocity(){
+    	if(peer != null){
+    		return peer.getRealMaxVelocity();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+
+    
+    /**
+     * Returns the maximum bullet power of the robot.
+     * <p/>
+     * The maximum bullet power is defined as {@link Rules#MAX_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the maximum bullet power of the robot
+     * @see Rules#MAX_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    public double getMaxBulletPower(){
+    	if(peer != null){
+    		return peer.getMaxBulletPower();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the minimum bullet power of the robot.
+     * <p/>
+     * The minimum bullet power is defined as {@link Rules#MIN_BULLET_POWER} *
+     * {@link RobotAttribute#BULLET_DAMAGE}
+     * 
+     * @return the minimum bullet power of the robot
+     * @see Rules#MIN_BULLET_POWER
+     * @see RobotAttribute#BULLET_DAMAGE
+     */
+    public double getMinBulletPower(){
+    	if(peer != null){
+    		return peer.getMinBulletPower();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the acceleration of the robot.
+     * <p/>
+     * The acceleration of the robot defined as 
+     * {@link Rules#ACCELERATION} * {@link RobotAttribute#ACCELERATION}
+     * 
+     * @return the acceleration of the robot
+     * @see Rules#ACCELERATION
+     * @see RobotAttribute#ACCELERATION
+     */
+    public double getAcceleration(){
+    	if(peer != null){
+    		return peer.getAcceleration();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the deceleration of the robot.
+     * <p/>
+     * The deceleration of the robot defined as 
+     * {@link Rules#DECELERATION} * {@link RobotAttribute#DECELERATION}
+     * 
+     * @return the deceleration of the robot
+     * @see Rules#DECELERATION
+     * @see RobotAttribute#DECELERATION
+     */
+    public double getDeceleration(){
+    	if(peer != null){
+    		return peer.getDeceleration();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the radar scan radius of the robot
+     * <p/>
+     * The radar scan radius is defined as {@link Rules#RADAR_SCAN_RADIUS}
+     *  * {@link RobotAttribute#SCAN_RADIUS}
+     *  
+     * @return the radar scan radius of the robot
+     * @see Rules#RADAR_SCAN_RADIUS
+     * @see RobotAttribute#SCAN_RADIUS
+     */
+    public double getRadarScanRadius(){
+    	if(peer != null){
+    		return peer.getRadarScanRadius();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the maximum turn rate of the robot in degrees.  The rate at 
+     * which the robot turns also depends on velocity.
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#MAX_TURN_RATE}
+     *  * {@link RobotAttribute#ROBOT_TURN_ANGLE}
+     * 
+     * @return the maximum turn rate of the robot in degrees
+     * @see Rules#MAX_TURN_RATE
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Rules#getTurnRate(double)
+     * @see Rules#getTurnRateRadians(double)
+     */
+    public double getMaxTurnRate(){
+    	if(peer != null){
+    		return peer.getMaxTurnRate();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the maximum turn rate of the robot in radians.  The rate at 
+     * which the robot turns also depends on velocity.
+     * 
+     * @return the maximum turn rate of the robot in radians
+     * @see Rules#MAX_TURN_RATE_RADIANS
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Rules#getTurnRate(double)
+     * @see Rules#getTurnRateRadians(double)
+     */
+    public double getMaxTurnRateRadians(){
+    	if(peer != null){
+    		return Math.toRadians(getMaxTurnRate());
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the maximum gun turn rate of the robot in degrees.
+     * 
+     * Note, that if setAdjustGunForRobotTurn(true) has been called, the gun
+     * turn is independent of the robot turn.
+     * In this case the gun moves relatively to the screen. If
+     * setAdjustGunForRobotTurn(false) has been called or
+     * setAdjustGunForRobotTurn() has not been called at all (this is the
+     * default), then the gun turn is dependent on the robot turn, and in this
+     * case the gun moves relatively to the robot body.
+     * 
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#GUN_TURN_RATE}
+     *  * {@link RobotAttribute#GUN_TURN_ANGLE}
+     * 
+     * @return the maximum gun turn rate of the robot in degrees
+     * @see Rules#GUN_TURN_RATE
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     */
+    public double getGunTurnRate(){
+    	if(peer != null){
+    		return peer.getGunTurnRate();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the maximum gun turn rate of the robot in radians.
+     * 
+     * Note, that if setAdjustGunForRobotTurn(true) has been called, the gun
+     * turn is independent of the robot turn.
+     * In this case the gun moves relatively to the screen. If
+     * setAdjustGunForRobotTurn(false) has been called or
+     * setAdjustGunForRobotTurn() has not been called at all (this is the
+     * default), then the gun turn is dependent on the robot turn, and in this
+     * case the gun moves relatively to the robot body.
+     * 
+     * @return the maximum gun turn rate of the robot in radians
+     * @see Rules#GUN_TURN_RATE
+     * @see RobotAttribute#ROBOT_TURN_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     */
+    public double getGunTurnRateRadians(){
+    	if(peer != null){
+    		return Math.toRadians(getGunTurnRate());
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the radar turn rate of the robot in degrees.
+     * 
+     * Note, that if setAdjustRadarForRobotTurn(true) and/or
+     * setAdjustRadarForGunTurn(true) has been called, the radar turn is
+     * independent of the robot and/or gun turn. If both methods has been set to
+     * true, the radar moves relatively to the screen.
+     * If setAdjustRadarForRobotTurn(false) and/or setAdjustRadarForGunTurn(false)
+     * has been called or not called at all (this is the default), then the
+     * radar turn is dependent on the robot and/or gun turn, and in this case
+     * the radar moves relatively to the gun and/or robot body.
+     * 
+     * <p/>
+     * The robot maximum turn rate is defined as {@link Rules#RADAR_TURN_RATE}
+     *  * {@link RobotAttribute#RADAR_ANGLE}
+     * 
+     * @return the radar turn rate of the robot in degrees
+     * @see Rules#RADAR_TURN_RATE_RADIANS
+     * @see RobotAttribute#RADAR_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     * @see Robot#setAdjustRadarForGunTurn(boolean)
+     */
+    public double getRadarTurnRate(){
+    	if(peer != null){
+    		return peer.getRadarTurnRate();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * Returns the radar turn rate of the robot in radians.
+     * 
+     * Note, that if setAdjustRadarForRobotTurn(true) and/or
+     * setAdjustRadarForGunTurn(true) has been called, the radar turn is
+     * independent of the robot and/or gun turn. If both methods has been set to
+     * true, the radar moves relatively to the screen.
+     * If setAdjustRadarForRobotTurn(false) and/or setAdjustRadarForGunTurn(false)
+     * has been called or not called at all (this is the default), then the
+     * radar turn is dependent on the robot and/or gun turn, and in this case
+     * the radar moves relatively to the gun and/or robot body.
+     * 
+     * @return the radar turn rate of the robot in radians
+     * @see Rules#RADAR_TURN_RATE
+     * @see RobotAttribute#RADAR_ANGLE
+     * @see Robot#setAdjustGunForRobotTurn(boolean)
+     * @see Robot#setAdjustRadarForGunTurn(boolean)
+     */
+    public double getRadarTurnRateRadians(){
+    	if(peer != null){
+    		return Math.toRadians(getRadarTurnRate());
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * The amount of damage taken when a robot hits or is hit by another robot
+     * <p/>
+     * This is defined as {@link Rules#ROBOT_HIT_DAMAGE} * 
+     * {@link RobotAttribute#RAM_DEFENSE}
+     * 
+     * @return the amount of damage taken when a robot hits or is hit by
+     * 			another robot
+     * @see Rules#ROBOT_HIT_DAMAGE
+     * @see RobotAttribute#RAM_DEFENSE
+     */
+    public double getRobotHitDamage(){
+    	if(peer != null){
+    		return peer.getRobotHitDamage();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    /**
+     * The amount of bonus given when a robot moving forward hits an opponent
+     * robot (ramming)
+     * <p/>
+     * This is defined as {@link Rules#ROBOT_HIT_BONUS} * 
+     * {@link RobotAttribute#RAM_ATTACK}
+     * 
+     * @return the amount of damage taken when a robot hits or is hit by
+     * 			another robot
+     * @see Rules#ROBOT_HIT_BONUS
+     * @see RobotAttribute#RAM_ATTACK
+     */
+    public double getRobotHitAttack(){
+    	if(peer != null){
+    		return peer.getRobotHitAttack();
+    	}
+    	uninitializedException();
+        return 0; // never called
+    }
+    
+    //TODO: finish adding getter methods.
+    
+    
 
     /**
      * Prototype for set explosion. The idea is to call this at any time to queue
@@ -1613,4 +1920,10 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     @Override
     public void onStatus(StatusEvent e) {
     }
+
+	@Override
+	public void onWaypointPassed(WaypointPassedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

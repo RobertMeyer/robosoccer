@@ -20,7 +20,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import net.sf.robocode.battle.BattleResultsTableModel;
-import net.sf.robocode.battle.SoccerResultsTableModel;
 import net.sf.robocode.mode.IMode;
 import net.sf.robocode.ui.IWindowManager;
 import robocode.BattleResults;
@@ -51,11 +50,18 @@ public class ResultsDialog extends BaseScoreDialog {
     }
 
     public void setup(BattleResults[] results, int numRounds, IMode battleMode) {
-    	if (battleMode.toString().equals("Soccer Mode")) {
-    		tableModel = new SoccerResultsTableModel(results, numRounds);
-    	} else {
-    		tableModel = new BattleResultsTableModel(results, numRounds);
+    	/* BRANDONCW */
+    	/* Clear any data that was previously in the columns */
+    	if (battleMode.getCustomResultsTable() != null) {
+    		battleMode.getCustomResultsTable().clearColumns();
     	}
+    	/* Set the mode specific data to add */
+    	battleMode.setCustomResultsTable();
+    	/* Store updated BattleResultsTableModel in the class */
+    	tableModel = battleMode.getCustomResultsTable();
+    	/* Add the data */
+    	tableModel.setResults(results);
+    	tableModel.setNumberOfRounds(numRounds);
     	
         setTitle(((BattleResultsTableModel) getTableModel()).getTitle());
         setResultsData();

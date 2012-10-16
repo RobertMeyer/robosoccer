@@ -39,6 +39,8 @@ package net.sf.robocode.battle.peer;
 import java.util.HashMap;
 import java.util.Map;
 import robocode.BattleResults;
+import net.sf.robocode.mode.ClassicMode;
+import net.sf.robocode.battle.BattleProperties;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -49,14 +51,12 @@ import robocode.BattleResults;
  * @author Nathaniel Troutman (contributor)
  */
 public class RobotStatistics implements ContestantStatistics {
-
+	private BattleProperties bp = new BattleProperties();
     private final RobotPeer robotPeer;
     private int rank;
     private final int robots;
     private boolean isActive;
     private boolean isInRound;
-    /* Does the Robot have the flag */
-    private boolean hasFlag;
     private double survivalScore;
     private double lastSurvivorBonus;
     private double bulletDamageScore;
@@ -111,7 +111,6 @@ public class RobotStatistics implements ContestantStatistics {
 
         isActive = true;
         isInRound = true;
-        hasFlag = false;
     }
 
     public void resetScores() {
@@ -126,23 +125,64 @@ public class RobotStatistics implements ContestantStatistics {
         flagScore = 0;
     }
 
-    public void generateTotals() {
+    public void generateTotals(BattleProperties battleProp) {
         totalSurvivalScore += survivalScore;
         totalLastSurvivorBonus += lastSurvivorBonus;
         totalBulletDamageScore += bulletDamageScore;
         totalBulletKillBonus += bulletKillBonus;
         totalRammingDamageScore += rammingDamageScore;
         totalRammingKillBonus += rammingKillBonus;
-        // FIXME - team-Telos
+        // team-Telos addition
         totalFlagScore += flagScore;
 
-        // Unsure as to whether or not we should add flagScore into totalScore
-
-        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
-                + totalBulletKillBonus + totalLastSurvivorBonus;
+        /*TODO Edit this Andrew */
+        /* Set battle Properties */
+        bp = battleProp;
+        System.out.println(bp.toString());
+        ClassicMode mode = (ClassicMode) bp.getBattleMode();
+        totalScore = mode.getCustomOverallScore(this);
+//        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
+//                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
         isInRound = false;
     }
-
+    
+    
+    /**
+     * Begin Team Telos custom overall score additions
+     */
+    
+    public double showBulletDamageScore() {
+    	return totalBulletDamageScore;
+    }
+    
+    public double showRammingDamageScore() {
+    	return totalRammingDamageScore;
+    }
+    
+    public double showSurvivalScore() {
+    	return totalSurvivalScore;
+    }
+    
+    public double showRammingKillBonus() {
+    	return totalRammingKillBonus;
+    }
+    
+    public double showBulletKillBonus() {
+    	return totalBulletKillBonus;
+    }
+    
+    public double showLastSurvivorBonus() {
+    	return totalLastSurvivorBonus;
+    }
+    
+    public double showFlagScore() {
+    	return totalFlagScore;
+    }
+    
+    /**
+     * End Team Telos custom overall score additions
+     */
+    
     @Override
     public double getTotalScore() {
         return totalScore;
@@ -233,7 +273,11 @@ public class RobotStatistics implements ContestantStatistics {
     public double getCurrentRammingKillBonus() {
         return rammingKillBonus;
     }
-
+    
+    public double getCurrentFlagScore() {
+    	return flagScore;
+    }
+    
     public void scoreSurvival() {
         if (isActive) {
             survivalScore += 50;
@@ -331,10 +375,7 @@ public class RobotStatistics implements ContestantStatistics {
      * Team-Telos - Score the flag points
      */
     public void scoreFlag() {
-        if (hasFlag) {
-            // FIXME
-            flagScore++;
-        }
+        flagScore++;
     }
 
     public void scoreFirsts() {
