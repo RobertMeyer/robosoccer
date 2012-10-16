@@ -1245,5 +1245,45 @@ public class Battle extends BaseBattle {
 	        }
 	    }
 	}
+	 
+	/**
+	 * This method adds a IRenderable to the scene.
+	 * 
+	 * @param obj
+	 *            a IRenderable object.
+	 */
+	public void addCustomObject(IRenderable obj) {
+		System.out.println("well");
+		if (obj != null) {
+			System.out.println("added");
+			customObject.add(obj);
+		}
+	}
 
+	/**
+	 * This method removes a IRenderable in the scene.
+	 * 
+	 * @param obj
+	 *            a IRenderable object to remove.
+	 */
+	public void removeCustomObject(IRenderable obj) {
+		if (obj != null) {
+			customObject.remove(obj);
+		}
+	}
+
+	/**
+	 * This method removes a IRenderable in the scene.
+	 * 
+	 * @param name
+	 *            of IRenderable to remove.
+	 */
+	public void removeCustomObjectByName(String name) {
+		for (IRenderable obj : customObject) {
+			if (obj.getName().equals(name)) {
+				customObject.remove(obj);
+				return;
+			}
+		}
+	}
 }

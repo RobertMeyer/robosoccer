@@ -9,7 +9,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
  * instantiated. Freeze all other robots for FREEZE_TIME amount of turns.
  **/
 public class RobotFreeze implements IKillstreakAbility {
-	private static final int FREEZE_TIME = 400;
+	private static final int FREEZE_TIME = 800;
 
 	/**
 	 * Call the RobotFreeze
