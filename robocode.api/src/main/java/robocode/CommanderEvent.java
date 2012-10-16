@@ -70,6 +70,12 @@ public class CommanderEvent extends Event {
         this.tactic = tactic;
     }
     
+    /**
+     * Returns the tactic being given to the robot.  This will be the
+     * main function called by the robot
+     * 
+     * @return The tactic to be used
+     */
     public int getTactic() {
     	return tactic;
     }

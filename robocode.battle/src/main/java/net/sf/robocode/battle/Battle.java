@@ -210,7 +210,7 @@ public final class Battle extends BaseBattle {
 
         battleMode = (ClassicMode) battleProperties.getBattleMode();
 		System.out.println("Battle mode: " + battleMode.toString());
-        //TODO Just testing spawning any bot for now
+        //Retrieve the Botzilla RobotSpecification out of the repository to use in spawning later
         final RobotSpecification[] temp = repositoryManager.getSpecifications();
         for(int i = 0; i < temp.length; i++) {
         	String className = temp[i].getClassName();
@@ -387,7 +387,7 @@ public final class Battle extends BaseBattle {
 	protected void preloadRound() {
 		super.preloadRound();
 
-		//TODO reset currentTurn
+		//reset currentTurn at start of a round
 		currentTurn = 0;
 
 		/*--ItemController--*/
@@ -492,7 +492,7 @@ public final class Battle extends BaseBattle {
 
 	@Override
 	protected void initializeTurn() {
-		//TODO check if this works
+		//Add botzilla if the mode is botzilla mode and it is the chosen or default turn.
         if (currentTurn == botzillaSpawnTime &&
         		battleMode.toString() == "Botzilla Mode" &&
         		!botzillaActive) {
@@ -737,33 +737,41 @@ public final class Battle extends BaseBattle {
         getBattleMode().updateRobotScans(peers.getRobots());
     }
 
+	/*
+	 * Is called at the end of a round to remove botzilla from the peers list
+	 * and ensure it isn't spawned at the start of the next round
+	 */
 	private void removeBotzilla() {
 		botzillaActive = false;
         peers.removeBotzilla();
-        //botzillaPeer.cleanup();
         robotsCount--;
 	}
 
+	/**
+	 * Is called when botzilla needs to be added to a battle.
+	 */
 	private void addBotzilla() {
 		System.out.println("BOTZILLA JUST APPEARED");
 		botzillaActive = true;
-
+		
+		//Create the RobotPeer to add to the battle
 		botzillaPeer = new RobotPeer(this,
 				hostManager,
 				botzilla,
 				0,
 				null,
 				getRobotsCount());
+		//Increment number of robots and add peer to necessary lists
 		robotsCount++;
 		peers.addRobot(botzillaPeer);
 		peers.addContestant(botzillaPeer);
+		
+		//Makes botzilla appear and start interacting in the battle
 		botzillaPeer.initializeRound(peers.getRobots() , null);
 		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
-
         final long waitMillis = waitTime / 1000000;
         final int waitNanos = (int) (waitTime % 1000000);
 		botzillaPeer.startRound(waitMillis, waitNanos);
-		// TODO make appear and running
 
 	}
 

@@ -1438,7 +1438,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					: ((getBattleFieldHeight() - HALF_HEIGHT_OFFSET < y) ? getBattleFieldHeight() - HALF_HEIGHT_OFFSET : y);
 
 			// Update energy, but do not reset inactiveTurnCount
-			if (isBotzilla() || isHouseRobot()) { // The house robot will not get damage from walls.
+			if (isBotzilla() || isHouseRobot()) { // The house robot and botzilla will not get damage from walls.
 				// Do nothing
 			} else if (statics.isAdvancedRobot()) {
 				setEnergy(energy - Rules.getWallHitDamage(velocity), false);

@@ -306,6 +306,8 @@ public class RobotStatistics implements ContestantStatistics {
     }
 
     public void scoreRobotDeath(int enemiesRemaining, Boolean botzillaActive) {
+    	//If botzilla is in the match don't count him as an enemy remaining for
+    	//the purposes of scoring
     	if (botzillaActive) {
     		enemiesRemaining--;
     	}
