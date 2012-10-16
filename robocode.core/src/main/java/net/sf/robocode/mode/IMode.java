@@ -104,4 +104,6 @@ public interface IMode {
 	public void setCustomResultsTable();
 	
 	public BattleResults[] getFinalResults();
+	
+	public boolean allowsOneRobot();
 }

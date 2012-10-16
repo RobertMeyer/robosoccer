@@ -16,12 +16,13 @@ public class ZombieMode extends ClassicMode {
     private final String description = "This mode pits a robot against "
             + "a swarm of zombie enemies. Survive as long as you can!";
     
-<<<<<<< HEAD
+
     private final RobocodeEngine engine = new RobocodeEngine();
-=======
-    final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
+    /*
+     * final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
+     * tom what is this u broke it
+     */
     private BattlePeers peers;
->>>>>>> origin/master
 
     /**
      * {@inheritDoc}
@@ -58,8 +59,6 @@ public class ZombieMode extends ClassicMode {
 	    	zombie.startRound(0, 0);
     	}
     }
-<<<<<<< HEAD
-=======
     
 	@Override
 	public boolean allowsOneRobot() {
@@ -84,5 +83,4 @@ public class ZombieMode extends ClassicMode {
 		}
 		return endTimer > 5*time;
 	}
->>>>>>> origin/master
 }
