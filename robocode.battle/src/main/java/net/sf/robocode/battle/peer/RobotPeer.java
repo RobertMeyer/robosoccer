@@ -236,7 +236,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	// killstreak booleans
 	private boolean isScannable = true;
-	private boolean isFrozen = false;
+	private boolean isKsFrozen = false;
 	private boolean isSuperTank = false;
 	
 	//blackhole
@@ -1118,8 +1118,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 
 		// check if a frozen robot can move again
-		if (isFrozen() && (battle.getTotalTurns() >= frozenTimeout)) {
-			setFrozen(false);
+		if (isKsFrozen() && (battle.getTotalTurns() >= frozenTimeout)) {
+			setKsFrozen(false);
 		}
 
 		// apply super tank bonuses
@@ -1148,7 +1148,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		checkTeleporterCollision(teleporters);
 		// do not move frozen robots
-		if (isFrozen()) {
+		if (isKsFrozen()) {
 			setVelocityEffect(0.1);
 		}
 
@@ -2656,11 +2656,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * @param isFrozen the isFrozen to set
 	 */
-	 public void setFrozen(boolean isFrozen) {
+	 public void setKsFrozen(boolean isFrozen) {
 		if (!isFrozen) {
 			this.println("KILLSTREAK: Freeze expired");
 		}
-		this.isFrozen = isFrozen;
+		this.isKsFrozen = isFrozen;
+	}
+	 
+	/**
+	 * Returns whether the robot is frozen by the RobotFreeze killstreak
+	 * 
+	 * @return the frozen (killstreak) status
+	 */
+	public boolean isKsFrozen() {
+		return this.isKsFrozen;
 	}
 
 	/**
@@ -2669,8 +2678,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @param freezeTime
 	 *            the amount of time to freeze the robot
 	 */
-	public void enableFreeze(int freezeTime) {
-		setFrozen(true);
+	public void enableKsFreeze(int freezeTime) {
+		setKsFrozen(true);
 		frozenTimeout = battle.getTotalTurns() + freezeTime;
 	}
 
