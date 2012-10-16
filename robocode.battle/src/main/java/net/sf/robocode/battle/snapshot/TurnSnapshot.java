@@ -62,7 +62,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 	/*List of snapshots for teleporters on the current battefield*/
 	private List<ITeleporterSnapshot> teleports;
-	
+		
 	/** Current turn in the battle round */
 	private int turn;
     /** Current TPS (turns per second) */

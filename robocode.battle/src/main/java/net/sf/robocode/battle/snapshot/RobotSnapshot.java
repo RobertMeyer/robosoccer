@@ -16,6 +16,7 @@ package net.sf.robocode.battle.snapshot;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,11 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private IScoreSnapshot robotScoreSnapshot;
 	/** Flag specifying if the robot is a FreezeRobot */
 	private boolean isFreezeRobot;
-    
+    /** Flag specifying if the robot is a Minion */
+	private boolean isMinion;
+	/** List holding minion snapshots */
+	private List<IRobotSnapshot> minions = new ArrayList<IRobotSnapshot>(); 
+	
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
     
     private double fullEnergy;
@@ -165,7 +170,11 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		isPaintEnabled = robot.isPaintEnabled();
 		isSGPaintEnabled = robot.isSGPaintEnabled();
 		isFreezeRobot = robot.isFreezeRobot();
-
+		isMinion = robot.isMinion();
+		//Create snapshots of minions.
+		for(RobotPeer peer: robot.getMinionPeers()) {
+			minions.add(new RobotSnapshot(peer, readoutText));
+		}
 		scanArc = robot.getScanArc() != null ? new SerializableArc((Arc2D.Double) robot.getScanArc()) : null;
 
 		graphicsCalls = robot.getGraphicsCalls();
@@ -388,7 +397,21 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	public boolean isDroid() {
 		return isDroid;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isMinion() {
+		return isMinion;
+	}
+    
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<IRobotSnapshot> getMinions() { 
+		return minions;
+	}
+    
 	/**
 	 * {@inheritDoc}
 	 */

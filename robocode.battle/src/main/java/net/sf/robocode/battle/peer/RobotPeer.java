@@ -383,11 +383,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			
 			minionList.add(minionPeer);
 			minionProxyList.add(minionProxy);
-			currentCommands.setSpawnMinion(false, 0);
-			//Update the minions proxy list in commands.
-			currentCommands.setMinions(minionProxyList);
 		}
-		
+		currentCommands.setSpawnMinion(false, 0);
+		//Update the minions proxy list in commands.
+		currentCommands.setMinions(minionProxyList);
+	}
+	
+	public List<RobotPeer> getMinionPeers() {
+		return minionList;
 	}
 	
 	public void setParent(MinionProxy parent) {
