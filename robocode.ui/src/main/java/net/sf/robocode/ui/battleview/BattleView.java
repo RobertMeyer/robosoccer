@@ -498,9 +498,9 @@ public class BattleView extends Canvas {
     	for (IObstacleSnapshot obstacleSnapshot : snapShot.getObstacles()) {
 	        g.setColor(Color.green);
 	        //getX() and getY() returns double, convert to int (or change getX/Y() to return int instead)
-	        g.fillRect((int)(obstacleSnapshot.getX() - ObstaclePeer.WIDTH/2),
-	        		(int)(battleField.getHeight() - obstacleSnapshot.getY() - ObstaclePeer.HEIGHT/2),
-	        		ObstaclePeer.WIDTH, ObstaclePeer.HEIGHT);
+	        g.fillRect((int)(obstacleSnapshot.getX() - obstacleSnapshot.getWidth()/2),
+	        		(int)(battleField.getHeight() - obstacleSnapshot.getY() - obstacleSnapshot.getHeight()/2),
+	        		obstacleSnapshot.getWidth(), obstacleSnapshot.getHeight());
     	}
     }
 

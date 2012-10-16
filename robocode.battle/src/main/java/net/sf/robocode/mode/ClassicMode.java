@@ -74,6 +74,22 @@ public class ClassicMode implements IMode {
     public int setNumObstacles(BattleRules rules) {
         return 0;
     }
+    
+	public int setCellWidth(BattleRules rules) {
+		return 0;
+	}
+
+	public int setCellHeight(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallWidth(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallHeight(BattleRules rules) {
+		return 0;
+	}
 
 	/**
 	 * Returns a list of ItemDrop's to
@@ -341,4 +357,5 @@ public class ClassicMode implements IMode {
 	public void addRobots(int currentTurn, BattlePeers peers){
 		// do nothing
 	}
+
 }

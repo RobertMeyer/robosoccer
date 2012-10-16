@@ -195,6 +195,9 @@ public final class Battle extends BaseBattle {
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 	private BattlePeers peers;
+	
+	/* Wall variables */
+	private int cellWidth, cellHeight, wallWidth, wallHeight;
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
@@ -234,7 +237,14 @@ public final class Battle extends BaseBattle {
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
         obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
-
+        if (battleMode.toString() == "Maze Mode") {
+        	cellWidth = battleMode.setCellWidth(battleRules);
+        	cellHeight = battleMode.setCellHeight(battleRules);
+        	wallWidth = battleMode.setWallWidth(battleRules);
+        	wallHeight = battleMode.setWallHeight(battleRules);
+        	System.out.println(cellWidth + " " + cellHeight + " " + wallWidth + " " + wallHeight);
+        	obstacles = MazeMode.generateMaze(bp, battleRules, this, cellWidth, cellHeight, wallWidth, wallHeight);
+        }        
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, this,
