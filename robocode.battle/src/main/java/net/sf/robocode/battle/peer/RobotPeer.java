@@ -2741,11 +2741,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the frozen (killstreak) status
 	 */
 	public boolean isKsFrozen() {
-		if (this.isAlive()) {
-			return this.isKsFrozen;
-		}
-		
-		return false;
+		return this.isKsFrozen;
 	}
 
 	/**
