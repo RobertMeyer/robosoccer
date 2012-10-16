@@ -9,7 +9,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
  * instantiated. Freeze all other robots for FREEZE_TIME amount of turns.
  **/
 public class RobotFreeze implements IKillstreakAbility {
-	private static final int FREEZE_TIME = 400;
+	private static final int FREEZE_TIME = 800;
 
 	/**
 	 * Call the RobotFreeze
@@ -21,7 +21,7 @@ public class RobotFreeze implements IKillstreakAbility {
 	 */
 	public void callAbility(RobotPeer robotPeer, Battle battle) {
 		for (RobotPeer robot : battle.getRobotList()) {
-			if (robot == robotPeer) {
+			if (robot.equals(robotPeer)) {
 				robot.println("KILLSTREAK: Freezing all other robots for "
 						+ FREEZE_TIME + " turns");
 				continue;
