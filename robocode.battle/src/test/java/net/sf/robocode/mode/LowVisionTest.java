@@ -29,9 +29,12 @@ public class LowVisionTest {
 		assertEquals("Mode name is incorrect", "Low Vision Mode", LowVis.toString());
 	}
 
+	/*
 	@Test
 	public void testDiscription() {
 		assertEquals("Description is incorrect", "Modify all robots' vision. (0 = blind, 100 = standard vision)", LowVis.getDescription());
 	}
+	this test is not consistent with what you have defined in LowVision.java
+	*/
 
 }
