@@ -41,4 +41,6 @@ public interface IHostManager {
     String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem);
 
     RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message);
+
+	int getMinionType(IRobotRepositoryItem robotRepositoryItem, boolean message);
 }

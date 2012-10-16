@@ -54,6 +54,7 @@ public final class ExecCommands implements Serializable {
     private boolean isIORobot;
     private boolean isTryingToPaint;
     private boolean spawnMinion;
+    private int minionType;
     private String outputText;
     private List<BulletCommand> bullets = new ArrayList<BulletCommand>();
     private List<TeamMessage> teamMessages = new ArrayList<TeamMessage>();
@@ -92,6 +93,7 @@ public final class ExecCommands implements Serializable {
             teamMessages = origin.teamMessages;
             isTryingToPaint = origin.isTryingToPaint;
             spawnMinion = origin.spawnMinion;
+            minionType = origin.minionType;
         }
     }
 
@@ -140,13 +142,20 @@ public final class ExecCommands implements Serializable {
     public void setMinions(List<MinionProxy> minionProxyList) {
     	this.minions = minionProxyList;
     }
+    
     public boolean getSpawnMinion() {
     	return spawnMinion;
     }
-    public void setSpawnMinion(boolean spawn) {
-    	spawnMinion = spawn;
+    
+    public int getMinionType() {
+    	return minionType;
     }
     
+    public void setSpawnMinion(boolean spawnMinion, int minionType) {
+    	this.minionType = minionType;
+    	this.spawnMinion = spawnMinion;
+    }
+        
     public int getDeathEffect() {
     	return deathEffect;
     }

@@ -1,7 +1,5 @@
 package robocode;
 
-
-
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 /**
  * MinionProxy provies communication between a minion and it's parent.

@@ -1,6 +1,7 @@
 package robocode.robotinterfaces;
 
 public interface IMinionRobot extends IBasicRobot {
+	public int getMinionType();
 	/**
 	 * This method is called by the game to notify this robot about advanced
 	 * robot event. Hence, this method must be implemented so it returns your

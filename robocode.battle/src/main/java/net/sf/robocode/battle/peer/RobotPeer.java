@@ -66,13 +66,25 @@
 package net.sf.robocode.battle.peer;
 
 
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.tan;
 import static net.sf.robocode.io.Logger.logMessage;
+import static robocode.util.Utils.isNear;
+import static robocode.util.Utils.normalAbsoluteAngle;
+import static robocode.util.Utils.normalNearAbsoluteAngle;
+import static robocode.util.Utils.normalRelativeAngle;
 
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
-import static java.lang.Math.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,23 +93,46 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
-import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
 import net.sf.robocode.host.events.EventQueue;
 import net.sf.robocode.host.proxies.IHostingRobotProxy;
 import net.sf.robocode.io.Logger;
-import net.sf.robocode.peer.*;
+import net.sf.robocode.peer.BadBehavior;
+import net.sf.robocode.peer.BulletCommand;
+import net.sf.robocode.peer.BulletStatus;
+import net.sf.robocode.peer.DebugProperty;
+import net.sf.robocode.peer.ExecCommands;
+import net.sf.robocode.peer.ExecResults;
+import net.sf.robocode.peer.IRobotPeer;
+import net.sf.robocode.peer.TeamMessage;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.serialization.RbSerializer;
-import robocode.*;
+import robocode.BattleRules;
+import robocode.DeathEvent;
+import robocode.Equipment;
+import robocode.EquipmentPart;
+import robocode.EquipmentSlot;
+import robocode.Event;
+import robocode.HitItemEvent;
+import robocode.HitRobotEvent;
+import robocode.HitWallEvent;
+import robocode.MinionProxy;
+import robocode.RobotAttribute;
+import robocode.RobotStatus;
+import robocode.Rules;
+import robocode.ScannedRobotEvent;
+import robocode.SkippedTurnEvent;
+import robocode.WaypointPassedEvent;
+import robocode.WinEvent;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
@@ -106,21 +141,6 @@ import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.WinException;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
-import static robocode.util.Utils.*;
-
-import java.awt.geom.Arc2D;
-import java.awt.geom.Rectangle2D;
-import java.io.IOException;
-import static java.lang.Math.*;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -138,6 +158,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
  * @author CSSE2003 Team Forkbomb (contributor - attributes, equipment)
+ * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
@@ -342,6 +363,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	public void spawnMinions() {
 		if(currentCommands.getSpawnMinion() && !isMinion()) {
+			int minionType = currentCommands.getMinionType();
+			//minionSpecification = getMinion(minionType); - TODO Link with UI.
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minionSpecification, 0, null, 0);
 			battle.addMinion(minionPeer);
 			//Quick hack to make the minion "think" it's a minion.
@@ -356,7 +379,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			
 			minionList.add(minionPeer);
 			minionProxyList.add(minionProxy);
-			currentCommands.setSpawnMinion(false);
+			currentCommands.setSpawnMinion(false, 0);
 			//Update the minions proxy list in commands.
 			currentCommands.setMinions(minionProxyList);
 		}

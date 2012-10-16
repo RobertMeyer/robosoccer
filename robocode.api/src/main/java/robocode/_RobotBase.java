@@ -36,7 +36,10 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @since 1.4
  */
 public abstract class _RobotBase implements IBasicRobot, Runnable {
-
+	public static final int MINION_TYPE_ATK = 0;
+	public static final int MINION_TYPE_DEF = 1;
+	public static final int MINION_TYPE_UTL = 2;
+	public static final int MINION_TYPE_RND = 3;
     // Internal for this package
     _RobotBase() {
     }
@@ -95,14 +98,23 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
                 + "() method before your run() method is called, or you are using a Robot object that the game doesn't know about.");
     }
     
-    public final void spawnMinion() {
-    	this.peer.spawnMinion();
+    /**
+     * {@inheritDoc}
+     */ 
+    public final void spawnMinion(int minionType) {
+    	this.peer.spawnMinion(minionType);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public final List<MinionProxy> getMinions() {
     	return this.peer.getMinions();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public final MinionProxy getParent() {
     	return this.peer.getParent();
     }

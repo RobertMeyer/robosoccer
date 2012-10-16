@@ -321,6 +321,14 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
 			isValid = false;
 		}
 	}
+	
+	public int getMinionType() {
+		populate();
+		
+		final IHostManager hostManager = Container.getComponent(IHostManager.class);
+		
+		return hostManager.getMinionType(this,  classURL != null);
+	}
 
 	// Stronger than update
 	public boolean validate() {
