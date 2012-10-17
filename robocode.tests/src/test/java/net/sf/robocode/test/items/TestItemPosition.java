@@ -17,10 +17,10 @@ import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 import org.hamcrest.Matcher;
 import org.junit.Test;
-import org.mockito.Mockito;
+//import org.mockito.Mockito;
 
 import robocode.control.RandomFactory;
-import static org.mockito.Mockito.*;
+//import static org.mockito.Mockito.*;
 
 public class TestItemPosition{
 

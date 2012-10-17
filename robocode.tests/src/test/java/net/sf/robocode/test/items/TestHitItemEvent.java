@@ -4,8 +4,8 @@ import java.awt.Color;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.*;
+//import org.mockito.Mockito;
+//import static org.mockito.Mockito.*;
 
 
 import robocode.HitItemEvent;
