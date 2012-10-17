@@ -5,8 +5,9 @@ import java.nio.ByteBuffer;
 
 import net.sf.robocode.peer.IRobotStatics;
 import net.sf.robocode.serialization.RbSerializer;
-import robocode.robotinterfaces.IBasicEvents;
 import robocode.robotinterfaces.IBasicRobot;
+import robocode.robotinterfaces.IItemEvents;
+import robocode.robotinterfaces.IItemRobot;
 import net.sf.robocode.serialization.ISerializableHelper;
 
 /**
@@ -23,7 +24,6 @@ public final class HitItemEvent extends Event {
 	private final static int DEFAULT_PRIORITY = 20;
 	
 	private final String itemName;
-	private final String robotName;
 	private final boolean isEquippable;
 	private final boolean isDestroyable;
 	
@@ -34,9 +34,8 @@ public final class HitItemEvent extends Event {
 	 * @param isEquippable {@code true} if the item hit is equippable;
 	 * 				{@code false} otherwise
 	 */
-	public HitItemEvent(String itemName, String robotName, boolean isEquippable, boolean isDestroyable) {
+	public HitItemEvent(String itemName, boolean isEquippable, boolean isDestroyable) {
 		this.itemName = itemName;
-		this.robotName = robotName;
 		this.isEquippable = isEquippable;
 		this.isDestroyable = isDestroyable;
 	}
@@ -48,15 +47,6 @@ public final class HitItemEvent extends Event {
 	 */
 	public String getItemName() {
 		return itemName;
-	}
-	
-	/**
-	 * Returns the name of the robot that hit the item.
-	 * 
-	 * @return the name of the robot that hit the item
-	 */
-	public String getRobotName() {
-		return robotName;
 	}
 	
 	/**
@@ -91,7 +81,11 @@ public final class HitItemEvent extends Event {
 	 */
 	@Override
 	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+		IItemEvents listener = ((IItemRobot) robot).getItemEventListener();
 		
+		if (listener != null) {
+			listener.onHitItem(this);
+		}
 	}
 	
 	/**
@@ -111,7 +105,7 @@ public final class HitItemEvent extends Event {
         public int sizeOf(RbSerializer serializer, Object object) {
             HitItemEvent obj = (HitItemEvent) object;
 
-            return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.itemName) + serializer.sizeOf(obj.robotName)
+            return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.itemName) + 
                     + 2 * RbSerializer.SIZEOF_BOOL;
         }
 		
@@ -120,7 +114,6 @@ public final class HitItemEvent extends Event {
             HitItemEvent obj = (HitItemEvent) object;
 
             serializer.serialize(buffer, obj.itemName);
-            serializer.serialize(buffer, obj.robotName);
             serializer.serialize(buffer, obj.isEquippable);
             serializer.serialize(buffer, obj.isDestroyable);
         }
@@ -128,11 +121,10 @@ public final class HitItemEvent extends Event {
 		@Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String itemName = serializer.deserializeString(buffer);
-            String robotName = serializer.deserializeString(buffer);
             boolean isEquippable = serializer.deserializeBoolean(buffer);
             boolean isDestroyable = serializer.deserializeBoolean(buffer);
 
-            return new HitItemEvent(itemName, robotName, isEquippable, isDestroyable);
+            return new HitItemEvent(itemName, isEquippable, isDestroyable);
         }
 	}
 }

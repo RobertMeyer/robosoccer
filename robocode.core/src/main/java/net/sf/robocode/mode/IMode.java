@@ -2,6 +2,7 @@ package net.sf.robocode.mode;
 
 import java.util.Hashtable;
 import javax.swing.JPanel;
+import java.util.HashMap;
 
 import net.sf.robocode.battle.BattleResultsTableModel;
 
@@ -103,4 +104,10 @@ public interface IMode {
 	public void setCustomResultsTable();
 	
 	public BattleResults[] getFinalResults();
+	
+	/**
+	 * For disabling the dialogue that says "You have only selected one robot"
+	 * @return
+	 */
+	public boolean allowsOneRobot();
 }
