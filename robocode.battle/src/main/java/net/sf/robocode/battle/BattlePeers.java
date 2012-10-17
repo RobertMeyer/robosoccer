@@ -193,9 +193,8 @@ public class BattlePeers {
 		robots.add(peer);
 	}
 	
-
 	public void addContestant(ContestantPeer peer) {
-		botzillaContestant =  peer;
+		botzillaContestant = peer;
 		contestants.add(peer);
 	}
 	
@@ -203,6 +202,12 @@ public class BattlePeers {
 		robots.remove(botzillaRobot);
 		contestants.remove(botzillaContestant);
 		System.out.println("botzilla is totally removed?");
+	}
+	
+	public void removeRobots(ArrayList<RobotPeer> robotsToRemove){
+		for(RobotPeer peer : robotsToRemove){
+			robots.remove(peer);
+		}
 	}
 	
 	public void cleanup() {

@@ -43,6 +43,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final boolean isDispenser;
     //TODO: isMinion should be made final/private, when loading minions from UI is complete.
     public boolean isMinion;
+    private final boolean isZombie;
     private final String name;
     private final String shortName;
     private final String veryShortName;
@@ -88,6 +89,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isDispenser = specification.isDispenser();
         this.isMinion = specification.isMinion();
 		this.isFreezeRobot = specification.isFreezeRobot();
+		this.isZombie = specification.isZombie();
         this.isTeamLeader = isLeader;
         this.battleRules = rules;
        
@@ -110,7 +112,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	}
 
 	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
-                 boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isMinion,
+                 boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isZombie, boolean isMinion,
 				 String name, String shortName, String veryShortName, String fullClassName, String shortClassName, 
 				 BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex) {
 		this.isJuniorRobot = isJuniorRobot;
@@ -136,10 +138,11 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isBotzillaBot = false;
         this.isDispenser = false;
         this.isMinion = isMinion;
+        this.isZombie = isZombie;
     }
 
     RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
-                 boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isMinion, 
+                 boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isZombie, boolean isMinion, 
                  String name, String shortName, String veryShortName, String fullClassName, String shortClassName, 
                  BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot,
                  boolean isBotzilla, boolean isDispenser, boolean isFreezeRobot) {
@@ -167,6 +170,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isBotzillaBot = isBotzilla;
         this.isDispenser = isDispenser;
         this.isMinion = isMinion;
+        this.isZombie = isZombie;
     }
 
 	public String getAnnonymousName() {
@@ -227,6 +231,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	
 	public boolean isMinion() {
 		return isMinion;
+	}
+
+	public boolean isZombie() {
+		return isZombie;
 	}
 
 	public String getName() {
@@ -311,6 +319,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 			serializer.serialize(buffer, obj.isDroid);
             serializer.serialize(buffer, obj.isBall);
             serializer.serialize(buffer, obj.isMinion);
+			serializer.serialize(buffer, obj.isZombie);
 			serializer.serialize(buffer, obj.name);
 			serializer.serialize(buffer, obj.shortName);
 			serializer.serialize(buffer, obj.veryShortName);
@@ -344,6 +353,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 			boolean isDroid = serializer.deserializeBoolean(buffer);
             boolean isBall = serializer.deserializeBoolean(buffer);
             boolean isMinion = serializer.deserializeBoolean(buffer);
+            boolean isZombie = serializer.deserializeBoolean(buffer);
 			String name = serializer.deserializeString(buffer);
 			String shortName = serializer.deserializeString(buffer);
 			String veryShortName = serializer.deserializeString(buffer);
@@ -371,7 +381,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 			int contestantIndex = serializer.deserializeInt(buffer);
 
 			return new RobotStatics(isJuniorRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot, isTeamRobot,
-                                    isTeamLeader, isDroid, isBall, isMinion, name, shortName, veryShortName, fullClassName, shortClassName, battleRules,
+                                    isTeamLeader, isDroid, isBall, isZombie, isMinion, name, shortName, veryShortName, fullClassName, shortClassName, battleRules,
 					teammates.toArray(new String[teammates.size()]), teamName, index, contestantIndex);
 		}
 	}

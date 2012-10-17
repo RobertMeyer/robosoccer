@@ -492,6 +492,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isBall() {
     	return statics.isBall();
     }
+	
+	public boolean isZombie() {
+		return statics.isZombie();
+	}
 
 	public boolean isJuniorRobot() {
 		return statics.isJuniorRobot();
@@ -2911,11 +2915,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public double getFullEnergy() {
 		return fullEnergy;
-	}
-
-
-	public boolean isZombie() {
-		return getName() == "sampleex.NormalZombie";
 	}
 
 
