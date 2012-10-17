@@ -5,8 +5,16 @@ import robocode.HouseRobotBoundary;
 
 public class MyFirstHouseRobot extends HouseRobot {
 	
+	private HouseRobotBoundary home;
+	
 	public void run() {
-		this.setBoundaries(new HouseRobotBoundary(0,0,0,100,0,100));
+		
+		home = this.getBoundaries();
+		
+		home.setxHome(this.getX());
+		home.setyHome(this.getY());
+		home.setInitialFacing(this.getHeading());
+		
 	}
 
 }
