@@ -18,6 +18,9 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import robocode.BattleResults;
 
 /**
@@ -26,12 +29,54 @@ import robocode.BattleResults;
  * @author Flemming N. Larsen (contributor)
  */
 public class TeamStatistics implements ContestantStatistics {
-
     private final TeamPeer teamPeer;
     private int rank;
 
+    /* ArrayList of scores for type String, ArrayList:
+     * 0: total score
+     * 1: current score
+     */
+    private HashMap<String, ArrayList<Double>> scores;
+    
+    /* Scores mapping to their respective unique IDs */
+    private static HashMap<String, Integer> scoreIDs;
+    
+    static {
+    	scoreIDs = new HashMap<String, Integer>();
+    	/* Robocode Scores */
+    	scoreIDs.put("total", 0);
+    	scoreIDs.put("survival", 1);
+    	scoreIDs.put("lastsurvivorbonus", 2);
+    	scoreIDs.put("bulletdamage", 3);
+    	scoreIDs.put("bulletkillbonus", 4);
+    	scoreIDs.put("rammingdamage", 5);
+    	scoreIDs.put("rammingkill", 6);
+    	scoreIDs.put("firsts", 7);
+    	scoreIDs.put("seconds", 8);
+    	scoreIDs.put("thirds", 9);
+    	
+    	/* Mode-specific Scores */
+    	scoreIDs.put("flag", 10);
+    }
+    
+    /**
+     * Initialise the scores to all be the sum of scores for all
+     * robots in the team
+     */
+    private void initialiseScores() {
+    	double totalScore = 0.0;
+    	
+    	scores = new HashMap<String, ArrayList<Double>>();
+    	for (String score : scoreIDs.keySet()) {
+    		scores.put(score, new ArrayList<Double>());
+    		scores.get(score).add(this.getScores(false, score));
+    		scores.get(score).add(this.getScores(true, score));
+    	}
+    }
+
     public TeamStatistics(TeamPeer teamPeer) {
         this.teamPeer = teamPeer;
+        this.initialiseScores();
     }
 
     @Override
@@ -48,109 +93,31 @@ public class TeamStatistics implements ContestantStatistics {
         }
         return d;
     }
-
-    @Override
-    public double getTotalSurvivalScore() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalSurvivalScore();
-        }
-        return d;
-    }
-
-    @Override
-    public double getTotalLastSurvivorBonus() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalLastSurvivorBonus();
-        }
-        return d;
-    }
-
-    @Override
-    public double getTotalBulletDamageScore() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalBulletDamageScore();
-        }
-        return d;
-    }
-
-    @Override
-    public double getTotalBulletKillBonus() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalBulletKillBonus();
-        }
-        return d;
-    }
-
-    @Override
-    public double getTotalRammingDamageScore() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalRammingDamageScore();
-        }
-        return d;
-    }
-
-    @Override
-    public double getTotalRammingKillBonus() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalRammingKillBonus();
-        }
-        return d;
-    }
-
+    
     /**
-     * Team-Telos addition
-     *
+     * Get a sum of the scores for a team peer, options are:
+     * 'total'
+     * 'survival'
+     * 'lastsurvivorbonus'
+     * 'bulletdamage'
+     * 'bulletkillbonus'
+     * 'rammingdamage'
+     * 'rammingkill'
+     * 'firsts'
+     * 'seconds'
+     * 'thirds'
+     * 'flag'
+     * @param current true for current scores or false for total
+     * @param scores The string representation of the score
      * @return
      */
-    public double getTotalFlagScore() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalFlagScore();
-        }
-        return d;
-    }
-
-    @Override
-    public int getTotalFirsts() {
-        int d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalFirsts();
-        }
-        return d;
-    }
-
-    @Override
-    public int getTotalSeconds() {
-        int d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalSeconds();
-        }
-        return d;
-    }
-
-    @Override
-    public int getTotalThirds() {
-        int d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getTotalThirds();
-        }
-        return d;
+    public double getScores(boolean current, String ... scores) {
+    	double totalScore = 0.0;
+    	for (RobotPeer teammate : teamPeer) {
+    		totalScore += teammate.getRobotStatistics().getScores(false, scores);
+    	}
+    	
+    	return totalScore;
     }
 
     @Override
@@ -164,79 +131,8 @@ public class TeamStatistics implements ContestantStatistics {
     }
 
     @Override
-    public double getCurrentSurvivalScore() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentSurvivalScore();
-        }
-        return d;
-    }
-
-    @Override
-    public double getCurrentSurvivalBonus() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentSurvivalBonus();
-        }
-        return d;
-    }
-
-    @Override
-    public double getCurrentBulletDamageScore() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentBulletDamageScore();
-        }
-        return d;
-    }
-
-    @Override
-    public double getCurrentBulletKillBonus() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentBulletKillBonus();
-        }
-        return d;
-    }
-
-    @Override
-    public double getCurrentRammingDamageScore() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentRammingDamageScore();
-        }
-        return d;
-    }
-
-    public double getCurrentFlagScore() {
-    	double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentFlagScore();
-        }
-        return d;
-    }
-    
-    public double getCurrentRammingKillBonus() {
-        double d = 0;
-
-        for (RobotPeer teammate : teamPeer) {
-            d += teammate.getRobotStatistics().getCurrentRammingKillBonus();
-        }
-        return d;
-    }
-
-    @Override
     public BattleResults getFinalResults() {
-        return new BattleResults(teamPeer.getName(), rank, getTotalScore(), getTotalSurvivalScore(),
-                                 getTotalLastSurvivorBonus(), getTotalBulletDamageScore(), getTotalBulletKillBonus(),
-                                 getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFlagScore(), getTotalFirsts(), getTotalSeconds(),
-                                 getTotalThirds());
+        return new BattleResults(teamPeer.getName(), rank, scores);
     }
 
 	@Override

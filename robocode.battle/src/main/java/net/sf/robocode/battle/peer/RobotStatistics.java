@@ -205,13 +205,26 @@ public class RobotStatistics implements ContestantStatistics {
      * Get the total of all the current scores
      * @return Total of current scores
      */
-    public double getCurrentScores() {
+    public double getCurrentScore() {
     	double currentScore = 0.0;
     	for (String score : scores.keySet()) {
     		currentScore += scores.get(score).get(1);
     	}
     	
     	return currentScore;
+    }
+    
+    /**
+     * Get the total of all the total scores
+     * @return Total of total scores
+     */
+    public double getTotalScore() {
+    	double totalScore = 0.0;
+    	for (String score : scores.keySet()) {
+    		totalScore += scores.get(score).get(0);
+    	}
+    	
+    	return totalScore;
     }
     
     /**

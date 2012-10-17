@@ -30,4 +30,8 @@ public interface ContestantStatistics {
     void setRank(int rank);
 
 	void incrementScore();
+	
+	double getTotalScore();
+	
+	double getCurrentScore();
 }
