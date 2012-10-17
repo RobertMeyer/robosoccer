@@ -190,14 +190,11 @@ public class BattleRecordInfo implements Serializable, IXmlSerializable {
         private static final long serialVersionUID = BattleResults.serialVersionUID;
 
         public BattleResultsWrapper() {
-            super(null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            super(null, 0);
         }
 
         public BattleResultsWrapper(BattleResults results) {
-            super(results.getTeamLeaderName(), results.getRank(), results.getScore(), results.getSurvival(),
-                  results.getLastSurvivorBonus(), results.getBulletDamage(), results.getBulletDamageBonus(),
-                  results.getRamDamage(), results.getRamDamageBonus(), results.getFlagScore(),
-                  results.getFirsts(), results.getSeconds(), results.getThirds());
+            super(results.getTeamLeaderName(), results.getRank(), results.getScoreMap());
         }
 
         @Override
@@ -206,17 +203,10 @@ public class BattleRecordInfo implements Serializable, IXmlSerializable {
             {
                 writer.writeAttribute("teamLeaderName", teamLeaderName);
                 writer.writeAttribute("rank", rank);
-                writer.writeAttribute("score", score, options.trimPrecision);
-                writer.writeAttribute("survival", survival, options.trimPrecision);
-                writer.writeAttribute("lastSurvivorBonus", lastSurvivorBonus, options.trimPrecision);
-                writer.writeAttribute("bulletDamage", bulletDamage, options.trimPrecision);
-                writer.writeAttribute("bulletDamageBonus", bulletDamageBonus, options.trimPrecision);
-                writer.writeAttribute("ramDamage", ramDamage, options.trimPrecision);
-                writer.writeAttribute("ramDamageBonus", ramDamageBonus, options.trimPrecision);
-                writer.writeAttribute("flagScore", flagScore, options.trimPrecision);
-                writer.writeAttribute("firsts", firsts);
-                writer.writeAttribute("seconds", seconds);
-                writer.writeAttribute("thirds", thirds);
+                for (String score : scores.keySet()) {
+                	writer.writeAttribute(score, scores.get(score), options.trimPrecision);
+                }
+                
                 if (!options.skipVersion) {
                     writer.writeAttribute("ver", serialVersionUID);
                 }
@@ -244,55 +234,16 @@ public class BattleRecordInfo implements Serializable, IXmlSerializable {
                             rules.rank = Integer.parseInt(value);
                         }
                     });
-                    reader.expect("score", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.score = Double.parseDouble(value);
-                        }
-                    });
-                    reader.expect("survival", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.survival = Double.parseDouble(value);
-                        }
-                    });
-                    reader.expect("lastSurvivorBonus", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.lastSurvivorBonus = Double.parseDouble(value);
-                        }
-                    });
-                    reader.expect("bulletDamage", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.bulletDamage = Double.parseDouble(value);
-                        }
-                    });
-                    reader.expect("bulletDamageBonus", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.bulletDamageBonus = Double.parseDouble(value);
-                        }
-                    });
-                    reader.expect("ramDamage", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.ramDamage = Double.parseDouble(value);
-                        }
-                    });
-                    reader.expect("ramDamageBonus", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.ramDamageBonus = Double.parseDouble(value);
-                        }
-                    });
-                    // Team Telos addition
-                    reader.expect("flagScore", new XmlReader.Attribute() {
-                        @Override
-                        public void read(String value) {
-                            rules.flagScore = Double.parseDouble(value);
-                        }
-                    });
+                    
+                    for (String score : scores.keySet()) {
+                    	reader.expect(score, new XmlReader.Attribute() {
+                            @Override
+                            public void read(String value) {
+                                rules.score = Double.parseDouble(value);
+                            }
+                        });
+                    }
+                    
                     reader.expect("firsts", new XmlReader.Attribute() {
                         @Override
                         public void read(String value) {

@@ -15,6 +15,9 @@
  *******************************************************************************/
 package robocode.control;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import robocode.BattleResults;
 
 /**
@@ -34,35 +37,14 @@ public class RobotResults extends BattleResults {
      * @param robot			 the robot these results are for
      * @param teamLeaderName	team name
      * @param rank			  the rank of the robot in the battle
-     * @param score			 the total score for the robot in the battle
-     * @param survival		  the survival score for the robot in the battle
-     * @param lastSurvivorBonus the last survivor bonus for the robot in the battle
-     * @param bulletDamage	  the bullet damage score for the robot in the battle
-     * @param bulletDamageBonus the bullet damage bonus for the robot in the battle
-     * @param ramDamage		 the ramming damage for the robot in the battle
-     * @param ramDamageBonus	the ramming damage bonus for the robot in the battle
-     * @param firsts			the number of rounds this robot placed first
-     * @param seconds		   the number of rounds this robot placed second
-     * @param thirds			the number of rounds this robot placed third
-     * @param flagScore			The amount of points scored by this robot by holding the flag
+     * @param scores HashMap of scores, total at 0, current at 1
      */
     public RobotResults(
             RobotSpecification robot,
             String teamLeaderName,
             int rank,
-            double score,
-            double survival,
-            double lastSurvivorBonus,
-            double bulletDamage,
-            double bulletDamageBonus,
-            double ramDamage,
-            double ramDamageBonus,
-            double flagScore,
-            int firsts,
-            int seconds,
-            int thirds) {
-        super(teamLeaderName, rank, score, survival, lastSurvivorBonus, bulletDamage, bulletDamageBonus, ramDamage,
-              ramDamageBonus, flagScore, firsts, seconds, thirds);
+            HashMap<String, ArrayList<Double>> scores) {
+        super(teamLeaderName, rank, scores);
         this.robot = robot;
     }
 
@@ -76,10 +58,7 @@ public class RobotResults extends BattleResults {
     public RobotResults(
             RobotSpecification robot,
             BattleResults results) {
-        super(results.getTeamLeaderName(), results.getRank(), results.getScore(), results.getSurvival(),
-              results.getLastSurvivorBonus(), results.getBulletDamage(), results.getBulletDamageBonus(),
-              results.getRamDamage(), results.getRamDamageBonus(), results.getFlagScore(),
-              results.getFirsts(), results.getSeconds(), results.getThirds());
+        super(results.getTeamLeaderName(), results.getRank(), results.getScoreMap());
         this.robot = robot;
     }
 
@@ -114,30 +93,30 @@ public class RobotResults extends BattleResults {
         int result = 1;
         long temp;
 
-        temp = Double.doubleToLongBits(bulletDamage);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(bulletDamageBonus);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + firsts;
-        temp = Double.doubleToLongBits(lastSurvivorBonus);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(ramDamage);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(ramDamageBonus);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        /* For each score */
+        for (String score : scores.keySet()) {
+        	if (score.equals("firsts") || score.equals("seconds") || score.equals("thirds")) {
+        		continue;
+        	}
+        	
+        	temp = Double.doubleToLongBits(scores.get(score).get(1));
+        	result = prime * result + (int) (temp ^ (temp >>> 32));
+        }
+        
+        /* Other values */
         result = prime * result + rank;
-        temp = Double.doubleToLongBits(score);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-        result = prime * result + seconds;
-        temp = Double.doubleToLongBits(survival);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = (int) (prime * result + scores.get("firsts").get(1));
+        result = (int) (prime * result + scores.get("seconds").get(1));
+        result = (int) (prime * result + scores.get("thirds").get(1));
         result = prime * result + ((teamLeaderName == null) ? 0 : teamLeaderName.hashCode());
-        result = prime * result + thirds;
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
+    	double original;
+    	double toCheck;
+    	
         if (this == obj) {
             return true;
         }
@@ -149,36 +128,19 @@ public class RobotResults extends BattleResults {
         }
         RobotResults other = (RobotResults) obj;
 
-        if (Double.doubleToLongBits(bulletDamage) != Double.doubleToLongBits(other.bulletDamage)) {
-            return false;
+        for (String score : scores.keySet()) {
+        	original = Double.doubleToLongBits(scores.get(score).get(1));
+        	toCheck = Double.doubleToLongBits(other.getScores(true, score));
+        	if (original != toCheck) {
+        		return false;
+        	}
         }
-        if (Double.doubleToLongBits(bulletDamageBonus) != Double.doubleToLongBits(other.bulletDamageBonus)) {
-            return false;
-        }
-        if (firsts != other.firsts) {
-            return false;
-        }
-        if (Double.doubleToLongBits(lastSurvivorBonus) != Double.doubleToLongBits(other.lastSurvivorBonus)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(ramDamage) != Double.doubleToLongBits(other.ramDamage)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(ramDamageBonus) != Double.doubleToLongBits(other.ramDamageBonus)) {
-            return false;
-        }
+        
+        
         if (rank != other.rank) {
             return false;
         }
-        if (Double.doubleToLongBits(score) != Double.doubleToLongBits(other.score)) {
-            return false;
-        }
-        if (seconds != other.seconds) {
-            return false;
-        }
-        if (Double.doubleToLongBits(survival) != Double.doubleToLongBits(other.survival)) {
-            return false;
-        }
+   
         if (teamLeaderName == null) {
             if (other.teamLeaderName != null) {
                 return false;
@@ -186,9 +148,7 @@ public class RobotResults extends BattleResults {
         } else if (!teamLeaderName.equals(other.teamLeaderName)) {
             return false;
         }
-        if (thirds != other.thirds) {
-            return false;
-        }
+
         return true;
     }
 }

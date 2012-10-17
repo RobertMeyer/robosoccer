@@ -44,66 +44,81 @@ public class BattleResults implements java.io.Serializable,
     protected static final long serialVersionUID = 1L;
     protected String teamLeaderName;
     protected int rank;
-    /* ArrayList of scores for type String, ArrayList:
-     * 0: total score
-     * 1: current score
-     */
-    protected static HashMap<String, ArrayList<Double>> scores;
+    /* Current score HashMap */
+    protected static HashMap<String, Double> scores;
     
     /* Scores mapping to their respective unique IDs */
-    protected static HashMap<String, Integer> scoreIDs;
+    protected static ArrayList<String> scoreIDs;
     
     static {
-    	scoreIDs = new HashMap<String, Integer>();
+    	scoreIDs = new ArrayList<String>();
     	/* Robocode Scores */
-    	scoreIDs.put("total", 0);
-    	scoreIDs.put("survival", 1);
-    	scoreIDs.put("lastsurvivorbonus", 2);
-    	scoreIDs.put("bulletdamage", 3);
-    	scoreIDs.put("bulletkillbonus", 4);
-    	scoreIDs.put("rammingdamage", 5);
-    	scoreIDs.put("rammingkill", 6);
-    	scoreIDs.put("firsts", 7);
-    	scoreIDs.put("seconds", 8);
-    	scoreIDs.put("thirds", 9);
+    	scoreIDs.add("total");
+    	scoreIDs.add("survival");
+    	scoreIDs.add("lastsurvivorbonus");
+    	scoreIDs.add("bulletdamage");
+    	scoreIDs.add("bulletkillbonus");
+    	scoreIDs.add("rammingdamage");
+    	scoreIDs.add("rammingkill");
+    	scoreIDs.add("firsts");
+    	scoreIDs.add("seconds");
+    	scoreIDs.add("thirds");
     	
     	/* Mode-specific Scores */
-    	scoreIDs.put("flag", 10);
-    }
-    
-    /**
-     * Initialise the scores to all be 0.0
-     */
-    private void initialiseScores() {
-    	scores = new HashMap<String, ArrayList<Double>>();
-    	for (String key : scoreIDs.keySet()) {
-    		scores.put(key, new ArrayList<Double>());
-    		scores.get(key).add(0.0);
-    		scores.get(key).add(0.0);
-    	}
+    	scoreIDs.add("flag");
     }
 
     /**
      * Create a new Battle Results
      * @param teamLeaderName Team leader's name
      * @param rank Rank of the robot
-     * @param scores Scores for the robot
+     * @param allScores Scores for the robot
      */
-    @SuppressWarnings("unchecked")
-	public BattleResults(String teamLeaderName, int rank, HashMap<String, ArrayList<Double>> scores) { 
-    	this.initialiseScores();
+	public BattleResults(String teamLeaderName, int rank, HashMap<String, Double> scores) { 
     	this.teamLeaderName = teamLeaderName;
     	this.rank = rank;
-    	this.scores = (HashMap<String, ArrayList<Double>>) scores.clone();
+    	this.scores = (HashMap<String, Double>) scores.clone();
+    }
+	
+	/**
+	 * Create a new Battle results
+	 * @param teamLeaderName Team leader's name
+	 * @param rank Rank of the robot
+	 */
+	public BattleResults(String teamLeaderName, int rank) {
+		this.teamLeaderName = teamLeaderName;
+		this.rank = rank;
+		scores = new HashMap<String, Double>();
+		
+		for (String score : scoreIDs) {
+			scores.put(score, 0.0);
+		}
+	}
+	
+	/**
+	 * Set the scores map
+	 * @param scores The scores to store
+	 */
+	public void setScores(HashMap<String, ArrayList<Double>> allScores) {
+		for (String score : scores.keySet()) {
+    		scores.put(score, allScores.get(score).get(1));
+    	}
+	}
+
+    /**
+     * Get the score map
+     * @return The scores map
+     */
+	public HashMap<String, Double> getScoreMap() {
+    	return (HashMap<String, Double>) scores.clone();
     }
     
     /**
      * Populate the scores map with the scores stored in Battle Results
      * @param scores The scores to modify
      */
-    @SuppressWarnings("unchecked")
-	public void populateScoresMap(HashMap<String, ArrayList<Double>> scores) {
-    	scores = (HashMap<String, ArrayList<Double>>) this.scores.clone();
+	public void populateScoresMap(HashMap<String, Double> scores) {
+    	scores = (HashMap<String, Double>) this.scores.clone();
     }
 
     /**
@@ -138,18 +153,15 @@ public class BattleResults implements java.io.Serializable,
      * 'seconds'
      * 'thirds'
      * 'flag'
-     * @param current true for current scores or false for total
      * @param scores The string representation of the score
-     * @return The sum of the scores 'scores', current or total
+     * @return The sum of the scores 'scores'
      */
-    public double getScores(boolean current, String ... scoresToGet) {
-    	/* 0 for total, 1 for current */
-    	int index = (current) ? 1 : 0;
+    public double getScores(String ... scoresToGet) {
     	double totalScore = 0.0;
     	
     	/* Get the score for each kind of score requested */
     	for (String score : scoresToGet) {
-    		totalScore += scores.get(score).get(index);
+    		totalScore += scores.get(score);
     	}
     	
     	return totalScore;
@@ -160,8 +172,8 @@ public class BattleResults implements java.io.Serializable,
      */
     @Override
     public int compareTo(BattleResults o) {
-    	double score = this.getScores(false, "total");
-        return ((Double) score).compareTo(o.getScores(false, "total"));
+    	double score = this.getScores("total");
+        return ((Double) score).compareTo(o.getScores("total"));
     }
 
     @Override
@@ -169,7 +181,7 @@ public class BattleResults implements java.io.Serializable,
         final int prime = 31;
         int result = 1;
         long temp;
-        double score = this.getScores(false, "total");
+        double score = this.getScores("total");
 
         temp = Double.doubleToLongBits(score);
         result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -178,7 +190,7 @@ public class BattleResults implements java.io.Serializable,
 
     @Override
     public boolean equals(Object obj) {
-    	double score = this.getScores(false, "total");
+    	double score = this.getScores("total");
         if (this == obj) {
             return true;
         }
@@ -190,7 +202,7 @@ public class BattleResults implements java.io.Serializable,
         }
         BattleResults other = (BattleResults) obj;
 
-        if (Double.doubleToLongBits(score) != Double.doubleToLongBits(other.getScores(false, "total"))) {
+        if (Double.doubleToLongBits(score) != Double.doubleToLongBits(other.getScores("total"))) {
             return false;
         }
         return true;
@@ -233,6 +245,7 @@ public class BattleResults implements java.io.Serializable,
              */
         }
 
+        /* TODO Rework Scoring */
         @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String teamLeaderName = serializer.deserializeString(buffer);

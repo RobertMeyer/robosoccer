@@ -69,24 +69,24 @@ public class RobotStatistics implements ContestantStatistics {
     private HashMap<String, ArrayList<Double>> scores;
     
     /* Scores mapping to their respective unique IDs */
-    private static HashMap<String, Integer> scoreIDs;
+    private static ArrayList<String> scoreIDs;
     
     static {
-    	scoreIDs = new HashMap<String, Integer>();
+    	scoreIDs = new ArrayList<String>();
     	/* Robocode Scores */
-    	scoreIDs.put("total", 0);
-    	scoreIDs.put("survival", 1);
-    	scoreIDs.put("lastsurvivorbonus", 2);
-    	scoreIDs.put("bulletdamage", 3);
-    	scoreIDs.put("bulletkillbonus", 4);
-    	scoreIDs.put("rammingdamage", 5);
-    	scoreIDs.put("rammingkill", 6);
-    	scoreIDs.put("firsts", 7);
-    	scoreIDs.put("seconds", 8);
-    	scoreIDs.put("thirds", 9);
+    	scoreIDs.add("total");
+    	scoreIDs.add("survival");
+    	scoreIDs.add("lastsurvivorbonus");
+    	scoreIDs.add("bulletdamage");
+    	scoreIDs.add("bulletkillbonus");
+    	scoreIDs.add("rammingdamage");
+    	scoreIDs.add("rammingkill");
+    	scoreIDs.add("firsts");
+    	scoreIDs.add("seconds");
+    	scoreIDs.add("thirds");
     	
     	/* Mode-specific Scores */
-    	scoreIDs.put("flag", 10);
+    	scoreIDs.add("flag");
     }
     
     /**
@@ -94,7 +94,7 @@ public class RobotStatistics implements ContestantStatistics {
      */
     private void initialiseScores() {
     	scores = new HashMap<String, ArrayList<Double>>();
-    	for (String key : scoreIDs.keySet()) {
+    	for (String key : scoreIDs) {
     		scores.put(key, new ArrayList<Double>());
     		scores.get(key).add(0.0);
     		scores.get(key).add(0.0);
@@ -106,8 +106,13 @@ public class RobotStatistics implements ContestantStatistics {
      * @param results Results containing the scores to be matched
      */
     private void initialiseScores(BattleResults results) {
+    	HashMap<String, Double> resultsScores = new HashMap<String, Double>();
     	this.initialiseScores();
-    	results.populateScoresMap(scores);
+    	results.populateScoresMap(resultsScores);
+    	
+    	for (String score : scoreIDs) {
+    		scores.get(score).add(1, resultsScores.get(score));
+    	}
     }
 
     public RobotStatistics(RobotPeer robotPeer, int robots) {
@@ -150,13 +155,23 @@ public class RobotStatistics implements ContestantStatistics {
     }
 
     /**
+     * Generate a map relating a Score type to it's current score
+     * @param toStore Where to store the map
+     */
+    private void generateCurrentScoresMap(HashMap<String, Double> toStore) {
+    	for (String score : scoreIDs) {
+    		toStore.put(score, scores.get(score).get(1));
+    	}
+    }
+    
+    /**
      * Add the current scores to the total scores
      * @param battleProp
      */
     public void generateTotals(BattleProperties battleProp) {
     	double oldScore;
     	double toAdd;
-    	for (String score : scoreIDs.keySet()) {
+    	for (String score : scoreIDs) {
     		oldScore = this.scores.get(score).get(0);
     		toAdd = this.scores.get(score).get(1);
     		
@@ -378,7 +393,10 @@ public class RobotStatistics implements ContestantStatistics {
     /* TODO Scoring rework */
     @Override
     public BattleResults getFinalResults() {
-        return new BattleResults(robotPeer.getTeamName(), rank, scores);
+    	HashMap<String, Double> currentScores = new HashMap<String, Double>();
+    	this.generateCurrentScoresMap(currentScores);
+    	
+        return new BattleResults(robotPeer.getTeamName(), rank, currentScores);
     }
 
     private double getRobotDamage(String robot) {

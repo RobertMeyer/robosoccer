@@ -95,6 +95,16 @@ public class TeamStatistics implements ContestantStatistics {
     }
     
     /**
+     * Generate a map relating a Score type to it's current score
+     * @param toStore Where to store the map
+     */
+    private void generateCurrentScoresMap(HashMap<String, Double> toStore) {
+    	for (String score : scores.keySet()) {
+    		toStore.put(score, scores.get(score).get(1));
+    	}
+    }
+    
+    /**
      * Get a sum of the scores for a team peer, options are:
      * 'total'
      * 'survival'
@@ -132,7 +142,10 @@ public class TeamStatistics implements ContestantStatistics {
 
     @Override
     public BattleResults getFinalResults() {
-        return new BattleResults(teamPeer.getName(), rank, scores);
+    	HashMap<String, Double> currentScores = new HashMap<String, Double>();
+    	generateCurrentScoresMap(currentScores);
+    	
+        return new BattleResults(teamPeer.getName(), rank, currentScores);
     }
 
 	@Override
