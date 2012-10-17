@@ -20,14 +20,15 @@ import net.sf.robocode.repository.IRepositoryManager;
 import robocode.BattleResults;
 import robocode.control.RobotSpecification;
 
-public class SoccerMode extends ClassicMode implements IMode {	
+public class SoccerMode extends ClassicMode implements IMode {
 	private static final String RenderString = null;
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;
-	
-	/*This stores the width and height of the playing field, plus the current
-	 * x coordinate of the ball bot.
+
+	/*
+	 * This stores the width and height of the playing field, plus the current x
+	 * coordinate of the ball bot.
 	 */
 	private final int GOALX = 100;
 	private final int GOALY = 236;
@@ -36,37 +37,36 @@ public class SoccerMode extends ClassicMode implements IMode {
 	private Goal scoreTeam;
 	private BoundingRectangle goal1;
 	private BoundingRectangle goal2;
-	
-	/*TeamPeers for the two soccer teams*/
+
+	/* TeamPeers for the two soccer teams */
 	private SoccerTeamPeer team1;
 	private SoccerTeamPeer team2;
-	
+
 	private RenderString scoreTeam1;
 	private RenderString scoreTeam2;
-	
+
 	private boolean roundOver = false;
-	
+
 	private final String description = "Robocode soccer.";
-	
+
 	private enum Goal {
-		TEAM1,
-		TEAM2
+		TEAM1, TEAM2
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String toString() {
 		return "Soccer Mode";
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String addModeRobots(String selectedRobots) {
 		return selectedRobots + ", robots.theBall*";
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -75,47 +75,54 @@ public class SoccerMode extends ClassicMode implements IMode {
 	}
 
 	/**
-	 *{@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double[][] computeInitialPositions(String initialPositions,
 			double width, double height, int robotsCount) {
 		double[][] initialRobotPositions = null;
 		roundOver = false;
-		
-		int count = (robotsCount % 2 == 0 ? robotsCount : robotsCount - 1);
-		
-		initialRobotPositions = new double[(count + 1)][3];
- 		
- 		fieldHeight = height;
- 		fieldWidth = width;
- 		
- 		goal1 = new BoundingRectangle(0, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
- 		goal2 = new BoundingRectangle(fieldWidth - GOALX, (fieldHeight/2) - (GOALY/2), GOALX, GOALY);
- 		
- 		int teamSize = count / 2;
- 		
- 		// Horizontal spacing between columns of robots.
- 		double xOffset = ((fieldWidth / 2)) / (1 + Math.max(1, Math.ceil(teamSize / 3.0)));
 
- 		for(int i = 0; i < teamSize; i++) {
- 			// Team 1 Initial Positions (Left side of field).
- 			initialRobotPositions[i][0] = (fieldWidth / 2) - (((i/3) + 1) * xOffset);
- 			initialRobotPositions[i][1] = (0.2 * fieldHeight) + (((0.9 * fieldHeight) / 3) * (i % 3));
- 			initialRobotPositions[i][2] = (Math.PI / 2.0);
- 			
- 			// Team 2 Initial Positions (Right side of field).
- 			initialRobotPositions[(i + teamSize)][0] = (fieldWidth / 2) + (((i / 3) + 1) * xOffset);
- 			initialRobotPositions[(i + teamSize)][1] = (0.2 * fieldHeight) + (((0.9 * fieldHeight) / 3) * (i % 3));
- 			initialRobotPositions[(i + teamSize)][2] = 3 * (Math.PI / 2.0);
- 		}
- 		
- 		// Ball starting position..
- 		initialRobotPositions[count][0] = (fieldWidth / 2);
- 		initialRobotPositions[count][1] = (fieldHeight / 2);
- 		initialRobotPositions[count][2] = 0;
- 		
- 		return initialRobotPositions;
+		int count = (robotsCount % 2 == 0 ? robotsCount : robotsCount - 1);
+
+		initialRobotPositions = new double[(count + 1)][3];
+
+		fieldHeight = height;
+		fieldWidth = width;
+
+		goal1 = new BoundingRectangle(0, (fieldHeight / 2) - (GOALY / 2),
+				GOALX, GOALY);
+		goal2 = new BoundingRectangle(fieldWidth - GOALX, (fieldHeight / 2)
+				- (GOALY / 2), GOALX, GOALY);
+
+		int teamSize = count / 2;
+
+		// Horizontal spacing between columns of robots.
+		double xOffset = ((fieldWidth / 2))
+				/ (1 + Math.max(1, Math.ceil(teamSize / 3.0)));
+
+		for (int i = 0; i < teamSize; i++) {
+			// Team 1 Initial Positions (Left side of field).
+			initialRobotPositions[i][0] = (fieldWidth / 2)
+					- (((i / 3) + 1) * xOffset);
+			initialRobotPositions[i][1] = (0.2 * fieldHeight)
+					+ (((0.9 * fieldHeight) / 3) * (i % 3));
+			initialRobotPositions[i][2] = (Math.PI / 2.0);
+
+			// Team 2 Initial Positions (Right side of field).
+			initialRobotPositions[(i + teamSize)][0] = (fieldWidth / 2)
+					+ (((i / 3) + 1) * xOffset);
+			initialRobotPositions[(i + teamSize)][1] = (0.2 * fieldHeight)
+					+ (((0.9 * fieldHeight) / 3) * (i % 3));
+			initialRobotPositions[(i + teamSize)][2] = 3 * (Math.PI / 2.0);
+		}
+
+		// Ball starting position..
+		initialRobotPositions[count][0] = (fieldWidth / 2);
+		initialRobotPositions[count][1] = (fieldHeight / 2);
+		initialRobotPositions[count][2] = 0;
+
+		return initialRobotPositions;
 	}
 
 	/**
@@ -125,79 +132,80 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public void createPeers(BattlePeers peers,
 			RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
-		
+
 		// Duplicate robot hashtables.
 		Hashtable<String, Integer> team1Duplicates = new Hashtable<String, Integer>();
 		Hashtable<String, Integer> team2Duplicates = new Hashtable<String, Integer>();
-		
+
 		// Team member names.
 		List<String> team1Names = new LinkedList<String>();
 		List<String> team2Names = new LinkedList<String>();
-		
+
 		int teamSize = peers.getBattle().getRobotsCount() / 2;
-		
+
 		// Counts the number of duplicates for each robot being used.
-		for(int i = 0; i < peers.getBattle().getRobotsCount(); i++) {
+		for (int i = 0; i < peers.getBattle().getRobotsCount(); i++) {
 			RobotSpecification spec = battlingRobotsList[i];
 			String name = spec.getName();
 			String botName = null;
-			
-			if(i < teamSize) {
+
+			if (i < teamSize) {
 				// Populate duplicates list and member names list for team 1.
-				if(team1Duplicates.contains(name)) {
+				if (team1Duplicates.contains(name)) {
 					int count = team1Duplicates.get(name);
-					
+
 					team1Duplicates.put(name, count == 1 ? 3 : count + 1);
 				} else {
 					team1Duplicates.put(name, 1);
 				}
-				
+
 				botName = name + team1Duplicates.get(name);
 				team1Names.add(botName);
 			} else {
 				// Populate duplicates list and member names list for team 2.
-				if(team2Duplicates.contains(name)) {
+				if (team2Duplicates.contains(name)) {
 					int count = team2Duplicates.get(name);
-					
+
 					team2Duplicates.put(name, count == 1 ? 3 : count + 1);
 				} else {
 					team2Duplicates.put(name, 1);
 				}
-				
+
 				botName = name + team2Duplicates.get(name);
 				team2Names.add(botName);
 			}
 		}
-		
+
 		// Create teams 1 and 2.
 		team1 = new SoccerTeamPeer("Blue Team", team1Names, 0);
 		team2 = new SoccerTeamPeer("Red Team", team2Names, 1);
 		TeamPeer ballTeam = new TeamPeer("Ball", null, 2);
-		
+
 		// Create robot peer objects, assign teams and add them to the
 		// peer list.
-		for(int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
+		for (int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
 			RobotSpecification spec = battlingRobotsList[j];
 			RobotPeer robot = null;
-			
-			if(j < teamSize) {
-				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
+
+			if (j < teamSize) {
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec,
 						team1Duplicates.get(spec.getName()), team1, j);
 			} else {
-				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec,
 						team2Duplicates.get(spec.getName()), team2, j);
 			}
-			
+
 			peers.addRobot(robot);
 		}
-		
+
 		peers.addContestant(team1);
 		peers.addContestant(team2);
-		
+
 		// Create the ball robot and add it to the appropriate peer lists/team.
-		RobotSpecification ballSpec = 
-				repositoryManager.loadSelectedRobots("soccer.BallBot*")[0];
-		BallPeer ball = new BallPeer(peers.getBattle(), hostManager, ballSpec, 0, ballTeam, peers.getRobots().size());
+		RobotSpecification ballSpec = repositoryManager
+				.loadSelectedRobots("soccer.BallBot*")[0];
+		BallPeer ball = new BallPeer(peers.getBattle(), hostManager, ballSpec,
+				0, ballTeam, peers.getRobots().size());
 		this.ball = new ArrayList<RobotPeer>();
 		this.ball.add(ball);
 
@@ -206,46 +214,54 @@ public class SoccerMode extends ClassicMode implements IMode {
 		peers.addRobot(ball);
 		robots = peers.getRobots();
 	}
-	
+
 	/**
 	 * Perform scan dictates the scanning behaviour of robots. One parameter
 	 * List<RobotPeer> is iterated over an performScan called on each robot.
-	 * Useful for making some robots invisible to radar.
-	 * In this mode it makes the ball the only element visible to radar.
+	 * Useful for making some robots invisible to radar. In this mode it makes
+	 * the ball the only element visible to radar.
 	 */
 	@Override
 	public void updateRobotScans(List<RobotPeer> robots) {
 		// Scan after moved all
-		
-        for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
-        	// Check to see if ball is in goal
-        	if (robotPeer.isBall()) {
-        		if (goal1.intersects(robotPeer.getBoundingBox())) {
-        			roundOver = true;
-        			scoreTeam = Goal.TEAM1;
-        		} else if (goal2.intersects(robotPeer.getBoundingBox())) {
-        			scoreTeam = Goal.TEAM2;
-        			roundOver = true;
-        		}
-        		robotPeer.performScan(getRobotsAtRandom(robots));
-        	} else {
-        		robotPeer.performScan(ball);
-        	}
-        }
+
+		for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
+			// Check to see if ball is in goal
+			if (robotPeer.isBall()) {
+				if (goal1.intersects(robotPeer.getBoundingBox())) {
+					roundOver = true;
+					scoreTeam = Goal.TEAM1;
+				} else if (goal2.intersects(robotPeer.getBoundingBox())) {
+					scoreTeam = Goal.TEAM2;
+					roundOver = true;
+				}
+				robotPeer.performScan(getRobotsAtRandom(robots));
+			} else {
+				robotPeer.performScan(ball);
+			}
+		}
 	}
 	
+	/**
+	 * Increments the score for one of either team depending on which
+	 * team scored.
+	 */
 	@Override
 	public void scoreRoundPoints() {
 		// Which team scored?
 		if (scoreTeam == Goal.TEAM1) {
-			team2.getStatistics().incrementScore();
-			scoreTeam = null;
-		} else if(scoreTeam == Goal.TEAM2) {
 			team1.getStatistics().incrementScore();
+			scoreTeam = null;
+		} else if (scoreTeam == Goal.TEAM2) {
+			team2.getStatistics().incrementScore();
 			scoreTeam = null;
 		}
 	}
-	
+
+	/**
+	 * Checks to see if round is over, if so destroys all other robots except
+	 * for the ball bot in order to end round smoothly.
+	 */
 	@Override
 	public boolean isRoundOver(int endTimer, int time) {
 		if (roundOver) {
@@ -256,20 +272,21 @@ public class SoccerMode extends ClassicMode implements IMode {
 			}
 			roundOver = false;
 		}
-		return endTimer > 5*time;
+		return endTimer > 5 * time;
 	}
-	
+
 	@Override
 	public List<IRenderable> createRenderables() {
-		List<IRenderable> objs = new ArrayList<IRenderable>(); 
-		scoreTeam1 = new RenderString("score2", "Blue Team\n" + 
-				(int)team1.getStatistics().getTotalScore());
+		List<IRenderable> objs = new ArrayList<IRenderable>();
+		scoreTeam1 = new RenderString("score2", "Blue Team\n"
+				+ (int) team1.getStatistics().getTotalScore());
 		scoreTeam1.setTranslate(25, 50);
 		scoreTeam1.setColour(Color.WHITE);
 		objs.add(scoreTeam1);
-		
-		scoreTeam2 = new RenderString("score1", ("Red Team\n         " + 
-				(int)team2.getStatistics().getTotalScore()));
+
+		scoreTeam2 = new RenderString("score1",
+				("Red Team\n         " + (int) team2.getStatistics()
+						.getTotalScore()));
 		scoreTeam2.setTranslate(fieldWidth - 75, 50);
 		scoreTeam2.setColour(Color.WHITE);
 		objs.add(scoreTeam2);
@@ -280,8 +297,14 @@ public class SoccerMode extends ClassicMode implements IMode {
 	public void setGuiOptions() {
 		super.uiOptions = new GuiOptions(true, false);
 	}
-	
-	@Override 
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @return an array of BattleResults containing the final score of each
+	 * team sorted according to rank.
+	 */
+	@Override
 	public BattleResults[] getFinalResults() {
 		List<BattleResults> results = new ArrayList<BattleResults>();
 		double team1Score = team1.getStatistics().getTotalScore();
@@ -295,33 +318,34 @@ public class SoccerMode extends ClassicMode implements IMode {
 		}
 		return results.toArray(new BattleResults[results.size()]);
 	}
-	
+
 	@Override
 	public BoundingRectangle[] getGoals() {
-		BoundingRectangle[] goals = {goal1, goal2};
+		BoundingRectangle[] goals = { goal1, goal2 };
 		return goals;
 	}
 
 	/**
-     * Setup for SoccerMode to just display the rank, the team and the total score
-     */
-    public void setCustomResultsTable() {
-    	/* BRANDONCW */
-    	if (resultsTable == null) {
+	 * Setup for SoccerMode to just display the rank, the team and the total
+	 * score
+	 */
+	public void setCustomResultsTable() {
+		/* BRANDONCW */
+		if (resultsTable == null) {
 			resultsTable = new BattleResultsTableModel();
 		}
-    	resultsTable.showOverallRank(true);
-    	resultsTable.showTeam(true);
-    	resultsTable.showTotalScore(true);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public BattleResultsTableModel getCustomResultsTable() {
-    	return resultsTable;
-    }
-	
+		resultsTable.showOverallRank(true);
+		resultsTable.showTeam(true, "Team Name");
+		resultsTable.showTotalScore(true);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public BattleResultsTableModel getCustomResultsTable() {
+		return resultsTable;
+	}
+
 	@Override
 	public boolean allowsOneRobot() {
 		return true;
