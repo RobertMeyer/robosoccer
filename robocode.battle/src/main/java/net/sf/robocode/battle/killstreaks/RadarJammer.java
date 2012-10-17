@@ -9,7 +9,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
  * JAM_TIME amount of turns.
  **/
 public class RadarJammer implements IKillstreakAbility {
-	private static final int JAM_TIME = 400;
+	private static final int JAM_TIME = 800;
 
 	/**
 	 * Call the RadarJammer
