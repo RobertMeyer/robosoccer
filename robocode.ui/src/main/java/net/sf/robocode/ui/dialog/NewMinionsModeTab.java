@@ -1,8 +1,6 @@
 package net.sf.robocode.ui.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -12,103 +10,134 @@ import java.awt.Panel;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
-import javax.swing.event.PopupMenuListener;
 
 import net.sf.robocode.ui.IWindowManager;
-import net.sf.robocode.ui.WindowManager;
+import robocode._RobotBase;
 
 @SuppressWarnings("serial")
 public class NewMinionsModeTab extends JPanel{
 	
 	private JPanel mainPanel;
-	private JButton selectMinionAtk;
-	private JButton selectMinionDef;
-	private JButton selectMinionUtl;
+	private JButton selectMinionAtk = new JButton();
+	private JButton selectMinionDef = new JButton();
+	private JButton selectMinionUtl = new JButton();
+	private JTextField minionAtkTxt = new JTextField();
+	private JTextField minionDefTxt = new JTextField();
+	private JTextField minionUtlTxt = new JTextField();
+	private JButton dlgOkBtn = new JButton();
+	private JButton dlgCancelBtn = new JButton();
 	private IWindowManager window;
+	private CustomDialog selectMinion;
+	private int currentSelecting = -1;
+	private int currentIndex = -1;
+	private String currentSelection = "";
+	
 	private class buttonHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ev) {
 			//Add button handling code here.
 			//Check the caller's name etc.
-			
+
 			Object caller = ev.getSource();
 			if(caller == selectMinionAtk) {
 				//Create attack selection popup
-				Dialog createPopup = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"ATTACK");
+				currentSelecting = _RobotBase.MINION_TYPE_ATK;
+				selectMinion = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"ATTACK");
 			}
 			else if(caller == selectMinionDef) {
 				//Create defence selection popup
-				Dialog createPopup = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"DEFENCE");
+				currentSelecting = _RobotBase.MINION_TYPE_DEF;
+				selectMinion = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"DEFENCE");
 			}
 			else if(caller == selectMinionUtl) {
 				//Create utility selection popup.
-				Dialog createPopup = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"UTILITY");
+				currentSelecting = _RobotBase.MINION_TYPE_UTL;
+				selectMinion = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"UTILITY");
+			}
+			currentIndex = selectMinion.minionList.getSelectedIndex();
+			currentSelection = selectMinion.minionList.getSelectedValue().toString();
+			if(currentIndex >= 0) {
+				switch(currentSelecting){
+				case _RobotBase.MINION_TYPE_ATK:
+					minionAtkTxt.setText(currentSelection);
+					break;
+				case _RobotBase.MINION_TYPE_DEF:
+					minionDefTxt.setText(currentSelection);
+					break;
+				case _RobotBase.MINION_TYPE_UTL:
+					minionUtlTxt.setText(currentSelection);
+					break;
+				}
 			}
 		}
-		
 	}
-	class CustomDialog extends JDialog{
+	public class CustomDialog extends JDialog{
+		private class buttonHandler implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent ev) {
+				CustomDialog.this.setVisible(false);
+			}
+		}
+
+		JList minionList = new JList();
+		
 		CustomDialog(Frame parent, String title,boolean modal,String type){
 			super(parent,title,modal);
-			
-			JList list = new JList();
+			int width = 300, height = 300;
+
 			
 			String[] minionRobots = { type , type , type , type , type};
-			list.setVisibleRowCount(5);
-			list.setAlignmentX(LEFT_ALIGNMENT);
-			list.setListData(minionRobots);
-			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			
+			minionList.setVisibleRowCount(5);
+			minionList.setAlignmentX(LEFT_ALIGNMENT);
+			minionList.setListData(minionRobots);
+			minionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			
 			Panel p1 = new Panel(new FlowLayout(FlowLayout.LEFT));
 			Label question = new Label("Select your minions");
 			p1.add(question);
 			
 			Panel p2 = new Panel(new FlowLayout(FlowLayout.RIGHT));
-			Button OK = new Button("OK");
-			Button CANCEL = new Button("CANCEL");
-			p2.add(OK);
-			p2.add(CANCEL);
+			dlgOkBtn.setText("Ok");
+			dlgOkBtn.addActionListener(new buttonHandler());
+			dlgCancelBtn.setText("Cancel");
+			dlgCancelBtn.addActionListener(new buttonHandler());
+			p2.add(dlgOkBtn);
+			p2.add(dlgCancelBtn);
 			
 			add(p1, BorderLayout.NORTH);
 			add(p2, BorderLayout.SOUTH);
-			add(list,BorderLayout.CENTER);
-			this.setSize(300,300);
-			this.show();
+			add(minionList,BorderLayout.CENTER);
+			
+			this.setSize(width,height);
+			this.setLocationRelativeTo(parent);
+			this.setVisible(true);
+			
 		}
 	}
 	
 	
 	public NewMinionsModeTab(IWindowManager window) {
-		
 		super();
 		this.window = window;
 		runTab();
-		
 	}
 	
 	public void runTab(){
-		
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		setLayout(new BorderLayout());
 		add(mainPanel());
-		setVisible(true);
-
-		
+		setVisible(true);		
 	}
 	
 	private JPanel mainPanel(){
@@ -122,99 +151,55 @@ public class NewMinionsModeTab extends JPanel{
 			layout.rowWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 
 			mainPanel.setLayout(layout);
-
 			
-			GridBagConstraints constraints = new GridBagConstraints();
-			constraints.fill = GridBagConstraints.BOTH;
-			constraints.weightx = 1;
-			constraints.gridx = 0;
-			constraints.gridy = 0;
-			mainPanel.add(attackType(),constraints);
+			createMinionPanel(0, 0, "Attack", minionAtkTxt, selectMinionAtk);
 			
-			GridBagConstraints constraints1 = new GridBagConstraints();
-			constraints1.fill = GridBagConstraints.BOTH;
-			constraints1.gridx = 1;
-			constraints1.gridy = 0;
-	
-			mainPanel.add(defensiveType(), constraints1);
+			createMinionPanel(1, 0, "Defence", minionDefTxt, selectMinionDef);
 			
-			GridBagConstraints constraints2 = new GridBagConstraints();
-			constraints2.fill = GridBagConstraints.BOTH;
-			constraints2.gridx = 0;
-			constraints2.gridy = 1;
-			mainPanel.add(ultilityType(),constraints2);
+			createMinionPanel(0, 1, "Utility", minionUtlTxt, selectMinionUtl);
 			
-			GridBagConstraints constraints3 = new GridBagConstraints();
-			constraints3.fill = GridBagConstraints.BOTH;
-			constraints3.gridx = 1;
-			constraints3.gridy = 1;
-			mainPanel.add(globalSetting(),constraints3);
+			createGlobalSettings();
 		}
 		
 		return mainPanel;
+	}
+
+	private void createGlobalSettings() {
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.gridx = 1;
+		constraints.gridy = 1;
+		//Create panel
+		JPanel globalSetting = new JPanel();
+		JCheckBox enableMinion = new JCheckBox("Enable Minions");
+		enableMinion.setRolloverEnabled(true);
+		globalSetting.setBorder(getTitledBorder("Global Settings"));
+		globalSetting.add(enableMinion);
+		mainPanel.add(globalSetting,constraints);
+	}
+
+	private void createMinionPanel(int gridx, int gridy, String panelStr, JTextField field, JButton btn) {
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 1;
+		constraints.gridx = gridx;
+		constraints.gridy = gridy;
+		mainPanel.add(minionSelectionPanel(panelStr, field, btn), constraints);
 	}
 	
 	private Border getTitledBorder(String title) {
 		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title);
 	}
 	
-	private JPanel attackType(){
-		
-		JPanel attackType = new JPanel();
-		TextField defaultSelection = new TextField("<Default>");
-		defaultSelection.setEditable(false);
-		selectMinionAtk = new JButton("Select Minion");
-		selectMinionAtk.addActionListener(new buttonHandler());
-		attackType.setBorder(getTitledBorder("Attack Minions"));
-		attackType.add(defaultSelection);
-		attackType.add(selectMinionAtk);
-		
-
-		return attackType;
-		
-	}
-	
-	private JPanel defensiveType(){
-		
-		JPanel defensiveType = new JPanel();
-		TextField defaultSelection = new TextField("<Default>");
-		defaultSelection.setEditable(false);
-		selectMinionDef = new JButton("Select Minion");
-		selectMinionDef.addActionListener(new buttonHandler());
-		defensiveType.setBorder(getTitledBorder("Defense Minions"));
-		defensiveType.add(defaultSelection);
-		defensiveType.add(selectMinionDef);
-		
-		return defensiveType;
-		
-	}
-	
-	private JPanel ultilityType(){
-		
-		JPanel ultilityType = new JPanel();
-		TextField defaultSelection = new TextField("<Default>");
-		defaultSelection.setEditable(false);
-		selectMinionUtl = new JButton("Select Minion");
-		selectMinionUtl.addActionListener(new buttonHandler());
-		ultilityType.setBorder(getTitledBorder("Ultility Minions"));
-		ultilityType.add(defaultSelection);
-		ultilityType.add(selectMinionUtl);
-		
-		return ultilityType;
-		
-	}
-	
-	private JPanel globalSetting(){
-		
-		JPanel globalSetting = new JPanel();
-		JCheckBox enableMinion = new JCheckBox("Enabel Minion");
-		enableMinion.setRolloverEnabled(true);
-		globalSetting.setBorder(getTitledBorder("Global Settings"));
-		globalSetting.add(enableMinion);
-		
-		return globalSetting;
-		
-	}
-	
-	
+	private JPanel minionSelectionPanel(String panelStr, JTextField field, JButton btn) {
+		JPanel minionSelect = new JPanel();
+		field.setText("<Default>");
+		field.setEditable(false);
+		btn.setText("Select Minion");
+		btn.addActionListener(new buttonHandler());
+		minionSelect.setBorder(getTitledBorder(panelStr + " Minions"));
+		minionSelect.add(field);
+		minionSelect.add(btn);
+		return minionSelect;
+	}	
 }
