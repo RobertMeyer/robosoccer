@@ -40,7 +40,7 @@ public class HouseRobot extends AdvancedRobot implements IHouseRobot,
 	 * @see HouseRobotBoundary
 	 */
 	public HouseRobot() {
-		HouseRobotBoundary boundaries = new HouseRobotBoundary(0,0,0,100,0,100);
+		HouseRobotBoundary boundaries = new HouseRobotBoundary(0,0,100);
 		this.boundaries = boundaries;
 		boundariesSet = false;
 	}

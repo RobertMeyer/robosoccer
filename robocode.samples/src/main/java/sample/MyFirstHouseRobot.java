@@ -33,10 +33,9 @@ public class MyFirstHouseRobot extends HouseRobot {
 					chasing = false;
 					break;
 				}
-			}
-			
+				setAhead(25);
+			}	
 		}
-		
 	}
 	
 	private void setBoundaries() {
@@ -78,7 +77,8 @@ public class MyFirstHouseRobot extends HouseRobot {
 		if (inBoundaries(e)) {
 			chasing = true;
 			
-			this.fire(Rules.MAX_BULLET_POWER);
+			setTurnRight(e.getBearing());
+			this.setFire(Rules.MAX_BULLET_POWER);
 		}
 	}
 }
