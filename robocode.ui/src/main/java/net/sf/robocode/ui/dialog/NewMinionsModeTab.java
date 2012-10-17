@@ -7,7 +7,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Label;
 import java.awt.Panel;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,8 +19,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.sf.robocode.ui.IWindowManager;
+import net.sf.robocode.battle.MinionData;
 import robocode._RobotBase;
 
 @SuppressWarnings("serial")
@@ -41,7 +43,13 @@ public class NewMinionsModeTab extends JPanel{
 	private int currentSelecting = -1;
 	private int currentIndex = -1;
 	private String currentSelection = "";
-	
+	private class changeHandler implements ChangeListener {
+		@Override
+		public void stateChanged(ChangeEvent ev) {
+			JCheckBox enableMinion = (JCheckBox)ev.getSource();
+			MinionData.setMinionsEnabled(enableMinion.isSelected());
+		}
+	}
 	private class buttonHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ev) {
@@ -66,16 +74,20 @@ public class NewMinionsModeTab extends JPanel{
 			}
 			currentIndex = selectMinion.minionList.getSelectedIndex();
 			currentSelection = selectMinion.minionList.getSelectedValue().toString();
+			selectMinion.dispose();
 			if(currentIndex >= 0) {
 				switch(currentSelecting){
 				case _RobotBase.MINION_TYPE_ATK:
 					minionAtkTxt.setText(currentSelection);
+					MinionData.setMinion(currentSelection, _RobotBase.MINION_TYPE_ATK);
 					break;
 				case _RobotBase.MINION_TYPE_DEF:
 					minionDefTxt.setText(currentSelection);
+					MinionData.setMinion(currentSelection, _RobotBase.MINION_TYPE_DEF);
 					break;
 				case _RobotBase.MINION_TYPE_UTL:
 					minionUtlTxt.setText(currentSelection);
+					MinionData.setMinion(currentSelection, _RobotBase.MINION_TYPE_UTL);
 					break;
 				}
 			}
@@ -172,6 +184,7 @@ public class NewMinionsModeTab extends JPanel{
 		//Create panel
 		JPanel globalSetting = new JPanel();
 		JCheckBox enableMinion = new JCheckBox("Enable Minions");
+		enableMinion.addChangeListener(new changeHandler());
 		enableMinion.setRolloverEnabled(true);
 		globalSetting.setBorder(getTitledBorder("Global Settings"));
 		globalSetting.add(enableMinion);

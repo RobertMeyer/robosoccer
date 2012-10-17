@@ -41,8 +41,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final boolean isBall;
     private final boolean isBotzillaBot;
     private final boolean isDispenser;
-    //TODO: isMinion should be made final/private, when loading minions from UI is complete.
-    public boolean isMinion;
+    private final boolean isMinion;
     private final boolean isZombie;
     private final String name;
     private final String shortName;

@@ -221,6 +221,8 @@ public class Battle extends BaseBattle {
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+    /** Store minion specifications **/
+    private RobotSpecification[] minions;
     private int numObstacles;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -271,7 +273,12 @@ public class Battle extends BaseBattle {
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, this,
         		robotsCount);
-
+        
+		if(MinionData.minionsEnabled) {
+			RobotSpecification[] minions = repositoryManager.loadSelectedRobots(MinionData.getMinions());
+			this.minions = minions;
+        }
+		
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
 
 		if (battleMode.toString() == "Botzilla Mode") {
@@ -1371,5 +1378,14 @@ public class Battle extends BaseBattle {
 				return;
 			}
 		}
+	}
+	/**
+	 * This method returns the minions specified for use in the battle.
+	 * 
+	 * @returns RobotSpecification[]
+	 *           containing each minion type.
+	 */
+	public RobotSpecification[] getMinions() {
+		return minions;
 	}
 }

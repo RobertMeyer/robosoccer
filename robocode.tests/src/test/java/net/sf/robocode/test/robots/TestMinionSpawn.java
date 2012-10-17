@@ -1,7 +1,6 @@
 package net.sf.robocode.test.robots;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import org.junit.Test;
 

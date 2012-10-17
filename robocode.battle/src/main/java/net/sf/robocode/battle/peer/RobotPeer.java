@@ -283,8 +283,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private List<MinionProxy> minionProxyList = new ArrayList<MinionProxy>();
 	//Need to store host manager for minion creation.
 	private IHostManager hostManager;
-	//Temporary robotSpecification until minions can be loaded in at runtime.
-	private RobotSpecification minionSpecification;
 	/**
 	 * An association of values to every RobotAttribute, such that game
 	 * mechanics can be uniquely determined for each robot based on a variety
@@ -362,19 +360,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
 		this.hostManager = hostManager;
-		this.minionSpecification = robotSpecification;
 	}
 	
 	public void spawnMinions() {
 		if(currentCommands.getSpawnMinion() && !isMinion()) {
 			int minionType = currentCommands.getMinionType();
-			//minionSpecification = getMinion(minionType); - TODO Link with UI.
+			RobotSpecification minionSpecification = battle.getMinions()[minionType];
+			if(minionSpecification == null)
+				return;//FAIL
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minionSpecification, 0, null, 0);
 			battle.addMinion(minionPeer);
-			//Quick hack to make the minion "think" it's a minion.
-			//TODO: Load minions at runtime from different UI (waiting on team member).
-			minionPeer.statics.isMinion = true;
-			
 		    //Provide a proxy to the parent. (Minion=>Parent)
 			MinionProxy parentProxy = new MinionProxy((IBasicRobotPeer)robotProxy);
 			minionPeer.setParent(parentProxy);
