@@ -38,6 +38,7 @@ import robocode.robotinterfaces.IBasicRobot;
 /**
  * Helpers for accessing hidden methods on events
  * @author Pavel Savara (original)
+ * @author CSSE2003 Team forkbomb (contributor)
  */
 public class HiddenAccess {
 
