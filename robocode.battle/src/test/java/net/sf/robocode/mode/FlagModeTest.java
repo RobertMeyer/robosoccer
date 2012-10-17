@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.*;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;

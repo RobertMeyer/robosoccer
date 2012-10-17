@@ -96,10 +96,15 @@
 package net.sf.robocode.battle;
 
 import static java.lang.Math.round;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
@@ -112,16 +117,29 @@ import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
-import net.sf.robocode.mode.*;
+import net.sf.robocode.mode.ClassicMode;
+import net.sf.robocode.mode.MazeMode;
+import net.sf.robocode.mode.ObstacleMode;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
-import robocode.*;
+import robocode.BattleEndedEvent;
+import robocode.BattleResults;
+import robocode.BattleRules;
+import robocode.Event;
+import robocode.RobotDeathEvent;
+import robocode.WinEvent;
 import robocode.control.RandomFactory;
 import robocode.control.RobotResults;
 import robocode.control.RobotSpecification;
-import robocode.control.events.*;
+import robocode.control.events.BattleCompletedEvent;
+import robocode.control.events.BattleFinishedEvent;
+import robocode.control.events.BattlePausedEvent;
+import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.RoundEndedEvent;
+import robocode.control.events.RoundStartedEvent;
+import robocode.control.events.TurnEndedEvent;
+import robocode.control.events.TurnStartedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.RobotState;
@@ -196,6 +214,9 @@ public class Battle extends BaseBattle {
 	// List of teleporters in the arena
 	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private BattlePeers peers;
+	
+	/* Wall variables */
+	private int cellWidth, cellHeight, wallWidth, wallHeight;
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
@@ -221,7 +242,7 @@ public class Battle extends BaseBattle {
 		width = battleProperties.getBattlefieldWidth();
 		height = battleProperties.getBattlefieldHeight();
         battleMode = (ClassicMode) battleProperties.getBattleMode();
-		System.out.println("Battle mode: " + battleMode.toString());
+		//System.out.println("Battle mode: " + battleMode.toString());
         //TODO Just testing spawning any bot for now
         final RobotSpecification[] temp = repositoryManager.getSpecifications();
         for(int i = 0; i < temp.length; i++) {
@@ -237,7 +258,14 @@ public class Battle extends BaseBattle {
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
         obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
-
+        if (battleMode.toString() == "Maze Mode") {
+        	cellWidth = battleMode.setCellWidth(battleRules);
+        	cellHeight = battleMode.setCellHeight(battleRules);
+        	wallWidth = battleMode.setWallWidth(battleRules);
+        	wallHeight = battleMode.setWallHeight(battleRules);
+        	System.out.println(cellWidth + " " + cellHeight + " " + wallWidth + " " + wallHeight);
+        	obstacles = MazeMode.generateMaze(bp, battleRules, this, cellWidth, cellHeight, wallWidth, wallHeight);
+        }        
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, this,
@@ -572,6 +600,29 @@ public class Battle extends BaseBattle {
 				}
 			}
 		}
+		
+		List <ItemDrop> itemDestroy = new ArrayList<ItemDrop>();
+		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
+		for (ItemDrop item : itemControl.getItems()){
+			if (!item.getName().contains("flag")){
+				item.setLifespan(item.getLifespan() - 1);
+				if (item.getLifespan() == 0){
+					itemDestroy.add(item);
+				}
+			}
+		}
+		for (ItemDrop item : itemDestroy){
+			for (IRenderable ob : getCustomObject()){
+				if (item.getName().equals(ob.getName())){
+					imagesDestroyed.add(ob);
+				}
+			}
+			for (IRenderable ob : imagesDestroyed){
+				getCustomObject().remove(ob);
+			}
+			itemControl.removeItem(item);
+		}
+		
 		currentTurn++;
 
         // Robot time!

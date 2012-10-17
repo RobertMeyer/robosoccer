@@ -82,6 +82,22 @@ public class ClassicMode implements IMode {
     public int setNumObstacles(BattleRules rules) {
         return 0;
     }
+    
+	public int setCellWidth(BattleRules rules) {
+		return 0;
+	}
+
+	public int setCellHeight(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallWidth(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallHeight(BattleRules rules) {
+		return 0;
+	}
 
 	/**
 	 * Returns a list of ItemDrop's to
@@ -353,10 +369,21 @@ public class ClassicMode implements IMode {
 		// do nothing
 	}
 
+	/**
+	 * 
+	 * @param standard the original radar scan values
+	 * @return the original radar scan values
+	 */
 	public double modifyVision(double standard) {
 		return standard;
 	}
 
+	/**
+	 * 
+	 * @param standard the original radar scan values
+	 * @param rules the type of rules to command the robot
+	 * @return the standard original radar scan values
+	 */
 	public double modifyVision(double standard, BattleRules rules)
 	{
 		return modifyVision(standard);
@@ -400,13 +427,8 @@ public class ClassicMode implements IMode {
 
     /**
 	 * Setup so the default overall score is affected by all scores
-<<<<<<< HEAD
 	 * @param robotStatistics
 	 * @return Double representing the scores
-=======
-	 * @param score
-	 * @return HashMap containing the scores
->>>>>>> master
 	 */
 	public Double getCustomOverallScore(RobotStatistics score) {
             /*

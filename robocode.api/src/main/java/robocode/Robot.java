@@ -55,6 +55,7 @@ import robocode.robotinterfaces.peer.IStandardRobotPeer;
  * @author Matthew Reeder (contributor)
  * @author Stefan Westen (contributor)
  * @author Pavel Savara (contributor)
+ * @author CSSE2003 Team forkbomb (contributor)
  * @see <a target="_top" href="http://robocode.sourceforge.net">
  *      robocode.sourceforge.net</a>
  * @see <a href="http://robocode.sourceforge.net/myfirstrobot/MyFirstRobot.html">

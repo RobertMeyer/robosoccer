@@ -30,6 +30,7 @@ import robocode.robotinterfaces.IBasicEvents;
  *
  * @author Pavel Savara (original)
  * @author Flemming N. Larsen (javadoc)
+ * @author CSSE2003 Team forkbomb (contributor)
  * @see IStandardRobotPeer
  * @see IAdvancedRobotPeer
  * @see ITeamRobotPeer
