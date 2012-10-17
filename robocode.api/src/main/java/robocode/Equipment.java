@@ -104,6 +104,17 @@ public class Equipment {
 						.set(RobotAttribute.GUN_TURN_ANGLE, 40)
 						.set(RobotAttribute.SPEED, 40)
 						.set(RobotAttribute.ENERGY_REGEN, 30).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Energy Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
+						.set(RobotAttribute.ENERGY, 20).build());
+		
+		// Do not remove, this will cause the tests to fail
+				parts.put("Energy Test Small",
+						new EquipmentPart.Builder(EquipmentSlot.BODY)
+								.set(RobotAttribute.ENERGY, -20).build());
+		
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
 				.sound("Test1").build());

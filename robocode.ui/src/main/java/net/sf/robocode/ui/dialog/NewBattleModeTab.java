@@ -39,6 +39,7 @@ public class NewBattleModeTab extends JPanel {
 		new RicochetMode(),
 		new ItemMode(),
 		new ObstacleMode(),
+		new MazeMode(),
 		new BotzillaMode(),
 		new TimerMode(),
 		new EliminationMode(),

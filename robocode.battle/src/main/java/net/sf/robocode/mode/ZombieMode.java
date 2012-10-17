@@ -2,13 +2,12 @@ package net.sf.robocode.mode;
 
 import java.util.ArrayList;
 
-import robocode.control.RobocodeEngine;
-import robocode.control.RobotSpecification;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.core.ContainerBase;
 import net.sf.robocode.repository.IRepositoryManagerBase;
+import robocode.control.RobotSpecification;
 
 /**
  * 

@@ -2,7 +2,6 @@ package net.sf.robocode.battle.peer;
 
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.teleporters.ITeleporter;
-import net.sf.robocode.teleporters.ITeleporter.Portal;
 
 public class TeleporterPeer implements ITeleporter {
 	
