@@ -45,6 +45,7 @@ public class RobotResults extends BattleResults {
      * @param seconds		   the number of rounds this robot placed second
      * @param thirds			the number of rounds this robot placed third
      * @param flagScore			The amount of points scored by this robot by holding the flag
+     * @param kills			The amount of kills scored by robot
      */
     public RobotResults(
             RobotSpecification robot,
@@ -60,9 +61,10 @@ public class RobotResults extends BattleResults {
             double flagScore,
             int firsts,
             int seconds,
-            int thirds) {
+            int thirds,
+            int kills) {
         super(teamLeaderName, rank, score, survival, lastSurvivorBonus, bulletDamage, bulletDamageBonus, ramDamage,
-              ramDamageBonus, flagScore, firsts, seconds, thirds);
+              ramDamageBonus, flagScore, firsts, seconds, thirds, kills);
         this.robot = robot;
     }
 
@@ -79,7 +81,7 @@ public class RobotResults extends BattleResults {
         super(results.getTeamLeaderName(), results.getRank(), results.getScore(), results.getSurvival(),
               results.getLastSurvivorBonus(), results.getBulletDamage(), results.getBulletDamageBonus(),
               results.getRamDamage(), results.getRamDamageBonus(), results.getFlagScore(),
-              results.getFirsts(), results.getSeconds(), results.getThirds());
+              results.getFirsts(), results.getSeconds(), results.getThirds(), results.getKills());
         this.robot = robot;
     }
 

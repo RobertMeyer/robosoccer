@@ -99,6 +99,9 @@ public interface IScoreSnapshot extends Comparable<Object> {
      * @return the total number of third places.
      */
     int getTotalThirds();
+    
+
+	int getTotalKills();
 
     /**
      * Returns the current score.

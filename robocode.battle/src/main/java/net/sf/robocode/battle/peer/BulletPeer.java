@@ -44,16 +44,23 @@
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-import java.awt.geom.Line2D;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+
+import java.awt.geom.Line2D;
 import java.util.List;
 
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.battle.KillstreakTracker;
 import net.sf.robocode.peer.BulletStatus;
-import net.sf.robocode.teleporters.ITeleporter.Portal;
-import robocode.*;
+import robocode.BattleRules;
+import robocode.Bullet;
+import robocode.BulletHitBulletEvent;
+import robocode.BulletHitEvent;
+import robocode.BulletMissedEvent;
+import robocode.HitByBulletEvent;
+import robocode.RobotAttribute;
+import robocode.Rules;
 import robocode.control.snapshot.BulletState;
 
 /**
@@ -62,6 +69,7 @@ import robocode.control.snapshot.BulletState;
  * @author Luis Crespo (contributor)
  * @author Robert D. Maupin (contributor)
  * @author Titus Chen (constributor)
+ * @author CSSE2003 Team forkbomb (contributor)
  */
 public class BulletPeer {
 	private static final int EXPLOSION_LENGTH = 17;
@@ -211,6 +219,7 @@ public class BulletPeer {
 				}
 
 				if (otherRobot.getEnergy() <= 0) {
+					owner.battle.getBattleMode().robotKill(owner, otherRobot);
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
 						if (owner.battle.getBattleMode().respawnsOn()) {
