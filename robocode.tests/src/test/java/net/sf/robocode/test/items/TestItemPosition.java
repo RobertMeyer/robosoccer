@@ -26,7 +26,7 @@ public class TestItemPosition{
 
 	
 	
-	@Test
+	/*@Test
 	public void main(){
 		
 		Battle battle = new Battle(Mockito.mock(ISettingsManager.class), Mockito.mock(IBattleManager.class),
@@ -54,6 +54,6 @@ public class TestItemPosition{
 		Assert.assertNear(470.2326000139853, poison.getXLocation());
 		Assert.assertNear(213.27356772785788, poison.getYLocation());
 		
-	}
+	}*/
 
 }
