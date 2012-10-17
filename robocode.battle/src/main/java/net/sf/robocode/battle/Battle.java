@@ -242,7 +242,7 @@ public class Battle extends BaseBattle {
 		width = battleProperties.getBattlefieldWidth();
 		height = battleProperties.getBattlefieldHeight();
         battleMode = (ClassicMode) battleProperties.getBattleMode();
-		System.out.println("Battle mode: " + battleMode.toString());
+		//System.out.println("Battle mode: " + battleMode.toString());
         //TODO Just testing spawning any bot for now
         final RobotSpecification[] temp = repositoryManager.getSpecifications();
         for(int i = 0; i < temp.length; i++) {
@@ -600,6 +600,29 @@ public class Battle extends BaseBattle {
 				}
 			}
 		}
+		
+		List <ItemDrop> itemDestroy = new ArrayList<ItemDrop>();
+		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
+		for (ItemDrop item : itemControl.getItems()){
+			if (!item.getName().contains("flag")){
+				item.setLifespan(item.getLifespan() - 1);
+				if (item.getLifespan() == 0){
+					itemDestroy.add(item);
+				}
+			}
+		}
+		for (ItemDrop item : itemDestroy){
+			for (IRenderable ob : getCustomObject()){
+				if (item.getName().equals(ob.getName())){
+					imagesDestroyed.add(ob);
+				}
+			}
+			for (IRenderable ob : imagesDestroyed){
+				getCustomObject().remove(ob);
+			}
+			itemControl.removeItem(item);
+		}
+		
 		currentTurn++;
 
         // Robot time!

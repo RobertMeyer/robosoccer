@@ -16,7 +16,7 @@ public class HaltPack extends ItemDrop {
 
 		
 	public HaltPack(Battle battle, String name){
-		super(true, 400, 0, false, battle);
+		super(true, 200, 0, false, battle);
 		this.name = name;
 		this.imageName = "halt.png";
 	}
