@@ -26,16 +26,19 @@ public class HouseRobotBoundary {
 	
 	private double arcRange;
 	
+	private double initialFacing;
+	
 	/**
 	 * Creates a Boundary object for the {@link HouseRobot} storing home location and search boundaries.
 	 * Should have xLeft <= xHome <= xRight and yBottom <= yHome <= yTop
 	 * @param xHome x position for Home
 	 * @param yHome y position for Home
 	 */
-	public HouseRobotBoundary(double xHome, double yHome, double arcRange) {
+	public HouseRobotBoundary(double xHome, double yHome, double arcRange, double initialFacing) {
 		this.xHome = xHome;
 		this.yHome = yHome;
 		this.arcRange = arcRange;
+		this.initialFacing = initialFacing;
 	}
 	
 	public HouseRobotBoundary() {
@@ -59,6 +62,10 @@ public class HouseRobotBoundary {
 		return arcRange;
 	}
 	
+	public double getInitialFacing() {
+		return initialFacing;
+	}
+	
 	public void setxHome(double xHome) {
 		this.xHome = xHome;
 	}
@@ -69,6 +76,10 @@ public class HouseRobotBoundary {
 	
 	public void setArcRange(double arcRange) {
 		this.arcRange = arcRange;
+	}
+
+	public void setInitialFacing(double initialFacing) {
+		this.initialFacing = initialFacing;
 	}
 	
 	
