@@ -14,6 +14,9 @@
 package robocode;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
 
@@ -32,70 +35,66 @@ public class BattleResults implements java.io.Serializable,
     protected static final long serialVersionUID = 1L;
     protected String teamLeaderName;
     protected int rank;
-    protected double score;
-    protected double survival;
-    protected double lastSurvivorBonus;
-    protected double bulletDamage;
-    protected double bulletDamageBonus;
-    protected double ramDamage;
-    protected double ramDamageBonus;
-    protected int firsts;
-    protected int seconds;
-    protected int thirds;
-  //Team-Telos addition
-    protected double flagScore;
-    /* 
-     * Any team that wants their own custom score, it should be added
-     * here as a protected double.
+    /* ArrayList of scores for type String, ArrayList:
+     * 0: total score
+     * 1: current score
      */
+    protected static HashMap<String, ArrayList<Double>> scores;
     
+    /* Scores mapping to their respective unique IDs */
+    protected static HashMap<String, Integer> scoreIDs;
+    
+    static {
+    	scoreIDs = new HashMap<String, Integer>();
+    	/* Robocode Scores */
+    	scoreIDs.put("total", 0);
+    	scoreIDs.put("survival", 1);
+    	scoreIDs.put("lastsurvivorbonus", 2);
+    	scoreIDs.put("bulletdamage", 3);
+    	scoreIDs.put("bulletkillbonus", 4);
+    	scoreIDs.put("rammingdamage", 5);
+    	scoreIDs.put("rammingkill", 6);
+    	scoreIDs.put("firsts", 7);
+    	scoreIDs.put("seconds", 8);
+    	scoreIDs.put("thirds", 9);
+    	
+    	/* Mode-specific Scores */
+    	scoreIDs.put("flag", 10);
+    }
+    
+    /**
+     * Initialise the scores to all be 0.0
+     */
+    private void initialiseScores() {
+    	scores = new HashMap<String, ArrayList<Double>>();
+    	for (String key : scoreIDs.keySet()) {
+    		scores.put(key, new ArrayList<Double>());
+    		scores.get(key).add(0.0);
+    		scores.get(key).add(0.0);
+    	}
+    }
 
     /**
-     * Constructs this BattleResults object.
-     *
-     * @param teamLeaderName    the name of the team leader.
-     * @param rank              the rank of the robot in the battle.
-     * @param score             the total score for the robot in the battle.
-     * @param survival          the survival score for the robot in the battle.
-     * @param lastSurvivorBonus the last survivor bonus for the robot in the battle.
-     * @param bulletDamage      the bullet damage score for the robot in the battle.
-     * @param bulletDamageBonus the bullet damage bonus for the robot in the battle.
-     * @param ramDamage         the ramming damage for the robot in the battle.
-     * @param ramDamageBonus    the ramming damage bonus for the robot in the battle.
-     * @param flagScore			the flag score for the robot in the battle.
-     * @param firsts            the number of rounds this robot placed first.
-     * @param seconds           the number of rounds this robot placed second.
-     * @param thirds            the number of rounds this robot placed third.
-     * 
-     * Any desired custom score will also be needed to add to BattleResults
+     * Create a new Battle Results
+     * @param teamLeaderName Team leader's name
+     * @param rank Rank of the robot
+     * @param scores Scores for the robot
      */
-    public BattleResults(
-            String teamLeaderName,
-            int rank,
-            double score,
-            double survival,
-            double lastSurvivorBonus,
-            double bulletDamage,
-            double bulletDamageBonus,
-            double ramDamage,
-            double ramDamageBonus,
-            double flagScore,
-            int firsts,
-            int seconds,
-            int thirds) {
-        this.teamLeaderName = teamLeaderName;
-        this.rank = rank;
-        this.score = score;
-        this.survival = survival;
-        this.lastSurvivorBonus = lastSurvivorBonus;
-        this.bulletDamage = bulletDamage;
-        this.bulletDamageBonus = bulletDamageBonus;
-        this.ramDamage = ramDamage;
-        this.ramDamageBonus = ramDamageBonus;
-        this.flagScore = flagScore;
-        this.firsts = firsts;
-        this.seconds = seconds;
-        this.thirds = thirds;
+    @SuppressWarnings("unchecked")
+	public BattleResults(String teamLeaderName, int rank, HashMap<String, ArrayList<Double>> scores) { 
+    	this.initialiseScores();
+    	this.teamLeaderName = teamLeaderName;
+    	this.rank = rank;
+    	this.scores = (HashMap<String, ArrayList<Double>>) scores.clone();
+    }
+    
+    /**
+     * Populate the scores map with the scores stored in Battle Results
+     * @param scores The scores to modify
+     */
+    @SuppressWarnings("unchecked")
+	public void populateScoresMap(HashMap<String, ArrayList<Double>> scores) {
+    	scores = (HashMap<String, ArrayList<Double>>) this.scores.clone();
     }
 
     /**
@@ -116,117 +115,44 @@ public class BattleResults implements java.io.Serializable,
     public int getRank() {
         return rank;
     }
-
-    /**
-     * Returns the total score of this robot in the battle.
-     *
-     * @return the total score of this robot in the battle.
-     */
-    public int getScore() {
-        return (int) (score + 0.5);
-    }
-
-    /**
-     * Returns the survival score of this robot in the battle.
-     *
-     * @return the survival score of this robot in the battle.
-     */
-    public int getSurvival() {
-        return (int) (survival + 0.5);
-    }
-
-    /**
-     * Returns the last survivor score of this robot in the battle.
-     *
-     * @return the last survivor score of this robot in the battle.
-     */
-    public int getLastSurvivorBonus() {
-        return (int) (lastSurvivorBonus + 0.5);
-    }
-
-    /**
-     * Returns the bullet damage score of this robot in the battle.
-     *
-     * @return the bullet damage score of this robot in the battle.
-     */
-    public int getBulletDamage() {
-        return (int) (bulletDamage + 0.5);
-    }
-
-    /**
-     * Returns the bullet damage bonus of this robot in the battle.
-     *
-     * @return the bullet damage bonus of this robot in the battle.
-     */
-    public int getBulletDamageBonus() {
-        return (int) (bulletDamageBonus + 0.5);
-    }
-
-    /**
-     * Returns the ram damage score of this robot in the battle.
-     *
-     * @return the ram damage score of this robot in the battle.
-     */
-    public int getRamDamage() {
-        return (int) (ramDamage + 0.5);
-    }
-
-    /**
-     * Returns the ram damage bonus of this robot in the battle.
-     *
-     * @return the ram damage bonus of this robot in the battle.
-     */
-    public int getRamDamageBonus() {
-        return (int) (ramDamageBonus + 0.5);
-    }
-
-    /**
-     * Team-Telos:
-     * Returns the flag score of the robot in the battle
-     *
-     * @return the flag score of the robot in the battle
-     */
-    public int getFlagScore() {
-        return (int) (flagScore + 0.5);
-    }
-
-    /**
-     * Returns the number of rounds this robot placed first in the battle.
-     *
-     * @return the number of rounds this robot placed first in the battle.
-     */
-    public int getFirsts() {
-        return firsts;
-    }
-
-    /**
-     * Returns the number of rounds this robot placed second in the battle.
-     *
-     * @return the number of rounds this robot placed second in the battle.
-     */
-    public int getSeconds() {
-        return seconds;
-    }
-
-    /**
-     * Returns the number of rounds this robot placed third in the battle.
-     *
-     * @return the number of rounds this robot placed third in the battle.
-     */
-    public int getThirds() {
-        return thirds;
-    }
     
     /**
-     * Any custom scoring options should have a getter method added here
+     * Get a sum of the scores, options are:
+     * 'total'
+     * 'survival'
+     * 'lastsurvivorbonus'
+     * 'bulletdamage'
+     * 'bulletkillbonus'
+     * 'rammingdamage'
+     * 'rammingkill'
+     * 'firsts'
+     * 'seconds'
+     * 'thirds'
+     * 'flag'
+     * @param current true for current scores or false for total
+     * @param scores The string representation of the score
+     * @return The sum of the scores 'scores', current or total
      */
-
+    public double getScores(boolean current, String ... scoresToGet) {
+    	/* 0 for total, 1 for current */
+    	int index = (current) ? 1 : 0;
+    	double totalScore = 0.0;
+    	
+    	/* Get the score for each kind of score requested */
+    	for (String score : scoresToGet) {
+    		totalScore += scores.get(score).get(index);
+    	}
+    	
+    	return totalScore;
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public int compareTo(BattleResults o) {
-        return ((Double) score).compareTo(o.score);
+    	double score = this.getScores(false, "total");
+        return ((Double) score).compareTo(o.getScores(false, "total"));
     }
 
     @Override
@@ -234,6 +160,7 @@ public class BattleResults implements java.io.Serializable,
         final int prime = 31;
         int result = 1;
         long temp;
+        double score = this.getScores(false, "total");
 
         temp = Double.doubleToLongBits(score);
         result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -242,6 +169,7 @@ public class BattleResults implements java.io.Serializable,
 
     @Override
     public boolean equals(Object obj) {
+    	double score = this.getScores(false, "total");
         if (this == obj) {
             return true;
         }
@@ -253,7 +181,7 @@ public class BattleResults implements java.io.Serializable,
         }
         BattleResults other = (BattleResults) obj;
 
-        if (Double.doubleToLongBits(score) != Double.doubleToLongBits(other.score)) {
+        if (Double.doubleToLongBits(score) != Double.doubleToLongBits(other.getScores(false, "total"))) {
             return false;
         }
         return true;
@@ -273,24 +201,24 @@ public class BattleResults implements java.io.Serializable,
                     + 7 * RbSerializer.SIZEOF_DOUBLE;
         }
 
+        /* TODO Scoring rework */
         @Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             BattleResults obj = (BattleResults) object;
 
             serializer.serialize(buffer, obj.teamLeaderName);
             serializer.serialize(buffer, obj.rank);
-            serializer.serialize(buffer, obj.score);
-            serializer.serialize(buffer, obj.survival);
-            serializer.serialize(buffer, obj.lastSurvivorBonus);
-            serializer.serialize(buffer, obj.bulletDamage);
-            serializer.serialize(buffer, obj.bulletDamageBonus);
-            serializer.serialize(buffer, obj.ramDamage);
-            serializer.serialize(buffer, obj.ramDamageBonus);
-            //Team-Telos addition
-            serializer.serialize(buffer, obj.flagScore);
-            serializer.serialize(buffer, obj.firsts);
-            serializer.serialize(buffer, obj.seconds);
-            serializer.serialize(buffer, obj.thirds);
+//            serializer.serialize(buffer, obj.score);
+//            serializer.serialize(buffer, obj.survival);
+//            serializer.serialize(buffer, obj.lastSurvivorBonus);
+//            serializer.serialize(buffer, obj.bulletDamage);
+//            serializer.serialize(buffer, obj.bulletDamageBonus);
+//            serializer.serialize(buffer, obj.ramDamage);
+//            serializer.serialize(buffer, obj.ramDamageBonus);
+//            serializer.serialize(buffer, obj.flagScore);
+//            serializer.serialize(buffer, obj.firsts);
+//            serializer.serialize(buffer, obj.seconds);
+//            serializer.serialize(buffer, obj.thirds);
             /*
              * Any custom scoring option should be serializable, as above
              */
@@ -313,16 +241,7 @@ public class BattleResults implements java.io.Serializable,
             int seconds = buffer.getInt();
             int thirds = buffer.getInt();
 
-            /*
-             * Any custom scoring option should be deserializable as above
-             */
-            //Team-Telos: added flagScore into BattleResults
-            return new BattleResults(teamLeaderName, rank, score, survival, lastSurvivorBonus, bulletDamage,
-                                     bulletDamageBonus, ramDamage, ramDamageBonus, flagScore, firsts, seconds, thirds);
-            /*
-             * Insert custom scoring variable into the BattleResults variable in the same position as it was 
-             * first initialised. Should be at the end.
-             */
+            return new BattleResults(teamLeaderName, rank, scores);
         }
     }
 }

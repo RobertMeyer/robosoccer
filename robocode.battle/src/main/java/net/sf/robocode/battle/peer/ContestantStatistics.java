@@ -22,47 +22,9 @@ import robocode.BattleResults;
  * @author Mathew A. Nelson (original)
  * @author Luis Crespo (contributor)
  * @author Flemming N. Larsen (contributor)
+ * @author BrandonCW (rework)
  */
 public interface ContestantStatistics {
-
-    double getTotalScore();
-
-    double getTotalSurvivalScore();
-
-    double getTotalLastSurvivorBonus();
-
-    double getTotalBulletDamageScore();
-
-    double getTotalBulletKillBonus();
-
-    double getTotalRammingDamageScore();
-
-    double getTotalRammingKillBonus();
-    
-    double getTotalFlagScore();
-
-    int getTotalFirsts();
-
-    int getTotalSeconds();
-
-    int getTotalThirds();
-
-    double getCurrentScore();
-
-    double getCurrentSurvivalScore();
-
-    double getCurrentSurvivalBonus();
-
-    double getCurrentBulletDamageScore();
-
-    double getCurrentBulletKillBonus();
-
-    double getCurrentRammingDamageScore();
-
-    double getCurrentRammingKillBonus();
-    
-    double getCurrentFlagScore();
-    
     BattleResults getFinalResults();
 
     void setRank(int rank);
