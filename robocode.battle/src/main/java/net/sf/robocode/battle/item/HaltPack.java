@@ -23,7 +23,7 @@ public class HaltPack extends ItemDrop {
 	
 	
 	public void doItemEffect(RobotPeer robot){
-		System.out.println("Halt item USED");
+	//	System.out.println("Halt item USED");
 		robot.setHalt(true);
 		return;		
 

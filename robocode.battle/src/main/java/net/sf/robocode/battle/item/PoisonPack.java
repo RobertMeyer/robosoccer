@@ -22,10 +22,10 @@ public class PoisonPack extends ItemDrop {
 	}
 	
 	public void doItemEffect(RobotPeer robot){
-		System.out.println("Energy = " + robot.getEnergy());
+		//System.out.println("Energy = " + robot.getEnergy());
 		robot.updateEnergy(-15);
-		System.out.println("Poison item USED");
-		System.out.println("Energy = " + robot.getEnergy());
+		//System.out.println("Poison item USED");
+		//System.out.println("Energy = " + robot.getEnergy());
 		
 	}
 	
