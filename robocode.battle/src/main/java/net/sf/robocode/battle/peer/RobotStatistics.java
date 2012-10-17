@@ -138,7 +138,6 @@ public class RobotStatistics implements ContestantStatistics {
         /*TODO Edit this Andrew */
         /* Set battle Properties */
         bp = battleProp;
-        System.out.println(bp.toString());
         ClassicMode mode = (ClassicMode) bp.getBattleMode();
         totalScore = mode.getCustomOverallScore(this);
 //        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
