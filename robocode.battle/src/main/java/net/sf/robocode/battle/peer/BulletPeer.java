@@ -211,6 +211,7 @@ public class BulletPeer {
 				}
 
 				if (otherRobot.getEnergy() <= 0) {
+					owner.battle.getBattleMode().robotKill(owner, otherRobot);
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
 						if (owner.battle.getBattleMode().respawnsOn()) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import robocode.control.RobocodeEngine;
 import robocode.control.RobotSpecification;
 import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.core.ContainerBase;
 import net.sf.robocode.repository.IRepositoryManagerBase;
@@ -90,4 +91,34 @@ public class ZombieMode extends ClassicMode {
 		}
 		return zombies;
 	}
+	
+	@Override
+	public void robotKill(RobotPeer owner, RobotPeer otherRobot) {
+		if(!owner.isZombie()){
+			owner.getRobotStatistics().scoreKill();
+		}
+	}
+	
+    /**
+     * Setup for FlagMode to just display the rank, the name, the total score
+     * and the flag points
+     */
+    public void setCustomResultsTable() {
+    	if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+    	
+    	resultsTable.showOverallRank(true);
+    	resultsTable.showRobotName(true);
+    	resultsTable.showKills(true, "Kills");
+    	
+    	resultsTable.setTitle("Zombie Results");
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BattleResultsTableModel getCustomResultsTable() {
+    	return resultsTable;
+    }
 }
