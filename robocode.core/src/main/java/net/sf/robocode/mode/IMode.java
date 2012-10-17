@@ -104,4 +104,10 @@ public interface IMode {
 	public void setCustomResultsTable();
 	
 	public BattleResults[] getFinalResults();
+	
+	/**
+	 * For disabling the dialogue that says "You have only selected one robot"
+	 * @return
+	 */
+	public boolean allowsOneRobot();
 }

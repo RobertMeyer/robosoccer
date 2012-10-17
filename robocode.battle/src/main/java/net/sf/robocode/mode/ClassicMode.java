@@ -417,11 +417,7 @@ public class ClassicMode implements IMode {
     /**
 	 * Setup so the default overall score is affected by all scores
 	 * @param robotStatistics
-<<<<<<< HEAD
-	 * @return HashMap containing the scores
-=======
 	 * @return Double representing the scores
->>>>>>> origin/master
 	 */
 	public Double getCustomOverallScore(RobotStatistics robotStatistics) {
 		Double scores = 0.0;

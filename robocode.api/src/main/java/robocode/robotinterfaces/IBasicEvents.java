@@ -255,6 +255,16 @@ public interface IBasicEvents {
     void onScannedRobot(ScannedRobotEvent event);
 
     /**
+    * This method is called when your robot passes a waypoint.
+    * You should override it in your robot if you want to be informed of this event.
+    *
+    * @param event the waypoint-passed event seen by the game.
+    * @see WaypointPassedEvent
+    * @see Event
+    */
+    void onWaypointPassed(WaypointPassedEvent event);
+        
+    /**
      * This method is called when another robot dies.
      * You should override it in your robot if you want to be informed of this
      * event.

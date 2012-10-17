@@ -2,10 +2,11 @@ package net.sf.robocode.mode;
 
 import java.util.ArrayList;
 
-import robocode.control.RobocodeEngine;
-import robocode.control.RobotSpecification;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.core.ContainerBase;
+import net.sf.robocode.repository.IRepositoryManagerBase;
+import robocode.control.RobotSpecification;
 
 /**
  * 
@@ -18,12 +19,8 @@ public class ZombieMode extends ClassicMode {
     private final String description = "This mode pits a robot against "
             + "a swarm of zombie enemies. Survive as long as you can!";
     
-<<<<<<< HEAD
-    private final RobocodeEngine engine = new RobocodeEngine();
-=======
     final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
     private BattlePeers peers;
->>>>>>> origin/master
 
     /**
      * {@inheritDoc}
@@ -46,7 +43,7 @@ public class ZombieMode extends ClassicMode {
     		this.peers = peers;
     	}
     	if(currentTurn % 50 == 0) {
-	    	RobotSpecification[] specs = engine.getLocalRepository("sampleex.NormalZombie");
+	    	RobotSpecification[] specs = repository.loadSelectedRobots("sampleex.NormalZombie");
 	    	
 	    	RobotPeer zombie = new RobotPeer(peers.getBattle(),
 					peers.getHostManager(),
@@ -60,8 +57,6 @@ public class ZombieMode extends ClassicMode {
 	    	zombie.startRound(0, 0);
     	}
     }
-<<<<<<< HEAD
-=======
     
 	@Override
 	public boolean allowsOneRobot() {
@@ -94,5 +89,4 @@ public class ZombieMode extends ClassicMode {
 		}
 		return zombies;
 	}
->>>>>>> origin/master
 }
