@@ -35,6 +35,7 @@ public class ClassicMode implements IMode {
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
+	
     /* Overall Score variables */
 	protected RobotPeer rPeer;
 	protected int numRobots;
@@ -415,8 +416,13 @@ public class ClassicMode implements IMode {
 
     /**
 	 * Setup so the default overall score is affected by all scores
+<<<<<<< HEAD
+	 * @param robotStatistics
+	 * @return Double representing the scores
+=======
 	 * @param score
 	 * @return HashMap containing the scores
+>>>>>>> master
 	 */
 	public Double getCustomOverallScore(RobotStatistics score) {
             /*
