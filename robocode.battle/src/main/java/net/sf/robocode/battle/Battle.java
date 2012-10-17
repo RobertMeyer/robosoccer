@@ -196,6 +196,9 @@ public class Battle extends BaseBattle {
 	// List of teleporters in the arena
 	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private BattlePeers peers;
+	
+	/* Wall variables */
+	private int cellWidth, cellHeight, wallWidth, wallHeight;
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
@@ -237,7 +240,14 @@ public class Battle extends BaseBattle {
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
         obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
-
+        if (battleMode.toString() == "Maze Mode") {
+        	cellWidth = battleMode.setCellWidth(battleRules);
+        	cellHeight = battleMode.setCellHeight(battleRules);
+        	wallWidth = battleMode.setWallWidth(battleRules);
+        	wallHeight = battleMode.setWallHeight(battleRules);
+        	System.out.println(cellWidth + " " + cellHeight + " " + wallWidth + " " + wallHeight);
+        	obstacles = MazeMode.generateMaze(bp, battleRules, this, cellWidth, cellHeight, wallWidth, wallHeight);
+        }        
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, this,

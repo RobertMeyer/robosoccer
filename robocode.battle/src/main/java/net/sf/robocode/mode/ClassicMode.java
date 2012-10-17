@@ -35,6 +35,7 @@ public class ClassicMode implements IMode {
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
+	
     /* Overall Score variables */
 	protected RobotPeer rPeer;
 	protected int numRobots;
@@ -81,6 +82,22 @@ public class ClassicMode implements IMode {
     public int setNumObstacles(BattleRules rules) {
         return 0;
     }
+    
+	public int setCellWidth(BattleRules rules) {
+		return 0;
+	}
+
+	public int setCellHeight(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallWidth(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallHeight(BattleRules rules) {
+		return 0;
+	}
 
 	/**
 	 * Returns a list of ItemDrop's to
@@ -399,8 +416,8 @@ public class ClassicMode implements IMode {
 
     /**
 	 * Setup so the default overall score is affected by all scores
-	 * @param score
-	 * @return HashMap containing the scores
+	 * @param robotStatistics
+	 * @return Double representing the scores
 	 */
 	public Double getCustomOverallScore(RobotStatistics score) {
 		return score.getScores(false, "survival", "lastsurvivorbonus", "bulletdamage", "bulletkill",
