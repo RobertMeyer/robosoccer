@@ -216,7 +216,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double x;
 	protected double y;
 	protected int skippedTurns;
-
+	
 	//Radius in which Dispenser will give energy
 	protected double dispenseRadius = WIDTH*3;
 	//Rate at which Dispenser will give energy
@@ -2343,6 +2343,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			attributes.get().put(attribute, newValue);
 		}
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
+		energy = energy + getStartingEnergy() - 100;
 	}
 
 	/**
