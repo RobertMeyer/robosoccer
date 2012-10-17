@@ -4,12 +4,9 @@
 package net.sf.robocode.mode;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import robocode.BattleRules;
 
 /**
  * @author Terry

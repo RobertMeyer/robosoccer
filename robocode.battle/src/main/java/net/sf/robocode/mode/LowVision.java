@@ -2,12 +2,12 @@ package net.sf.robocode.mode;
 
 import java.awt.BorderLayout;
 import java.util.Hashtable;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import robocode.BattleRules;
-import robocode.Rules;
 
 /**
  * Low Vision mode:

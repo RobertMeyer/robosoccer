@@ -43,18 +43,15 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import static java.lang.Math.*;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import net.sf.robocode.battle.IBattleManager;
-import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
-import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.mode.BotzillaMode;
+import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -76,12 +73,9 @@ import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.IObstacleSnapshot;
 import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
-import robocode.control.snapshot.ITurnSnapshot;
-import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.ITeleporterSnapshot;
+import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.RenderableType;
-
-import java.io.*;
 
 
 /**
