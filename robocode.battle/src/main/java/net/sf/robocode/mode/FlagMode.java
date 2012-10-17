@@ -250,8 +250,6 @@ public class FlagMode extends ClassicMode {
 	 * @return HashMap containing the scores
 	 */
 	public Double getCustomOverallScore(RobotStatistics robotStatistics) {
-		Double scores = 0.0;
-		scores += robotStatistics.showFlagScore();
-		return scores;
+		return robotStatistics.getScores(false, "flag");
 	}
 }

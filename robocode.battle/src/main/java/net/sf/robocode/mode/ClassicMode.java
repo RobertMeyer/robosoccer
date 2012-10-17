@@ -403,19 +403,11 @@ public class ClassicMode implements IMode {
 	 * @return HashMap containing the scores
 	 */
 	public Double getCustomOverallScore(RobotStatistics score) {
-            /*
-		Double scores = 0.0;
-		scores += scores.showBulletDamageScore();
-		scores += scores.showBulletKillBonus();
-		scores += scores.showRammingDamageScore();
-		scores += scores.showRammingKillBonus();
-		scores += scores.showBulletKillBonus();
-                scores += scores.showSurvivalScore();
-		scores += scores.showLastSurvivorBonus(); */
-          return   score.getTotalSurvivalScore() + score.getTotalLastSurvivorBonus()
-                    + score.getTotalBulletDamageScore() + score.getTotalBulletKillBonus() + score.getTotalRammingDamageScore()
-                    + score.getTotalRammingKillBonus();
-		//return score;
+		return score.getScores(false, "survival", "lastsurvivorbonus", "bulletdamage", "bulletkill",
+				"rammingdamage", "rammingkill");
+//          return   score.getTotalSurvivalScore() + score.getTotalLastSurvivorBonus()
+//                    + score.getTotalBulletDamageScore() + score.getTotalBulletKillBonus() + score.getTotalRammingDamageScore()
+//                    + score.getTotalRammingKillBonus();
 	}
 
 	@Override
