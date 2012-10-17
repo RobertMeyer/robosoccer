@@ -17,6 +17,7 @@ package robocode;
  * Object to store Home location and search boundaries for a {@link HouseRobot}.
  * 
  * @author Laurence McLean 42373414
+ * @author Jack Reichelt 42338271
  * @see HouseRobot
  */
 public class HouseRobotBoundary {
@@ -24,29 +25,24 @@ public class HouseRobotBoundary {
 	private double xHome;
 	private double yHome;
 	
-	private double xLeft;
-	private double xRight;
+	private double arcRange;
 	
-	private double yBottom;
-	private double yTop;
+	private double initialFacing;
 	
 	/**
 	 * Creates a Boundary object for the {@link HouseRobot} storing home location and search boundaries.
 	 * Should have xLeft <= xHome <= xRight and yBottom <= yHome <= yTop
 	 * @param xHome x position for Home
 	 * @param yHome y position for Home
-	 * @param xLeft x position for Left Boundary
-	 * @param xRight x position for Right Boundary
-	 * @param yBottom y position for Bottom Boundary
-	 * @param yTop y position for Top Boundary
 	 */
-	public HouseRobotBoundary(double xHome, double yHome, double xLeft, double xRight, double yBottom, double yTop) {
+	public HouseRobotBoundary(double xHome, double yHome, double arcRange, double initialFacing) {
 		this.xHome = xHome;
 		this.yHome = yHome;
-		this.xLeft = xLeft;
-		this.xRight = xRight;
-		this.yBottom = yBottom;
-		this.yTop = yTop;
+		this.arcRange = arcRange;
+		this.initialFacing = initialFacing;
+	}
+	
+	public HouseRobotBoundary() {
 	}
 	
 	/**
@@ -63,31 +59,30 @@ public class HouseRobotBoundary {
 		return yHome;
 	}
 	
-	/**
-	 * @return Left x boundary in this {@link HouseRobot}
-	 */
-	public double getXLeft() {
-		return xLeft;
+	public double getArcRange() {
+		return arcRange;
 	}
 	
-	/**
-	 * @return Right x boundary in this {@link HouseRobot}
-	 */
-	public double getXRight() {
-		return xRight;
+	public double getInitialFacing() {
+		return initialFacing;
 	}
 	
-	/**
-	 * @return Bottom y boundary in this {@link HouseRobot}
-	 */
-	public double getYBottom() {
-		return yBottom;
+	public void setxHome(double xHome) {
+		this.xHome = xHome;
+	}
+
+	public void setyHome(double yHome) {
+		this.yHome = yHome;
 	}
 	
-	/**
-	 * @return Top y boundary in this {@link HouseRobot}
-	 */
-	public double getYTop() {
-		return yTop;
+	public void setArcRange(double arcRange) {
+		this.arcRange = arcRange;
 	}
+
+	public void setInitialFacing(double initialFacing) {
+		this.initialFacing = initialFacing;
+	}
+	
+	
+	
 }
