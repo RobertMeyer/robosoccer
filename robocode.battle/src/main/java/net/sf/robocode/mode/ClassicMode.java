@@ -369,10 +369,21 @@ public class ClassicMode implements IMode {
 		// do nothing
 	}
 
+	/**
+	 * 
+	 * @param standard the original radar scan values
+	 * @return the original radar scan values
+	 */
 	public double modifyVision(double standard) {
 		return standard;
 	}
 
+	/**
+	 * 
+	 * @param standard the original radar scan values
+	 * @param rules the type of rules to command the robot
+	 * @return the standard original radar scan values
+	 */
 	public double modifyVision(double standard, BattleRules rules)
 	{
 		return modifyVision(standard);
