@@ -1,7 +1,6 @@
 package net.sf.robocode.mode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;

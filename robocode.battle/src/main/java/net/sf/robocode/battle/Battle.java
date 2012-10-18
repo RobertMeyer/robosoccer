@@ -96,33 +96,55 @@
 package net.sf.robocode.battle;
 
 import static java.lang.Math.round;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
+import net.sf.robocode.battle.peer.LandminePeer;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
+import net.sf.robocode.battle.peer.TeleporterPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.io.Logger;
-import net.sf.robocode.mode.*;
+import net.sf.robocode.mode.ClassicMode;
+import net.sf.robocode.mode.MazeMode;
+import net.sf.robocode.mode.ObstacleMode;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.ISettingsManager;
-import robocode.*;
+import robocode.BattleEndedEvent;
+import robocode.BattleResults;
+import robocode.BattleRules;
+import robocode.Event;
+import robocode.RobotDeathEvent;
+import robocode.WinEvent;
 import robocode.control.RandomFactory;
 import robocode.control.RobotResults;
 import robocode.control.RobotSpecification;
-import robocode.control.events.*;
+import robocode.control.events.BattleCompletedEvent;
+import robocode.control.events.BattleFinishedEvent;
+import robocode.control.events.BattlePausedEvent;
+import robocode.control.events.BattleStartedEvent;
 import robocode.control.events.RoundEndedEvent;
+import robocode.control.events.RoundStartedEvent;
+import robocode.control.events.TurnEndedEvent;
+import robocode.control.events.TurnStartedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
 
 
@@ -187,6 +209,12 @@ public class Battle extends BaseBattle {
 	// Objects in the battle
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
+
+	// Object to keep status of whether teleporters are enabled or not 
+	private TeleporterEnabler teleporterEnabler = new TeleporterEnabler();
+	// List of teleporters in the arena
+	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
+	private final List<LandminePeer> landmines=new CopyOnWriteArrayList<LandminePeer>();
 	private BattlePeers peers;
 	
 	/* Wall variables */
@@ -194,6 +222,7 @@ public class Battle extends BaseBattle {
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+
     private int numObstacles;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -214,7 +243,7 @@ public class Battle extends BaseBattle {
 		robotsCount = battlingRobotsList.length;
 
         battleMode = (ClassicMode) battleProperties.getBattleMode();
-		System.out.println("Battle mode: " + battleMode.toString());
+		//System.out.println("Battle mode: " + battleMode.toString());
         //TODO Just testing spawning any bot for now
         final RobotSpecification[] temp = repositoryManager.getSpecifications();
         for(int i = 0; i < temp.length; i++) {
@@ -289,6 +318,22 @@ public class Battle extends BaseBattle {
 		bullets.add(bullet);
 	}
 
+	public void addMinion(RobotPeer minion) {
+		robotsCount++;
+		peers.addRobot(minion);
+		minion.initializeRound(peers.getRobots(), null);
+		//TODO:Move the following calculations into a function. It's used a few times.
+		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+        final long waitMillis = waitTime / 1000000;
+        final int waitNanos = (int) (waitTime % 1000000);
+        minion.startRound(waitMillis, waitNanos);
+        
+	}
+
+	public void addLandmine(LandminePeer landmine)
+	{
+		landmines.add(landmine);
+	}
 	public void resetInactiveTurnCount(double energyLoss) {
 		if (energyLoss < 0) {
 			return;
@@ -488,7 +533,10 @@ public class Battle extends BaseBattle {
 
         Logger.logMessage(""); // puts in a new-line in the log message
 
-        final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, false);
+        final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets,landmines, effArea, customObject, itemControl.getItems(), obstacles, teleporters, false);
+
+        //final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, landmines,effArea, customObject, itemControl.getItems(), false);
+
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -501,17 +549,26 @@ public class Battle extends BaseBattle {
 			removeBotzilla();
 		}
 
-		for (RobotPeer robotPeer : peers.getRobots()) {
+		//Modified the following iteration to allow removal of minions.
+		ListIterator it = peers.getRobots().listIterator();
+		while(it.hasNext()) {
+			RobotPeer robotPeer = (RobotPeer)it.next();
 			robotPeer.waitForStop();
 			robotPeer.getRobotStatistics().generateTotals(bp);
+			if(robotPeer.isMinion()) {
+				it.remove();
+			}
 		}
         
         // Increment mode specific points - TODO -team-Telos
 		this.getBattleMode().scoreTurnPoints();
 
 		bullets.clear();
-		
+
 		items.clear();
+		teleporters.clear();
+
+		landmines.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
 	}
@@ -533,13 +590,17 @@ public class Battle extends BaseBattle {
 	@Override
     protected void runTurn() {
         super.runTurn();
-
+        
         loadCommands();
 
         /*--ItemController--*/
         itemControl.updateRobots(peers.getRobots());
-
+        
         updateBullets();
+
+        
+        updateLandmines();
+        
 
         updateEffectAreas();
 
@@ -580,6 +641,29 @@ public class Battle extends BaseBattle {
 				}
 			}
 		}
+		
+		List <ItemDrop> itemDestroy = new ArrayList<ItemDrop>();
+		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
+		for (ItemDrop item : itemControl.getItems()){
+			if (!item.getName().contains("flag")){
+				item.setLifespan(item.getLifespan() - 1);
+				if (item.getLifespan() == 0){
+					itemDestroy.add(item);
+				}
+			}
+		}
+		for (ItemDrop item : itemDestroy){
+			for (IRenderable ob : getCustomObject()){
+				if (item.getName().equals(ob.getName())){
+					imagesDestroyed.add(ob);
+				}
+			}
+			for (IRenderable ob : imagesDestroyed){
+				getCustomObject().remove(ob);
+			}
+			itemControl.removeItem(item);
+		}
+		
 		currentTurn++;
 
         // Robot time!
@@ -654,7 +738,10 @@ public class Battle extends BaseBattle {
 
 	 @Override
     protected void finalizeTurn() {
-        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, effArea, customObject, itemControl.getItems(), obstacles, true)));
+
+        eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets,landmines, effArea, customObject, itemControl.getItems(), obstacles, teleporters, true)));
+
+        //eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, landmines,effArea, customObject, itemControl.getItems(), true)));
 
         super.finalizeTurn();
     }
@@ -718,6 +805,13 @@ public class Battle extends BaseBattle {
 		Collections.shuffle(shuffledList, RandomFactory.getRandom());
 		return shuffledList;
 	}
+	
+	private List<LandminePeer> getLandminesAtRandom() {
+		List<LandminePeer> shuffledList = new ArrayList<LandminePeer>(landmines);
+
+		Collections.shuffle(shuffledList, RandomFactory.getRandom());
+		return shuffledList;
+	}
 
 	/**
 	 * Returns a list of all death robots in random order. This method is used to gain fair play in Robocode.
@@ -766,6 +860,15 @@ public class Battle extends BaseBattle {
 			}
 		}
 	}
+	
+	private void updateLandmines() {
+		for (LandminePeer landmine : getLandminesAtRandom()) {
+			landmine.update(getRobotsAtRandom(), getLandminesAtRandom());
+			if (landmine.getState() == LandmineState.INACTIVE) {
+				landmines.remove(landmine);
+			}
+		}
+	}
 
 	private void updateRobots() {
         boolean zap = (inactiveTurnCount > battleRules.getInactivityTime());
@@ -775,6 +878,7 @@ public class Battle extends BaseBattle {
         // Move all bots
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
+            robotPeer.spawnMinions();
         }
 
         if (currentTurn >= botzillaSpawnTime &&
@@ -1264,5 +1368,9 @@ public class Battle extends BaseBattle {
 				return;
 			}
 		}
+	}
+
+	public IRepositoryManager getRepositoryManager() {
+		return repositoryManager;
 	}
 }

@@ -4,8 +4,8 @@ import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IDispenser;
 
 /**
- * Behaviour for Botzilla. For the most part, just uses RamFire's ramming 
- * behaviour.
+ * A special kind of defensive robot. It's purpose is to heal other robots
+ * with an area of effect and healing projectiles.
  * @author The Fightin' Mongooses
  */
 public class Dispenser extends AdvancedRobot implements IDispenser, IAdvancedEvents{

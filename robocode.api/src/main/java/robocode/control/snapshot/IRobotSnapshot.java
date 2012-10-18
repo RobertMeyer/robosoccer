@@ -13,11 +13,13 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import robocode.EquipmentPart;
 import robocode.EquipmentSlot;
+import robocode.MinionProxy;
 
 /**
  * Interface of a robot snapshot at a specific time in a battle.
@@ -270,6 +272,22 @@ public interface IRobotSnapshot {
 	 * @return a snapshot of the current score for this robot.
 	 */
 	IScoreSnapshot getScoreSnapshot();
-
+	
+	/**
+	 * Checks if the robot is a minion.
+	 *
+	 * @return {@code true} if the robot is a minion; {@code false} otherwise.
+	 */
+	boolean isMinion();
+	
+    /**
+     * Retrieves a list of MinionProxy that can be iterated through by a parent robot.
+     * <p/>
+     * MinionProxy can be used to communicate or control spawned minions.
+     * This call executes immediately.
+     * @return java.util.List<MinionProxy>
+     */
+	List<IRobotSnapshot> getMinions();
+	
 	boolean isFreezeRobot();
 }

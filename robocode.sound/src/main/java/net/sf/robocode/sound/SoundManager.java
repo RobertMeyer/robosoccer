@@ -31,8 +31,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Mixer;
+
 import net.sf.robocode.battle.IBattleManager;
-import net.sf.robocode.io.Logger;
 import net.sf.robocode.settings.ISettingsListener;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.control.events.BattleAdaptor;

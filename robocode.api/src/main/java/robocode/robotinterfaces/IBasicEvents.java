@@ -66,6 +66,8 @@ public interface IBasicEvents {
      * @see Event
      */
     void onBulletHit(BulletHitEvent event);
+    
+    void onLandmineHit(LandmineHitEvent event);
 
     /**
      * This method is called when one of your bullets hits another bullet.
@@ -137,6 +139,8 @@ public interface IBasicEvents {
      * @see Event
      */
     void onHitByBullet(HitByBulletEvent event);
+    
+    void onHitByLandmine(HitByLandmineEvent event);
 
     /**
      * This method is called when your robot collides with another robot.

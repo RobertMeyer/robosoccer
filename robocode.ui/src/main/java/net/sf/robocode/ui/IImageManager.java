@@ -12,6 +12,7 @@
 package net.sf.robocode.ui;
 
 import java.awt.*;
+import java.util.List;
 import net.sf.robocode.ui.gfx.RenderImage;
 
 /**
@@ -27,9 +28,13 @@ public interface IImageManager {
 
 	Image getSpikeTileImage();
 	
+	RenderImage getLandmineImage();
+	
 	RenderImage getCustomImage(String name);
 	
 	RenderImage addCustomImage(String name, String filename);
+	
+	List<RenderImage> addCustomAnim(String name, String filename, int width, int height, int rows, int cols);
 
     RenderImage getExplosionRenderImage(int which, int frame);
 

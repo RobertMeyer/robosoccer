@@ -281,11 +281,11 @@ public abstract class BaseBattle implements IBattle, Runnable {
             }
 
             initializeTurn();
-
+            
             runTurn();
-
+            
             roundOver = isRoundOver();
-
+            
             finalizeTurn();
             
             
@@ -304,7 +304,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
     protected void cleanupRound() {
         logMessage("Round " + (roundNum + 1) + " cleaning up.");
     }
-
+    
     protected void initializeTurn() {
         turnStartTime = System.nanoTime();
     }
