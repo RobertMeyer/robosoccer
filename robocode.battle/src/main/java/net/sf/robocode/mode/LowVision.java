@@ -37,7 +37,7 @@ public class LowVision extends ClassicMode{
 	private LowVisionRulesPanel rulesPanel;
 	
 	private final String title = "Low Vision Mode";
-    private final String description = "Modify all robots' vision. (0 = blind, 100 = standard vision)";
+    private final String description = "This mode will reduce the vision of the Robots by a user specified amount.";
 
     /**
      * To display the mode title
