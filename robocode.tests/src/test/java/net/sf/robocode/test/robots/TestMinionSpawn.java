@@ -4,14 +4,17 @@ import java.util.List;
 
 import org.junit.Test;
 
+import robocode._RobotBase;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
 
+import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 /**
  * @author Jordan Henderson
  */
+
 public class TestMinionSpawn extends RobocodeTestBed {
 
     @Test
@@ -42,6 +45,7 @@ public class TestMinionSpawn extends RobocodeTestBed {
     
 	@Override
     public String getRobotNames() {
+		MinionData.setMinionsEnabled(true);
         return "sample.MinionParentBot";
     }
 

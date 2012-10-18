@@ -3,13 +3,12 @@ package net.sf.robocode.battle;
 import robocode._RobotBase;
 
 public class MinionData {
-	public static boolean minionsEnabled = false;
-	public static String[] minionList = new String[]{"","",""};
+	private static Boolean minionsEnabled = new Boolean(false);
+	private static Boolean isGui = new Boolean(false);
+	private static String[] minionList = new String[]{"","",""};
 	//TODO: Get default minions from james.
-	public static String[] defaultMinions = new String[]{"minions.MinionBot*","minions.MinionBot*","minions.MinionBot*"};
-	public static void setMinionsEnabled(boolean flag) {
-		minionsEnabled = flag;
-	}
+	private static String[] defaultMinions = new String[]{"sample.MinionBot","sample.MinionBot","sample.MinionBot"};
+
 	public static void setMinion(String minionStr, int minionType) {
 		if(!(minionType >= _RobotBase.MINION_TYPE_ATK && minionType < _RobotBase.MINION_TYPE_RND))
 			return;
@@ -28,5 +27,18 @@ public class MinionData {
 		String minions = minionList[0] + "," + minionList[1] + "," + minionList[2];
 		return minions;
 	}
-
+	
+	public static Boolean getMinionsEnabled() {
+		return minionsEnabled;
+	}
+	
+	public static void setMinionsEnabled(boolean flag) {
+		minionsEnabled = flag;
+	}
+	public static Boolean getIsGui() {
+		return isGui;
+	}
+	public static void setIsGui(boolean flag) {
+		isGui = flag;
+	}
 }

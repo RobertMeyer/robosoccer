@@ -96,6 +96,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.battle.item.BoundingRectangle;
@@ -116,6 +117,7 @@ import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.peer.LandmineCommand;
 import net.sf.robocode.peer.LandmineStatus;
 import net.sf.robocode.peer.TeamMessage;
+import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.serialization.RbSerializer;
@@ -371,10 +373,18 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void spawnMinions() {
 		if(currentCommands.getSpawnMinion() && !isMinion()) {
 			int minionType = currentCommands.getMinionType();
-			RobotSpecification minionSpecification = battle.getMinions()[minionType];
-			if(minionSpecification == null)
-				return;//FAIL
-			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minionSpecification, 0, null, 0);
+			IRepositoryManager repo = battle.getRepositoryManager();
+			RobotSpecification[] minionSpecs;
+			if(MinionData.getMinionsEnabled() || !MinionData.getIsGui()) {
+				 minionSpecs = repo.loadSelectedRobots(MinionData.getMinions());
+	        }
+			else {
+				return;
+			}
+			
+
+			RobotSpecification minion = minionSpecs[minionType];
+			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0);
 			battle.addMinion(minionPeer);
 		    //Provide a proxy to the parent. (Minion=>Parent)
 			MinionProxy parentProxy = new MinionProxy((IBasicRobotPeer)robotProxy);

@@ -104,13 +104,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
-import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.LandminePeer;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.peer.TeleporterPeer;
@@ -143,12 +144,8 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.events.TurnStartedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
-import robocode.control.snapshot.RobotState;
 import robocode.control.snapshot.LandmineState;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import robocode.control.snapshot.RobotState;
 
 
 
@@ -229,8 +226,7 @@ public class Battle extends BaseBattle {
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
-    /** Store minion specifications **/
-    private RobotSpecification[] minions;
+
     private int numObstacles;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -281,12 +277,7 @@ public class Battle extends BaseBattle {
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, this,
         		robotsCount);
-        
-		if(MinionData.minionsEnabled) {
-			RobotSpecification[] minions = repositoryManager.loadSelectedRobots(MinionData.getMinions());
-			this.minions = minions;
-        }
-		
+
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
 
 		if (battleMode.toString() == "Botzilla Mode") {
@@ -1423,13 +1414,8 @@ public class Battle extends BaseBattle {
 			}
 		}
 	}
-	/**
-	 * This method returns the minions specified for use in the battle.
-	 * 
-	 * @returns RobotSpecification[]
-	 *           containing each minion type.
-	 */
-	public RobotSpecification[] getMinions() {
-		return minions;
+
+	public IRepositoryManager getRepositoryManager() {
+		return repositoryManager;
 	}
 }
