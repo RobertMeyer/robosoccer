@@ -41,7 +41,7 @@ public class LowVisionTest {
 	 */
 	@Test
 	public void testDiscription() {
-		assertEquals("Description is incorrect", "Modify all robots' vision. (0 = blind, 100 = standard vision)", LowVis.getDescription());
+		assertEquals("Description is incorrect", "This mode will reduce the vision of the Robots by a user specified amount.", LowVis.getDescription());
 	}
 	
 	/**
