@@ -269,7 +269,7 @@ public class BattleView extends Canvas {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
         	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
-        		// Botzilla
+        		//Add image for Botzilla, if Botzilla mode
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
         	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
@@ -284,6 +284,7 @@ public class BattleView extends Canvas {
             groundImage = null;
         }
         
+        //If there are Dispensers in the round, add the custom image for them
         if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
         		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
         	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
@@ -748,6 +749,8 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+                
+            //if robot is Botzilla, render the custom image
         	} else if (robotSnapshot.getName().contains("botzilla")
         			   || robotSnapshot.getName().contains("Botzilla")) {
         		x = robotSnapshot.getX();
@@ -761,6 +764,7 @@ public class BattleView extends Canvas {
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
                 
+            //if robot is a Dispenser, render the custom image
         	} else if ((robotSnapshot.getName().contains("dispenser")
         			|| robotSnapshot.getName().contains("Dispenser"))
         			&& robotSnapshot.getState().isAlive()) {

@@ -170,11 +170,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected static final int
 			HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
-
+	
+	//Special hitbox settings for Botzilla
 	public static final int
 			BZ_WIDTH = WIDTH*2,
 			BZ_HEIGHT = HEIGHT*2;
-
 	protected static final int
 			BZ_HALF_WIDTH_OFFSET = (BZ_WIDTH / 2 - 2),
 			BZ_HALF_HEIGHT_OFFSET = (BZ_HEIGHT / 2 - 2);
@@ -468,11 +468,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return statics.isTeamRobot();
 	}
 
+	/**
+	 * Test for checking if current robot is Botzilla.
+	 * @return True if robot is Botzilla.
+	 * 		   False otherwise.
+	 */
 	public boolean isBotzilla() {
-    	//return statics.isBotzilla();
-		return (robotSpecification.getName().equals("sampleex.Botzilla"));
+    	return statics.isBotzilla();
     }
 
+	/**
+	 * Test for checking if current robot is a Dispenser.
+	 * @return True if robot is a Dispenser.
+	 * 		   False otherwise.
+	 */
 	public boolean isDispenser() {
 		return statics.isDispenser();
 	}
@@ -932,6 +941,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			final Random random = RandomFactory.getRandom();
 
 			for (int j = 0; j < 1000; j++) {
+				//As this involves hitbox, we need a special Botzilla case
 				if (!isBotzilla()) {
 					x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
 					y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
@@ -965,9 +975,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//TODO: Change to actual starting spots [Team Awesome]
 			x = 0;
 			y = 0;
-		//} else if (statics.isBotzilla()){
-		} else if (isBotzilla()){
-			energy = 500;
+		//Botzilla gets extra energy, for the unlikely case of energy drain
+		} else if (statics.isBotzilla()){
+			energy = 999;
+		//Dispensers get extra energy, for they are purely defensive
 		} else if (statics.isDispenser()) {
 			energy = 500;
 		} else if (statics.isFreezeRobot()) {
@@ -1504,14 +1515,24 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+	/**
+	* Called by Dispenser bots, for giving health to robots which enter the
+	* immediate area. Healing effect intensifies with proximity to Dispenser.
+	* Dispenser scores points for healing other robots, and also earns some
+	* energy back. Healing effect is not applied to Botzilla or other
+	* Dispensers.
+	* @param robots List of robots in the current game
+	*/
 	protected void dispenseHealth(List<RobotPeer> robots) {
 		double amount = 0;
-
+		
 		for (RobotPeer otherRobot : robots) {
+			//max healing range is calculated as (dx^2 + dy^2)/ r^2
 			if (pow(otherRobot.x - x, 2) + pow(otherRobot.y - y, 2) < pow(dispenseRadius, 2)) {
 				if (!otherRobot.isDispenser() && !otherRobot.isBotzilla()) {
 
 					//Healing scales with proximity
+					//Scaling is calculated as (r^2 - dx^2 - dy^2)/r^2
 					amount = maxDispenseRate*(
 							(pow(dispenseRadius, 2)
 							- (pow(otherRobot.x - x, 2)
@@ -1520,9 +1541,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 					otherRobot.updateEnergy(amount);
 
-					//Dispenser has a very small ability to heal self
+					//Dispenser has an ability to heal self, at a reduced rate
 					this.updateEnergy(amount/2);
-
+					
+					//Dispenser earns points for healing
 					statistics.incrementTotalScore(this.getName());
 				}
 			}
@@ -1793,6 +1815,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public void updateBoundingBox() {
+		//Botzilla has larger hitbox, and hence requires a special case
 		if(!isBotzilla()) {
 			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
 		} else {
