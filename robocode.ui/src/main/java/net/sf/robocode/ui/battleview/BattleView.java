@@ -45,6 +45,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -124,6 +125,10 @@ public class BattleView extends Canvas {
 
     // Hold current custom images to be rendered.
     private HashMap<String, RenderImage> customImage;
+    // Hold current custom animated images to be rendered.
+    private HashMap<String, List<RenderImage>> customAnim;
+    // Hold current frame-index of each animated image.
+    private HashMap<String, Integer> customAnimFrames;
     
     //To store spike position
     private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
@@ -135,7 +140,9 @@ public class BattleView extends Canvas {
 		this.imageManager = imageManager; 
         this.battleManager = windowManager.getBattleManager();
         this.customImage = new HashMap<String, RenderImage>();
-
+        this.customAnim = new HashMap<String, List<RenderImage>>();
+        this.customAnimFrames = new HashMap<String, Integer>();
+        
 		battleField = new BattleField(800, 600);
 
 		new BattleObserver(windowManager);
@@ -685,10 +692,55 @@ public class BattleView extends Canvas {
 				g.setColor(oldColour);
 				g.setComposite(oldState);
 				g.setTransform(oldAt);
+			} else if(snap.getType() == RenderableType.SPRITE_ANIMATION) {
+				String name = snap.getName();
+				// Load image from cache
+				List<RenderImage> imgs = customAnim.get(name);
+				
+				// Check if image exists in Cache
+				if (imgs == null) {
+					// Load image into cache
+					imgs = addAnim(snap.getName(), snap.getFilename(), snap.getSpriteWidth(), snap.getSpriteHeight(), snap.getRows(), snap.getCols());
+				}
+				Integer frame = customAnimFrames.get(name);
+				if(frame >= snap.getRows() * snap.getCols())
+					frame = 0;
+				RenderImage img = imgs.get(frame);
+				// Setup matrix transform of image
+
+				AffineTransform at = AffineTransform.getTranslateInstance(
+						snap.getX(), battleField.getHeight() - snap.getY());
+				at.rotate(snap.getRotation());
+				at.scale(snap.getScaleX(), snap.getScaleY());
+				at.shear(snap.getShearX(), snap.getShearY());
+				img.setTransform(at);
+
+				Color oldColour = g.getColor();
+
+				if (snap.getColour() != null) {
+					g.setColor(snap.getColour());
+				}
+
+				// Keep old alpha level state
+				Composite oldState = g.getComposite();
+				// Setup new alpha level state
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, snap.getAlpha());
+				g.setComposite(alphaComposite);
+
+				// Render to screen
+				if (!snap.getHide())
+					img.paint(g);
+
+				// Restore old alpha state
+				g.setColor(oldColour);
+				g.setComposite(oldState);
+				//update the frame.
+				customAnimFrames.put(name, frame + 1);
 			}
     	}
     }
-
+    
     /**
      * Loads image in from given filename, puts RenderImage in
      * Hashmap<String, RenderImage>. Once added it will get rendered
@@ -707,6 +759,29 @@ public class BattleView extends Canvas {
 		customImage.put(name, img);
 
 		return (img != null) ? img : null;
+	}
+	
+    /**
+     * Loads anim in from given filename, puts RenderImage in
+     * Hashmap<String, List<RenderImage>>. Once added it will get rendered
+     * each frame update.
+     *
+     * @param String name - Key used for hashmap, used to fetch.
+     * @param String filename - path to file
+     * @param int width - sprite width
+     * @param int height - sprite height
+     * @param int rows - spritesheet rows
+     * @param int cols - spritesheet cols
+     * 
+     * @return newly added List<RenderImage>
+     */
+	private List<RenderImage> addAnim(String name, String filename, int width, int height, int rows, int cols) {
+		List<RenderImage> imgs = imageManager.addCustomAnim(name, filename, width, height, rows, cols);
+		Integer frame = 0;
+		customAnim.put(name, imgs);
+		customAnimFrames.put(name, frame);
+		
+		return (imgs != null) ? imgs : null;
 	}
     
 	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {

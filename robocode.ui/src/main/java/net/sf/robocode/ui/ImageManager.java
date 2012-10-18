@@ -50,6 +50,7 @@ public class ImageManager implements IImageManager {
     private HashMap<Integer, RenderImage> robotGunImageCache;
     private HashMap<Integer, RenderImage> robotRadarImageCache;
     private HashMap<String, RenderImage> customImageCache;
+    private HashMap<String, List<RenderImage>> customAnimCache;
 	private Image[] soccerField;
 	
 	//For storing spike image
@@ -74,6 +75,7 @@ public class ImageManager implements IImageManager {
         radarImage = null;
         healthImage = null;
         customImageCache = new RenderCache<String, RenderImage>();
+        customAnimCache = new RenderCache<String, List<RenderImage>>();
         robotBodyImageCache = new RenderCache<Integer, RenderImage>();
         robotGunImageCache = new RenderCache<Integer, RenderImage>();
         robotRadarImageCache = new RenderCache<Integer, RenderImage>();
@@ -173,6 +175,7 @@ public class ImageManager implements IImageManager {
         return image;
     }
     
+
     /**
      * This method loads in a image from a given file path. 
      * 
@@ -198,6 +201,29 @@ public class ImageManager implements IImageManager {
     }
     
     /**
+     * This method loads in a spritesheet from a given file path. 
+     * 
+     * @param String name - Key name for hashmap.
+     * @param String filename - path to file.
+     */
+	public List<RenderImage> addCustomAnim(String name, String filename, int width, int height, int rows, int cols) {
+    	// Check if already cached
+    	if (customAnimCache.containsKey(name)) {
+    		getCustomAnim(name);
+    	}
+    	// Load image into memory
+    	List<RenderImage> imgs = ImageUtil.getSprites(filename, width, height, rows, cols);
+    	
+    	// Check to see valid image
+    	if(imgs != null) {
+    		customAnimCache.put(name, imgs);
+    		return imgs;
+    	}
+    	
+    	return null;
+    }
+    
+    /**
      * Returns a custom image from cache.
      * 
      * @param String name - Name of key to return.
@@ -208,6 +234,19 @@ public class ImageManager implements IImageManager {
     	}
     	return null;
     }	
+    
+    /**
+     * Returns a custom anim from cache.
+     * 
+     * @param String name - Name of key to return.
+     */
+    public List<RenderImage> getCustomAnim(String name) {
+    	if (customAnimCache.containsKey(name)) {
+    		return customAnimCache.get(name);
+    	}
+    	return null;
+    }	
+    
     
     /**
      * Gets the body image
