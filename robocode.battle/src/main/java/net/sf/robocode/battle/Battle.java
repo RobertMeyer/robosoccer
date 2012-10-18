@@ -98,6 +98,9 @@ package net.sf.robocode.battle;
 import static java.lang.Math.round;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.jws.WebParam.Mode;
+
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemController;
@@ -791,7 +794,8 @@ public class Battle extends BaseBattle {
 	}
 
 	private void updateRobots() {
-        boolean zap = (inactiveTurnCount > battleRules.getInactivityTime());
+		//zaps if inactive turn > allowed inactive turns or 5*allowed inactive turns for maze mode.
+        boolean zap = (inactiveTurnCount > ((battleMode.toString() == "Maze Mode")?10:1)*battleRules.getInactivityTime());
 
         final double zapEnergy = isAborted() ? 5 : zap ? .1 : 0;
 
