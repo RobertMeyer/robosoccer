@@ -323,6 +323,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			battleText.append("\n");
 		}
 	}
+	
+	/**
+	 * check whether robot equip Sword
+	 * by checking the equipment.get(Weapon)==Equipment.getPart("Sword")
+	 */
+	public boolean checkSword()
+	{
+		EquipmentPart part = Equipment.getPart("Sword");
+		if(equipment.get().get(part.getSlot())==part)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 	public void print(Throwable ex) {
 		println(ex.toString());

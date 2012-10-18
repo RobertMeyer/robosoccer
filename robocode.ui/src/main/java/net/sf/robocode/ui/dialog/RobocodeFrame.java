@@ -109,6 +109,8 @@ public class RobocodeFrame extends JFrame {
     final List<RobotButton> robotButtons = new ArrayList<RobotButton>();
     final List<IFullScreenListener> fullScreenListeners = new ArrayList<IFullScreenListener>();
 	private JPanel sideBooleans;
+	private TeleporterCheckbox teleporterBox;
+	private BlackholeCheckbox blackholeBox;
 
     public RobocodeFrame(ISettingsManager properties,
                          IWindowManager windowManager, IRobotDialogManager dialogManager,
