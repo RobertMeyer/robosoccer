@@ -60,7 +60,7 @@ public class NewMinionsModeTab extends JPanel{
 	private RobotSelectionPanel robotSelectionPanel;
 	private IRepositoryManager repository;
 	private List<IRepositoryItem> minionsRepoList = new CopyOnWriteArrayList<IRepositoryItem>();
-	private List<ItemWrapper> minionsList = new CopyOnWriteArrayList<ItemWrapper>();
+	private List<String> minionsList = new CopyOnWriteArrayList<String>();
 	
 	
 	
@@ -69,19 +69,17 @@ public class NewMinionsModeTab extends JPanel{
 		Object[] s1 = null;
 		
 		minionsRepoList = new CopyOnWriteArrayList<IRepositoryItem>();
-		minionsList = new CopyOnWriteArrayList<ItemWrapper>();
-		
+		minionsList = new CopyOnWriteArrayList<String>();
+
 		repository = net.sf.robocode.core.Container.createComponent(IRepositoryManager.class);
-		
+
 		List<IRepositoryItem> minionsRepoList = repository.filterRepositoryItems(false,
 		         false, true,
 		         false, false,
 		         true, false, true, minionType);
-		
-		
-		
+
 		for (IRepositoryItem robotSpec : minionsRepoList) {
-            minionsList.add(new ItemWrapper(robotSpec));
+            minionsList.add(robotSpec.getFullClassName());
         }
 
 		minionRobots = minionsList.toArray();
@@ -114,7 +112,7 @@ public class NewMinionsModeTab extends JPanel{
 				selectMinion = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"UTILITY");
 			}
 			currentIndex = selectMinion.minionList.getSelectedIndex();
-			if(currentIndex > 0)
+			if(currentIndex >= 0)
 				currentSelection = selectMinion.minionList.getSelectedValue().toString();
 			else
 				return;
