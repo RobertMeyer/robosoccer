@@ -40,6 +40,7 @@ public interface ITurnSnapshot {
      */
     IBulletSnapshot[] getBullets();
 
+
     /**
      * Returns a list of snapshots for the obstacles that are currently on the battlefield.
      *
@@ -47,6 +48,10 @@ public interface ITurnSnapshot {
      */
     IObstacleSnapshot[] getObstacles();
     
+    
+    ILandmineSnapshot[] getLandmines();
+
+
     /**
      * Returns the current TPS (turns per second) rate.
      *

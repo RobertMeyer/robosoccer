@@ -28,6 +28,8 @@ public interface IImageManager {
 
 	Image getSpikeTileImage();
 	
+	RenderImage getLandmineImage();
+	
 	RenderImage getCustomImage(String name);
 	
 	RenderImage addCustomImage(String name, String filename);

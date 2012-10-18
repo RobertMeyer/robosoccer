@@ -88,8 +88,7 @@ public class RobotType implements Serializable {
 		if (isBall) {
 			code += BALL.getCode();
 		}
-
-	    if (isBotzillaBot()) {
+		if (isBotzilla) {
 	    	code += BOTZILLA.getCode();
 	    }
 		if (isZombie) {
