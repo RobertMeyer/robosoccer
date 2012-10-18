@@ -1,104 +1,68 @@
 package net.sf.robocode.battle;
 
-import java.awt.Point;
-import java.awt.Shape;
 import java.awt.geom.Area;
 
-import net.sf.robocode.battle.item.BoundingRectangle;
+//import net.sf.robocode.battle.Waypoint;
 
 /**
- * Class that stores Track Data
- * @author Taso s4231811
+ * Class that stores Track layout 
+ * @author Anastasios Karydas s4231811
  *
  */
-public class TrackField {
+public class TrackField implements ITrackField {
 	
 	// Area of the road of the Track
 	private Area road;
 	//Area of the Terrain of the Track
 	private Area terrain;
-
-	public TrackField(Shape field) {
-		this.road = new Area(field);
-		this.terrain = new Area(field);
-	}
-	
-	/**
-	 * 
-	 * @param br
-	 */
-	public TrackField(BoundingRectangle br) {
-		this.road = new Area(br);
-		this.terrain = new Area(br);
-	}
+	// 
+	private Waypoint waypoint;
 	
 	public TrackField(Area road, Area terrain) {
 		this.road = road;
 		this.terrain = terrain;
 	}
-	
-	//TODO
-	/**
-	 * 
-	 * @return
-	 */
-	public Boolean onRoad() {
-		return false;
-	}
-	
-	//TODO
-	/**
-	 * 
-	 * @return
-	 */
-	public Boolean onTerrain() {
-		return false;
-	}
-	
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public Boolean onBounds(int x, int y) {
-		Point p = new Point(x,y);
-		return onBounds(p);
-	}
-	
-	/**
-	 * 
-	 * @param p
-	 * @return
-	 */
-	public Boolean onBounds(Point p) {
+
+	@Override
+	public boolean onRoad(double x, double y) {
 		// Check if point is in the bounds of the road shape.
-		if (road.contains(p)) {
+		if (road.contains(x, y)) {
 			return true;
+		} else {
+			return false;
 		}
-		// Check if point is in the bounds of the terrain shape.
-		if (terrain.contains(p)) {
-			return true;
-		}
-		// if reaches here return false.
-		return false;
 	}
-	
-	
-	
-	//TODO Field saving method
-	/**
-	 * 
-	 */
-	public void saveField() {
+
+	@Override
+	public boolean onTerrain(double x, double y) {
+		// Check if point is in the bounds of the terrain Area.
+		if (terrain.contains(x, y)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean onBounds(double x, double y) {
+		// Check if point is in the bounds of both the areas
+		// if returns false the robot has hit a wall.
+		if (onRoad(x, y) || onTerrain(x, y)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public void loadTrackField() {
+		// TODO Auto-generated method stub
 		
 	}
-	
-	//TODO Field Loading method
-	/**
-	 * 
-	 */
-	public void loadField() {
+
+	@Override
+	public void saveTrackField() {
+		// TODO Auto-generated method stub
 		
 	}
 
