@@ -82,6 +82,11 @@ public class AlienComposition implements IBasicRobot {
         public void onHitByBullet(HitByBulletEvent e) {
             peer.turnBody(Math.PI / 2 + e.getBearingRadians());
         }
+        
+        @Override
+        public void onHitByLandmine(HitByLandmineEvent e) {
+        	peer.turnBody(Math.PI / 2 + e.getBearingRadians());
+        }
 
         @Override
         public void onStatus(StatusEvent e) {
@@ -120,7 +125,13 @@ public class AlienComposition implements IBasicRobot {
         }
 
 		@Override
+
 		public void onWaypointPassed(WaypointPassedEvent event) {
+			
+		}
+
+		public void onLandmineHit(LandmineHitEvent event) {
+
 			// TODO Auto-generated method stub
 			
 		}

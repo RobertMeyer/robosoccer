@@ -45,6 +45,7 @@ public class ImageManager implements IImageManager {
     private Image gunImage;
     private Image radarImage;
     private Image healthImage;
+    private Image landmineImage;
     private static final int MAX_NUM_COLORS = 256;
     private HashMap<Integer, RenderImage> robotBodyImageCache;
     private HashMap<Integer, RenderImage> robotGunImageCache;
@@ -106,6 +107,7 @@ public class ImageManager implements IImageManager {
         return groundImages[index];
     }
 	
+
 	/**
 	 * Returns the image of spike for Spike Mode
 	 * 
@@ -116,6 +118,7 @@ public class ImageManager implements IImageManager {
 		spikeImage = getImage("/net/sf/robocode/ui/images/ground/spike/spike.png");
         return spikeImage;
     }
+
 
     @Override
     public RenderImage getExplosionRenderImage(int which, int frame) {
@@ -164,6 +167,15 @@ public class ImageManager implements IImageManager {
         return debriseRenderImage;
     }
 
+    public RenderImage getLandmineImage()
+    {
+
+        if (landmineImage == null) {
+        	landmineImage = getImage("/net/sf/robocode/ui/images/landmine1.png");
+        }
+        return debriseRenderImage;
+    
+    }
     private Image getImage(String filename) {
         Image image = ImageUtil.getImage(filename);
 

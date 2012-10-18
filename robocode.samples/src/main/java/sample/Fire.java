@@ -56,9 +56,11 @@ public class Fire extends Robot {
         // fire hard!
         if (e.getDistance() < 50 && getEnergy() > 50) {
             fire(3);
+            fireLandmine(3);
         } // otherwise, fire 1.
         else {
             fire(1);
+            fireLandmine(1);
         }
         // Call scan again, before we turn the gun
         scan();

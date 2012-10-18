@@ -113,6 +113,8 @@ import net.sf.robocode.peer.DebugProperty;
 import net.sf.robocode.peer.ExecCommands;
 import net.sf.robocode.peer.ExecResults;
 import net.sf.robocode.peer.IRobotPeer;
+import net.sf.robocode.peer.LandmineCommand;
+import net.sf.robocode.peer.LandmineStatus;
 import net.sf.robocode.peer.TeamMessage;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.security.HiddenAccess;
@@ -136,6 +138,7 @@ import robocode.WinEvent;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
+import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
@@ -193,6 +196,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected AtomicReference<List<BulletStatus>> bulletUpdates = new AtomicReference<List<BulletStatus>>(
 			new ArrayList<BulletStatus>());
 
+	protected AtomicReference<List<LandmineStatus>> landmineUpdates = new AtomicReference<List<LandmineStatus>>(
+			new ArrayList<LandmineStatus>());
+	
 	// thread is running
 	protected final AtomicBoolean isRunning = new AtomicBoolean(false);
 
@@ -622,6 +628,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public int getBulletColor() {
 		return commands.get().getBulletColor();
 	}
+	
+	public int getLandmineColor()
+	{
+		return commands.get().getLandmineColor();
+	}
 
 	public int getScanColor() {
 		return commands.get().getScanColor();
@@ -742,7 +753,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		final boolean shouldWait = battle.isAborted() || (battle.isLastRound() && isWinner());
 
-		return new ExecResults(resCommands, resStatus, readoutEvents(), readoutTeamMessages(), readoutBullets(),
+		return new ExecResults(resCommands, resStatus, readoutEvents(), readoutTeamMessages(), readoutBullets(), readoutLandmines(),
 				isHalt(), shouldWait, isPaintEnabled());
 	}
 
@@ -763,7 +774,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		readoutTeamMessages(); // throw away
 
-		return new ExecResults(resCommands, resStatus, readoutEvents(), new ArrayList<TeamMessage>(), readoutBullets(),
+		return new ExecResults(resCommands, resStatus, readoutEvents(), new ArrayList<TeamMessage>(), readoutBullets(),readoutLandmines(),
 				isHalt(), shouldWait, false);
 	}
 
@@ -790,6 +801,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected List<BulletStatus> readoutBullets() {
 		return bulletUpdates.getAndSet(new ArrayList<BulletStatus>());
 	}
+	
+	protected List<LandmineStatus> readoutLandmines() {
+		return landmineUpdates.getAndSet(new ArrayList<LandmineStatus>());
+	}
+	
 
 	protected void waitForNextTurn() {
 		synchronized (isSleeping) {
@@ -981,7 +997,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		readoutEvents();
 		readoutTeamMessages();
 		readoutBullets();
-
+        readoutLandmines();
 		battleText.setLength(0);
 		proxyText.setLength(0);
 
@@ -1073,6 +1089,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 
 		fireBullets(currentCommands.getBullets());
+		
+		fireLandmines(currentCommands.getLandmines());
 
 		if (currentCommands.isScan()) {
 			scan = true;
@@ -1134,6 +1152,59 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (newBullet != null) {
 			// newBullet.update(robots, bullets);
 			battle.addBullet(newBullet);
+		}
+	}
+	
+	protected void fireLandmines(List<LandmineCommand> landmineCommands) {
+		LandminePeer newLandmine = null;
+
+		for (LandmineCommand landmineCmd : landmineCommands) {
+			if (Double.isNaN(landmineCmd.getPower())) {
+				println("SYSTEM: You cannot call fire(NaN)");
+				continue;
+			}
+			if (gunHeat > 0 || energy == 0) {
+				return;
+			}
+			double firePower;
+			
+			/*
+			 * Avoid using the factor of the RobotAttributes, if they are 1.0
+			 * or very close too.  This is to avoid unnecessary double
+			 * multiplication, which was causing some bugs.
+			 */
+			if((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
+					1.0 < 0.00001){
+				firePower = min(energy,
+						min(max(landmineCmd.getPower(), Rules.MIN_BULLET_POWER),
+								Rules.MAX_BULLET_POWER));
+			}
+			else{
+				firePower = min(energy, min(max(landmineCmd.getPower(), 
+						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
+			}
+			
+			updateEnergy(-firePower);
+
+			gunHeat += getGunHeat(firePower);
+
+			newLandmine = new LandminePeer(this, battleRules, landmineCmd.getLandmineId());
+
+			newLandmine.setPower(firePower);
+			/**
+			if (!turnedRadarWithGun  || statics.isAdvancedRobot()) {
+				newLandmine.setHeading(gunHeading);
+			} else {
+				newBullet.setHeading(bulletCmd.getFireAssistAngle());
+			}
+			*/
+			newLandmine.setX(x);
+			newLandmine.setY(y);
+		}
+		// there is only last bullet in one turn
+		if (newLandmine != null) {
+			// newBullet.update(robots, bullets);
+			battle.addLandmine(newLandmine);
 		}
 	}
 
@@ -2215,7 +2286,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						teammate.updateEnergy(-30);
 
 						BulletPeer sBullet = new BulletPeer(this, battleRules, -1);
-
+						LandminePeer sLandmine= new LandminePeer(this,battleRules, -1);
+						
+						sLandmine.setState(LandmineState.HIT_VICTIM);
+						sLandmine.setX(teammate.x);
+						sLandmine.setY(teammate.y);
+						sLandmine.setVictim(teammate);
+						sLandmine.setPower(4);
+						battle.addLandmine(sLandmine);
+						
 						sBullet.setState(BulletState.HIT_VICTIM);
 						sBullet.setX(teammate.x);
 						sBullet.setY(teammate.y);
@@ -2268,6 +2347,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		events = null;
 		teamMessages = null;
 		bulletUpdates = null;
+		landmineUpdates=null;
 		battleText.setLength(0);
 		proxyText.setLength(0);
 		statics = null;
@@ -2304,6 +2384,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void addBulletStatus(BulletStatus bulletStatus) {
 		if (isAlive()) {
 			bulletUpdates.get().add(bulletStatus);
+		}
+	}
+	
+	public void addLandmineStatus(LandmineStatus landmineStatus) {
+		if (isAlive()) {
+			landmineUpdates.get().add(landmineStatus);
 		}
 	}
 
