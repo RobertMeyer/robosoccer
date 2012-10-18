@@ -16,16 +16,16 @@ public class PoisonPack extends ItemDrop {
 
 		
 	public PoisonPack(Battle battle, String name){
-		super(true, 400, 0, false, battle);
+		super(true, 200, 0, false, battle);
 		this.name = name;
 		this.imageName = "poison.png";
 	}
 	
 	public void doItemEffect(RobotPeer robot){
-		System.out.println("Energy = " + robot.getEnergy());
+		//System.out.println("Energy = " + robot.getEnergy());
 		robot.updateEnergy(-15);
-		System.out.println("Poison item USED");
-		System.out.println("Energy = " + robot.getEnergy());
+		//System.out.println("Poison item USED");
+		//System.out.println("Energy = " + robot.getEnergy());
 		
 	}
 	

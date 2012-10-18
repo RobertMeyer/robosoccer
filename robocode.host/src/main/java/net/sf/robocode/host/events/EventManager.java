@@ -203,6 +203,7 @@ public class EventManager implements IEventManager {
 	 * @see List
 	 */
     @Override
+
 	public List<BulletHitEvent> getBulletHitEvents() {
 		List<BulletHitEvent> events = Collections.synchronizedList(new ArrayList<BulletHitEvent>());
 
@@ -230,6 +231,50 @@ public class EventManager implements IEventManager {
 	 * @see BulletMissedEvent
 	 * @see List
 	 */
+/**
+    public List<BulletHitEvent> getBulletHitEvents() {
+        List<BulletHitEvent> events = Collections.synchronizedList(new ArrayList<BulletHitEvent>());
+
+        synchronized (eventQueue) {
+            for (Event e : eventQueue) {
+                if (e instanceof BulletHitEvent) {
+                    events.add((BulletHitEvent) e);
+                }
+            }
+        }
+        return events;
+    }
+    */
+    
+    @Override
+    public List<LandmineHitEvent> getLandmineHitEvents() {
+        List<LandmineHitEvent> events = Collections.synchronizedList(new ArrayList<LandmineHitEvent>());
+
+        synchronized (eventQueue) {
+            for (Event e : eventQueue) {
+                if (e instanceof LandmineHitEvent) {
+                    events.add((LandmineHitEvent) e);
+                }
+            }
+        }
+        return events;
+    }
+
+    /**
+     * Returns a list containing all BulletMissedEvents currently in the robot's queue.
+     * You might, for example, call this while processing another event.
+     * <p/>
+     * <P>Example:
+     * <pre>
+     *    for (BulletMissedEvent e : getBulletMissedEvents()) {
+     *      <i> (do something with e) </i>
+     *    }
+     * </pre>
+     *
+     * @see BulletMissedEvent
+     * @see List
+     */
+
     @Override
 	public List<BulletMissedEvent> getBulletMissedEvents() {
 		List<BulletMissedEvent> events = Collections.synchronizedList(new ArrayList<BulletMissedEvent>());
@@ -294,6 +339,49 @@ public class EventManager implements IEventManager {
 	 * @see HitRobotEvent
 	 * @see List
 	 */
+/**
+    public List<HitByBulletEvent> getHitByBulletEvents() {
+        List<HitByBulletEvent> events = Collections.synchronizedList(new ArrayList<HitByBulletEvent>());
+
+        synchronized (eventQueue) {
+            for (Event e : eventQueue) {
+                if (e instanceof HitByBulletEvent) {
+                    events.add((HitByBulletEvent) e);
+                }
+            }
+        }
+        return events;
+    }
+ */   
+    @Override
+    public List<HitByLandmineEvent> getHitByLandmineEvents() {
+        List<HitByLandmineEvent> events = Collections.synchronizedList(new ArrayList<HitByLandmineEvent>());
+
+        synchronized (eventQueue) {
+            for (Event e : eventQueue) {
+                if (e instanceof HitByLandmineEvent) {
+                    events.add((HitByLandmineEvent) e);
+                }
+            }
+        }
+        return events;
+    }
+
+    /**
+     * Returns a list containing all HitRobotEvents currently in the robot's queue.
+     * You might, for example, call this while processing another event.
+     * <p/>
+     * <P>Example:
+     * <pre>
+     *    for (HitRobotEvent e : getHitRobotEvents()) {
+     *      <i> (do something with e) </i>
+     *    }
+     * </pre>
+     *
+     * @see HitRobotEvent
+     * @see List
+     */
+
     @Override
 	public List<HitRobotEvent> getHitRobotEvents() {
 		List<HitRobotEvent> events = Collections.synchronizedList(new ArrayList<HitRobotEvent>());
@@ -591,6 +679,7 @@ public class EventManager implements IEventManager {
 	}
 
     @Override
+
 	public void setEventPriority(String eventClass, int priority) {
 		if (eventClass == null) {
 			return;
@@ -612,6 +701,8 @@ public class EventManager implements IEventManager {
 		namedEvents = new Hashtable<String, Event>();
 		dummyScannedRobotEvent = new ScannedRobotEvent(null, 0, 0, 0, 0, 0, false, false);
 		registerNamedEvent(new BattleEndedEvent(false, null));
+		registerNamedEvent(new LandmineHitEvent(null, 0, null));
+		registerNamedEvent(new HitByLandmineEvent(0, null));
 		registerNamedEvent(new BulletHitBulletEvent(null, null));
 		registerNamedEvent(new BulletHitEvent(null, 0, null));
 		registerNamedEvent(new BulletMissedEvent(null));
@@ -663,5 +754,87 @@ public class EventManager implements IEventManager {
 		public DummyCustomEvent() {
 			super(null);
 		}
+
 	}
 }
+	
+	/**
+=======
+    public void setEventPriority(String eventClass, int priority) {
+        if (eventClass == null) {
+            return;
+        }
+        final Event event = namedEvents.get(eventClass);
+
+        if (event == null) {
+            robotProxy.println("SYSTEM: Unknown event class: " + eventClass);
+            return;
+        }
+        if (HiddenAccess.isCriticalEvent(event)) {
+            robotProxy.println("SYSTEM: You may not change the priority of system event. setPriority ignored.");
+        }
+
+        HiddenAccess.setEventPriority(event, priority);
+    }
+
+    private void registerNamedEvents() {
+        namedEvents = new Hashtable<String, Event>();
+        dummyScannedRobotEvent = new ScannedRobotEvent(null, 0, 0, 0, 0, 0);
+        registerNamedEvent(new BattleEndedEvent(false, null));
+        registerNamedEvent(new BulletHitBulletEvent(null, null));
+        registerNamedEvent(new BulletHitEvent(null, 0, null));
+        registerNamedEvent(new LandmineHitEvent(null, 0, null));
+        registerNamedEvent(new BulletMissedEvent(null));
+        registerNamedEvent(new DeathEvent());
+        registerNamedEvent(new HitByBulletEvent(0, null));
+        registerNamedEvent(new HitByLandmineEvent(0, null));
+        registerNamedEvent(new HitRobotEvent(null, 0, 0, false));
+        registerNamedEvent(new HitWallEvent(0));
+        registerNamedEvent(new KeyPressedEvent(null));
+        registerNamedEvent(new KeyReleasedEvent(null));
+        registerNamedEvent(new KeyTypedEvent(null));
+        registerNamedEvent(new MessageEvent(null, null));
+        registerNamedEvent(new MouseClickedEvent(null));
+        registerNamedEvent(new MouseDraggedEvent(null));
+        registerNamedEvent(new MouseEnteredEvent(null));
+        registerNamedEvent(new MouseExitedEvent(null));
+        registerNamedEvent(new MouseMovedEvent(null));
+        registerNamedEvent(new MousePressedEvent(null));
+        registerNamedEvent(new MouseReleasedEvent(null));
+        registerNamedEvent(new MouseWheelMovedEvent(null));
+        registerNamedEvent(new PaintEvent());
+        registerNamedEvent(new RobotDeathEvent(null));
+        registerNamedEvent(new RoundEndedEvent(0, 0, 0));
+        registerNamedEvent(dummyScannedRobotEvent);
+        registerNamedEvent(new SkippedTurnEvent(0));
+        registerNamedEvent(new StatusEvent(null));
+        registerNamedEvent(new WinEvent());
+
+        // same as any line above but for custom event
+        final DummyCustomEvent custom = new DummyCustomEvent();
+
+        namedEvents.put("robocode.CustomEvent", custom);
+        namedEvents.put("CustomEvent", custom);
+    }
+
+    private void registerNamedEvent(Event e) {
+        final String name = e.getClass().getName();
+
+        if (!HiddenAccess.isCriticalEvent(e)) {
+            HiddenAccess.setDefaultPriority(e);
+        }
+        namedEvents.put(name, e);
+        namedEvents.put(name.substring(9), e);
+    }
+
+    private static final class DummyCustomEvent extends CustomEvent {
+
+        private static final long serialVersionUID = 1L;
+
+        public DummyCustomEvent() {
+            super(null);
+        }
+    }
+>>>>>>> MCJJ
+}
+*/

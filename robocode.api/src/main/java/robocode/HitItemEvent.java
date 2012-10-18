@@ -18,8 +18,9 @@ import net.sf.robocode.serialization.ISerializableHelper;
  * @author Ameer Sabri (Dream Team)
  *
  */
-public final class HitItemEvent extends Event {
 
+public class HitItemEvent extends Event {
+	
 	private static final long serialVersionUID = 1L;
 	private final static int DEFAULT_PRIORITY = 20;
 

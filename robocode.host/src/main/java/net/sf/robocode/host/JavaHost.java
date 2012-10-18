@@ -108,6 +108,41 @@ public class JavaHost implements IHost {
 		}
 	}
 
+    @Override
+   	public int getMinionType(IRobotRepositoryItem robotRepositoryItem, boolean message) {
+   		IRobotClassLoader loader = null;
+
+   		try {
+   			loader = createLoader(robotRepositoryItem);
+   			Class<?> robotClass = loader.loadRobotMainClass(false);
+
+   			if (robotClass == null || java.lang.reflect.Modifier.isAbstract(robotClass.getModifiers())) {
+   				// this class is not a robot
+   				return -1;
+   			}
+   			if(!IMinionRobot.class.isAssignableFrom(robotClass)) {
+   				// not a minion.
+   				return -1;
+   			}
+   			//Create an instance of the minion to get it's type.
+   			IMinionRobot robot = (IMinionRobot)loader.createRobotInstance();
+   			return robot.getMinionType();   			
+
+   		} catch (Throwable t) {
+   			if (message) {
+   				logError("Got an error with " + robotRepositoryItem.getFullClassName() + ": " + t); // just message here
+   				if (t.getMessage() != null && t.getMessage().contains("Bad version number in .class file")) {
+   					logError("Maybe you run robocode with Java 1.5 and robot was compiled for later Java version ?");
+   				}
+   			}
+   			return -1;
+   		} finally {
+   			if (loader != null) {
+   				loader.cleanup();
+   			}
+   		}
+   	}
+    
 	private RobotType checkInterfaces(Class<?> robotClass, IRobotRepositoryItem robotRepositoryItem) {
 		boolean isJuniorRobot = false;
 		boolean isStandardRobot = false;
@@ -122,6 +157,7 @@ public class JavaHost implements IHost {
         boolean isBotzilla = false;
         boolean isZombie = false;
         boolean isDispenser = false;
+        boolean isMinion = false;
 
         if (Droid.class.isAssignableFrom(robotClass)) {
             isDroid = true;
@@ -163,6 +199,9 @@ public class JavaHost implements IHost {
         	isDispenser = true;
         }
 
+        if(IMinionRobot.class.isAssignableFrom(robotClass)) {
+        	isMinion = true;
+        }
         if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
             // in this case we make sure that robot don't waste time
             if (checkMethodOverride(robotClass, Robot.class, "getInteractiveEventListener")
@@ -207,7 +246,7 @@ public class JavaHost implements IHost {
             }
         }
         return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-                             isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isBotzilla, isZombie, isDispenser);
+                             isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isBotzilla, isZombie, isDispenser, isMinion);
     	}
 
     private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {

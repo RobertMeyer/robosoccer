@@ -28,16 +28,18 @@ public final class ExecResults implements Serializable {
     private List<Event> events;
     private List<TeamMessage> teamMessages;
     private List<BulletStatus> bulletUpdates;
+    private List<LandmineStatus> landmineUpdates;
     private boolean halt;
     private boolean shouldWait;
     private boolean paintEnabled;
 
-    public ExecResults(ExecCommands commands, RobotStatus status, List<Event> events, List<TeamMessage> teamMessages, List<BulletStatus> bulletUpdates, boolean halt, boolean shouldWait, boolean paintEnabled) {
+    public ExecResults(ExecCommands commands, RobotStatus status, List<Event> events, List<TeamMessage> teamMessages, List<BulletStatus> bulletUpdates, List<LandmineStatus> landmineUpdates,boolean halt, boolean shouldWait, boolean paintEnabled) {
         this.commands = commands;
         this.status = status;
         this.events = events;
         this.teamMessages = teamMessages;
         this.bulletUpdates = bulletUpdates;
+        this.landmineUpdates=landmineUpdates;
         this.halt = halt;
         this.shouldWait = shouldWait;
         this.paintEnabled = paintEnabled;
@@ -64,6 +66,11 @@ public final class ExecResults implements Serializable {
 
     public List<BulletStatus> getBulletUpdates() {
         return bulletUpdates;
+    }
+    
+    public List<LandmineStatus> getLandmineUpdate()
+    {
+    	return landmineUpdates;
     }
 
     public boolean isHalt() {
@@ -109,6 +116,12 @@ public final class ExecResults implements Serializable {
                 size += serializer.sizeOf(RbSerializer.BulletStatus_TYPE, b);
             }
             size += 1;
+            
+            // landmines
+            for (LandmineStatus c : obj.landmineUpdates) {
+                size += serializer.sizeOf(RbSerializer.LandmineStatus_TYPE, c);
+            }
+            size += 1;
 
             return size;
         }
@@ -123,6 +136,7 @@ public final class ExecResults implements Serializable {
 
             serializer.serialize(buffer, RbSerializer.ExecCommands_TYPE, obj.commands);
             serializer.serialize(buffer, RbSerializer.RobotStatus_TYPE, obj.status);
+            
 
             for (Event event : obj.events) {
                 serializer.serialize(buffer, event);
@@ -134,6 +148,10 @@ public final class ExecResults implements Serializable {
             buffer.put(RbSerializer.TERMINATOR_TYPE);
             for (BulletStatus bulletStatus : obj.bulletUpdates) {
                 serializer.serialize(buffer, RbSerializer.BulletStatus_TYPE, bulletStatus);
+            }
+            buffer.put(RbSerializer.TERMINATOR_TYPE);
+            for (LandmineStatus landmineStatus : obj.landmineUpdates) {
+                serializer.serialize(buffer, RbSerializer.LandmineStatus_TYPE, landmineStatus);
             }
             buffer.put(RbSerializer.TERMINATOR_TYPE);
         }
@@ -152,6 +170,7 @@ public final class ExecResults implements Serializable {
             res.events = new ArrayList<Event>();
             res.teamMessages = new ArrayList<TeamMessage>();
             res.bulletUpdates = new ArrayList<BulletStatus>();
+            res.landmineUpdates=new ArrayList<LandmineStatus>();
             Object item = serializer.deserializeAny(buffer);
 
             while (item != null) {
@@ -171,6 +190,13 @@ public final class ExecResults implements Serializable {
             while (item != null) {
                 if (item instanceof BulletStatus) {
                     res.bulletUpdates.add((BulletStatus) item);
+                }
+                item = serializer.deserializeAny(buffer);
+            }
+            item = serializer.deserializeAny(buffer);
+            while (item != null) {
+                if (item instanceof LandmineStatus) {
+                    res.landmineUpdates.add((LandmineStatus) item);
                 }
                 item = serializer.deserializeAny(buffer);
             }

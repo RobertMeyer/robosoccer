@@ -34,7 +34,10 @@ public interface IRepositoryManager extends IRepositoryManagerBase {
 
     List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage,
                                                 boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar);
-
+   
+    List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage,
+            boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar, boolean showMinions, int minionType);
+    
     RobotSpecification[] loadSelectedRobots(RobotSpecification[] selectedRobots);
 
     List<IRepositoryItem> getSelectedSpecifications(String selectedRobots);
