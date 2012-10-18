@@ -22,6 +22,7 @@ import net.sf.robocode.serialization.RbSerializer;
  * {@link StatusEvent#getStatus()}.
  *
  * @author Flemming N. Larsen (original)
+ * @author CSSE2003 Team forkbomb (contributor)
  * @since 1.5
  */
 public final class RobotStatus implements Serializable {

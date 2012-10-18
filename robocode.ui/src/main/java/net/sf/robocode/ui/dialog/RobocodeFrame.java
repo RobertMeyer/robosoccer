@@ -137,7 +137,9 @@ public class RobocodeFrame extends JFrame {
         this.menuBar = menuBar;
         box = new EffectAreaCheckbox(battleManager.getBattleProperties());
         ksBox = new KillstreakCheckbox(battleManager.getBattleProperties());
-        mbox = new BackgroundMusicCheckbox();
+        teleporterBox = new TeleporterCheckbox();
+        blackholeBox = new BlackholeCheckbox();
+        mbox = new BackgroundMusicCheckbox(battleManager.getBattleProperties());
         menuBar.setup(this);
         initialize();
     }

@@ -233,9 +233,14 @@ public class RepositoryManager implements IRepositoryManager {
 
     @Override
     public List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar) {
+        return filterRepositoryItems(onlyWithSource, onlyWithPackage, onlyRobots, onlyDevelopment, onlyNotDevelopment, ignoreTeamRobots, onlyInJar, false, -1);
+    }
+    
+    @Override
+    public List<IRepositoryItem> filterRepositoryItems(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean ignoreTeamRobots, boolean onlyInJar, boolean showMinions, int minionType) {
         checkDbExists();
         return db.filterSpecifications(onlyWithSource, onlyWithPackage, onlyRobots, onlyDevelopment, onlyNotDevelopment,
-                                       onlyInJar);
+                                       onlyInJar, showMinions, minionType);
     }
 
     @Override

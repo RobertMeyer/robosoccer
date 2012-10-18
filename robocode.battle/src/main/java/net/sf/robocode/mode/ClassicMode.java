@@ -35,7 +35,7 @@ public class ClassicMode implements IMode {
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
-	
+
     /* Overall Score variables */
 	protected RobotPeer rPeer;
 	protected int numRobots;
@@ -90,11 +90,11 @@ public class ClassicMode implements IMode {
 	public int setCellHeight(BattleRules rules) {
 		return 0;
 	}
-	
+
 	public int setWallWidth(BattleRules rules) {
 		return 0;
 	}
-	
+
 	public int setWallHeight(BattleRules rules) {
 		return 0;
 	}
@@ -369,10 +369,21 @@ public class ClassicMode implements IMode {
 		// do nothing
 	}
 
+	/**
+	 * 
+	 * @param standard the original radar scan values
+	 * @return the original radar scan values
+	 */
 	public double modifyVision(double standard) {
 		return standard;
 	}
 
+	/**
+	 * 
+	 * @param standard the original radar scan values
+	 * @param rules the type of rules to command the robot
+	 * @return the standard original radar scan values
+	 */
 	public double modifyVision(double standard, BattleRules rules)
 	{
 		return modifyVision(standard);
@@ -421,11 +432,21 @@ public class ClassicMode implements IMode {
 =======
 	 * @param robotStatistics
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 035b398a85087bcecd555f941fda7ed08c2be018
 	 * @return HashMap containing the scores
 =======
 	 * @return Double representing the scores
 >>>>>>> origin/master
+=======
+<<<<<<< HEAD
+>>>>>>> 035b398a85087bcecd555f941fda7ed08c2be018
+	 * @return HashMap containing the scores
+=======
+=======
+>>>>>>> honeybadgers-partial-fix
+	 * @return Double representing the scores
+>>>>>>> bf2a3c4d72a596e92234a686984e495c0827c8cb
 	 */
 	public Double getCustomOverallScore(RobotStatistics score) {
             /*
@@ -443,8 +464,14 @@ public class ClassicMode implements IMode {
 		//return score;
 	}
 
-	
+	@Override
 	public boolean allowsOneRobot() {
 		return false;
 	}
+
+
+	public void robotKill(RobotPeer owner, RobotPeer otherRobot) {
+		// do nothing
+	}
+
 }

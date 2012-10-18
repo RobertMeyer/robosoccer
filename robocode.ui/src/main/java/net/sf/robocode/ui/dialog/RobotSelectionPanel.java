@@ -29,18 +29,40 @@
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import net.sf.robocode.core.Container;
 import net.sf.robocode.repository.IRepositoryItem;
 import net.sf.robocode.repository.IRepositoryManager;
@@ -368,6 +390,10 @@ public class RobotSelectionPanel extends WizardPanel {
 		return setRobotsList;
 	}
 
+	/**
+	* return a SetRobotPostionPanel to new battle dialog
+	* @return SetRobotPostionPanel
+	*/
 	private SetRobotPostionPanel getRobotPostionPanel() {
 		if (setRobotPositionPanel == null) {
 			setRobotPositionPanel = new SetRobotPostionPanel();

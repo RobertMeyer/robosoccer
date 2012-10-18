@@ -47,6 +47,8 @@ public interface ContestantStatistics {
 
     int getTotalThirds();
 
+	int getTotalKills();
+
     double getCurrentScore();
 
     double getCurrentSurvivalScore();
@@ -63,9 +65,13 @@ public interface ContestantStatistics {
     
     double getCurrentFlagScore();
     
+    int getCurrentKills();
+    
     BattleResults getFinalResults();
 
     void setRank(int rank);
 
 	void incrementScore();
+
+
 }

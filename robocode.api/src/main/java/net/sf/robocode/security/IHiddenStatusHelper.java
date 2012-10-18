@@ -15,6 +15,7 @@ import robocode.RobotStatus;
 
 /**
  * @author Pavel Savara (original)
+ * @author CSSE2003 Team forkbomb (contributor)
  */
 public interface IHiddenStatusHelper {
 
