@@ -29,7 +29,6 @@
             <groupId>au.edu.uq.csse2003</groupId>
             <artifactId>robocode.sound</artifactId>
             <version>${project.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
         	<groupId>org.mockito</groupId>
