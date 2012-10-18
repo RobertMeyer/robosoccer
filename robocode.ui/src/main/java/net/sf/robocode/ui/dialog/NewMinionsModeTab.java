@@ -53,7 +53,7 @@ public class NewMinionsModeTab extends JPanel{
 	private int currentSelecting = -1;
 	private int currentIndex = -1;
 	private String currentSelection = "";
-<<<<<<< HEAD
+
 	private class changeHandler implements ChangeListener {
 		@Override
 		public void stateChanged(ChangeEvent ev) {
@@ -61,7 +61,7 @@ public class NewMinionsModeTab extends JPanel{
 			MinionData.setMinionsEnabled(enableMinion.isSelected());
 		}
 	}
-=======
+
 	public static Object[] minionRobots = null;
 	private RobotSelectionPanel robotSelectionPanel;
 	private IRepositoryManager repository;
@@ -94,7 +94,6 @@ public class NewMinionsModeTab extends JPanel{
 		
 	}
 	
->>>>>>> MinionMode List
 	private class buttonHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ev) {
