@@ -41,7 +41,7 @@ public class RaceMode extends ClassicMode{
 	}
 	
 	
-	@override
+	@Override
 	public String toString(){
 		//overwriting toString() method so our "mode" name is now returned
 		return new String("Race Mode");
