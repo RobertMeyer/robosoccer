@@ -49,9 +49,8 @@ public class TestScoring extends RobocodeTestBed {
         for (IScoreSnapshot score : lastTurnSnapshot.getSortedTeamScores()) {
             // Notice that the is no such thing as a 'current total last
             // survivor bonus'
-            double currentScore = score.getCurrentSurvivalScore() + score.getCurrentBulletDamageScore()
-                    + score.getCurrentBulletKillBonus() + score.getCurrentRammingDamageScore()
-                    + score.getCurrentRammingKillBonus() + score.getCurrentSurvivalBonus();
+            double currentScore = score.getScores(true, "survival", "bulletdamage", "bulletkill",
+            		"rammingdamage", "rammingkillbonus", "lastsurvivorbonus");
 
             Assert.assertNear(currentScore, score.getCurrentScore());
         }
@@ -62,10 +61,8 @@ public class TestScoring extends RobocodeTestBed {
         super.onRoundEnded(event);
 
         for (IScoreSnapshot score : lastTurnSnapshot.getSortedTeamScores()) {
-
-            double totalScore = score.getTotalSurvivalScore() + score.getTotalLastSurvivorBonus()
-                    + score.getTotalBulletDamageScore() + score.getTotalBulletKillBonus() + score.getTotalRammingDamageScore()
-                    + score.getTotalRammingKillBonus();
+            double totalScore = score.getScores(false, "survival", "lastsurvivorbonus", "bulletdamage",
+            		"bulletkillbonus", "rammingdamage", "rammingkillbonus");
 
             Assert.assertNear(totalScore, score.getTotalScore());
         }
@@ -75,9 +72,8 @@ public class TestScoring extends RobocodeTestBed {
     public void onBattleFinished(BattleFinishedEvent event) {
         for (IScoreSnapshot score : lastTurnSnapshot.getSortedTeamScores()) {
 
-            double totalScore = score.getTotalSurvivalScore() + score.getTotalLastSurvivorBonus()
-                    + score.getTotalBulletDamageScore() + score.getTotalBulletKillBonus() + score.getTotalRammingDamageScore()
-                    + score.getTotalRammingKillBonus();
+            double totalScore = score.getScores(false, "survival", "lastsurvivorbonus", "bulletdamage",
+            		"bulletkillbonus", "rammingdamage", "rammingkillbonus");
 
             Assert.assertNear(totalScore, score.getTotalScore());
         }

@@ -57,9 +57,9 @@ public class TestRankingsWithTargetRobots extends RobocodeTestBed {
 
         // 1sts + 2nds = number of rounds, e.g. 4 + 6 = 10 (where 4 is 1st places, and 6 is 2nd places)
         Assert.assertThat("1st ranked robot's total 1st and 2nd places must be equal to the number of rounds",
-                          score1.getTotalFirsts() + score1.getTotalSeconds(), is(getNumRounds()));
+                          (int) score1.getScores(false, "firsts") + (int) score1.getScores(false, "seconds"), is(getNumRounds()));
         Assert.assertThat("2nd ranked robot's total 1st and 2nd places must be equal to the number of rounds",
-                          score2.getTotalFirsts() + score2.getTotalSeconds(), is(getNumRounds()));
+                          (int) score2.getScores(false, "firsts") + (int) score2.getScores(false, "seconds"), is(getNumRounds()));
 
         // If 1st robot's 1sts = 6, 2nds = 4, then 2nd robot's 1sts = 4, 2nds = 6
 		/* Assert.assertThat(

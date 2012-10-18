@@ -63,8 +63,8 @@ public class TestFairPlay extends RobocodeTestBed {
 
         Assert.assertTrue("The total scores should be almost the same", maxTotal / minTotal <= 1.02);
 
-        double minFirsts = Math.min(score1.getTotalFirsts(), score2.getTotalFirsts());
-        double maxFirsts = Math.max(score1.getTotalFirsts(), score2.getTotalFirsts());
+        double minFirsts = Math.min(score1.getScores(false, "firsts"), score2.getScores(false, "firsts"));
+        double maxFirsts = Math.max(score1.getScores(false, "firsts"), score2.getScores(false, "firsts"));
 
         Assert.assertTrue("The total firsts should be almost the same", maxFirsts / minFirsts <= 1.07);
     }

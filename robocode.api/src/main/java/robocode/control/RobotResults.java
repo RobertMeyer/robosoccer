@@ -43,7 +43,7 @@ public class RobotResults extends BattleResults {
             RobotSpecification robot,
             String teamLeaderName,
             int rank,
-            HashMap<String, ArrayList<Double>> scores) {
+            HashMap<String, Double> scores) {
         super(teamLeaderName, rank, scores);
         this.robot = robot;
     }
@@ -99,15 +99,15 @@ public class RobotResults extends BattleResults {
         		continue;
         	}
         	
-        	temp = Double.doubleToLongBits(scores.get(score).get(1));
+        	temp = Double.doubleToLongBits(scores.get(score));
         	result = prime * result + (int) (temp ^ (temp >>> 32));
         }
         
         /* Other values */
         result = prime * result + rank;
-        result = (int) (prime * result + scores.get("firsts").get(1));
-        result = (int) (prime * result + scores.get("seconds").get(1));
-        result = (int) (prime * result + scores.get("thirds").get(1));
+        result = (int) (prime * result + scores.get("firsts"));
+        result = (int) (prime * result + scores.get("seconds"));
+        result = (int) (prime * result + scores.get("thirds"));
         result = prime * result + ((teamLeaderName == null) ? 0 : teamLeaderName.hashCode());
         return result;
     }
@@ -129,8 +129,8 @@ public class RobotResults extends BattleResults {
         RobotResults other = (RobotResults) obj;
 
         for (String score : scores.keySet()) {
-        	original = Double.doubleToLongBits(scores.get(score).get(1));
-        	toCheck = Double.doubleToLongBits(other.getScores(true, score));
+        	original = Double.doubleToLongBits(scores.get(score));
+        	toCheck = Double.doubleToLongBits(other.getScores(score));
         	if (original != toCheck) {
         		return false;
         	}

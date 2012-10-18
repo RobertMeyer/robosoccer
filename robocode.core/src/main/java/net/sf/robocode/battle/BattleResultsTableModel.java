@@ -177,7 +177,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 			/* Rank */
 			int place = row + 1;
 			
-			while (place < this.getRowCount() && statistics.getScore() == results[place].getScore()) {
+			while (place < this.getRowCount() && statistics.getScores("total") == results[place].getScores("total")) {
                 place++;
             }
             return this.getPlacementString(place);
@@ -189,39 +189,39 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 			String percent = "";
 			
 			if (totalScore != 0) {
-				percent = " (" + NumberFormat.getPercentInstance().format(statistics.getScore() / totalScore) + ")";
+				percent = " (" + NumberFormat.getPercentInstance().format(statistics.getScores("total") / totalScore) + ")";
 			}
-			return "" + (int) (statistics.getScore() + 0.5) + percent;
+			return "" + (int) (statistics.getScores("total") + 0.5) + percent;
 		case 3:
 			/* Survival */
-			return "" + (int) (statistics.getSurvival() + 0.5);
+			return "" + (int) (statistics.getScores("survival") + 0.5);
 		case 4:
 			/* Survival Bonus */
-			return "" + (int) (statistics.getLastSurvivorBonus() + 0.5);
+			return "" + (int) (statistics.getScores("lastsurvivorbonus") + 0.5);
 		case 5:
 			/* Bullet Damage */
-			return "" + (int) (statistics.getBulletDamage() + 0.5);
+			return "" + (int) (statistics.getScores("bulletdamage") + 0.5);
 		case 6:
 			/* Bullet Damage Bonus */
-			return "" + (int) (statistics.getBulletDamageBonus() + 0.5);
+			return "" + (int) (statistics.getScores("bulletkillbonus") + 0.5);
 		case 7:
 			/* Ram Damage */
-			return "" + (int) (statistics.getRamDamage() + 0.5);
+			return "" + (int) (statistics.getScores("rammingdamage") + 0.5);
 		case 8:
 			/* Ram Bonus */
-			return "" + (int) (statistics.getRamDamageBonus() + 0.5);
+			return "" + (int) (statistics.getScores("rammingkill") + 0.5);
 		case 9:
 			/* Firsts */
-			return "" + statistics.getFirsts();
+			return "" + statistics.getScores("firsts");
 		case 10:
 			/* Seconds */
-			return "" + statistics.getSeconds();
+			return "" + statistics.getScores("seconds");
 		case 11:
 			/* Thirds */
-			return "" + statistics.getThirds();
+			return "" + statistics.getScores("thirds");
 		case 12:
 			/* Flag Score */
-			return "" + (int) (statistics.getFlagScore() + 0.5);
+			return "" + (int) (statistics.getScores("flag") + 0.5);
 		case 13:
 			/* Team Leader */
 			return statistics.getTeamLeaderName();
@@ -269,7 +269,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		double totalScore = 0;
 		
 		for (BattleResults result : results) {
-			totalScore += result.getScore();
+			totalScore += result.getScores("total");
 		}
 		return totalScore;
 	}

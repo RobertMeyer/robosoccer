@@ -218,14 +218,14 @@ public class RobotButton extends JButton implements ActionListener {
         public void onBattleCompleted(final BattleCompletedEvent event) {
             maxScore = 0;
             for (BattleResults team : event.getIndexedResults()) {
-                if (maxScore < team.getScore()) {
-                    maxScore = team.getScore();
+                if (maxScore < team.getScores("total")) {
+                    maxScore = (int) team.getScores("total");
                 }
             }
             if (maxScore == 0) {
                 maxScore = 1;
             }
-            lastScore = event.getIndexedResults()[contestantIndex].getScore();
+            lastScore = (int) event.getIndexedResults()[contestantIndex].getScores("total");
             repaint();
         }
 

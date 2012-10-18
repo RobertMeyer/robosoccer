@@ -31,121 +31,33 @@ public interface IScoreSnapshot extends Comparable<Object> {
     String getName();
 
     /**
-     * Returns the total score.
-     *
-     * @return the total score.
+     * Get a sum of the scores, options are:
+     * 'total'
+     * 'survival'
+     * 'lastsurvivorbonus'
+     * 'bulletdamage'
+     * 'bulletkillbonus'
+     * 'rammingdamage'
+     * 'rammingkill'
+     * 'firsts'
+     * 'seconds'
+     * 'thirds'
+     * 'flag'
+     * @param current true for current scores or false for total
+     * @param scores The string representation of the score
+     * @return The sum of the scores 'scores', current or total
      */
-    double getTotalScore();
-
+    public double getScores(boolean current, String ... scoresToGet);
+    
     /**
-     * Returns the total survival score.
-     *
-     * @return the total survival score.
+     * Get the total score
+     * @return Total score of the robot
      */
-    double getTotalSurvivalScore();
-
+    public double getTotalScore();
+    
     /**
-     * Returns the total last survivor score.
-     *
-     * @return the total last survivor score.
+     * Get the current score
+     * @return Current score of the robot
      */
-    double getTotalLastSurvivorBonus();
-
-    /**
-     * Returns the total bullet damage score.
-     *
-     * @return the total bullet damage score.
-     */
-    double getTotalBulletDamageScore();
-
-    /**
-     * Returns the total bullet kill bonus.
-     *
-     * @return the total bullet kill bonus.
-     */
-    double getTotalBulletKillBonus();
-
-    /**
-     * Returns the total ramming damage score.
-     *
-     * @return the total ramming damage score.
-     */
-    double getTotalRammingDamageScore();
-
-    /**
-     * Returns the total ramming kill bonus.
-     *
-     * @return the total ramming kill bonus.
-     */
-    double getTotalRammingKillBonus();
-
-    /**
-     * Returns the total number of first places.
-     *
-     * @return the total number of first places.
-     */
-    int getTotalFirsts();
-
-    /**
-     * Returns the total number of second places.
-     *
-     * @return the total number of second places.
-     */
-    int getTotalSeconds();
-
-    /**
-     * Returns the total number of third places.
-     *
-     * @return the total number of third places.
-     */
-    int getTotalThirds();
-
-    /**
-     * Returns the current score.
-     *
-     * @return the current score.
-     */
-    double getCurrentScore();
-
-    /**
-     * Returns the current survival score.
-     *
-     * @return the current survival score.
-     */
-    double getCurrentSurvivalScore();
-
-    /**
-     * Returns the current survival bonus.
-     *
-     * @return the current survival bonus.
-     */
-    double getCurrentSurvivalBonus();
-
-    /**
-     * Returns the current bullet damage score.
-     *
-     * @return the current bullet damage score.
-     */
-    double getCurrentBulletDamageScore();
-
-    /**
-     * Returns the current bullet kill bonus.
-     *
-     * @return the current bullet kill bonus.
-     */
-    double getCurrentBulletKillBonus();
-
-    /**
-     * Returns the current ramming damage score.
-     *
-     * @return the current ramming damage score.
-     */
-    double getCurrentRammingDamageScore();
-
-    /**
-     * Returns the current ramming kill bonus.
-     *
-     * @return the current ramming kill bonus.
-     */
-    double getCurrentRammingKillBonus();
+    public double getCurrentScore();
 }

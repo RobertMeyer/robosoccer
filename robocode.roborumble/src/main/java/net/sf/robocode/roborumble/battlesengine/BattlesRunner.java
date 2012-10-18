@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2010 Albert Pérez and RoboRumble contributors
+ * Copyright (c) 2003, 2010 Albert Pï¿½rez and RoboRumble contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://robocode.sourceforge.net/license/epl-v10.html
  *
  * Contributors:
- *     Albert Pérez
+ *     Albert Pï¿½rez
  *     - Initial API and implementation
  *     Flemming N. Larsen
  *     - Ported to Java 5
@@ -37,7 +37,7 @@ import robocode.control.events.BattleErrorEvent;
  * Reads a file with the battles to be runned and outputs the results in another file.
  * Controlled by properties files.
  *
- * @author Albert Pérez (original)
+ * @author Albert Pï¿½rez (original)
  * @author Flemming N. Larsen (contributor)
  * @author Joachim Hofer (contributor)
  */
@@ -206,12 +206,12 @@ public class BattlesRunner {
                     String name2 = bot2.getTeamId() != null
                             ? bot2.getTeamId().replaceAll(BOT_INDEX_PATTERN, "")
                             : bot2.getNameAndVersion();
-                    int points1 = results[i].getScore();
-                    int points2 = results[j].getScore();
-                    int bullets1 = results[i].getBulletDamage();
-                    int bullets2 = results[j].getBulletDamage();
-                    int survival1 = results[i].getFirsts();
-                    int survival2 = results[j].getFirsts();
+                    int points1 = (int) results[i].getScores("total");
+                    int points2 = (int) results[j].getScores("total");
+                    int bullets1 = (int) results[i].getScores("bulletdamage");
+                    int bullets2 = (int) results[j].getScores("bulletdamage");
+                    int survival1 = (int) results[i].getScores("firsts");
+                    int survival2 = (int) results[j].getScores("firsts");
 
                     outtxt.println(
                             game + "," + numrounds + "," + fieldlen + "x" + fieldhei + "," + user + ","
@@ -232,7 +232,7 @@ public class BattlesRunner {
                     : winnerBot.getNameAndVersion();
 
             System.out.println(
-                    "RESULT = " + winnerBotName + " wins " + results[0].getScore() + " to " + results[1].getScore());
+                    "RESULT = " + winnerBotName + " wins " + results[0].getScores("total") + " to " + results[1].getScores("total"));
         }
     }
 

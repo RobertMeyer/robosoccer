@@ -188,6 +188,10 @@ public class BattleRecordInfo implements Serializable, IXmlSerializable {
     class BattleResultsWrapper extends BattleResults implements IXmlSerializable {
 
         private static final long serialVersionUID = BattleResults.serialVersionUID;
+		protected double score;
+		protected int firsts;
+		protected int seconds;
+		protected int thirds;
 
         public BattleResultsWrapper() {
             super(null, 0);
