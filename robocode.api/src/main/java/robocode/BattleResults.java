@@ -29,6 +29,15 @@ import net.sf.robocode.serialization.RbSerializer;
 public class BattleResults implements java.io.Serializable,
                                       Comparable<BattleResults> {
 
+	/**
+	 * TODO
+	 * Team-Telos : Convert BattleResults into a form where it only
+	 * takes two arguments: A string for team leader name and
+	 * A list of some sort containing each of the score variables.
+	 * 
+	 * each getter method will return a certain index of the list.
+	 * each setter will set a certain index of the list
+	 */
     protected static final long serialVersionUID = 1L;
     protected String teamLeaderName;
     protected int rank;
@@ -322,6 +331,10 @@ public class BattleResults implements java.io.Serializable,
             /*
              * Insert custom scoring variable into the BattleResults variable in the same position as it was 
              * first initialised. Should be at the end.
+             */
+            /**
+             * TODO: Example new BattleResults:
+             * BattleResults(teamLeaderName, scoreList);
              */
         }
     }

@@ -68,6 +68,7 @@ package net.sf.robocode.battle.peer;
 
 import static net.sf.robocode.io.Logger.logMessage;
 
+
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -85,6 +86,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.RenderObject;
+import net.sf.robocode.battle.item.BoundingRectangle;
+import net.sf.robocode.battle.item.ItemDrop;
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.EffectArea;
+import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -95,6 +102,7 @@ import net.sf.robocode.host.proxies.IHostingRobotProxy;
 import net.sf.robocode.io.Logger;
 import net.sf.robocode.peer.*;
 import net.sf.robocode.repository.IRobotRepositoryItem;
+import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.*;
@@ -106,6 +114,21 @@ import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.WinException;
 import static robocode.util.Utils.*;
+
+import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import static java.lang.Math.*;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
@@ -171,7 +194,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double lastHeading;
 	protected double lastGunHeading;
 	protected double lastRadarHeading;
-
 	protected double energy;
 	protected double velocity;
 	protected double bodyHeading;
@@ -215,17 +237,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
-	
 
 	// killstreak booleans
 	private boolean isScannable = true;
 	private boolean isFrozen = false;
+	private boolean isKsFrozen = false;
 	private boolean isSuperTank = false;
+	
+	//blackhole
+	private boolean collidedWithBlackHole = false;
 
 	// killstreak timers
 	private int radarJammerTimeout;
 	private int superTankTimeout;
 	private int frozenTimeout;
+	
+	// killstreak image manager^M
+    HashMap<String, RenderObject> ksImages = new HashMap<String, RenderObject>();
 
 	//For calculation of team's total energy (Team energy sharing mode)
 	private TeamPeer teamList;
@@ -308,6 +336,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
 	}
 
+
 	public void println(String s) {
 		synchronized (proxyText) {
 			battleText.append(s);
@@ -377,6 +406,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isBall() {
     	return statics.isBall();
     }
+	
+	public boolean isZombie() {
+		return statics.isZombie();
+	}
 
 	public boolean isJuniorRobot() {
 		return statics.isJuniorRobot();
@@ -399,7 +432,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	public boolean isBotzilla() {
-    	return statics.isBotzilla();
+    	//return statics.isBotzilla();
+		return (robotSpecification.getName().equals("sampleex.Botzilla"));
     }
 
 	public boolean isDispenser() {
@@ -884,7 +918,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//TODO: Change to actual starting spots [Team Awesome]
 			x = 0;
 			y = 0;
-		} else if (statics.isBotzilla()){
+		//} else if (statics.isBotzilla()){
+		} else if (isBotzilla()){
 			energy = 500;
 		} else if (statics.isDispenser()) {
 			energy = 500;
@@ -984,6 +1019,22 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (!isSleeping() && !battle.isDebugging()) {
 			logMessage("\n" + getName() + " still has not started after " + waitMillis + " ms... giving up.");
 		}
+		
+		/*
+		 * check if at the start of the round any of the killstreaks are still
+		 * persistent and redraw them
+		 */
+		if (isSuperTank()) {
+			battle.addCustomObject(ksImages.get("tank"));
+		}
+		
+		if (!isScannable()) {
+			battle.addCustomObject(ksImages.get("jammer"));
+		}
+		
+		if (isKsFrozen()) {
+			battle.addCustomObject(ksImages.get("freeze"));
+		}
 	}
 
 
@@ -1058,13 +1109,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	@Override
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
-		
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy, List<TeleporterPeer> teleporters) {
+
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
 			return;
 		}
+
+		collidedWithBlackHole = false;
 		
+		// Stop the robot being both dead and frozen.
 		if (isFrozen() && energy > 0) {
 			frozen--;
 			if (frozen != 0) {
@@ -1076,20 +1130,75 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isSuperTank && (battle.getTotalTurns() >= superTankTimeout)) {
 			setSuperTank(false);
 		}
+		
 		// check radar jamming robots for timeout
 		if ((!isScannable) && (battle.getTotalTurns() >= radarJammerTimeout)) {
 			setScannable(true);
+            
+            /* remove the image from the battle */
+            battle.removeCustomObject(ksImages.get("jammer"));
+            
+            /* remove the image from the robot */
+            ksImages.remove("jammer");
+		} else if ((!isScannable) && (battle.getTotalTurns() <= radarJammerTimeout)) {
+            /* check if robot has image */
+            if (ksImages.containsKey("jammer")) {
+                    /* move the image to the robots coordinates */
+            		
+                    ksImages.get("jammer").setTranslate(this.getX(), this.getY());
+            }
 		}
 
+
+//		// check if a frozen robot can move again
+//		if (isFrozen() && (battle.getTotalTurns() >= frozenTimeout)) {
+//			setFrozen(false);
+//		}
+
+		// apply super tank bonuses
+		if (isSuperTank()) {
+			setGunHeatEffect(0.1);
+			setEnergyEffect(getStartingEnergy() * 2, inCollision);
+
 		// check if a frozen robot can move again
-		if (isFrozen() && (battle.getTotalTurns() >= frozenTimeout)) {
-			setFrozen(false);
+		if (isKsFrozen() && (battle.getTotalTurns() >= frozenTimeout)) {
+			setKsFrozen(false);
+			/* remove the image from the battle */
+            battle.removeCustomObject(ksImages.get("freeze"));
+            
+            /* remove the image from the robot */
+            ksImages.remove("freeze");
+		} else if (isKsFrozen() && (battle.getTotalTurns() <= frozenTimeout)) {
+			if (ksImages.containsKey("freeze")) {
+				ksImages.get("freeze").setTranslate(this.getX(), this.getY());
+			}
+		}
+		
+		/* check if a robot has died while frozen */
+		if (isKsFrozen() && !isAlive()) {
+			/* remove the image from the battle */
+            battle.removeCustomObject(ksImages.get("freeze"));
+            
+            /* remove the image from the robot */
+            ksImages.remove("freeze");
 		}
 
 		// apply super tank bonuses
 		if (isSuperTank()) {
 			setGunHeatEffect(0.1);
 			setEnergyEffect(getStartingEnergy() * 2, inCollision);
+			
+			/* move the image with the robot */
+			ksImages.get("tank").setTranslate(this.getX(), this.getY());
+		} else {
+			if (ksImages.containsKey("tank")) {
+                /* remove the image from the battle */
+                battle.removeCustomObject(ksImages.get("tank"));
+                
+                /* remove the image from the robot */
+                ksImages.remove("tank");
+			}
+
 		}
 
 		setState(RobotState.ACTIVE);
@@ -1109,9 +1218,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		updateGunHeading();
 		updateRadarHeading();
 		updateMovement();
-
+		
+		checkTeleporterCollision(teleporters);
 		// do not move frozen robots
-		if (isFrozen()) {
+		if (isKsFrozen()) {
 			setVelocityEffect(0.1);
 		}
 
@@ -1147,11 +1257,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 
 		// zap
-		if (zapEnergy != 0) {
+		if (zapEnergy != 0){
 			zap(zapEnergy);
 		}
-
 	}
+	}
+		
+	
 
 	public void performScan(List<RobotPeer> robots) {
 		if (isDead()) {
@@ -1254,6 +1366,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
+				addEvent(new HitItemEvent(item.getName(), item.getIsEquippable(), item.getIsDestroyable()));
 				item.doItemEffect(this);
 				item.setXLocation(-50);
 				item.setYLocation(-50);
@@ -1320,14 +1433,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
         		// Bounce back
                 double angle = atan2(otherRobot.x - x, otherRobot.y - y);
-            }
-        }
-        
-		for (RobotPeer otherRobot : robots) {
-			if (!(otherRobot == null || otherRobot == this || otherRobot.isDead())
-					&& boundingBox.intersects(otherRobot.boundingBox)) {
-				// Bounce back
-				double angle = atan2(otherRobot.x - x, otherRobot.y - y);
 
 				double movedx = velocity * sin(bodyHeading);
 				double movedy = velocity * cos(bodyHeading);
@@ -1986,9 +2091,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void updateEnergy(double delta) {
 		if ((!isExecFinishedAndDisabled && !isEnergyDrained) || delta < 0) {
 			setEnergy(energy + (delta * getEnergyRegen()), true);
+			
+			//If selected battle mode is Team energy sharing mode, activate distribution of energy level
 			if (battle.getBattleMode().toString() == "Energy Sharing Mode"){
 				distributeEnergy();
 			}
+			
 		}
 	}
 
@@ -2006,9 +2114,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	//Get total team energy for team energy sharing mode
+	/**
+	 * Calculate the team total energy level with the given team index and size.
+	 * 
+	 * @param teamIndex index of the team
+	 * @param teamSize size of the team
+	 * @return team's total energy level
+	 */
 	public int getTotalTeamEnergy(int teamIndex, int teamSize){
 		int totalTeamEnergy = 0;
+		
 		for (int i=0; i < teamSize; i++){
 			if (teamList.getTeamIndex() == teamIndex){
 				totalTeamEnergy += teamList.get(i).getEnergy();
@@ -2017,10 +2132,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return totalTeamEnergy;
 	}
 
-	//Assign robots energy based on the distributed team energy
+	/**
+	 * Assign robot energy level based on the calculated average robot energy level in the team
+	 */
 	public void distributeEnergy(){
 		int totalTeamEnergy = 0;
 		double distribute = 0;
+		
+		//Distribute energy only if there is more than one robot in the team
 		if (statics.getTeamSize() > 1) {
 			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
 			distribute = totalTeamEnergy / statics.getTeamSize();
@@ -2201,12 +2320,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
 	}
 
-	 /**
-     * @return a collection of all equipment parts equipped to the robot
-     */
-    public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
-        return equipment;
-    }
+	/**
+	 * @return a collection of all equipment parts equipped to the robot
+	 */
+	public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+		return equipment;
+	}
 
 	/**
 	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
@@ -2260,7 +2379,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return The turning rate of the gun of the robot associated with this
 	 * 			peer in degrees.
 	 */
-	public double getGunTurnRate(){
+	public double getGunTurnRate() {
 		// Avoid multiplying doubles if it is not needed
 		if(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001){
 			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
@@ -2507,6 +2626,42 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}
+	
+	/**
+	 * Checks whether a robot has collided with a teleporter
+	 * @param teleporters list of teleporters
+	 */
+	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
+		BoundingRectangle bound = getBoundingBox();
+		double newHeading = getBodyHeading()+PI;
+		double[] xy;
+		double[] fail = {-1.0, -1.0};
+		double[] death = {-2.0, -2.0};
+		while(newHeading>(2*PI)){
+			newHeading -=(2*PI);
+		}
+		for(TeleporterPeer teleporter : teleporters){
+			xy = teleporter.getCollisionReaction(bound);
+			if(xy.equals(fail)){
+				
+			}else if(xy[0] == -2 && xy[1] == -2){
+				//if there is a collision with a black hole, update size, set
+				//the collision to true and kill the robot
+				teleporter.updateBlackHoleSize();
+				collidedWithBlackHole = true;
+				kill();
+				
+			}else if(xy[0]>0 && xy[1]>0){
+				this.x = xy[0]+(Math.sin(newHeading)*50);
+				this.y = xy[1]+(Math.cos(newHeading)*50);
+				this.bodyHeading = newHeading;
+				//update bounding box to prevent neverending teleportation
+				updateBoundingBox();
+				
+			}
+		}
+		
+	}
 
 	/**
 	 * Enables the RadarJamming ability for jamTime amount of turns. Robots who
@@ -2517,17 +2672,42 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public void enableRadarJammer(int jamTime) {
 		setScannable(false);
+		
+		/* create image */
+        RenderObject jammer = new RenderObject(
+                        "jammer",
+                        "/net/sf/robocode/ui/images/field.png",
+                        this.getX(), this.getY());
+        
+        /* make it transparent */
+        jammer.setAlpha(0.3f);
+        
+        /* add it to the battle */
+        battle.addCustomObject(jammer);
+        
+        /* add it to the robot */
+        ksImages.put(jammer.getName(), jammer);
+
 		radarJammerTimeout = battle.getTotalTurns() + jamTime;
 	}
 
 	/**
-	 * @param isFrozen the isFrozen to set
+	 * @param isKsFrozen the isKsFrozen to set
 	 */
-	 public void setFrozen(boolean isFrozen) {
-		if (!isFrozen) {
+	 public void setKsFrozen(boolean isKsFrozen) {
+		if (!isKsFrozen) {
 			this.println("KILLSTREAK: Freeze expired");
 		}
-		this.isFrozen = isFrozen;
+		this.isKsFrozen = isKsFrozen;
+	}
+	 
+	/**
+	 * Returns whether the robot is frozen by the RobotFreeze killstreak
+	 * 
+	 * @return the frozen (killstreak) status
+	 */
+	public boolean isKsFrozen() {
+		return this.isKsFrozen;
 	}
 
 	/**
@@ -2536,9 +2716,26 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @param freezeTime
 	 *            the amount of time to freeze the robot
 	 */
-	public void enableFreeze(int freezeTime) {
-		setFrozen(true);
-		frozenTimeout = battle.getTotalTurns() + freezeTime;
+	public void enableKsFreeze(int freezeTime) {
+		if (this.isAlive()) {
+			setKsFrozen(true);
+			/* create image */
+	        RenderObject freeze = new RenderObject(
+	                        "freeze",
+	                        "/net/sf/robocode/ui/images/cube.png",
+	                        this.getX(), this.getY());
+	        
+	        /* make it transparent */
+	        freeze.setAlpha(0.3f);
+	        
+	        /* add it to the battle */
+	        battle.addCustomObject(freeze);
+	        
+	        /* add it to the robot */
+	        ksImages.put(freeze.getName(), freeze);
+	
+			frozenTimeout = battle.getTotalTurns() + freezeTime;
+		}
 	}
 
 	/**
@@ -2560,6 +2757,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void enableSuperTank(int superTankTime) {
 		setSuperTank(true);
 		superTankTimeout = battle.getTotalTurns() + superTankTime;
+        
+        /* create image */
+        RenderObject tank = new RenderObject(
+                        "tank",
+                        "/net/sf/robocode/ui/images/star.gif",
+                        this.getX(), this.getY());
+        
+        /* make it transparent */
+        tank.setAlpha(0.3f);
+        
+        /* add it to the battle */
+        battle.addCustomObject(tank);
+        
+        /* add it to the robot */
+        ksImages.put(tank.getName(), tank);
+
+		superTankTimeout = battle.getTotalTurns() + superTankTime;
 	}
 
 	/**
@@ -2569,13 +2783,30 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return isSuperTank;
 	}
 	
+	/**
+	 * @return true if is a blackhole
+	 */
+	public boolean collidedWithBlackHole() {
+		return collidedWithBlackHole;
+	}
+
 	public double getFullEnergy() {
 		return fullEnergy;
 	}
 
 
-	public boolean isZombie() {
-		return getName() == "sampleex.NormalZombie";
+	public void removeImage(String image) {
+		ksImages.remove(image);
+		battle.removeCustomObjectByName(image);
 	}
-}
 
+	public boolean containsImage(String image) {
+		if (ksImages.containsKey(image)) {
+			return true;
+		}
+		
+		return false;
+	}
+
+
+}

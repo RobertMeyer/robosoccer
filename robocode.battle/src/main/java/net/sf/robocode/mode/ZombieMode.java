@@ -1,5 +1,7 @@
 package net.sf.robocode.mode;
 
+import java.util.ArrayList;
+
 import robocode.control.RobocodeEngine;
 import robocode.control.RobotSpecification;
 import net.sf.robocode.battle.BattlePeers;
@@ -16,12 +18,10 @@ public class ZombieMode extends ClassicMode {
     private final String description = "This mode pits a robot against "
             + "a swarm of zombie enemies. Survive as long as you can!";
     
-<<<<<<< HEAD
+
     private final RobocodeEngine engine = new RobocodeEngine();
-=======
-    final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
+    //final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
     private BattlePeers peers;
->>>>>>> origin/master
 
     /**
      * {@inheritDoc}
@@ -40,7 +40,7 @@ public class ZombieMode extends ClassicMode {
     }
     
     public void addRobots(int currentTurn, BattlePeers peers){
-    	if (peers == null){
+    	if (peers != null){
     		this.peers = peers;
     	}
     	if(currentTurn % 50 == 0) {
@@ -58,8 +58,6 @@ public class ZombieMode extends ClassicMode {
 	    	zombie.startRound(0, 0);
     	}
     }
-<<<<<<< HEAD
-=======
     
 	@Override
 	public boolean allowsOneRobot() {
@@ -72,17 +70,24 @@ public class ZombieMode extends ClassicMode {
 		if (peers != null){
 			roundOver = true;
 			for (RobotPeer robotPeer : peers.getRobots()) {
-				if (!robotPeer.isZombie()){
+				if (!robotPeer.isZombie() && !robotPeer.isDead()){
 					roundOver = false;
 				}
 			}
-		}
-		if (roundOver) {
-			for (RobotPeer robotPeer : peers.getRobots()) {
-				robotPeer.kill();
+			if(roundOver){
+				peers.removeRobots(getZombies(peers));
 			}
 		}
-		return endTimer > 5*time;
+		return endTimer > time*5;
 	}
->>>>>>> origin/master
+	
+	private ArrayList<RobotPeer> getZombies(BattlePeers peers){
+		ArrayList<RobotPeer> zombies = new ArrayList<RobotPeer>();
+		for (RobotPeer peer : peers.getRobots()){
+			if(peer.isZombie()){
+				zombies.add(peer);
+			}
+		}
+		return zombies;
+	}
 }
