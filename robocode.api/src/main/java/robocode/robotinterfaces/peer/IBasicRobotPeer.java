@@ -30,6 +30,7 @@ import robocode.robotinterfaces.IBasicEvents;
  *
  * @author Pavel Savara (original)
  * @author Flemming N. Larsen (javadoc)
+ * @author CSSE2003 Team forkbomb (contributor)
  * @see IStandardRobotPeer
  * @see IAdvancedRobotPeer
  * @see ITeamRobotPeer
@@ -44,6 +45,18 @@ public interface IBasicRobotPeer {
      * @return the robot's name.
      */
     String getName();
+    
+    /**
+     * fire a landmine on current posistion
+     * @param power
+     */
+    Landmine fireLandmine(double power);
+    
+    /**
+     * set the power of landmine
+     * @param power
+     */
+    Landmine setLandmine(double power);
 
     /**
      * Returns the game time of the current round, where the time is equal to
@@ -760,6 +773,13 @@ public interface IBasicRobotPeer {
      * @since 1.1.2
      */
     void setBulletColor(Color color);
+    
+    
+    /**
+     * set the color of landmine
+     * @param color
+     */
+    void setLandmineColor(Color color);
 
     /**
      * Sets the color of the robot's scan arc.

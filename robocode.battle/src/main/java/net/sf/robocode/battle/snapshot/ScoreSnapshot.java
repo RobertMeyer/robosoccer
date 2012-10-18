@@ -56,6 +56,8 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     private int totalSeconds;
     /** The total number of third places */
     private int totalThirds;
+    /** The total number of kills */
+    private int totalKills;
     /** The current score */
     private double currentScore;
     /** The current survival score */
@@ -95,6 +97,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
         totalFirsts = score.getTotalFirsts();
         totalSeconds = score.getTotalSeconds();
         totalThirds = score.getTotalThirds();
+        totalKills = score.getTotalKills();
         currentScore = score.getCurrentScore();
         currentBulletDamageScore = score.getCurrentBulletDamageScore();
         currentSurvivalScore = score.getCurrentSurvivalScore();
@@ -123,6 +126,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
         totalFirsts = score1.getTotalFirsts() + score2.getTotalFirsts();
         totalSeconds = score1.getTotalSeconds() + score2.getTotalSeconds();
         totalThirds = score1.getTotalThirds() + score2.getTotalThirds();
+        totalKills = score1.getTotalKills() + score2.getTotalKills();
         currentScore = score1.getCurrentScore() + score2.getCurrentScore();
         currentSurvivalScore = score1.getCurrentSurvivalScore() + score2.getCurrentSurvivalScore();
         currentBulletDamageScore = score1.getCurrentBulletDamageScore() + score2.getCurrentBulletDamageScore();
@@ -222,6 +226,14 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     @Override
     public int getTotalThirds() {
         return totalThirds;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTotalKills() {
+    	return totalKills;
     }
 
     /**

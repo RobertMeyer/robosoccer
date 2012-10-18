@@ -9,6 +9,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Implementation of a mode with conditions for spawning Botzilla.
+ * @author The Fightin' Mongooses
+ */
 public class BotzillaMode extends ClassicMode {
 	
 	private JTextField setBotzillaSpawn; 

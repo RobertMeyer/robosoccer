@@ -65,6 +65,7 @@ public class RobotStatistics implements ContestantStatistics {
     private double rammingKillBonus;
     // Team-Telos addition
     private double flagScore;
+    private int kills;
     private Map<String, Double> robotDamageMap;
     private double totalScore;
     private double totalSurvivalScore;
@@ -78,6 +79,7 @@ public class RobotStatistics implements ContestantStatistics {
     private int totalFirsts;
     private int totalSeconds;
     private int totalThirds;
+    private int totalKills;
 
     public RobotStatistics(RobotPeer robotPeer, int robots) {
         super();
@@ -99,6 +101,7 @@ public class RobotStatistics implements ContestantStatistics {
         totalFirsts = results.getFirsts();
         totalSeconds = results.getSeconds();
         totalThirds = results.getThirds();
+        totalKills = results.getKills();
     }
 
     @Override
@@ -123,6 +126,7 @@ public class RobotStatistics implements ContestantStatistics {
         rammingKillBonus = 0;
         //FIXME - team-Telos
         flagScore = 0;
+        kills = 0;
     }
 
     public void generateTotals(BattleProperties battleProp) {
@@ -134,11 +138,11 @@ public class RobotStatistics implements ContestantStatistics {
         totalRammingKillBonus += rammingKillBonus;
         // team-Telos addition
         totalFlagScore += flagScore;
+        totalKills += kills;
 
         /*TODO Edit this Andrew */
         /* Set battle Properties */
         bp = battleProp;
-        System.out.println(bp.toString());
         ClassicMode mode = (ClassicMode) bp.getBattleMode();
         totalScore = mode.getCustomOverallScore(this);
 //        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
@@ -177,6 +181,10 @@ public class RobotStatistics implements ContestantStatistics {
     
     public double showFlagScore() {
     	return totalFlagScore;
+    }
+
+    public int showKills() {
+    	return totalKills;
     }
     
     /**
@@ -237,6 +245,11 @@ public class RobotStatistics implements ContestantStatistics {
     public int getTotalThirds() {
         return totalThirds;
     }
+    
+    @Override
+    public int getTotalKills() {
+    	return totalKills;
+    }
 
     @Override
     public double getCurrentScore() {
@@ -274,9 +287,15 @@ public class RobotStatistics implements ContestantStatistics {
         return rammingKillBonus;
     }
     
+	@Override    
     public double getCurrentFlagScore() {
     	return flagScore;
     }
+
+	@Override
+	public int getCurrentKills() {
+		return kills;
+	}
     
     public void scoreSurvival() {
         if (isActive) {
@@ -404,7 +423,7 @@ public class RobotStatistics implements ContestantStatistics {
     public BattleResults getFinalResults() {
         return new BattleResults(robotPeer.getTeamName(), rank, totalScore, totalSurvivalScore, totalLastSurvivorBonus,
                                  totalBulletDamageScore, totalBulletKillBonus, totalRammingDamageScore, totalRammingKillBonus,
-                                 totalFlagScore, totalFirsts, totalSeconds, totalThirds);
+                                 totalFlagScore, totalFirsts, totalSeconds, totalThirds, totalKills);
     }
 
     private double getRobotDamage(String robot) {
@@ -431,5 +450,9 @@ public class RobotStatistics implements ContestantStatistics {
 
 	@Override
 	public void incrementScore() {	
+	}
+
+	public void scoreKill() {
+		kills++;
 	}
 }

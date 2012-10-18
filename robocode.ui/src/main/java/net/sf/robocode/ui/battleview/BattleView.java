@@ -49,10 +49,9 @@ import java.util.Map;
 import java.util.Random;
 
 import net.sf.robocode.battle.IBattleManager;
-import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
-import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.mode.BotzillaMode;
+import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -72,12 +71,12 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.IObstacleSnapshot;
+import robocode.control.snapshot.ILandmineSnapshot;
 import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
+import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.RenderableType;
-
-import java.io.*;
 
 
 /**
@@ -91,6 +90,7 @@ public class BattleView extends Canvas {
     private final static String ROBOCODE_SLOGAN = "Build the best, destroy the rest!";
     private final static Color CANVAS_BG_COLOR = SystemColor.controlDkShadow;
     private final static Area BULLET_AREA = new Area(new Ellipse2D.Double(-0.5, -0.5, 1, 1));
+    private final static Area LANDMINE_AREA = new Area(new Ellipse2D.Double(-0.5, -0.5, 1, 1));
     private final static int ROBOT_TEXT_Y_OFFSET = 24;
     // The battle and battlefield,
     private BattleField battleField;
@@ -269,7 +269,7 @@ public class BattleView extends Canvas {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
         	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
-        		// Botzilla
+        		//Add image for Botzilla, if Botzilla mode
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
         	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
@@ -283,6 +283,7 @@ public class BattleView extends Canvas {
             groundImage = null;
         }
         
+        //If there are Dispensers in the round, add the custom image for them
         if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
         		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
         	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
@@ -535,9 +536,11 @@ public class BattleView extends Canvas {
 		// Draw the border of the battlefield
 		drawBorder(g);
 
-		if (snapShot != null) {
-			// Draw all bullets
-			drawBullets(g, snapShot);
+        if (snapShot != null) {
+            // Draw all bullets
+            drawBullets(g, snapShot);
+            
+            drawLandmines(g,snapShot);
 
             // Draw all text
             drawText(g, snapShot);
@@ -584,9 +587,9 @@ public class BattleView extends Canvas {
     	for (IObstacleSnapshot obstacleSnapshot : snapShot.getObstacles()) {
 	        g.setColor(Color.green);
 	        //getX() and getY() returns double, convert to int (or change getX/Y() to return int instead)
-	        g.fillRect((int)(obstacleSnapshot.getX() - ObstaclePeer.WIDTH/2),
-	        		(int)(battleField.getHeight() - obstacleSnapshot.getY() - ObstaclePeer.HEIGHT/2),
-	        		ObstaclePeer.WIDTH, ObstaclePeer.HEIGHT);
+	        g.fillRect((int)(obstacleSnapshot.getX() - obstacleSnapshot.getWidth()/2),
+	        		(int)(battleField.getHeight() - obstacleSnapshot.getY() - obstacleSnapshot.getHeight()/2),
+	        		obstacleSnapshot.getWidth(), obstacleSnapshot.getHeight());
     	}
     }
 
@@ -747,6 +750,8 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+                
+            //if robot is Botzilla, render the custom image
         	} else if (robotSnapshot.getName().contains("botzilla")
         			   || robotSnapshot.getName().contains("Botzilla")) {
         		x = robotSnapshot.getX();
@@ -760,6 +765,7 @@ public class BattleView extends Canvas {
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
                 
+            //if robot is a Dispenser, render the custom image
         	} else if ((robotSnapshot.getName().contains("dispenser")
         			|| robotSnapshot.getName().contains("Dispenser"))
         			&& robotSnapshot.getState().isAlive()) {
@@ -975,13 +981,76 @@ public class BattleView extends Canvas {
 
 				RenderImage explosionRenderImage = imageManager.getExplosionRenderImage(
 						bulletSnapshot.getExplosionImageIndex(), bulletSnapshot.getFrame());
-
+/**
+<<<<<<< HEAD
 				explosionRenderImage.setTransform(at);
 				explosionRenderImage.paint(g);
 			}
 		}
 		g.setClip(savedClip);
 	}
+=======
+*/
+                explosionRenderImage.setTransform(at);
+                explosionRenderImage.paint(g);
+            }
+        }
+        g.setClip(savedClip);
+    }
+    
+    private void drawLandmines(Graphics2D g, ITurnSnapshot snapShot) {
+        final Shape savedClip = g.getClip();
+
+        g.setClip(null);
+
+        double x, y;
+
+        for (ILandmineSnapshot landmineSnapshot : snapShot.getLandmines()) {
+            x = landmineSnapshot.getPaintX();
+            y = battleField.getHeight() - landmineSnapshot.getPaintY();
+
+            AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+
+            if (landmineSnapshot.getState().isActive()) {
+
+                // radius = sqrt(x^2 / 0.1 * power), where x is the width of 1 pixel for a minimum 0.1 bullet
+                double scale = max(2 * sqrt(2.5 * landmineSnapshot.getPower()), 2 / this.scale);
+
+                at.scale(scale, scale);
+                Area landmineArea = LANDMINE_AREA.createTransformedArea(at);
+                
+                RenderImage robotRenderImage = imageManager.getLandmineImage();
+                
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+
+                /**
+                Color landmineColor;
+
+                if (properties.getOptionsRenderingForceBulletColor()) {
+                	landmineColor = Color.WHITE;
+                } else {
+                	landmineColor = new Color(landmineSnapshot.getColor());
+                }
+                g.setColor(landmineColor);
+                g.fill(landmineArea);
+*/
+            } else if (drawExplosions) {
+                if (!landmineSnapshot.isExplosion()) {
+                    double scale = sqrt(1000 * landmineSnapshot.getPower()) / 128;
+
+                    at.scale(scale, scale);
+                }
+
+                RenderImage explosionRenderImage = imageManager.getExplosionRenderImage(
+                		landmineSnapshot.getExplosionImageIndex(), landmineSnapshot.getFrame());
+
+                explosionRenderImage.setTransform(at);
+                explosionRenderImage.paint(g);
+            }
+        }
+        g.setClip(savedClip);
+    }
 
 	private void centerString(Graphics2D g, String s, int x, int y, Font font, FontMetrics fm) {
 		g.setFont(font);
