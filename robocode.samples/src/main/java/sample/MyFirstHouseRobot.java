@@ -1,16 +1,22 @@
 package sample;
 
-import robocode.GunTurnCompleteCondition;
+import java.awt.Color;
+
+import robocode.HitByBulletEvent;
+import robocode.HitRobotEvent;
 import robocode.HouseRobot;
 import robocode.HouseRobotBoundary;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
+import robocode.TurnCompleteCondition;
 
 public class MyFirstHouseRobot extends HouseRobot {
 	
 	HouseRobotBoundary home;
 	
 	public void run() {
+		
+		setColors(Color.RED, Color.RED, Color.RED);
 		
 		home = getBoundaries();
 		
@@ -19,25 +25,36 @@ public class MyFirstHouseRobot extends HouseRobot {
 		home.setInitialFacing(getHeading());
 		home.setArcRange(200);
 		
-		this.turnGunLeft(80);
+		this.turnLeft(80);
 		
 		while (true) {
 			if (this.getScannedRobotEvents().size() == 0) {
-				setTurnGunRight(120);
-				waitFor(new GunTurnCompleteCondition(this));
-				setTurnGunLeft(120);
-				waitFor(new GunTurnCompleteCondition(this));
+				setTurnRight(160);
+				waitFor(new TurnCompleteCondition(this));
+				setTurnLeft(160);
+				waitFor(new TurnCompleteCondition(this));
 			}
 		}
-		
 	}
 	
 	public void onScannedRobot(ScannedRobotEvent e) {		
 		
-		if (e.getDistance() < 300) {
-			stop(false);
+		if (e.getDistance() < 200) {
+			
 			setFire(Rules.MAX_BULLET_POWER);
+			turnRight(e.getBearing());
+			setAhead(10);
 		}
 	}
 	
+	public void onHitRobot(HitRobotEvent e) {		
+			
+		turnRight(e.getBearing());
+		setFire(Rules.MAX_BULLET_POWER);
+	}
+	
+	public void onHitByBullet(HitByBulletEvent e) {
+		turnRight(e.getBearing());
+		setFire(Rules.MAX_BULLET_POWER);
+	}
 }
