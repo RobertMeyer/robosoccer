@@ -602,7 +602,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
 
         Landmine landmine;
         LandmineCommand wrapper;
-        Event currentTopEvent = eventManager.getCurrentTopEvent();
+        //Event currentTopEvent = eventManager.getCurrentTopEvent();
 
         landmineCounter++;
 /**

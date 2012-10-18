@@ -812,7 +812,13 @@ public class BattleView extends Canvas {
 
                 at.scale(scale, scale);
                 Area landmineArea = LANDMINE_AREA.createTransformedArea(at);
+                
+                RenderImage robotRenderImage = imageManager.getLandmineImage();
+                
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
 
+                /**
                 Color landmineColor;
 
                 if (properties.getOptionsRenderingForceBulletColor()) {
@@ -822,7 +828,7 @@ public class BattleView extends Canvas {
                 }
                 g.setColor(landmineColor);
                 g.fill(landmineArea);
-
+*/
             } else if (drawExplosions) {
                 if (!landmineSnapshot.isExplosion()) {
                     double scale = sqrt(1000 * landmineSnapshot.getPower()) / 128;

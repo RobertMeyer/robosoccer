@@ -38,7 +38,7 @@ public class LandminePeer {
 		this.owner = owner;
 		this.battleRules = battleRules;
 		this.landmineId = landmineId;
-		state = LandmineState.FIRED;
+		state = LandmineState.WAITING;
 		color = owner.getLandmineColor(); // Store current bullet color set on
 										// robot
 		ks = owner.battle.getKillstreakTracker();
@@ -245,15 +245,16 @@ public class LandminePeer {
 				checkRobotCollision(robots);
 			}
 		
-		updateBulletState();
+		updateLandmineState();
 		owner.addLandmineStatus(createStatus());
 	}
 
-	protected void updateBulletState() {
+	protected void updateLandmineState() {
 		switch (state) {
 		case FIRED:
 		case HIT_VICTIM:
 		case EXPLODED:
+		case WAITING:
 			// Note that the bullet explosion must be ended before it goes into
 			// the INACTIVE state
 			if (frame >= getExplosionLength()) {

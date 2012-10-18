@@ -39,12 +39,12 @@ IXmlSerializable, ILandmineSnapshot{
     private boolean isExplosion;
     /** Index to which explosion image that must be rendered */
     private int explosionImageIndex;
-    private int bulletId;
+    private int landmineId;
     private int victimIndex = -1;
     private int ownerIndex;
     //private String bulletPath;
     private RobotPeer owner;
-    
+
     public LandmineSnapshot() {
         state = LandmineState.INACTIVE;
         ownerIndex = -1;
@@ -73,7 +73,7 @@ IXmlSerializable, ILandmineSnapshot{
         isExplosion = true;
         explosionImageIndex = landmine.getExplosionImageIndex();
 
-        bulletId = landmine.getLandmineId();
+        landmineId = landmine.getLandmineId();
 
         final RobotPeer victim = landmine.getVictim();
 
@@ -97,7 +97,7 @@ IXmlSerializable, ILandmineSnapshot{
 	@Override
 	public LandmineState getState() {
 		// TODO Auto-generated method stub
-		return null;
+		return state;
 	}
 
 	@Override
@@ -109,86 +109,223 @@ IXmlSerializable, ILandmineSnapshot{
 	@Override
 	public double getPower() {
 		// TODO Auto-generated method stub
-		return 0;
+		return power;
 	}
 
 	@Override
 	public double getX() {
 		// TODO Auto-generated method stub
-		return 0;
+		return x;
 	}
 
 	@Override
 	public double getY() {
 		// TODO Auto-generated method stub
-		return 0;
+		return y;
 	}
 
 	@Override
 	public double getPaintX() {
 		// TODO Auto-generated method stub
-		return 0;
+		return paintX;
 	}
 
 	@Override
 	public double getPaintY() {
 		// TODO Auto-generated method stub
-		return 0;
+		return paintY;
 	}
 
 	@Override
 	public int getColor() {
 		// TODO Auto-generated method stub
-		return 0;
+		return color;
 	}
 
 	@Override
 	public int getFrame() {
 		// TODO Auto-generated method stub
-		return 0;
+		return frame;
 	}
 
 	@Override
 	public boolean isExplosion() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public int getExplosionImageIndex() {
 		// TODO Auto-generated method stub
-		return 0;
+		return explosionImageIndex;
 	}
 
 	@Override
 	public int getLandmineId() {
 		// TODO Auto-generated method stub
-		return 0;
+		return landmineId;
 	}
 
+	
 	@Override
 	public int getVictimIndex() {
 		// TODO Auto-generated method stub
-		return 0;
+		return victimIndex;
 	}
 
 	@Override
 	public int getOwnerIndex() {
 		// TODO Auto-generated method stub
-		return 0;
+		return ownerIndex;
 	}
 
 	@Override
 	public void writeXml(XmlWriter writer, SerializableOptions options)
 			throws IOException {
-		// TODO Auto-generated method stub
+
+        writer.startElement(options.shortAttributes ? "b" : "landmine");
+        {
+            writer.writeAttribute("id", ownerIndex + "-" + landmineId);
+            if (!options.skipExploded ) {
+                writer.writeAttribute(options.shortAttributes ? "s" : "state", state.toString());
+                writer.writeAttribute(options.shortAttributes ? "p" : "power", power, options.trimPrecision);
+            }
+            if (state == LandmineState.HIT_VICTIM) {
+                writer.writeAttribute(options.shortAttributes ? "v" : "victim", victimIndex);
+            }
+            if (state == LandmineState.FIRED) {
+                writer.writeAttribute(options.shortAttributes ? "o" : "owner", ownerIndex);
+            }
+            writer.writeAttribute("x", paintX, options.trimPrecision);
+            writer.writeAttribute("y", paintY, options.trimPrecision);
+            if (!options.skipNames) {
+                if (color != ExecCommands.defaultLandmineColor) {
+                    writer.writeAttribute(options.shortAttributes ? "c" : "color",
+                                          Integer.toHexString(color).toUpperCase());
+                }
+            }
+            if (!options.skipExploded) {
+                if (frame != 0) {
+                    writer.writeAttribute("frame", frame);
+                }
+                if (isExplosion) {
+                    writer.writeAttribute("isExplosion", true);
+                    writer.writeAttribute("explosion", explosionImageIndex);
+                }
+            }
+            if (!options.skipVersion) {
+                writer.writeAttribute("ver", serialVersionUID);
+            }
+        }
+        writer.endElement();
+    
 		
 	}
 
 	@Override
 	public Element readXml(XmlReader reader) {
-		// TODO Auto-generated method stub
-		return null;
+
+        return reader.expect("landmine", "b", new XmlReader.Element() {
+            @Override
+            public IXmlSerializable read(XmlReader reader) {
+                final LandmineSnapshot snapshot = new LandmineSnapshot();
+
+                reader.expect("id", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        String[] parts = value.split("-");
+
+                        snapshot.ownerIndex = Integer.parseInt(parts[0]);
+                        snapshot.landmineId = Integer.parseInt(parts[1]);
+                    }
+                });
+
+                reader.expect("state", "s", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.state = LandmineState.valueOf(value);
+                    }
+                });
+
+                reader.expect("power", "p", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.power = Double.parseDouble(value);
+                    }
+                });
+              /**
+                reader.expect("heading", "h", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.heading = Double.parseDouble(value);
+                    }
+                });
+                */
+
+                reader.expect("victim", "v", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.victimIndex = Integer.parseInt(value);
+                    }
+                });
+
+                reader.expect("owner", "o", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.ownerIndex = Integer.parseInt(value);
+                    }
+                });
+
+                reader.expect("x", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.x = Double.parseDouble(value);
+                        snapshot.paintX = snapshot.x;
+                    }
+                });
+
+                reader.expect("y", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.y = Double.parseDouble(value);
+                        snapshot.paintY = snapshot.y;
+                    }
+                });
+
+                reader.expect("color", "c", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.color = Long.valueOf(value.toUpperCase(), 16).intValue();
+                    }
+                });
+
+                reader.expect("isExplosion", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.isExplosion = Boolean.parseBoolean(value);
+                        if (snapshot.isExplosion && snapshot.state == null) {
+                            snapshot.state = LandmineState.EXPLODED;
+                        }
+                    }
+                });
+
+                reader.expect("explosion", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.explosionImageIndex = Integer.parseInt(value);
+                    }
+                });
+
+                reader.expect("frame", new XmlReader.Attribute() {
+                    @Override
+                    public void read(String value) {
+                        snapshot.frame = Integer.parseInt(value);
+                    }
+                });
+                return snapshot;
+            }
+        });
+    
 	}
 
 }

@@ -41,6 +41,7 @@ public class ImageManager implements IImageManager {
     private Image gunImage;
     private Image radarImage;
     private Image healthImage;
+    private Image landmineImage;
     private static final int MAX_NUM_COLORS = 256;
     private HashMap<Integer, RenderImage> robotBodyImageCache;
     private HashMap<Integer, RenderImage> robotGunImageCache;
@@ -97,7 +98,7 @@ public class ImageManager implements IImageManager {
         }
         return groundImages[index];
     }
-
+	
     @Override
     public RenderImage getExplosionRenderImage(int which, int frame) {
         if (explosionRenderImages == null) {
@@ -145,6 +146,15 @@ public class ImageManager implements IImageManager {
         return debriseRenderImage;
     }
 
+    public RenderImage getLandmineImage()
+    {
+
+        if (landmineImage == null) {
+        	landmineImage = getImage("/net/sf/robocode/ui/images/landmine1.png");
+        }
+        return debriseRenderImage;
+    
+    }
     private Image getImage(String filename) {
         Image image = ImageUtil.getImage(filename);
 

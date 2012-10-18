@@ -25,6 +25,8 @@ public interface IImageManager {
 	
 	Image getFieldTileImage(int index);
 	
+	RenderImage getLandmineImage();
+	
 	RenderImage getCustomImage(String name);
 	
 	RenderImage addCustomImage(String name, String filename);

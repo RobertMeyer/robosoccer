@@ -25,7 +25,7 @@ public class Landmine implements Serializable {
 	 * @param ownerName
 	 * @param victimName
 	 * @param isActive
-	 * @param bulletId
+	 * @param landmineId
 	 */
 
 	public Landmine(double x, double y, double power, String ownerName,

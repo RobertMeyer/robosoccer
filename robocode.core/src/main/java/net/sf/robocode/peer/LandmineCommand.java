@@ -10,9 +10,9 @@ public class LandmineCommand implements Serializable {
 	 private final double power;
 	    private final boolean fireAssistValid;
 	    private final int landmineId;
-	public LandmineCommand(double power, boolean fireAssistValid,  int bulletId) {
+	public LandmineCommand(double power, boolean fireAssistValid,  int landmineId) {
         this.fireAssistValid = fireAssistValid;
-        this.landmineId = bulletId;
+        this.landmineId = landmineId;
         this.power = power;
     }
 	
@@ -48,11 +48,11 @@ public class LandmineCommand implements Serializable {
         @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             double power = buffer.getDouble();
-            boolean fireAssistValid = serializer.deserializeBoolean(buffer);
-            double fireAssistAngle = buffer.getDouble();
-            int bulletId = buffer.getInt();
+            //boolean fireAssistValid = serializer.deserializeBoolean(buffer);
+            //double fireAssistAngle = buffer.getDouble();
+            int landmineId = buffer.getInt();
 
-            return new BulletCommand(power, fireAssistValid, fireAssistAngle, bulletId);
+            return new LandmineCommand(power, false, landmineId);
         }
     }
    

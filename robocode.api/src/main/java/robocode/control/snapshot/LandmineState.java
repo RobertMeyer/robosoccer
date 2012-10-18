@@ -5,7 +5,8 @@ public enum LandmineState {
 	FIRED(0),
 	HIT_VICTIM(1),
 	EXPLODED(2),
-	INACTIVE(3);
+	INACTIVE(3),
+	WAITING(4);
 	
 	private final int value;
 	
@@ -30,6 +31,9 @@ public enum LandmineState {
 
             case 3:
                 return INACTIVE;
+                
+            case 4:
+                return WAITING;
 
             default:
                 throw new IllegalArgumentException("unknown value");
