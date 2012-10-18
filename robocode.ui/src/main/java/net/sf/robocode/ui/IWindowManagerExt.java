@@ -54,8 +54,6 @@ public interface IWindowManagerExt extends IWindowManager {
     void showRankingDialog(boolean visible);
 
     void showRobocodeEditor();
-    
-    void showTrackEditor();
 
     void showRobotPackager();
 

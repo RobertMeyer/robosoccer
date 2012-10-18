@@ -114,8 +114,6 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
     
-    private double fullEnergy;
-    
     private double scanRadius;
 
 	/**
@@ -143,13 +141,13 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 
 		state = robot.getState();
 
+
         energy = robot.getEnergy();
         acceleration = robot.getRobotAcceleration();
         velocity = robot.getVelocity();
         gunHeat = robot.getGunHeat();
 
         equipment = robot.getEquipment();
-        fullEnergy = robot.getFullEnergy();
         
         scanRadius = robot.getRadarScanRadius();
         
@@ -221,13 +219,6 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
 		return equipment;
 	}
-    
-    /**
-     * {@inheritDoc}
-     */
-    public double getFullEnergy() {
-    	return fullEnergy;
-    }
     
     /**
      * {@inheritDoc}

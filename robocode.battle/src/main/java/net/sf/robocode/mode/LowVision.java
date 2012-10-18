@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 
 import robocode.BattleRules;
 
+
 /**
  * Low Vision mode:
  *  Contains methods for initialising settings
@@ -24,7 +25,7 @@ public class LowVision extends ClassicMode{
 	private LowVisionRulesPanel rulesPanel;
 	
 	private final String title = "Low Vision Mode";
-    private final String description = "Modify all robots' vision. (0 = blind, 100 = standard vision)";
+    private final String description = "This mode will reduce the vision of the Robots by a user specified amount.";
 
     /**
      * To display the mode title
@@ -41,6 +42,7 @@ public class LowVision extends ClassicMode{
     public String getDescription() {
         return description;
     }
+
     /**
      * set the rules panel
      * @return rules
@@ -60,6 +62,7 @@ public class LowVision extends ClassicMode{
 		return rulesPanel.getValues();
 	}
      
+
     /**
      * Set the range using the modifier, overwrite the robot scan radius
      * @param standard it is the original radar scan radius
@@ -86,22 +89,20 @@ public class LowVision extends ClassicMode{
     	return range;
     }
     
-    /**
-     * JLabel to imput the value in term of percentage
-     */
+    
     @SuppressWarnings("serial")
 	private class LowVisionRulesPanel extends JPanel {
 		private JTextField VisionModifier; 
 		public LowVisionRulesPanel() {
 			super();
 			
-			add(new JLabel("Vision:"), BorderLayout.NORTH);
+			add(new JLabel("Vision modifier:"), BorderLayout.NORTH);
 			
 			VisionModifier = new JTextField(5);
 			VisionModifier.setText("100");
 			add(VisionModifier);
 			
-			add(new JLabel("%"));
+			add(new JLabel("100 is standard"));
 		}
 		
 		/**

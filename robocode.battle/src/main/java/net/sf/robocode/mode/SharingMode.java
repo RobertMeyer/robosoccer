@@ -1,12 +1,5 @@
 package net.sf.robocode.mode;
 
-/**
- * Mode Class used for Team Energy Sharing Mode. 
- * 
- * @author Team - MCJJ
- * @author Jake Ching Leong Ong
- */
-
 public class SharingMode extends ClassicMode {
 	
 	private final String title = "Energy Sharing Mode";

@@ -101,8 +101,9 @@ public interface IBattleManager extends IBattleManagerBase {
 
 	<Battle> Battle getBattle();
 	
-	void saveSpikePos(ArrayList<Integer> spikeArrayPosX,
-			ArrayList<Integer> spikeArrayPosY);
+	ArrayList<Integer> saveSpikePosX(ArrayList<Integer> spikeArrayPosX);
+	
+	ArrayList<Integer> saveSpikePosY(ArrayList<Integer> spikeArrayPosY);
 	
 	ArrayList<Integer> getSpikePosX();
 

@@ -64,7 +64,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 	/*List of snapshots for teleporters on the current battefield*/
 	private List<ITeleporterSnapshot> teleports;
-		
+
 	/** Current turn in the battle round */
 	private int turn;
     /** Current TPS (turns per second) */
@@ -93,7 +93,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		effArea = new ArrayList<IEffectAreaSnapshot>();
 		customObj = new ArrayList<IRenderableSnapshot>();
 		teleports = new ArrayList<ITeleporterSnapshot>();
-		
+
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
 		}
@@ -101,7 +101,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		for (BulletPeer bulletPeer : battleBullets) {
 			bullets.add(new BulletSnapshot(bulletPeer));
 		}
-		
+
 		for (LandminePeer landminePeer : battleLandmines) {
 			landmines.add(new LandmineSnapshot(landminePeer));
 		}
@@ -109,7 +109,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		for (TeleporterPeer teleporterPeer : battleTeleporters) {
 			teleports.add(new TeleporterSnapshot(teleporterPeer));
 		}
-		
+
 		/*--ItemController--*/
 		for (ItemDrop item : battleItems) {
 			items.add(new ItemSnapshot(item));
@@ -290,7 +290,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 						if (writeFirstExplosionFrame) {
 							rs.writeXml(writer, op);
 						}
-						
+
 						for (ILandmineSnapshot l : landmines) {
 							if (l.getFrame() == 0&& l.getVictimIndex() == r.getRobotIndex()) {
 								writeSecondExplosionFrame = true;
@@ -318,7 +318,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 				}
 			}
 			writer.endElement();
-			
+
 			writer.startElement(options.shortAttributes ? "bs" : "Landmines");
 			{
 				for (ILandmineSnapshot l : landmines) {
@@ -400,7 +400,7 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 
 					public void close() {}
 				});
-				
+
 				reader.expect("landmines", "ls", new XmlReader.ListElement() {
 					public IXmlSerializable read(XmlReader reader) {
 						snapshot.landmines = new ArrayList<ILandmineSnapshot>();

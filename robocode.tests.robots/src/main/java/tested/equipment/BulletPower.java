@@ -9,7 +9,7 @@ import robocode.AdvancedRobot;
  * @author Jayke Anderson - CSSE2003
  *
  */
-public class BulletPowerPistol extends AdvancedRobot {
+public class BulletPower extends AdvancedRobot {
 
 	public void run(){
 		equip("Pistol Test");

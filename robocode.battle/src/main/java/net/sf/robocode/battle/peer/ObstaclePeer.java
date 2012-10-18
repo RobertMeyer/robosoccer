@@ -132,5 +132,4 @@ public class ObstaclePeer {
 		}
 		return false;		
 	}
-    /* Test edit to see if it works now */
 }

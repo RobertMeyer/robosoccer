@@ -95,6 +95,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
@@ -148,7 +149,6 @@ import robocode.exception.DeathException;
 import robocode.exception.WinException;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 
-
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
  * sure that robots abides the rules.
@@ -163,7 +163,7 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author Patrick Cupka (contributor)
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
- * @author CSSE2003 Team Forkbomb (contributor - attributes, equipment)
+ * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
  * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
@@ -253,17 +253,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected RobotState state;
 	protected final Arc2D scanArc;
 	protected final BoundingRectangle boundingBox;
-
 	protected final RbSerializer rbSerializer;
 
 	// The number of turns the robot is frozen for, 0 if not frozen
 	protected int frozen = 0;
-	
-	//raceMode int
-		protected int currentWaypointIndex;
+
 	
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
+	
 
 	// killstreak booleans
 	private boolean isScannable = true;
@@ -317,6 +315,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			new AtomicReference<Map<EquipmentSlot, EquipmentPart>>(
 					new HashMap<EquipmentSlot, EquipmentPart>()
 			);
+
 	
 	double fullEnergy;
 
@@ -382,7 +381,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				return;
 			}
 			
-
 			RobotSpecification minion = minionSpecs[minionType];
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0);
 			battle.addMinion(minionPeer);
@@ -417,7 +415,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-
 	public void println(String s) {
 		synchronized (proxyText) {
 			battleText.append(s);
@@ -425,22 +422,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-/**
- * check whether robot equip Sword
- * by checking the equipment.get(Weapon)==Equipment.getPart("Sword")
- */
-    public boolean checkSword()
-    {
-    	EquipmentPart part = Equipment.getPart("Sword");
-    	if(equipment.get().get(part.getSlot())==part)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-    }
 	public void print(Throwable ex) {
 		println(ex.toString());
 		StackTraceElement[] trace = ex.getStackTrace();
@@ -1046,7 +1027,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isDispenser()) {
 			energy = 500;
 		} else if (statics.isFreezeRobot()) {
-			energy = 500;
+			energy = 300;
+			attributes.get().put(RobotAttribute.SPEED, 0.40);
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1198,16 +1180,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			 * or very close too.  This is to avoid unnecessary double
 			 * multiplication, which was causing some bugs.
 			 */
-			if(Math.abs((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
-					1.0) < 0.00001){
+			if((getMinBulletPower() * getMaxBulletPower() * getEnergyRegen()) -
+					1.0 < 0.00001){
 				firePower = min(energy,
 						min(max(bulletCmd.getPower(), Rules.MIN_BULLET_POWER),
 								Rules.MAX_BULLET_POWER));
 			}
 			else{
 				firePower = min(energy, min(max(bulletCmd.getPower(),
-						getMinBulletPower()), getMaxBulletPower()));
+						getMinBulletPower()), getMaxBulletPower())) * getEnergyRegen();
 			}
+
 			updateEnergy(-firePower);
 
 			gunHeat += getGunHeat(firePower);
@@ -1284,15 +1267,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	@Override
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy, List<TeleporterPeer> teleporters) {
-
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
+		
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
 			return;
 		}
-		collidedWithBlackHole = false;
-
-		if (isFrozen()) {
+		
+		if (isFrozen() && energy > 0) {
 			frozen--;
 			if (frozen != 0) {
 				return;
@@ -1379,8 +1361,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		updateGunHeading();
 		updateRadarHeading();
 		updateMovement();
-		
-		checkTeleporterCollision(teleporters);
+
 		// do not move frozen robots
 		if (isKsFrozen()) {
 			setVelocityEffect(0.1);
@@ -1482,50 +1463,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				}
 
 				final String currentClassName = member.statics.getFullClassName();
+
 				if ((currentClassName.length() >= nl && currentClassName.substring(0, nl).equals(recipient))) {
 					return true;
 				}
+
 			}
 		}
 		return false;
 	}
-	
-
-	/**
-     * 
-     * @param waypoint The Maps Waypoint Object.
-     * @param waypointDistance The maximum perpendicular distance from the robot that a waypoint
-     * can be and still be scanned.
-     */
-    private void checkWaypointPass(Waypoint waypoint, Double waypointDistance){
-    	//todo //line perpendicular to robot 3/4 track width 
-    	//check if that lien intersects with a waypoint 
-
-    	//calculate the bearing to the waypoint relative to the robots Heading.
-    	 double relativeBearingtoWaypoint = bodyHeading + ((Math.PI/2)-atan2(waypoint.getSingleWaypointY(
-    			currentWaypointIndex)-y, waypoint.getSingleWaypointX(currentWaypointIndex)-x));
-    	
-    	if(robocode.util.Utils.isNear(relativeBearingtoWaypoint, bodyHeading - (Math.PI/2)) | 
-    			robocode.util.Utils.isNear(relativeBearingtoWaypoint, bodyHeading + (Math.PI/2))){
-    		double dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
-    		double dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
-    		double  distToWay = Math.hypot(dx, dy);
-
-    		//Check if the waypoint is at the maximum distance from the robot or closer.
-    		if(robocode.util.Utils.isNear(distToWay, waypointDistance) | distToWay < waypointDistance){
-    			currentWaypointIndex += 1;
-    			relativeBearingtoWaypoint = bodyHeading + ((Math.PI/2)-atan2( waypoint.getSingleWaypointY(
-    					currentWaypointIndex)-y, waypoint.getSingleWaypointX(currentWaypointIndex)-x));
-    			dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
-        		dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
-        		//create the new WaypointPassedEvent
-    			addEvent(new WaypointPassedEvent(currentWaypointIndex, waypoint.getSingleWaypointX(
-    					 currentWaypointIndex), waypoint.getSingleWaypointY(currentWaypointIndex), 
-    					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
-    		}
-    	}
-    	
-    }
 
 	public String getNameForEvent(RobotPeer otherRobot) {
 		if (battleRules.getHideEnemyNames() && !isTeamMate(otherRobot)) {
@@ -1562,7 +1508,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
-				addEvent(new HitItemEvent(item.getName(), item.getIsEquippable(), item.getIsDestroyable()));
 				item.doItemEffect(this);
 				item.setXLocation(-50);
 				item.setYLocation(-50);
@@ -1616,11 +1561,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 		}
 	}
-	
-	private void checkDeFence(RobotPeer robot)
-	{
-		
-	}
 
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
@@ -1646,26 +1586,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
         		// Bounce back
                 double angle = atan2(otherRobot.x - x, otherRobot.y - y);
 
-                double movedx = velocity * sin(bodyHeading);
-                double movedy = velocity * cos(bodyHeading);
+				double movedx = velocity * sin(bodyHeading);
+				double movedy = velocity * cos(bodyHeading);
 
-                boolean atFault;
-                double bearing = normalRelativeAngle(angle - bodyHeading);
-                //count the bearing between attack angle and defense angle
-                double defenceBearing=normalRelativeAngle(angle - radarHeading);
-
-                if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
-                        || (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
-                	//if robot equip sword , damage counting will be different as bullet
-                	if(checkSword())
-                	{
-                		//check whether sword attack whether been defenced by other robot's radar
-                		if(defenceBearing> PI / 2)
-                		{
-                		otherRobot.setEnergy(energy - Rules.getBulletDamage(3), false);
-                		}
-                	}
-                }
+				boolean atFault;
+				double bearing = normalRelativeAngle(angle - bodyHeading);
 
 				if ((velocity > 0 && bearing > -PI / 2 && bearing < PI / 2)
 						|| (velocity < 0 && (bearing < -PI / 2 || bearing > PI / 2))) {
@@ -1717,6 +1642,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     if (otherRobot.energy == 0) {
                         if (otherRobot.isAlive()) {
                             otherRobot.kill();
+                            
+                            FreezeRobotDeath massFreeze = new FreezeRobotDeath(otherRobot, this);
+    						massFreeze.freezeEverything(robots);
+    						
                             if (battle.getBattleMode().respawnsOn()) {
                             	otherRobot.respawn(robots);
                             }
@@ -1754,19 +1683,31 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return true if one of the robots is a FreezeRobot, false otherwise
 	 */
 	protected boolean checkForFreezeBot(RobotPeer otherRobot) {
-		if (otherRobot.isFreezeRobot()) {
-			setState(RobotState.FROZEN);
-			frozen = 100;
-			return true;
-		}
-		
-		if (this.isFreezeRobot()) {
-			otherRobot.setState(RobotState.FROZEN);
-			otherRobot.frozen = 100;
-			return true;
+		// Make sure that at least one of the robots is not a FreezeRobot
+		// FreezeRobot cannot freeze another FreezeRobot
+		if (!this.isFreezeRobot() || !otherRobot.isFreezeRobot()) {
+			if (otherRobot.isFreezeRobot()) {
+				makeFrozen(this, 100);
+				return true;
+			}
+			
+			if (this.isFreezeRobot()) {
+				makeFrozen(otherRobot, 100);
+				return true;
+			}
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Freezes robot for length amount of turns 
+	 * @param robot: robot to freeze
+	 * @param turns: turns frozen for
+	 */
+	public void makeFrozen(RobotPeer robot, int turns){
+		robot.setState(RobotState.FROZEN);
+		robot.frozen = turns;
 	}
 
 	protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {
@@ -2303,12 +2244,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public void updateEnergy(double delta) {
 		if ((!isExecFinishedAndDisabled && !isEnergyDrained) || delta < 0) {
 			setEnergy(energy + (delta * getEnergyRegen()), true);
-			
-			//If selected battle mode is Team energy sharing mode, activate distribution of energy level
 			if (battle.getBattleMode().toString() == "Energy Sharing Mode"){
 				distributeEnergy();
 			}
-			
 		}
 	}
 
@@ -2326,16 +2264,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	/**
-	 * Calculate the team total energy level with the given team index and size.
-	 * 
-	 * @param teamIndex index of the team
-	 * @param teamSize size of the team
-	 * @return team's total energy level
-	 */
+	//Get total team energy for team energy sharing mode
 	public int getTotalTeamEnergy(int teamIndex, int teamSize){
 		int totalTeamEnergy = 0;
-		
 		for (int i=0; i < teamSize; i++){
 			if (teamList.getTeamIndex() == teamIndex){
 				totalTeamEnergy += teamList.get(i).getEnergy();
@@ -2344,14 +2275,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return totalTeamEnergy;
 	}
 
-	/**
-	 * Assign robot energy level based on the calculated average robot energy level in the team
-	 */
+	//Assign robots energy based on the distributed team energy
 	public void distributeEnergy(){
 		int totalTeamEnergy = 0;
 		double distribute = 0;
-		
-		//Distribute energy only if there is more than one robot in the team
 		if (statics.getTeamSize() > 1) {
 			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
 			distribute = totalTeamEnergy / statics.getTeamSize();
@@ -2489,34 +2416,31 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
-	 * 
-	 * @param partName
-	 *            the name of the part to equip
+	 *
+	 * @param partName the name of the part to equip
 	 * @see Equipment
 	 */
 	public void equip(String partName) {
 		EquipmentPart part = Equipment.getPart(partName);
 
-		// Do nothing if there's no part with the given name.
-		// TODO: display an error or warning when the part doesn't exist?
-		if (part == null) {
-			return;
-		}
-
-		// Unequip anything currently occupying the slot of this part.
+		// Unequip whatever's currently occupying this slot (if anything)
 		unequip(part.getSlot());
 
-		// Associate this part's slot with the given part.
+		// Add the part to the map of equipped items
 		equipment.get().put(part.getSlot(), part);
 
-		// Add all the attribute modifiers of the part to the current
-		// attribute modifiers (many attributes of the part may be 0).
+		/* Add all the attribute modifiers of the part to the current
+		 * attribute modifiers (many attributes of the part may be 0).
+		 */
 		for (RobotAttribute attribute : RobotAttribute.values()) {
+
 			double partValue = part.get(attribute);
 			double currentValue = attributes.get().get(attribute);
 
-			// Part modifiers represent 1 as equal to +1% effectiveness, and
-			// 100% effectiveness is represented in this.attributes as 1.0.
+			/* Part modifiers are represented as 1=+1% effectiveness, hence
+			 * the division by 100 (as this.attributes represents 1.0 as 100%
+			 * effectiveness for easy multiplication).
+			 */
 			double newValue = currentValue + (partValue / 100.0);
 
 			attributes.get().put(attribute, newValue);
@@ -2528,40 +2452,39 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * Unequips the part equipped to the given slot, if any, and resets all
 	 * attributes provided by the part.
-	 * 
-	 * @param slot
-	 *            the slot to clear
+	 *
+	 * @param slot the slot to clear
 	 */
 	public void unequip(EquipmentSlot slot) {
 		EquipmentPart part = equipment.get().get(slot);
 
-		// Do nothing if there's no part with the given name.
-		// TODO: display an error or warning when the part doesn't exist?
-		if (part == null) {
-			return;
-		}
+		/* If there is any part in the given slot, add all the attribute
+		 * modifiers of the part to the current attribute modifiers (many
+		 * attributes of the part may be 0).
+		 */
+		if (part != null) {
+			for (RobotAttribute attribute : RobotAttribute.values()) {
+				double partValue = part.get(attribute);
+				double currentValue = attributes.get().get(attribute);
 
-		// Remove all the attribute modifiers of the part from the current
-		// attribute modifiers (many attributes of the part may be 0).
-		for (RobotAttribute attribute : RobotAttribute.values()) {
-			double partValue = part.get(attribute);
-			double currentValue = attributes.get().get(attribute);
+				/* Part modifiers are represented as 1=+1% effectiveness,
+				 * hence the division by 100 (as this.attributes represents
+				 * 1.0 as 100% effectiveness for easy multiplication).
+				 */
+				double newValue = currentValue - (partValue / 100.0);
 
-			// Part modifiers represent 1 as equal to +1% effectiveness, and
-			// 100% effectiveness is represented in this.attributes as 1.0.
-			double newValue = currentValue - (partValue / 100.0);
-
-			attributes.get().put(attribute, newValue);
+				attributes.get().put(attribute, newValue);
+			}
 		}
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
 	}
 
-	/**
-	 * @return a collection of all equipment parts equipped to the robot
-	 */
-	public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
-		return equipment;
-	}
+	 /**
+     * @return a collection of all equipment parts equipped to the robot
+     */
+    public AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment() {
+        return equipment;
+    }
 
 	/**
 	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
@@ -2615,14 +2538,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return The turning rate of the gun of the robot associated with this
 	 * 			peer in degrees.
 	 */
-	public double getGunTurnRate() {
+	public double getGunTurnRate(){
 		// Avoid multiplying doubles if it is not needed
-		if (attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001) {
-			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE)
-					* Rules.GUN_TURN_RATE;
-		} else {
-			return Rules.GUN_TURN_RATE;
+		if(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001){
+			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
 		}
+		else return Rules.GUN_TURN_RATE;
 	}
 
 	/**
@@ -2864,42 +2785,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}
-	
-	/**
-	 * Checks whether a robot has collided with a teleporter
-	 * @param teleporters list of teleporters
-	 */
-	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
-		BoundingRectangle bound = getBoundingBox();
-		double newHeading = getBodyHeading()+PI;
-		double[] xy;
-		double[] fail = {-1.0, -1.0};
-		double[] death = {-2.0, -2.0};
-		while(newHeading>(2*PI)){
-			newHeading -=(2*PI);
-		}
-		for(TeleporterPeer teleporter : teleporters){
-			xy = teleporter.getCollisionReaction(bound);
-			if(xy.equals(fail)){
-				
-			}else if(xy[0] == -2 && xy[1] == -2){
-				//if there is a collision with a black hole, update size, set
-				//the collision to true and kill the robot
-				teleporter.updateBlackHoleSize();
-				collidedWithBlackHole = true;
-				kill();
-				
-			}else if(xy[0]>0 && xy[1]>0){
-				this.x = xy[0]+(Math.sin(newHeading)*50);
-				this.y = xy[1]+(Math.cos(newHeading)*50);
-				this.bodyHeading = newHeading;
-				//update bounding box to prevent neverending teleportation
-				updateBoundingBox();
-				
-			}
-		}
-		
-	}
 
 	/**
 	 * Enables the RadarJamming ability for jamTime amount of turns. Robots who
@@ -3021,13 +2906,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return isSuperTank;
 	}
 	
-	/**
-	 * @return true if is a blackhole
-	 */
-	public boolean collidedWithBlackHole() {
-		return collidedWithBlackHole;
-	}
-
 	public double getFullEnergy() {
 		return fullEnergy;
 	}
@@ -3047,3 +2925,4 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return false;
 	}
 }
+

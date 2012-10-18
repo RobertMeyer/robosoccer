@@ -46,13 +46,6 @@ public interface IRobotSnapshot {
     AtomicReference<Map<EquipmentSlot, EquipmentPart>> getEquipment();
     
     /**
-     * Returns the full health/energy of a robot
-     * 
-     * @return the full health/energy of a robot
-     */
-    double getFullEnergy();
-    
-    /**
      * Returns the scan radius of the robot.
      * 
      * @return scan radius of robot

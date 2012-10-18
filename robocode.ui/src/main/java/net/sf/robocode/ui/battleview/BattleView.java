@@ -280,7 +280,6 @@ public class BattleView extends Canvas {
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
         	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
-        		//Create ground field with spike for Spike Mode
         		createSpikeGround();
         	} else {
         		createGroundImage();
@@ -419,11 +418,6 @@ public class BattleView extends Canvas {
         }
     }
     
-    /**
-     * Create the ground field with a single spike.
-     * Spike will be location in the middle of the ground field.
-     * Position of the spike will be stored into battleManager.
-     */
     private void createSpikeGround(){
         // Reinitialize ground tiles
 
@@ -454,35 +448,47 @@ public class BattleView extends Canvas {
         groundGfx.setRenderingHints(renderingHints);
 
         groundGfx.setTransform(AffineTransform.getScaleInstance(scale, scale));
+
+        int count = 0;
         
-        /* Clear all previously stored spike position */
         spikePosX.clear();
         spikePosY.clear();
         
         for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
             for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
+            	
                 Image img = imageManager.getGroundTileImage(groundTiles[y][x]);
                 Image spikeImg = imageManager.getSpikeTileImage();
                 
                 if (img != null) {
-                	int yMiddleTile = NUM_VERT_TILES / 2;
-                	int xMiddleTile = NUM_HORZ_TILES / 2;
                 	
-                	if (y == yMiddleTile && x == xMiddleTile){
-                		int opposite = Math.abs(y * groundTileHeight - battleField.getHeight());
-                		spikePosX.add(x * groundTileWidth);
-               			spikePosY.add(opposite);
-               			
-               			groundGfx.drawImage(spikeImg, x * groundTileWidth, y * groundTileHeight, null);
-               		} else {
-               			groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
-               		}
+                	int randomNum = r.nextInt(100);
+                	
+                	if(randomNum > 95){
+                		if (count == 0){
+                			groundGfx.drawImage(spikeImg, x * groundTileWidth, y * groundTileHeight, null);
+                		
+                			count = count + 1;
+                			spikePosX.add(x * groundTileWidth);
+                			int opposite = Math.abs(y * groundTileHeight - battleField.getHeight());
+                			spikePosY.add(opposite);
+                			System.out.println("Tile X: "+x * groundTileWidth);
+                			System.out.println("Tile Y: "+opposite);
+                		} else {
+                			groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                		}
+                	} else {
+                		groundGfx.drawImage(img, x * groundTileWidth, y * groundTileHeight, null);
+                	}
                 }
             }
         }
         
-        /* Save spike position into BattleManager */
-        battleManager.saveSpikePos(spikePosX, spikePosY);
+        System.out.println(spikePosX);
+        System.out.println(spikePosY);
+        
+        battleManager.saveSpikePosX(spikePosX);
+        battleManager.saveSpikePosY(spikePosY);
     }
 
 	private void drawBattle(Graphics2D g, ITurnSnapshot snapShot) {
@@ -537,22 +543,17 @@ public class BattleView extends Canvas {
 		// Draw the border of the battlefield
 		drawBorder(g);
 
-
         if (snapShot != null) {
             // Draw all bullets
             drawBullets(g, snapShot);
             
             drawLandmines(g,snapShot);
 
-
             // Draw all text
             drawText(g, snapShot);
 
             // Draw obstacles
             drawObstacles(g, snapShot);
-            
-            // Draw all teleporters
-            drawTeleporters(g, snapShot);
         }
 
 		// Restore the graphics state
@@ -861,12 +862,11 @@ public class BattleView extends Canvas {
                 at = AffineTransform.getTranslateInstance(x, y);
                 at.rotate(robotSnapshot.getBodyHeading());
                 
-                // sets the image paths to null
+                // sets the body image path to null
                 String bodyPath = null;
                 String weaponPath = null;
                 String radarPath = null;
-                double fullEnergy = robotSnapshot.getFullEnergy();
-                double currentEnergy = robotSnapshot.getEnergy();
+                
                 
                 // If a custom body part is present in the robots equipment
                 // then the body image path is changed to the custom one.
@@ -1016,59 +1016,8 @@ public class BattleView extends Canvas {
 		return robotGraphics[robotIndex];
 	}
 
-    private void drawTeleporters(Graphics2D g, ITurnSnapshot snapShot) {
+	private void drawBullets(Graphics2D g, ITurnSnapshot snapShot) {
 		final Shape savedClip = g.getClip();
-
-		g.setClip(null);
-		
-		double x1, y1, x2, y2;
-		for (ITeleporterSnapshot teleportSnapshot : snapShot.getTeleporters()) {
-			x1 = teleportSnapshot.getPortal1X();
-			y1 = teleportSnapshot.getPortal1Y();
-			//if thise teleport is a blackhole draw it, else draw the second teleport
-			if (teleportSnapshot.isBlackHole()) {
-				/*g.setColor(Color.BLACK);
-			    Shape portal1 = new Ellipse2D.Double(x1-teleportSnapshot.getWidth()/2, battleField.getHeight() - y1-teleportSnapshot.getHeight()/2, 
-			    		teleportSnapshot.getWidth(), teleportSnapshot.getHeight());
-			    g.fill(portal1);
-			    */
-			    int size = (int)teleportSnapshot.getWidth()/40-1;
-			    RenderImage blackHoleRenderImage = imageManager.getBlackHoleRenderImage(size);
-			    AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight()-y1);
-			    blackHoleRenderImage.setTransform(at);
-			    blackHoleRenderImage.paint(g);
-			} else {
-				
-				x2 = teleportSnapshot.getPortal2X();
-				y2 = teleportSnapshot.getPortal2Y();
-				
-				RenderImage teleporterRenderImage = imageManager.getTeleporterRenderImage();
-				AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight() - y1);
-				AffineTransform at2 = AffineTransform.getTranslateInstance(x2, battleField.getHeight() - y2);
-				    
-				teleporterRenderImage.setTransform(at);
-				teleporterRenderImage.paint(g);
-				teleporterRenderImage.setTransform(at2);
-				teleporterRenderImage.paint(g);
-				
-				//lindon's ellipse stuff
-				/*g.setColor(Color.GREEN);
-			    Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
-			    Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
-			    
-				g.fill(portal1);
-				g.fill(portal2);
-				*/
-				 
-			}
-			
-		}
-		
-		g.setClip(savedClip);
-	}
-    
-    private void drawBullets(Graphics2D g, ITurnSnapshot snapShot) {
-        final Shape savedClip = g.getClip();
 
 		g.setClip(null);
 

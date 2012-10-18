@@ -41,7 +41,6 @@ import net.sf.robocode.ui.battle.AwtBattleAdaptor;
 import net.sf.robocode.ui.dialog.*;
 import net.sf.robocode.ui.editor.IRobocodeEditor;
 import net.sf.robocode.ui.packager.RobotPackager;
-import net.sf.robocode.ui.trackeditor.EditorFrame;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.events.BattleCompletedEvent;
 import robocode.control.events.IBattleListener;
@@ -369,17 +368,6 @@ public class WindowManager implements IWindowManagerExt {
             WindowUtil.packCenterShow(editor);
         } else {
             editor.setVisible(true);
-        }
-    }
-    
-    @Override
-    public void showTrackEditor() {
-        JFrame trackEditor = new EditorFrame();
-
-        if (!trackEditor.isVisible()) {
-            WindowUtil.packCenterShow(trackEditor);
-        } else {
-        	trackEditor.setVisible(true);
         }
     }
 

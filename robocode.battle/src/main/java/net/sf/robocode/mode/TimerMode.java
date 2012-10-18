@@ -9,13 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**
- * Mode Class used for Timer Mode. 
- * 
- * @author Team - MCJJ
- * @author Jake Ching Leong Ong
- */
-
 public class TimerMode extends ClassicMode {
 	
 	private JTextField setTime; 
@@ -44,10 +37,9 @@ public class TimerMode extends ClassicMode {
 			Pattern pattern = Pattern.compile("^\\d+$");
 			Matcher match = pattern.matcher(setTime.getText());
 			boolean isInt = match.matches();
-			//If user input is not an integer, put timer to 30 seconds.
 			if (isInt) {
 				values.put("timer", setTime.getText());
-			} else {
+			}else{
 				values.put("timer", "30");
 			}
 			return values;

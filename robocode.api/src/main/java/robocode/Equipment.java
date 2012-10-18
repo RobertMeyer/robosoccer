@@ -5,9 +5,9 @@ import java.util.Map;
 
 /**
  * A container for all the parts that can be equipped by AdvancedRobots.
- * 
- * @author CSSE2003 Team Forkbomb
- * 
+ *
+ * @author Malcolm Inglis (CSSE2003)
+ *
  */
 public class Equipment {
 
@@ -137,5 +137,4 @@ public class Equipment {
 	public static EquipmentPart getPart(String name) {
 		return parts.get(name);
 	}
-
 }

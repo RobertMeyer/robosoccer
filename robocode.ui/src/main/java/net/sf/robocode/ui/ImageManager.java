@@ -37,10 +37,6 @@ public class ImageManager implements IImageManager {
     private Image[] groundImages;
     private RenderImage[][] explosionRenderImages;
     private RenderImage debriseRenderImage;
-	private RenderImage teleporterImage;
-	private RenderImage[] blackHoleImages;
-	
-	
     private Image bodyImage;
     private Image gunImage;
     private Image radarImage;
@@ -53,8 +49,6 @@ public class ImageManager implements IImageManager {
     private HashMap<String, RenderImage> customImageCache;
     private HashMap<String, List<RenderImage>> customAnimCache;
 	private Image[] soccerField;
-	
-	//For storing spike image
 	private Image spikeImage;
 
     public ImageManager(ISettingsManager properties) {
@@ -69,7 +63,6 @@ public class ImageManager implements IImageManager {
         groundImages = new Image[9];
 		soccerField = new Image[2];
         explosionRenderImages = null;
-
         debriseRenderImage = null;
         bodyImage = null;
         gunImage = null;
@@ -274,7 +267,7 @@ public class ImageManager implements IImageManager {
         	try{
         	bodyImage = getImage(imagePath);
         	}catch(NullPointerException e) {
-        		bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
+        		gunImage = getImage("/net/sf/robocode/ui/images/body.png");
         	}
         }
         return bodyImage;
@@ -315,7 +308,7 @@ public class ImageManager implements IImageManager {
         	try{
         	radarImage = getImage(imagePath);
         	}catch(NullPointerException e) {
-        		radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
+        		gunImage = getImage("/net/sf/robocode/ui/images/radar.png");
         	}
         }
         return radarImage;
@@ -331,7 +324,7 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredBodyRenderImage(Integer color, String imagePath) {
         RenderImage img = robotBodyImageCache.get(color);
-
+        
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(imagePath), new Color(color, true)));
             robotBodyImageCache.put(color, img);
@@ -342,11 +335,6 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredGunRenderImage(Integer color, String imagePath) {
         RenderImage img = robotGunImageCache.get(color);
-        
-        // sets a custom gun image if one is provided and it is necessary.
-        if(imagePath != null || gunImage == null) {
-        	gunImage = getImage(imagePath);
-        }
 
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(imagePath), new Color(color, true)));
@@ -358,11 +346,6 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredRadarRenderImage(Integer color, String imagePath) {
         RenderImage img = robotRadarImageCache.get(color);
-        
-        // sets a custom radar image if one is provided and it is necessary.
-        if(imagePath != null || radarImage == null) {
-        	radarImage = getImage(imagePath);
-        }
 
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(imagePath), new Color(color, true)));
@@ -407,21 +390,4 @@ public class ImageManager implements IImageManager {
             return size() > MAX_NUM_COLORS;
         }
     }
-
-	public RenderImage getTeleporterRenderImage() {
-		if (teleporterImage == null) {
-			teleporterImage = new RenderImage(getImage("/net/sf/robocode/ui/images/portal.png"));
-		}
-		return teleporterImage;
-	}
-	
-	public RenderImage getBlackHoleRenderImage(int size){
-		if(blackHoleImages == null){
-			blackHoleImages = new RenderImage[3];
-			blackHoleImages[0] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole40.png"));
-			blackHoleImages[1] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole80.png"));
-			blackHoleImages[2] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole120.png"));
-		}
-		return blackHoleImages[size];
-	}
 }

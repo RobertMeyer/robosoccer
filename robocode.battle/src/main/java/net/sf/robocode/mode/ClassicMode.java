@@ -35,7 +35,7 @@ public class ClassicMode implements IMode {
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
-	
+
     /* Overall Score variables */
 	protected RobotPeer rPeer;
 	protected int numRobots;
@@ -90,11 +90,11 @@ public class ClassicMode implements IMode {
 	public int setCellHeight(BattleRules rules) {
 		return 0;
 	}
-	
+
 	public int setWallWidth(BattleRules rules) {
 		return 0;
 	}
-	
+
 	public int setWallHeight(BattleRules rules) {
 		return 0;
 	}
@@ -450,10 +450,10 @@ public class ClassicMode implements IMode {
 	public boolean allowsOneRobot() {
 		return false;
 	}
-	
+
 
 	public void robotKill(RobotPeer owner, RobotPeer otherRobot) {
 		// do nothing
 	}
-	
+
 }

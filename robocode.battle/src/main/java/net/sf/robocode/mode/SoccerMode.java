@@ -285,9 +285,4 @@ public class SoccerMode extends ClassicMode implements IMode {
     public BattleResultsTableModel getCustomResultsTable() {
     	return resultsTable;
     }
-	
-	@Override
-	public boolean allowsOneRobot() {
-		return true;
-	}
 }
