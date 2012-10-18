@@ -42,12 +42,6 @@ public class NewMinionsModeTab extends JPanel{
 	private JTextField minionUtlTxt = new JTextField();
 	private JButton dlgOkBtn = new JButton();
 	private JButton dlgCancelBtn = new JButton();
-	private boolean onlyShowSource;
-	private boolean onlyShowWithPackage;
-	private boolean onlyShowRobots;
-	private boolean onlyShowDevelopment;
-	private boolean onlyShowInJar;
-	private boolean ignoreTeamRobots;
 	private IWindowManager window;
 	private CustomDialog selectMinion;
 	private int currentSelecting = -1;
@@ -79,10 +73,10 @@ public class NewMinionsModeTab extends JPanel{
 		
 		repository = net.sf.robocode.core.Container.createComponent(IRepositoryManager.class);
 		
-		List<IRepositoryItem> minionsRepoList = repository.filterRepositoryItems(onlyShowSource,
-		         onlyShowWithPackage, onlyShowRobots,
-		         onlyShowDevelopment, false,
-		         ignoreTeamRobots, onlyShowInJar, true, minionType);
+		List<IRepositoryItem> minionsRepoList = repository.filterRepositoryItems(false,
+		         false, true,
+		         false, false,
+		         true, false, true, minionType);
 		
 		
 		
@@ -120,7 +114,10 @@ public class NewMinionsModeTab extends JPanel{
 				selectMinion = new CustomDialog(window.getRobocodeFrame(),"Select minions",true,"UTILITY");
 			}
 			currentIndex = selectMinion.minionList.getSelectedIndex();
-			currentSelection = selectMinion.minionList.getSelectedValue().toString();
+			if(currentIndex > 0)
+				currentSelection = selectMinion.minionList.getSelectedValue().toString();
+			else
+				return;
 			selectMinion.dispose();
 			if(currentIndex >= 0) {
 				switch(currentSelecting){
