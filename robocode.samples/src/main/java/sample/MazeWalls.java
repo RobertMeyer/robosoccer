@@ -84,6 +84,7 @@ public class MazeWalls extends Robot {
             lastX = this.getX();
             lastY = this.getY();
             turnLeft = !turnLeft;
+            fire(2);
         }
     }
 

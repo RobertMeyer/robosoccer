@@ -98,7 +98,11 @@ public class ClassicMode implements IMode {
 	public int setWallHeight(BattleRules rules) {
 		return 0;
 	}
-
+	
+	public boolean dWallSetting(BattleRules battleRules) {
+		return false;
+	}
+	
 	/**
 	 * Returns a list of ItemDrop's to
 	 * spawn in the beginning of the round

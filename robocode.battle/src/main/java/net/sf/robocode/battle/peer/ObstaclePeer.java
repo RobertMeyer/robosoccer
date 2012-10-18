@@ -73,6 +73,10 @@ public class ObstaclePeer {
 		this.boundingBox = new BoundingRectangle();
 		updateBoundingBox();
 	}
+	
+	public void destroy() {
+		battle.registerDestroyedWall(this);
+	}
 
 	public void setX(double x) {
 		this.x = x;

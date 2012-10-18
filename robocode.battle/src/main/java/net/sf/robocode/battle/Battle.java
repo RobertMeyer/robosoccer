@@ -199,6 +199,7 @@ public class Battle extends BaseBattle {
 	
 	/* Wall variables */
 	private int cellWidth, cellHeight, wallWidth, wallHeight;
+	private boolean dWalls = false;
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
@@ -238,13 +239,18 @@ public class Battle extends BaseBattle {
         botzillaActive = false;
 
         bp = battleProperties;
-        numObstacles = battleMode.setNumObstacles(battleRules);
-        obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
+        if (battleMode.toString() == "Obstacle Mode") {
+        	numObstacles = battleMode.setNumObstacles(battleRules);
+        	cellWidth = battleMode.setCellWidth(battleRules);
+        	cellHeight = battleMode.setCellHeight(battleRules);
+            obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this, cellWidth, cellHeight);
+        }
         if (battleMode.toString() == "Maze Mode") {
         	cellWidth = battleMode.setCellWidth(battleRules);
         	cellHeight = battleMode.setCellHeight(battleRules);
         	wallWidth = battleMode.setWallWidth(battleRules);
         	wallHeight = battleMode.setWallHeight(battleRules);
+        	dWalls = battleMode.dWallSetting(battleRules);
         	System.out.println(cellWidth + " " + cellHeight + " " + wallWidth + " " + wallHeight);
         	obstacles = MazeMode.generateMaze(bp, battleRules, this, cellWidth, cellHeight, wallWidth, wallHeight);
         }        
@@ -1310,5 +1316,19 @@ public class Battle extends BaseBattle {
 				return;
 			}
 		}
+	}
+
+	public void registerDestroyedWall(ObstaclePeer o) {
+		if (dWalls) {
+			for (ObstaclePeer obstacle : obstacles) {
+				System.out.println("Herp");
+				if (obstacle == o) {
+					obstacles.remove(o);
+					System.out.println("Derp");
+					return;
+				}
+			}
+		}
+		
 	}
 }

@@ -371,6 +371,9 @@ public class BulletPeer {
             		state = BulletState.HIT_WALL;
     				frame = 0;
     				owner.addEvent(new BulletMissedEvent(createBullet(false)));
+    				obstacle.destroy();
+    				/* Can only hit 1 obstacle with 1 bullet */
+    				return;
         		}
             }
 		}
