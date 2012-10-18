@@ -60,7 +60,6 @@ public class Crazy extends AdvancedRobot {
             setTurnRight(180);
             // .. and wait for that turn to finish.
             waitFor(new TurnCompleteCondition(this));
-            fireLandmine(1);
             // then back to the top to do it all again
         }
     }
@@ -93,7 +92,6 @@ public class Crazy extends AdvancedRobot {
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
-    
     }
 
     /**
