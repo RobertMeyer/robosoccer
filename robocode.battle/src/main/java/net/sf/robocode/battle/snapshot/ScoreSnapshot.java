@@ -104,7 +104,7 @@ public final class ScoreSnapshot implements Serializable, IXmlSerializable,
     public String toString() {
         return this.getTotalScore() + "/" + this.getCurrentScore();
     }
-    
+        
     /**
      * Initialise the scores to all be 0.0
      */

@@ -178,7 +178,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 			outputStreamSnapshot = robot.readOutText();
 		}
 
-		robotScoreSnapshot = new ScoreSnapshot(robot.getName(), robot.getRobotStatistics());
+		robotScoreSnapshot = new ScoreSnapshot(robot.getName(), robot.getRobotStatistics().getScoreMap());
 	}
 
 	@Override

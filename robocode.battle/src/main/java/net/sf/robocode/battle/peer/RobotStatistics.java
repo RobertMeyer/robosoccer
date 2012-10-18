@@ -114,6 +114,14 @@ public class RobotStatistics implements ContestantStatistics {
     		scores.get(score).add(1, resultsScores.get(score));
     	}
     }
+    
+    /**
+     * Get the scores current map
+     * @return
+     */
+    public HashMap<String, ArrayList<Double>> getScoreMap() {
+    	return scores;
+    }
 
     public RobotStatistics(RobotPeer robotPeer, int robots) {
         super();

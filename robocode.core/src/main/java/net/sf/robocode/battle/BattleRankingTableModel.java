@@ -146,51 +146,51 @@ public class BattleRankingTableModel extends AbstractTableModel {
             }
 
             case 3: {
-                final double current = statistics.getCurrentSurvivalScore();
-                final double total = statistics.getTotalSurvivalScore();
+                final double current = statistics.getScores(true, "survival");
+                final double total = statistics.getScores(false, "survival");
 
                 return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
             }
 
             case 4:
-                return (int) (statistics.getTotalLastSurvivorBonus() + 0.5);
+                return (int) (statistics.getScores(false, "lastsurvivorbonus") + 0.5);
 
             case 5: {
-                final double current = statistics.getCurrentBulletDamageScore();
-                final double total = statistics.getTotalBulletDamageScore();
+                final double current = statistics.getScores(true, "bulletdamage");
+                final double total = statistics.getScores(true, "bulletdamage");
 
                 return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
             }
 
             case 6: {
-                final double current = statistics.getCurrentBulletKillBonus();
-                final double total = statistics.getTotalBulletKillBonus();
+                final double current = statistics.getScores(true, "bulletkillbonus");
+                final double total = statistics.getScores(false, "bulletkillbonus");
 
                 return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
             }
 
             case 7: {
-                final double current = statistics.getCurrentRammingDamageScore();
-                final double total = statistics.getTotalRammingDamageScore();
+                final double current = statistics.getScores(true, "rammingdamage");
+                final double total = statistics.getScores(false, "rammingdamage");
 
                 return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
             }
 
             case 8: {
-                final double current = statistics.getCurrentRammingKillBonus();
-                final double total = statistics.getTotalRammingKillBonus();
+                final double current = statistics.getScores(true, "rammingkillbonus");
+                final double total = statistics.getScores(false, "rammingkillbonus");
 
                 return (int) (current + 0.5) + " / " + (int) (total + current + 0.5);
             }
 
             case 9:
-                return "" + statistics.getTotalFirsts();
+                return "" + statistics.getScores(false, "firsts");
 
             case 10:
-                return "" + statistics.getTotalSeconds();
+                return "" + statistics.getScores(false, "seconds");
 
             case 11:
-                return "" + statistics.getTotalThirds();
+                return "" + statistics.getScores(false, "thirds");
 
             default:
                 return "";
