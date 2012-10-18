@@ -5,20 +5,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.peer.ObstaclePeer;
-import net.sf.robocode.battle.peer.RobotPeer;
-
 import robocode.BattleRules;
-import robocode.control.RandomFactory;
 
 /**
  * Creates a game mode with obstacles placed on the battlefield
@@ -110,17 +104,4 @@ public class ObstacleMode extends ClassicMode {
 		}
 		return obstacles;
 	}
-	
-	public static List<ObstaclePeer> generateMazeObstacles(int num, BattleProperties bp, BattleRules battleRules, Battle battle) {
-		List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
-		/* Depth first search goes here. */		
-		return obstacles;
-	}
-	
-	public static List<ObstaclePeer> generateRoomObstacles(int num, BattleProperties bp, BattleRules battleRules, Battle battle) {
-		List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
-		/* Recursive Division Maze Generation goes here. */		
-		return obstacles;
-	}
-	
 }

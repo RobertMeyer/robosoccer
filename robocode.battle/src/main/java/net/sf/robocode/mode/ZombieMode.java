@@ -1,5 +1,7 @@
 package net.sf.robocode.mode;
 
+import java.util.ArrayList;
+
 import robocode.control.RobocodeEngine;
 import robocode.control.RobotSpecification;
 import net.sf.robocode.battle.BattlePeers;
@@ -40,7 +42,7 @@ public class ZombieMode extends ClassicMode {
     }
     
     public void addRobots(int currentTurn, BattlePeers peers){
-    	if (peers == null){
+    	if (peers != null){
     		this.peers = peers;
     	}
     	if(currentTurn % 50 == 0) {
@@ -72,17 +74,25 @@ public class ZombieMode extends ClassicMode {
 		if (peers != null){
 			roundOver = true;
 			for (RobotPeer robotPeer : peers.getRobots()) {
-				if (!robotPeer.isZombie()){
+				if (!robotPeer.isZombie() && !robotPeer.isDead()){
 					roundOver = false;
 				}
 			}
-		}
-		if (roundOver) {
-			for (RobotPeer robotPeer : peers.getRobots()) {
-				robotPeer.kill();
+			if(roundOver){
+				peers.removeRobots(getZombies(peers));
 			}
 		}
-		return endTimer > 5*time;
+		return endTimer > time*5;
+	}
+	
+	private ArrayList<RobotPeer> getZombies(BattlePeers peers){
+		ArrayList<RobotPeer> zombies = new ArrayList<RobotPeer>();
+		for (RobotPeer peer : peers.getRobots()){
+			if(peer.isZombie()){
+				zombies.add(peer);
+			}
+		}
+		return zombies;
 	}
 >>>>>>> origin/master
 }

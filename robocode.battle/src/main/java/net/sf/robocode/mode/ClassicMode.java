@@ -35,6 +35,7 @@ public class ClassicMode implements IMode {
 	protected GuiOptions uiOptions;
 	/* Results table */
 	protected BattleResultsTableModel resultsTable;
+	
     /* Overall Score variables */
 	protected RobotPeer rPeer;
 	protected int numRobots;
@@ -82,6 +83,22 @@ public class ClassicMode implements IMode {
         return 0;
     }
     
+	public int setCellWidth(BattleRules rules) {
+		return 0;
+	}
+
+	public int setCellHeight(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallWidth(BattleRules rules) {
+		return 0;
+	}
+	
+	public int setWallHeight(BattleRules rules) {
+		return 0;
+	}
+
 	/**
 	 * Returns a list of ItemDrop's to
 	 * spawn in the beginning of the round
@@ -400,7 +417,11 @@ public class ClassicMode implements IMode {
     /**
 	 * Setup so the default overall score is affected by all scores
 	 * @param robotStatistics
+<<<<<<< HEAD
 	 * @return HashMap containing the scores
+=======
+	 * @return Double representing the scores
+>>>>>>> origin/master
 	 */
 	public Double getCustomOverallScore(RobotStatistics robotStatistics) {
 		Double scores = 0.0;
