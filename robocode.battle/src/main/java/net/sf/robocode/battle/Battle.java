@@ -196,6 +196,9 @@ public class Battle extends BaseBattle {
 	// List of teleporters in the arena
 	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private BattlePeers peers;
+	
+	/* Wall variables */
+	private int cellWidth, cellHeight, wallWidth, wallHeight;
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
@@ -237,7 +240,14 @@ public class Battle extends BaseBattle {
         bp = battleProperties;
         numObstacles = battleMode.setNumObstacles(battleRules);
         obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
-
+        if (battleMode.toString() == "Maze Mode") {
+        	cellWidth = battleMode.setCellWidth(battleRules);
+        	cellHeight = battleMode.setCellHeight(battleRules);
+        	wallWidth = battleMode.setWallWidth(battleRules);
+        	wallHeight = battleMode.setWallHeight(battleRules);
+        	System.out.println(cellWidth + " " + cellHeight + " " + wallWidth + " " + wallHeight);
+        	obstacles = MazeMode.generateMaze(bp, battleRules, this, cellWidth, cellHeight, wallWidth, wallHeight);
+        }        
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, this,
@@ -558,6 +568,8 @@ public class Battle extends BaseBattle {
         }
 
         handleDeadRobots();
+        handleDeadFrozenRobots();
+        
         if (getBattleMode().respawnsOn()) {
         	if (super.getTime() > getBattleMode().turnLimit()) {
         		shutdownTurn();
@@ -825,6 +837,19 @@ public class Battle extends BaseBattle {
 		botzillaPeer.startRound(waitMillis, waitNanos);
 		// TODO make appear and running
 
+	}
+	
+	/**
+	 * Checks the battlefield for any dead frozen robots, and removes the ice
+	 * cube image, and force ends the freeze for the next round.
+	 */
+	private void handleDeadFrozenRobots() {
+        for (RobotPeer robot : robotList) {
+        	if (robot.containsImage("freeze") && robot.isDead()) {
+	        		robot.removeImage("freeze");
+	        		robot.setKsFrozen(false);
+        	}
+        }
 	}
 
     private void handleDeadRobots() {
@@ -1240,5 +1265,45 @@ public class Battle extends BaseBattle {
 	        }
 	    }
 	}
+	 
+	/**
+	 * This method adds a IRenderable to the scene.
+	 * 
+	 * @param obj
+	 *            a IRenderable object.
+	 */
+	public void addCustomObject(IRenderable obj) {
+		System.out.println("well");
+		if (obj != null) {
+			System.out.println("added");
+			customObject.add(obj);
+		}
+	}
 
+	/**
+	 * This method removes a IRenderable in the scene.
+	 * 
+	 * @param obj
+	 *            a IRenderable object to remove.
+	 */
+	public void removeCustomObject(IRenderable obj) {
+		if (obj != null) {
+			customObject.remove(obj);
+		}
+	}
+
+	/**
+	 * This method removes a IRenderable in the scene.
+	 * 
+	 * @param name
+	 *            of IRenderable to remove.
+	 */
+	public void removeCustomObjectByName(String name) {
+		for (IRenderable obj : customObject) {
+			if (obj.getName().equals(name)) {
+				customObject.remove(obj);
+				return;
+			}
+		}
+	}
 }

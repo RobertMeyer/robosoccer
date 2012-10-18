@@ -119,10 +119,10 @@ public class AlienComposition implements IBasicRobot {
         public void onWin(WinEvent e) {
         }
 
-		@Override
-		public void onWaypointPassed(WaypointPassedEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+//		@Override
+//		public void onWaypointPassed(WaypointPassedEvent event) {
+//			// TODO Auto-generated method stub
+//			
+//		}
     }
 }

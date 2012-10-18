@@ -11,7 +11,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
  * in a very overpowered weapon).
  **/
 public class SuperTank implements IKillstreakAbility {
-	private static final int SUPER_TIME = 800;
+	private static final int SUPER_TIME = 1200;
 
 	/**
 	 * Call the SuperRobot
