@@ -1729,10 +1729,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     }
                     addEvent(
                             new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
-                                              otherRobot.energy, atFault));
+                                              otherRobot.energy, atFault, otherRobot.isHeatRobot()));
                     otherRobot.addEvent(
                             new HitRobotEvent(getNameForEvent(this),
-                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false));
+                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false, isHeatRobot()));
                 }
             }
         }
@@ -1792,7 +1792,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 			
 			if (this.isHeatRobot()) {
-				meltCredit++;
+				otherRobot.meltCredit++;
 				return true;
 			}
 		}
@@ -2254,7 +2254,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					boolean x = isHeatRobot();
 					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-							otherRobot.getVelocity(), otherRobot.isFrozen(), otherRobot.isFreezeRobot(), isHeatRobot());
+							otherRobot.getVelocity(), otherRobot.isFrozen(), otherRobot.isFreezeRobot(), otherRobot.isHeatRobot());
 	
 					addEvent(event);
 				}

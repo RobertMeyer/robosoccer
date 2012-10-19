@@ -58,6 +58,11 @@ public class chaseHeatRobot extends AdvancedRobot {
 	 * @see robocode.Robot#onHitRobot(robocode.HitRobotEvent)
 	 */
 	public void onHitRobot(HitRobotEvent e) { 
+		if (e.isHeatRobot()) {
+			setBack(100);
+			execute();
+			return;
+		}
 		// Shoot the robot that ran into us
 		setTurnGunRight(getHeading() - getGunHeading() + e.getBearing());
 		if (getGunHeat() == 0 && Math.abs(getGunTurnRemaining()) < 10) {
@@ -79,9 +84,9 @@ public class chaseHeatRobot extends AdvancedRobot {
 	
 	public void onScannedRobot(ScannedRobotEvent e) {
 		if (e.isHeatBot()) {
-			setStop();
-			execute();
-			setAllColors(Color.GREEN);
+			setTurnRight(e.getBearing());
+			setAhead(150);
+			scan();
 			return;
 		}
 		
