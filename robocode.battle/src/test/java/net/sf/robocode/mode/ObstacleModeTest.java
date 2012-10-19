@@ -1,5 +1,8 @@
 package net.sf.robocode.mode;
 
+import java.io.File;
+import java.io.IOException;
+
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.BattleProperties;
@@ -7,6 +10,7 @@ import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.host.CpuManager;
 import net.sf.robocode.host.HostManager;
 import net.sf.robocode.host.security.ThreadManager;
+import net.sf.robocode.io.Logger;
 import net.sf.robocode.recording.RecordManager;
 import net.sf.robocode.repository.RepositoryManager;
 import net.sf.robocode.settings.SettingsManager;
@@ -23,21 +27,37 @@ import robocode.control.RobotSpecification;
 import static org.junit.Assert.*;
 
 public class ObstacleModeTest {
-	/*BattleProperties bp;
-	BattleManager bm;
-	HostManager hm;
-	SettingsManager sm;
-	RepositoryManager rm;
-	CpuManager cm;
-	BattleEventDispatcher bd;
-	ThreadManager tm;
-	RecordManager rem;
-	Battle battle;
+	/*protected static String robotsPath;
+	private BattleProperties bp;
+	private BattleManager bm;
+	private HostManager hm;
+	private SettingsManager sm;
+	private RepositoryManager rm;
+	private CpuManager cm;
+	private BattleEventDispatcher bd;
+	private ThreadManager tm;
+	private RecordManager rem;
+	private Battle battle;
 	
 	RobocodeEngine engine;
 	
 	@Before
 	public void setup() {
+		System.setProperty("EXPERIMENTAL", "true");
+        System.setProperty("TESTING", "true");
+        System.setProperty("WORKINGDIRECTORY", "target/test-classes");
+        try {
+        	if (new File("").getAbsolutePath().endsWith("robocode.tests")) {
+                robotsPath = new File("../robocode.tests.robots").getCanonicalPath();
+            } else {
+                throw new Error("Unknown directory");
+            }
+        } catch (IOException e) {
+            e.printStackTrace(Logger.realErr);
+        }
+        System.setProperty("ROBOTPATH", robotsPath + "/target/classes");
+        
+        
 		tm = new ThreadManager();
 		sm = new SettingsManager();
 		hm = new HostManager(sm, tm);
