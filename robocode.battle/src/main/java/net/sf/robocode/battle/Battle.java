@@ -99,8 +99,6 @@ import static java.lang.Math.round;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.jws.WebParam.Mode;
-
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemController;
@@ -1325,10 +1323,8 @@ public class Battle extends BaseBattle {
 	public void registerDestroyedWall(ObstaclePeer o) {
 		if (dWalls) {
 			for (ObstaclePeer obstacle : obstacles) {
-				System.out.println("Herp");
 				if (obstacle == o) {
 					obstacles.remove(o);
-					System.out.println("Derp");
 					return;
 				}
 			}
