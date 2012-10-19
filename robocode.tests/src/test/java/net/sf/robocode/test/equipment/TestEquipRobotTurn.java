@@ -24,11 +24,11 @@ public class TestEquipRobotTurn extends RobocodeTestBed {
 	
 	@Override
     public String getRobotNames() {
-        return "";
+        return "tested.equipment.TurnLarge,tested.equipment.TurnSmall";
     }
 	
-//	@Override
-//    public String getInitialPositions() {
-//    	return "(50,50,0),(50,100,0)";
-//    }
+	@Override
+    public String getInitialPositions() {
+    	return "(50,50,0),(50,100,0)";
+    }
 }

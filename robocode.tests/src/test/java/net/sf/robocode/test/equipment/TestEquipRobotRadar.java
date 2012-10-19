@@ -25,11 +25,11 @@ public class TestEquipRobotRadar extends RobocodeTestBed {
 	
 	@Override
     public String getRobotNames() {
-        return "";
+        return "tested.equipment.RadarLarge,tested.equipment.RadarSmall";
     }
 	
-//	@Override
-//    public String getInitialPositions() {
-//    	return "(50,50,0),(50,100,0)";
-//    }
+	@Override
+    public String getInitialPositions() {
+    	return "(50,50,0),(50,100,0)";
+    }
 }
