@@ -10,7 +10,16 @@ import robocode.AdvancedRobot;
  */
 public class RadarLarge extends AdvancedRobot {
 	
-	public void run(){	
+	public void run(){
+		equip("Radar Test Large");
+		setAdjustRadarForRobotTurn(true);
+		setAdjustRadarForGunTurn(true);
+		while(true){
+			if(getTime()%10 == 0){
+				setTurnRadarRight(65);
+			}
+			execute();
+		}
 	}
 	
 }
