@@ -11,7 +11,7 @@ import robocode.control.events.TurnEndedEvent;
  * This is to test for the equipment robot energy attribute.
  * 
  * Thus it tests:
- * RobotAttribute#ENERGY
+ * {@link robocode.RobotAttribute#ENERGY}
  * 
  * @author Jayke Anderson - CSSE2003
  *

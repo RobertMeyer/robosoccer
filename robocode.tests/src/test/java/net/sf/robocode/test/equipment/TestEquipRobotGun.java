@@ -5,7 +5,6 @@ import net.sf.robocode.test.helpers.RobocodeTestBed;
 
 import org.junit.Test;
 
-import robocode.RobotAttribute;
 import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
 
@@ -13,8 +12,8 @@ import robocode.control.snapshot.IRobotSnapshot;
  * This is to test for the gun heat rate and gun turn angle attributes.
  * 
  * Thus it tests:
- * {@link RobotAttribute#GUN_HEAT_RATE}
- * {@link RobotAttribute#GUN_TURN_ANGLE}
+ * {@link robocode.RobotAttribute#GUN_HEAT_RATE}
+ * {@link robocode.RobotAttribute#GUN_TURN_ANGLE}
  * 
  * @author Jayke Anderson - CSSE2003
  *
