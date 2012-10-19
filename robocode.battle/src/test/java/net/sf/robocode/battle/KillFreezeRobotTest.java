@@ -79,11 +79,9 @@ public class KillFreezeRobotTest {
 	@Test
 	public void testKillFreezeBot() {
 		
-		 * RobotPeer freezeRobot = new RobotPeer(battle, hostManager,
-		 * freezeSpecification, 0, null, 0);
-		 
 		RobotPeer freezeRobot = new RobotPeer(battle, hostManager,
-				freezeSpecification, 0, null, 0);
+		freezeSpecification, 0, null, 0);
+		 
 		RobotPeer otherRobot = new RobotPeer(battle, hostManager,
 				otherSpecification, 0, null, 0);
 		RobotPeer thirdRobot = new RobotPeer(battle, hostManager,
