@@ -381,21 +381,27 @@ public class Battle extends BaseBattle {
 	/**
 	 * Kills all freeze robots on the battlefield if there is only 1 non freeze robot remaining
 	 */
-	public void killFreezeRobot(){
-		//stores number of non freeze robots
-		int numberOfNonFreezeBots = 0;
-		//finds all the alive non freeze robots
+	public void killFreezeAndHeatRobot(){
+		//stores number of non freeze or non heat robots
+		int numberOfNonFreezeOrHeatBots = 0;
+		//finds all the alive non freeze or non heat robots
 		for(int i = 0; i < robotList.size(); i++){
 			if(!robotList.get(i).isFreezeRobot() && robotList.get(i).isAlive()){
-				numberOfNonFreezeBots++;
+				if(!robotList.get(i).isHeatRobot() && robotList.get(i).isAlive()){
+					numberOfNonFreezeOrHeatBots++;
+				}
 			}
 		}
-		//Checks if number of non freeze robots == 1
-		if(numberOfNonFreezeBots == 1){
-			//finds all the alive freeze robots
+		//Checks if number of non freeze or heat robots == 1
+		if(numberOfNonFreezeOrHeatBots == 1){
+			//finds all the alive freeze and heat robots
 			for(int i = 0; i < robotList.size(); i++){
 				if(robotList.get(i).isFreezeRobot() && robotList.get(i).isAlive()){
-					//kills the freeze robot
+					//kills the freeze or heat robot
+					robotList.get(i).kill();
+				}
+				if(robotList.get(i).isHeatRobot() && robotList.get(i).isAlive()){
+					//kills the freeze or heat robot
 					robotList.get(i).kill();
 				}
 			}
@@ -683,7 +689,7 @@ public class Battle extends BaseBattle {
 			itemControl.removeItem(item);
 		}
 		
-		killFreezeRobot();
+		killFreezeAndHeatRobot();
 		
 		currentTurn++;
 
