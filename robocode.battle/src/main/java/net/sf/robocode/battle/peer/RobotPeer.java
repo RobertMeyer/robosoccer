@@ -1450,7 +1450,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
         // Now check for item collision
         checkItemCollision(items);
-
+        
+        // Now check if the robot has reached the centre of a maze
+        if (boundingBox.intersects(getBattleFieldWidth()/2 - 50, getBattleFieldHeight()/2 - 50, 100, 100) && 
+        			battle.getBattleMode().toString() == "Maze Mode"){
+        	for (RobotPeer otherRobot: robots) {
+        		if (!(otherRobot == null || otherRobot == this || otherRobot.isDead()))
+        				otherRobot.kill();
+        	}
+        }
+        
 		// Scan false means robot did not call scan() manually.
 		// But if we're moving, scan
 		if (!scan) {
