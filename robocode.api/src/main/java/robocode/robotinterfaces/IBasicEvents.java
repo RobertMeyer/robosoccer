@@ -66,6 +66,8 @@ public interface IBasicEvents {
      * @see Event
      */
     void onBulletHit(BulletHitEvent event);
+    
+    void onLandmineHit(LandmineHitEvent event);
 
     /**
      * This method is called when one of your bullets hits another bullet.
@@ -137,6 +139,8 @@ public interface IBasicEvents {
      * @see Event
      */
     void onHitByBullet(HitByBulletEvent event);
+    
+    void onHitByLandmine(HitByLandmineEvent event);
 
     /**
      * This method is called when your robot collides with another robot.
@@ -253,17 +257,17 @@ public interface IBasicEvents {
      * @see Rules#RADAR_SCAN_RADIUS
      */
     void onScannedRobot(ScannedRobotEvent event);
-    
-    /**
-     * This method is called when your robot passes a waypoint.
-     * You should override it in your robot if you want to be informed of this event.
-     * 
-     * @param event the waypoint-passed event seen by the game.
-     * @see WaypointPassedEvent
-     * @see Event
-     */
-    void onWaypointPassed(WaypointPassedEvent event);
 
+    /**
+    * This method is called when your robot passes a waypoint.
+    * You should override it in your robot if you want to be informed of this event.
+    *
+    * @param event the waypoint-passed event seen by the game.
+    * @see WaypointPassedEvent
+    * @see Event
+    */
+    void onWaypointPassed(WaypointPassedEvent event);
+        
     /**
      * This method is called when another robot dies.
      * You should override it in your robot if you want to be informed of this
@@ -287,4 +291,15 @@ public interface IBasicEvents {
      * @see Event
      */
     void onWin(WinEvent event);
+
+    /**
+     * This method is called if your robot is frozen in battle.
+     * You should override it in your robot if you want to be informed of this 
+     * event.
+     * 
+     * @param event the freeze event set by the game
+     * @see RobotFrozenEvent
+     * @see Event
+     */
+	void onRobotFrozen(RobotFrozenEvent event);
 }

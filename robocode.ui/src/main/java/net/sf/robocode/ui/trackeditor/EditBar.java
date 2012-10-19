@@ -1,10 +1,7 @@
 package net.sf.robocode.ui.trackeditor;
 
-import java.awt.Insets;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 

@@ -5,9 +5,9 @@ import java.util.Map;
 
 /**
  * A container for all the parts that can be equipped by AdvancedRobots.
- * 
- * @author CSSE2003 Team Forkbomb
- * 
+ *
+ * @author Malcolm Inglis (CSSE2003)
+ *
  */
 public class Equipment {
 
@@ -104,6 +104,29 @@ public class Equipment {
 						.set(RobotAttribute.GUN_TURN_ANGLE, 40)
 						.set(RobotAttribute.SPEED, 40)
 						.set(RobotAttribute.ENERGY_REGEN, 30).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Energy Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
+						.set(RobotAttribute.ENERGY, 20).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Energy Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
+						.set(RobotAttribute.ENERGY, -20).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Gun Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.RADAR)
+						.set(RobotAttribute.GUN_HEAT_RATE, 40)
+						.set(RobotAttribute.GUN_TURN_ANGLE, 40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Gun Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.RADAR)
+						.set(RobotAttribute.GUN_HEAT_RATE, -40)
+						.set(RobotAttribute.GUN_TURN_ANGLE, -40).build());
+		
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
 				.sound("Test1").build());
@@ -126,5 +149,4 @@ public class Equipment {
 	public static EquipmentPart getPart(String name) {
 		return parts.get(name);
 	}
-
 }

@@ -47,14 +47,14 @@ import static java.lang.Math.*;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import net.sf.robocode.battle.IBattleManager;
-import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.snapshot.RobotSnapshot;
-import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.mode.BotzillaMode;
+import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.settings.ISettingsListener;
@@ -74,15 +74,14 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.snapshot.IBulletSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.IObstacleSnapshot;
+import robocode.control.snapshot.ILandmineSnapshot;
 import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
+import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.RenderableType;
-
-import java.io.*;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -95,6 +94,7 @@ public class BattleView extends Canvas {
     private final static String ROBOCODE_SLOGAN = "Build the best, destroy the rest!";
     private final static Color CANVAS_BG_COLOR = SystemColor.controlDkShadow;
     private final static Area BULLET_AREA = new Area(new Ellipse2D.Double(-0.5, -0.5, 1, 1));
+    private final static Area LANDMINE_AREA = new Area(new Ellipse2D.Double(-0.5, -0.5, 1, 1));
     private final static int ROBOT_TEXT_Y_OFFSET = 24;
     // The battle and battlefield,
     private BattleField battleField;
@@ -130,6 +130,10 @@ public class BattleView extends Canvas {
 
     // Hold current custom images to be rendered.
     private HashMap<String, RenderImage> customImage;
+    // Hold current custom animated images to be rendered.
+    private HashMap<String, List<RenderImage>> customAnim;
+    // Hold current frame-index of each animated image.
+    private HashMap<String, Integer> customAnimFrames;
     
     //To store spike position
     private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
@@ -141,8 +145,9 @@ public class BattleView extends Canvas {
 		this.imageManager = imageManager; 
         this.battleManager = windowManager.getBattleManager();
         this.customImage = new HashMap<String, RenderImage>();
-
-		battleField = new BattleField(800, 600);
+        this.customAnim = new HashMap<String, List<RenderImage>>();
+        this.customAnimFrames = new HashMap<String, Integer>();
+  		battleField = new BattleField(800, 600);
 
 		new BattleObserver(windowManager);
 
@@ -273,7 +278,7 @@ public class BattleView extends Canvas {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
         	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
-        		// Botzilla
+        		//Add image for Botzilla, if Botzilla mode
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
         	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
@@ -288,6 +293,7 @@ public class BattleView extends Canvas {
             groundImage = null;
         }
         
+        //If there are Dispensers in the round, add the custom image for them
         if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
         		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
         	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
@@ -533,9 +539,11 @@ public class BattleView extends Canvas {
 		// Draw the border of the battlefield
 		drawBorder(g);
 
-		if (snapShot != null) {
-			// Draw all bullets
-			drawBullets(g, snapShot);
+        if (snapShot != null) {
+            // Draw all bullets
+            drawBullets(g, snapShot);
+            
+            drawLandmines(g,snapShot);
 
             // Draw all text
             drawText(g, snapShot);
@@ -691,10 +699,55 @@ public class BattleView extends Canvas {
 				g.setColor(oldColour);
 				g.setComposite(oldState);
 				g.setTransform(oldAt);
+			} else if(snap.getType() == RenderableType.SPRITE_ANIMATION) {
+				String name = snap.getName();
+				// Load image from cache
+				List<RenderImage> imgs = customAnim.get(name);
+				
+				// Check if image exists in Cache
+				if (imgs == null) {
+					// Load image into cache
+					imgs = addAnim(snap.getName(), snap.getFilename(), snap.getSpriteWidth(), snap.getSpriteHeight(), snap.getRows(), snap.getCols());
+				}
+				Integer frame = customAnimFrames.get(name);
+				if(frame >= snap.getRows() * snap.getCols())
+					frame = 0;
+				RenderImage img = imgs.get(frame);
+				// Setup matrix transform of image
+
+				AffineTransform at = AffineTransform.getTranslateInstance(
+						snap.getX(), battleField.getHeight() - snap.getY());
+				at.rotate(snap.getRotation());
+				at.scale(snap.getScaleX(), snap.getScaleY());
+				at.shear(snap.getShearX(), snap.getShearY());
+				img.setTransform(at);
+
+				Color oldColour = g.getColor();
+
+				if (snap.getColour() != null) {
+					g.setColor(snap.getColour());
+				}
+
+				// Keep old alpha level state
+				Composite oldState = g.getComposite();
+				// Setup new alpha level state
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, snap.getAlpha());
+				g.setComposite(alphaComposite);
+
+				// Render to screen
+				if (!snap.getHide())
+					img.paint(g);
+
+				// Restore old alpha state
+				g.setColor(oldColour);
+				g.setComposite(oldState);
+				//update the frame.
+				customAnimFrames.put(name, frame + 1);
 			}
     	}
     }
-
+    
     /**
      * Loads image in from given filename, puts RenderImage in
      * Hashmap<String, RenderImage>. Once added it will get rendered
@@ -713,6 +766,29 @@ public class BattleView extends Canvas {
 		customImage.put(name, img);
 
 		return (img != null) ? img : null;
+	}
+	
+    /**
+     * Loads anim in from given filename, puts RenderImage in
+     * Hashmap<String, List<RenderImage>>. Once added it will get rendered
+     * each frame update.
+     *
+     * @param String name - Key used for hashmap, used to fetch.
+     * @param String filename - path to file
+     * @param int width - sprite width
+     * @param int height - sprite height
+     * @param int rows - spritesheet rows
+     * @param int cols - spritesheet cols
+     * 
+     * @return newly added List<RenderImage>
+     */
+	private List<RenderImage> addAnim(String name, String filename, int width, int height, int rows, int cols) {
+		List<RenderImage> imgs = imageManager.addCustomAnim(name, filename, width, height, rows, cols);
+		Integer frame = 0;
+		customAnim.put(name, imgs);
+		customAnimFrames.put(name, frame);
+		
+		return (imgs != null) ? imgs : null;
 	}
     
 	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
@@ -748,6 +824,8 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+                
+            //if robot is Botzilla, render the custom image
         	} else if (robotSnapshot.getName().contains("botzilla")
         			   || robotSnapshot.getName().contains("Botzilla")) {
         		x = robotSnapshot.getX();
@@ -761,6 +839,7 @@ public class BattleView extends Canvas {
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
                 
+            //if robot is a Dispenser, render the custom image
         	} else if ((robotSnapshot.getName().contains("dispenser")
         			|| robotSnapshot.getName().contains("Dispenser"))
         			&& robotSnapshot.getState().isAlive()) {
@@ -788,6 +867,7 @@ public class BattleView extends Canvas {
                 String radarPath = null;
                 double fullEnergy = robotSnapshot.getFullEnergy();
                 double currentEnergy = robotSnapshot.getEnergy();
+                
                 
                 // If a custom body part is present in the robots equipment
                 // then the body image path is changed to the custom one.
@@ -1028,13 +1108,76 @@ public class BattleView extends Canvas {
 
 				RenderImage explosionRenderImage = imageManager.getExplosionRenderImage(
 						bulletSnapshot.getExplosionImageIndex(), bulletSnapshot.getFrame());
-
+/**
+<<<<<<< HEAD
 				explosionRenderImage.setTransform(at);
 				explosionRenderImage.paint(g);
 			}
 		}
 		g.setClip(savedClip);
 	}
+=======
+*/
+                explosionRenderImage.setTransform(at);
+                explosionRenderImage.paint(g);
+            }
+        }
+        g.setClip(savedClip);
+    }
+    
+    private void drawLandmines(Graphics2D g, ITurnSnapshot snapShot) {
+        final Shape savedClip = g.getClip();
+
+        g.setClip(null);
+
+        double x, y;
+
+        for (ILandmineSnapshot landmineSnapshot : snapShot.getLandmines()) {
+            x = landmineSnapshot.getPaintX();
+            y = battleField.getHeight() - landmineSnapshot.getPaintY();
+
+            AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+
+            if (landmineSnapshot.getState().isActive()) {
+
+                // radius = sqrt(x^2 / 0.1 * power), where x is the width of 1 pixel for a minimum 0.1 bullet
+                double scale = max(2 * sqrt(2.5 * landmineSnapshot.getPower()), 2 / this.scale);
+
+                at.scale(scale, scale);
+                Area landmineArea = LANDMINE_AREA.createTransformedArea(at);
+                
+                RenderImage robotRenderImage = imageManager.getLandmineImage();
+                
+                robotRenderImage.setTransform(at);
+                robotRenderImage.paint(g);
+
+                /**
+                Color landmineColor;
+
+                if (properties.getOptionsRenderingForceBulletColor()) {
+                	landmineColor = Color.WHITE;
+                } else {
+                	landmineColor = new Color(landmineSnapshot.getColor());
+                }
+                g.setColor(landmineColor);
+                g.fill(landmineArea);
+*/
+            } else if (drawExplosions) {
+                if (!landmineSnapshot.isExplosion()) {
+                    double scale = sqrt(1000 * landmineSnapshot.getPower()) / 128;
+
+                    at.scale(scale, scale);
+                }
+
+                RenderImage explosionRenderImage = imageManager.getExplosionRenderImage(
+                		landmineSnapshot.getExplosionImageIndex(), landmineSnapshot.getFrame());
+
+                explosionRenderImage.setTransform(at);
+                explosionRenderImage.paint(g);
+            }
+        }
+        g.setClip(savedClip);
+    }
 
 	private void centerString(Graphics2D g, String s, int x, int y, Font font, FontMetrics fm) {
 		g.setFont(font);

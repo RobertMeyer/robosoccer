@@ -49,4 +49,8 @@ public interface IEventManager {
 
     // team
     List<MessageEvent> getMessageEvents();
+
+	List<LandmineHitEvent> getLandmineHitEvents();
+
+	List<HitByLandmineEvent> getHitByLandmineEvents();
 }

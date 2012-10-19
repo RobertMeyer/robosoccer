@@ -64,7 +64,7 @@ public class FreezeRobot extends _AdvancedRadiansRobot implements IFreezeRobot, 
 	// to give the other robots a chance.
 	private int hitsTillFreeze = 3;
 	private int timesHit = 0;
-	private int turnsFrozen = 10;
+	private int turnsFrozen = 80;
 	
 	/**
 	 * Returns the distance remaining in the robot's current move measured in

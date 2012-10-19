@@ -61,6 +61,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	private RobotSelectionPanel robotSelectionPanel;
 	private final IBattleManager battleManager;
 	private final ISettingsManager settingsManager;
+	private NewMinionsModeTab minionTab;
 	
 	private IWindowManager window;
 
@@ -168,11 +169,11 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 	}
 
 	/**
-	 * get the input positions then build the been well formated position string 
-	 * when user restart a new battle , all robot's start off position will be
-	 * cleared
-	 * @return Position List.toString()
-	 */
+	* get the input positions then build the been well formated position string
+	* when user restart a new battle , all robot's start off position will be
+	* cleared
+	* @return Position List.toString()
+	*/
 	private String SetRobotPositionString() {
 		StringBuilder setRobotPositionString = new StringBuilder();
 		//clear the position information from previous battle
@@ -308,6 +309,13 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		}
 		return modeTab;
 	}
+	
+	private NewMinionsModeTab getMinionsModeTab(){
+		if(minionTab == null){
+			minionTab = new NewMinionsModeTab(window);
+		}
+		return minionTab;
+	}
 
 	/**
 	 * Return the Page property value.
@@ -356,6 +364,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 			tabbedPane.insertTab("Modes", null, getBattleModeTab(), null, 3);
 			tabbedPane.setMnemonicAt(3, KeyEvent.VK_M);
 			tabbedPane.setDisplayedMnemonicIndexAt(3, 0);
+			tabbedPane.insertTab("Minions", null, getMinionsModeTab(), null, 4);
 		}
 		return tabbedPane;
 	}

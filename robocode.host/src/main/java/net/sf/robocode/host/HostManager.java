@@ -93,6 +93,11 @@ public class HostManager implements IHostManager {
     }
 
     @Override
+    public int getMinionType(IRobotRepositoryItem robotRepositoryItem, boolean message) {
+    	return getHost(robotRepositoryItem).getMinionType(robotRepositoryItem, message);
+    }
+    
+    @Override
     public RobotType getRobotType(IRobotRepositoryItem robotRepositoryItem, boolean resolve, boolean message) {
         return getHost(robotRepositoryItem).getRobotType(robotRepositoryItem, resolve, message);
     }
