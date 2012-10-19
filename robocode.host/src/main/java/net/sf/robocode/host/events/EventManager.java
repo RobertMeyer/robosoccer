@@ -699,7 +699,7 @@ public class EventManager implements IEventManager {
 
 	private void registerNamedEvents() {
 		namedEvents = new Hashtable<String, Event>();
-		dummyScannedRobotEvent = new ScannedRobotEvent(null, 0, 0, 0, 0, 0, false, false);
+		dummyScannedRobotEvent = new ScannedRobotEvent(null, 0, 0, 0, 0, 0, false, false, false);
 		registerNamedEvent(new BattleEndedEvent(false, null));
 		registerNamedEvent(new LandmineHitEvent(null, 0, null));
 		registerNamedEvent(new HitByLandmineEvent(0, null));

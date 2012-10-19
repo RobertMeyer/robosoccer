@@ -522,6 +522,10 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     public boolean isZombie() {
     	return robotType.isZombie();
     }
+    
+    public boolean isHeatRobot() {
+    	return robotType.isHeatRobot();
+    }
 
     @Override
 	public URL getClassPathURL() {
