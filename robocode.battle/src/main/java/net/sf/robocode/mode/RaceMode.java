@@ -1,5 +1,14 @@
 package net.sf.robocode.mode;
 
+import net.sf.robocode.battle.BattlePeers;
+//import net.sf.robocode.battle.RaceBattlePeers;
+//import net.sf.robocode.battle.peer.RacePeer;
+import net.sf.robocode.core.ContainerBase;
+import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.repository.IRepositoryManagerBase;
+import robocode.control.RobotSpecification;
+
 /**
  * Mode class used to implement Racing Mode functional enhancement. See ticket #32
  * 
@@ -12,6 +21,9 @@ public class RaceMode extends ClassicMode{
 
 	//private class variables
 	private int noLaps;
+	//private List<RacePeer> robots;
+	
+	final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
 	
 	/**
 	 * Called from the GUI to set the number of laps in the race.
@@ -40,11 +52,15 @@ public class RaceMode extends ClassicMode{
 		System.out.println("Race Mode.");
 	}
 	
+	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
+			IRepositoryManager repositoryManager) {
+		peers.createPeers(battlingRobotsList);
+	}
 	
 	@Override
 	public String toString(){
 		//overwriting toString() method so our "mode" name is now returned
-		return new String("Race Mode");
+		return "Race Mode";
 	}
 	
 	/**

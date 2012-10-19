@@ -312,6 +312,7 @@ public class ClassicMode implements IMode {
 	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
 			IRepositoryManager repositoryManager) {
 		peers.createPeers(battlingRobotsList);
+		System.out.println("test");
 	}
 
 	/**
@@ -396,4 +397,6 @@ public class ClassicMode implements IMode {
 	public boolean allowsOneRobot() {
 		return false;
 	}
+
+
 }
