@@ -1,12 +1,13 @@
 package sample;
 
 import robocode.Minion;
+import robocode.MinionProxy;
 
 public class MinionBot extends Minion {
 
 	public void run() {
-		//MinionProxy parent = getParent();
-		
+		MinionProxy parent = getParent();
+		double x = parent.getX();
 	}
 
 	@Override

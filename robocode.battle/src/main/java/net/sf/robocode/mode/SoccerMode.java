@@ -152,10 +152,10 @@ public class SoccerMode extends ClassicMode implements IMode {
 			
 			if(j < teamSize) {
 				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
-						duplicates.get(spec.getName()), team1, j);
+						duplicates.get(spec.getName()), team1, j, null);
 			} else {
 				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
-						duplicates.get(spec.getName()), team2, j);
+						duplicates.get(spec.getName()), team2, j, null);
 			}
 			
 			peers.addRobot(robot);
