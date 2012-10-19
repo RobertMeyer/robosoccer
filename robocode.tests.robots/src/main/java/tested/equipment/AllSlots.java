@@ -14,10 +14,10 @@ public class AllSlots extends AdvancedRobot {
 	 * The main run method.
 	 */
 	public void run(){
-		equip("Division 9 Plasmaprojector");
-		equip("Guardian Tank Armor");
-		equip("Thorium Power Cell");
-		equip("Stealth Tracks");
-		equip("Small Radar");
+		equip("Plasma Test");
+		equip("Energy Test Large");
+		equip("Thorium Power Cell"); // add a test one here
+		equip("Stealth Tracks"); // add a test one here
+		equip("Gun Test Large");
 	}
 }
