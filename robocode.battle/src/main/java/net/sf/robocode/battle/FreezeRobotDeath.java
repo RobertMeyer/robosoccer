@@ -17,7 +17,7 @@ public class FreezeRobotDeath {
 	public void freezeEverything(List<RobotPeer> robots){
 		if(deadRobot.isFreezeRobot()){
 			for(RobotPeer robot: robots){
-				if(!robot.equals(killer) && !robot.equals(deadRobot))
+				if(!robot.equals(killer) && !robot.equals(deadRobot) && !robot.isFreezeRobot())
 					robot.makeFrozen(robot, turns);
 			}
 		}
