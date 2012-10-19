@@ -2,15 +2,14 @@ package net.sf.robocode.test.robots;
 
 import java.util.List;
 
-import org.junit.Test;
-
-import robocode._RobotBase;
-import robocode.control.events.TurnEndedEvent;
-import robocode.control.snapshot.IRobotSnapshot;
-
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
+
+import org.junit.Test;
+
+import robocode.control.events.TurnEndedEvent;
+import robocode.control.snapshot.IRobotSnapshot;
 /**
  * @author Jordan Henderson
  */

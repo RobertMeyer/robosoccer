@@ -35,7 +35,7 @@ public class RobotPeerHelper {
         BattleHelper helper = BattleHelper.createBasicBattleWithHelper();
         IHostManager manager = helper.hostManager;
         RobotSpecification specification = Mockito.mock(RobotSpecification.class);
-        RobotPeer p = new RobotPeer(helper.battle, manager, specification, 0, null, 0);
+        RobotPeer p = new RobotPeer(helper.battle, manager, specification, 0, null, 0, null);
         return p;
     }
 

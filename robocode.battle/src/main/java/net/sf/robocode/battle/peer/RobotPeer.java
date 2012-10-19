@@ -299,6 +299,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private List<MinionProxy> minionProxyList = new ArrayList<MinionProxy>();
 	//Need to store host manager for minion creation.
 	private IHostManager hostManager;
+	//Store parent proxy for minions.
+	private MinionProxy minionParent;
 	/**
 	 * An association of values to every RobotAttribute, such that game
 	 * mechanics can be uniquely determined for each robot based on a variety
@@ -329,7 +331,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	double fullEnergy;
 
-	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex) {
+	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex, IHostingRobotProxy parentProxy) {
 		super();
 
 		this.battle = battle;
@@ -375,6 +377,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				robotIndex, teamIndex);
 		this.statistics = new RobotStatistics(this, battle.getRobotsCount());
 
+		if(parentProxy != null) 
+			this.setParent(parentProxy);
+		
 		this.robotProxy = (IHostingRobotProxy) hostManager.createRobotProxy(robotSpecification, statics, this);
 
 		this.hostManager = hostManager;
@@ -393,12 +398,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 			
 			RobotSpecification minion = minionSpecs[minionType];
-			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0);
+			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
+			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
 			battle.addMinion(minionPeer);
-		    //Provide a proxy to the parent. (Minion=>Parent)
-			MinionProxy parentProxy = new MinionProxy((IBasicRobotPeer)robotProxy);
-			minionPeer.setParent(parentProxy);
-			//Provide a proxy to the minion. (Parent=>Minion)
+
+			//Provide a proxy for the parent. (Parent=>Minion)
 			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
 			
 			minionList.add(minionPeer);
@@ -413,9 +417,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return minionList;
 	}
 	
-	public void setParent(MinionProxy parent) {
-		if(this.isMinion()) {
-			currentCommands.setParent(parent);
+	public void setParent(IHostingRobotProxy parent) {
+		if(this.isMinion() && parent != null) {
+			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)parent);
+			this.minionParent = minionProxy;
 		}
 	}
 	
@@ -1123,12 +1128,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		statistics.initialize();
 
 		ExecCommands newExecCommands = new ExecCommands();
-
+		
 		// Copy the colors from the last commands.
 		// Bugfix [2628217] - Robot Colors don't stick between rounds.
 		newExecCommands.copyColors(commands.get());
 
 		currentCommands = newExecCommands;
+		currentCommands.setParent(minionParent);
 		int others = battle.getActiveRobots() - (isAlive() ? 1 : 0);
 		RobotStatus stat = HiddenAccess.createStatus(energy, x, y, bodyHeading, gunHeading, radarHeading, velocity,
 				currentCommands.getBodyTurnRemaining(), currentCommands.getRadarTurnRemaining(),

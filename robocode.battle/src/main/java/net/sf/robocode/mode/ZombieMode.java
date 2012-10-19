@@ -52,7 +52,7 @@ public class ZombieMode extends ClassicMode {
 					specs[0],
 					0,
 					null,
-					peers.getBattle().getRobotsCount());
+					peers.getBattle().getRobotsCount(), null);
 
 	    	peers.addRobot(zombie);
 	    	zombie.initializeRound(peers.getRobots(), null);

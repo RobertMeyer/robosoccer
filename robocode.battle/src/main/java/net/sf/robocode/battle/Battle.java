@@ -925,7 +925,8 @@ public class Battle extends BaseBattle {
 				botzilla,
 				0,
 				null,
-				getRobotsCount());
+				getRobotsCount(),
+				null);
 		robotsCount++;
 		peers.addRobot(botzillaPeer);
 		peers.addContestant(botzillaPeer);
