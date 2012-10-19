@@ -2487,9 +2487,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	/**
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
+	 * 
+	 * This will reset any calls to: 
+	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
+	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
+	 * 
 	 *
 	 * @param partName the name of the part to equip
 	 * @see Equipment
+	 * @see robocode.AdvancedRobot#setMaxVelocity()
+	 * @see robocode.AdvancedRobot#setMaxTurnRate()
 	 */
 	public void equip(String partName) {
 		EquipmentPart part = Equipment.getPart(partName);
@@ -2517,14 +2524,21 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			attributes.get().put(attribute, newValue);
 		}
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
+		currentCommands.setMaxTurnRate(getMaxTurnRateRadians());
 		energy = energy + getStartingEnergy() - 100;
 	}
 
 	/**
 	 * Unequips the part equipped to the given slot, if any, and resets all
 	 * attributes provided by the part.
+	 * 
+	 * This will reset any calls to: 
+	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
+	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
 	 *
 	 * @param slot the slot to clear
+	 * @see robocode.AdvancedRobot#setMaxVelocity()
+	 * @see robocode.AdvancedRobot#setMaxTurnRate()
 	 */
 	public void unequip(EquipmentSlot slot) {
 		EquipmentPart part = equipment.get().get(slot);
@@ -2548,6 +2562,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			}
 		}
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
+		currentCommands.setMaxTurnRate(getMaxTurnRateRadians());
 	}
 
 	/**
@@ -2611,7 +2626,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public double getGunTurnRate(){
 		// Avoid multiplying doubles if it is not needed
-		if(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0 < 0.00001){
+		if(abs(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0) > 0.00001){
 			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
 		}
 		else return Rules.GUN_TURN_RATE;
