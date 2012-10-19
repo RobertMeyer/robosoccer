@@ -90,6 +90,8 @@ public final class RbSerializer {
     public final static byte Landmine_TYPE = 62;
     public final static byte HitByLandmineEvent_TYPE = 63;
     public final static byte LandmineHitEvent_TYPE = 64;
+    
+    public final static byte RobotFrozenEvent_TYPE = 65;
 
     private final static ISerializableHelper[] typeToHelper = new ISerializableHelper[256];
     private static Dictionary<Class<?>, Byte> classToType = new Hashtable<Class<?>, Byte>();

@@ -291,4 +291,15 @@ public interface IBasicEvents {
      * @see Event
      */
     void onWin(WinEvent event);
+
+    /**
+     * This method is called if your robot is frozen in battle.
+     * You should override it in your robot if you want to be informed of this 
+     * event.
+     * 
+     * @param event the freeze event set by the game
+     * @see RobotFrozenEvent
+     * @see Event
+     */
+	void onRobotFrozen(RobotFrozenEvent event);
 }

@@ -165,4 +165,10 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void onRobotFrozen(RobotFrozenEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

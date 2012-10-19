@@ -140,6 +140,7 @@ import robocode.HitRobotEvent;
 import robocode.HitWallEvent;
 import robocode.MinionProxy;
 import robocode.RobotAttribute;
+import robocode.RobotFrozenEvent;
 import robocode.RobotStatus;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
@@ -243,6 +244,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	protected boolean scan;
 	protected boolean turnedRadarWithGun; // last round
+	protected boolean melt; // whether or not robot chooses to melt if frozen
 
 	protected boolean isIORobot;
 	protected boolean isPaintEnabled;
@@ -1191,6 +1193,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (currentCommands.isMoved()) {
 			currentCommands.setMoved(false);
 		}
+		
+		if (currentCommands.isMelt()) {
+			// robot wishes to melt if frozen
+			melt = true;
+			currentCommands.setMelt(false);
+		}
 	}
 
 	protected void fireBullets(List<BulletCommand> bulletCommands) {
@@ -1307,6 +1315,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		// Stop the robot being both dead and frozen.
 		if (isFrozen() && energy > 0) {
+			if(melt == true){
+				frozen = 1; //unfreeze robot
+				energy *= 0.7; //sacrifice 30% of health to do so
+				melt = false;
+			}
 			frozen--;
 			if (frozen != 0) {
 				return;
@@ -1455,6 +1468,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		
 		if (isFrozen()) {
+			addEvent(new RobotFrozenEvent());
 			return;
 		}
 
