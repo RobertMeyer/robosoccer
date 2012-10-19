@@ -12,6 +12,7 @@ import robocode.util.Utils;
  */
 public class TurretMinion extends Minion {
 	String targetName = null;
+	String parentName = null;
 	
 	@Override
 	public int getMinionType() {	
@@ -19,7 +20,8 @@ public class TurretMinion extends Minion {
 	}
 	
 	public void run( ) {
-		
+		MinionProxy parent = getParent( );
+		parentName = parent.getName( );
 		while (true) {
 			// Scan entire battlefield for enemy robots
 			turnRadarRight(360);
@@ -30,9 +32,11 @@ public class TurretMinion extends Minion {
 		// If we have a target and this isn't it then scan again
 		if (targetName != e.getName( ) && targetName != null) {
 			return;
+		} else if (parentName == e.getName()) { // If this is the parent then scan again
+			return;
 		}
 		
-		// If no robot is being targeted, then target this robot 
+		// If no robot is being targeted, then target this robot
 		if (targetName == null) {
 			targetName = e.getName( );
 		}

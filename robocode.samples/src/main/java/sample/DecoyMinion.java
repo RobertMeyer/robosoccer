@@ -34,13 +34,9 @@ public class DecoyMinion extends Minion {
 			return;
 		}
 		
-		if (e.getDistance( ) < 75) {
-			ahead(-50);
-		}
-		
 		// Continuously trail parent, making sure not to ram it
 		turnRight(e.getBearing( ));
-		setAhead(e.getDistance() - 50);	
+		setAhead(e.getDistance() - 200);	
 	}
 	
    /* public void onHitByBullet(HitByBulletEvent e) {
