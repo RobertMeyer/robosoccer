@@ -1,4 +1,4 @@
-/*package net.sf.robocode.battle;
+package net.sf.robocode.battle;
 
 import static org.mockito.Mockito.when;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
@@ -37,6 +37,8 @@ public class KillFreezeBotTest {
 	RobotSpecification freezeSpecification;
 	RobotSpecification secondSpecification;
 	RobotSpecification thirdSpecification;
+	
+	Battle battle;
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -45,8 +47,7 @@ public class KillFreezeBotTest {
 	}
 
 	@Before
-	public void setUp() {
-				
+	public void setUp() {		
 		properties = Mockito.mock(ISettingsManager.class);
 		battleManager = Mockito.mock(IBattleManager.class);
 		hostManager = Mockito.mock(IHostManager.class);
@@ -69,19 +70,16 @@ public class KillFreezeBotTest {
 	    when(thirdRobotItem.isFreezeRobot()).thenReturn(false);
 		thirdSpecification = HiddenAccess.createSpecification(thirdRobotItem,
 				"", "", "", "", "", "", "", "");
-		
-		
-
 	}
 
 	@Test
 	public void test() {
-		RobotSpecification[] battlingRobotsList = {freezeSpecification, secondSpecification, thirdSpecification};
-
-		Battle battle = new Battle(properties, battleManager, hostManager,
-				repositoryManager, cpuManager, eventDispatcher);
 		
+		RobotSpecification[] battlingRobotsList = {freezeSpecification, secondSpecification, thirdSpecification};
+		
+		battle = new Battle(properties, battleManager, hostManager,
+				repositoryManager, cpuManager, eventDispatcher);
+
 		battle.setup(battlingRobotsList, battleProperties, paused, repositoryManager);
 	}
 }
-*/
