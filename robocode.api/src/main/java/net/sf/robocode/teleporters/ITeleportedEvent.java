@@ -7,4 +7,5 @@ package net.sf.robocode.teleporters;
  */
 public interface ITeleportedEvent {
 
+
 }

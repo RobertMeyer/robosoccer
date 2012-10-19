@@ -67,5 +67,4 @@ public class TeleporterSnapshot implements ITeleporterSnapshot {
 	public double getHeight() {
 		return height;
 	}
-
 }

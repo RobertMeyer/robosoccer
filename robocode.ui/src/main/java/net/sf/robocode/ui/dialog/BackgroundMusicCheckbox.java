@@ -12,7 +12,8 @@ public class BackgroundMusicCheckbox extends JCheckBox{
 	private static final long serialVersionUID = 1L;
 	public BattleProperties bp;
 	
-	public BackgroundMusicCheckbox() {
+	public BackgroundMusicCheckbox(BattleProperties bp) {
+		this.bp = bp;
         this.setText("Background Music");
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -21,7 +22,7 @@ public class BackgroundMusicCheckbox extends JCheckBox{
               BackgroundMusicTracker.enableMusic(mbox.getModel().isSelected());
               BackgroundMusicTracker.updateStatus();
             }
-          };
+          };	
         this.addActionListener(actionListener);   
     }
 

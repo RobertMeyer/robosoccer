@@ -82,7 +82,7 @@ public class ClassicMode implements IMode {
     public int setNumObstacles(BattleRules rules) {
         return 0;
     }
-    
+
 	public int setCellWidth(BattleRules rules) {
 		return 0;
 	}
@@ -427,8 +427,26 @@ public class ClassicMode implements IMode {
 
     /**
 	 * Setup so the default overall score is affected by all scores
+<<<<<<< HEAD
+	 * @param score
+=======
 	 * @param robotStatistics
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 035b398a85087bcecd555f941fda7ed08c2be018
+	 * @return HashMap containing the scores
+=======
 	 * @return Double representing the scores
+>>>>>>> origin/master
+=======
+<<<<<<< HEAD
+>>>>>>> 035b398a85087bcecd555f941fda7ed08c2be018
+	 * @return HashMap containing the scores
+=======
+=======
+>>>>>>> honeybadgers-partial-fix
+	 * @return Double representing the scores
+>>>>>>> bf2a3c4d72a596e92234a686984e495c0827c8cb
 	 */
 	public Double getCustomOverallScore(RobotStatistics score) {
             /*

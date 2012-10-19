@@ -172,6 +172,9 @@ public class Battle extends BaseBattle {
     private double inactivityEnergy;
     // Objects in the battle
 	private BattleProperties bp;
+	//Height and width of the battefield
+	private int height;
+	private int width;
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
 	private List<IRenderable> customObject = new ArrayList<IRenderable>();
@@ -210,6 +213,7 @@ public class Battle extends BaseBattle {
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 
+
 	// Object to keep status of whether teleporters are enabled or not 
 	private TeleporterEnabler teleporterEnabler = new TeleporterEnabler();
 	// List of teleporters in the arena
@@ -241,7 +245,9 @@ public class Battle extends BaseBattle {
 				battleProperties.getBattlefieldHeight(), battleProperties.getNumRounds(), battleProperties.getGunCoolingRate(),
 				battleProperties.getInactivityTime(), battleProperties.getHideEnemyNames(), battleProperties.getModeRules());
 		robotsCount = battlingRobotsList.length;
-
+		//get width and height of the battlefield
+		width = battleProperties.getBattlefieldWidth();
+		height = battleProperties.getBattlefieldHeight();
         battleMode = (ClassicMode) battleProperties.getBattleMode();
 		//System.out.println("Battle mode: " + battleMode.toString());
         //TODO Just testing spawning any bot for now
@@ -345,7 +351,11 @@ public class Battle extends BaseBattle {
 		}
 	}
 
-	//Get list of robots
+	/**
+	 * Returns a list of all robots.
+	 *
+	 * @return a list of all robot peers.
+	 */
 	public List<RobotPeer> getRobotList(){
 		return robotList;
 	}
@@ -530,13 +540,12 @@ public class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.startRound(waitMillis, waitNanos);
         }
-
+        
+        createTeleporters();
         Logger.logMessage(""); // puts in a new-line in the log message
 
         final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets,landmines, effArea, customObject, itemControl.getItems(), obstacles, teleporters, false);
-
         //final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, landmines,effArea, customObject, itemControl.getItems(), false);
-
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -608,6 +617,7 @@ public class Battle extends BaseBattle {
 
         updateRobots();
         
+        //Check for Spike mode
         if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
         	checkRobotHitSpike();
         }
@@ -737,6 +747,7 @@ public class Battle extends BaseBattle {
     }
 
 	 @Override
+
     protected void finalizeTurn() {
 
         eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets,landmines, effArea, customObject, itemControl.getItems(), obstacles, teleporters, true)));
@@ -832,18 +843,20 @@ public class Battle extends BaseBattle {
 		}
 	}
 	
+	/**
+	 * Check the whether robot is on top the spike.
+	 * If robot is on top of the spike, kill it instantly.
+	 * If not, do nothing.
+	 */
 	private void checkRobotHitSpike() {
 		int spikeXSize = battleManager.getSpikePosX().size();
 		int spikeYSize = battleManager.getSpikePosY().size();
+		
 		for (int i= 0; i < robotList.size(); i++) {
 			for (int x=0; x < spikeXSize; x++){
 				if ((robotList.get(i).getX() < battleManager.getSpikePosX().get(x) + 64) && (robotList.get(i).getX() > battleManager.getSpikePosX().get(x))) {
-					System.out.println("Battle Manager X: "+battleManager.getSpikePosX().get(x) + " | Battle Manager Y: "+battleManager.getSpikePosY().get(x));
-					System.out.println("Robot X: "+robotList.get(i).getX() + " | Robot Y: "+robotList.get(i).getY());
 					for (int y=0; y < spikeYSize; y++){
 						if((robotList.get(i).getY() < battleManager.getSpikePosY().get(y)) && (robotList.get(i).getY() > battleManager.getSpikePosY().get(y) - 64)){
-							System.out.println("Battle Manager Y: "+battleManager.getSpikePosY().get(y));
-							System.out.println("Robot Y: "+robotList.get(i).getY());
 							robotList.get(i).kill();
 						}
 					}
@@ -854,7 +867,7 @@ public class Battle extends BaseBattle {
 
 	private void updateBullets() {
 		for (BulletPeer bullet : getBulletsAtRandom()) {
-			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList());
+			bullet.update(getRobotsAtRandom(), getBulletsAtRandom(), getObstacleList(), teleporters);
 			if (bullet.getState() == BulletState.INACTIVE) {
 				bullets.remove(bullet);
 			}
@@ -876,6 +889,7 @@ public class Battle extends BaseBattle {
         final double zapEnergy = isAborted() ? 5 : zap ? .1 : 0;
 
         // Move all bots
+
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
             robotPeer.spawnMinions();
@@ -941,13 +955,20 @@ public class Battle extends BaseBattle {
     private void handleDeadRobots() {
 
         for (RobotPeer deadRobot : getDeathRobotsAtRandom()) {
-        	
-        	// Death effect
+		//spawn blackhole on dead robot is there was not one there already
+		if (teleporterEnabler.isBlackholesEnabled() && !deadRobot.collidedWithBlackHole()) {
+				double y2 = -2;
+				double x2 = -2;
+				double x1 = deadRobot.getX();
+				double y1 = deadRobot.getY();
+				teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
+			}	
+		
+		// Death effect
         	if (battleManager.getBattleProperties().getEffectArea()) {
         		deathEffect(deadRobot);
         	}
-        	
-            // Compute scores for dead robots
+		// Compute scores for dead robots
             if (deadRobot.getTeamPeer() == null) {
                 deadRobot.getRobotStatistics().scoreRobotDeath(getActiveContestantCount(deadRobot), botzillaActive);
             } else {
@@ -1280,7 +1301,23 @@ public class Battle extends BaseBattle {
         }
     }
 
-
+	private void createTeleporters(){
+		//do nothing if teleporters are not enabled
+		if (!teleporterEnabler.isTeleportersEnabled())
+			return;
+		
+		//randomise some x and y co-ordinates that are away from the walls by 5
+		double x1 = Math.random()*(width-80)+40;
+		double x2 = Math.random()*(width-80)+40;
+		double y1 = Math.random()*(height-80)+40;
+		double y2 = Math.random()*(height-80)+40;
+		
+		
+		//add a new TeleporterPeer
+		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
+	}
+	
+	
 	private void createEffectAreas(){
 		int tileWidth = 64;
 		int tileHeight = 64;
@@ -1346,6 +1383,8 @@ public class Battle extends BaseBattle {
 	/**
 	 * This method removes a IRenderable in the scene.
 	 * 
+<<<<<<< HEAD
+=======
 	 * @param obj
 	 *            a IRenderable object to remove.
 	 */
@@ -1358,6 +1397,7 @@ public class Battle extends BaseBattle {
 	/**
 	 * This method removes a IRenderable in the scene.
 	 * 
+>>>>>>> bf2a3c4d72a596e92234a686984e495c0827c8cb
 	 * @param name
 	 *            of IRenderable to remove.
 	 */

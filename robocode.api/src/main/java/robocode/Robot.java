@@ -1929,14 +1929,34 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     public void onStatus(StatusEvent e) {
     }
 
+
 	@Override
-	public void onWaypointPassed(WaypointPassedEvent event) 
-	{
+	public void onWaypointPassed(WaypointPassedEvent event) {
 		
 	}
-@Override
+	
+	@Override
 	public void onHitByLandmine(HitByLandmineEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onRobotFrozen(RobotFrozenEvent event){
+	}
+	
+	/**
+	 * melt robot if frozen at the cost of 30% of robots health
+	 */
+	public void melt() {
+    	if (peer != null){
+    		peer.melt();
+    	} else {
+            uninitializedException();
+        }
+    }
+
 }

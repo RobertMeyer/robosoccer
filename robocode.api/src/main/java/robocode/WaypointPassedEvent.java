@@ -34,7 +34,7 @@ public class WaypointPassedEvent extends Event {
 	private final double bearing;
 	private final double distance;
 	private final double distToWay;
-
+	
 
 	public WaypointPassedEvent(int nextWaypointIndex, double wayPointX, double wayPointY, double bearing, 
 			double distance, double distToWay){
@@ -45,7 +45,6 @@ public class WaypointPassedEvent extends Event {
 		this.bearing = bearing;
 		this.distance = distance;
 		this.distToWay = distToWay;
-
 	}
 
 	/**
@@ -194,5 +193,4 @@ public class WaypointPassedEvent extends Event {
             		distToWay);
         }
     }
-    
 }

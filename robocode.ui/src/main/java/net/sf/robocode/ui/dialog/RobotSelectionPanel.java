@@ -390,6 +390,10 @@ public class RobotSelectionPanel extends WizardPanel {
 		return setRobotsList;
 	}
 
+	/**
+	* return a SetRobotPostionPanel to new battle dialog
+	* @return SetRobotPostionPanel
+	*/
 	private SetRobotPostionPanel getRobotPostionPanel() {
 		if (setRobotPositionPanel == null) {
 			setRobotPositionPanel = new SetRobotPostionPanel();

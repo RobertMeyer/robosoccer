@@ -46,4 +46,5 @@ public interface ITeleporterSnapshot {
 	 * @return the height of the teleporter
 	 */
 	double getHeight();
+
 }

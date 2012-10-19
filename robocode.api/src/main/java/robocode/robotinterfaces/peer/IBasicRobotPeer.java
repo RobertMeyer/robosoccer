@@ -926,4 +926,6 @@ public interface IBasicRobotPeer {
      * This call executes immediately.
      */
 	MinionProxy getParent();
+
+	void melt();
 }

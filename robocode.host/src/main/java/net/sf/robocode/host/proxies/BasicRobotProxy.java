@@ -239,10 +239,9 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     }
     
     @Override
-    public void setLandmineColor(Color color)
-    {
-    	    setCall();
-    		commands.setLandmineColor(color != null ? color.getRGB() : ExecCommands.defaultLandmineColor);
+    public void setLandmineColor(Color color) {
+    	setCall();
+    	commands.setLandmineColor(color != null ? color.getRGB() : ExecCommands.defaultLandmineColor);
     }
 
     @Override
@@ -605,7 +604,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
             return null;
         }
 
-        power = min(getEnergyImpl(), min(max(power, Rules.MIN_BULLET_POWER), Rules.MAX_BULLET_POWER));
+        power = min(getEnergyImpl(), min(max(power, getMinBulletPower()), getMaxBulletPower()));
 
         Bullet bullet;
         BulletCommand wrapper;
@@ -784,4 +783,18 @@ public class BasicRobotProxy extends HostingRobotProxy implements
 		getCall();
         return status.getRobotHitAttack();
 	}
+
+	/**
+	 * melt a frozen robot at the cost of 30% of robots health
+	 */
+	@Override
+	public void melt() {
+		setCall();
+		setMelt();
+	}
+
+	private void setMelt() {
+		commands.setMelt(true);
+	}
+
 }

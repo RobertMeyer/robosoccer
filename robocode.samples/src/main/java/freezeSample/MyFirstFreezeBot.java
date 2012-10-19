@@ -35,7 +35,7 @@ public class MyFirstFreezeBot extends FreezeRobot {
 		// Move away
 		setStop();
 		moveDirection *= -1;
-		setAhead(400 * moveDirection);
+		setAhead(200 * moveDirection);
 		execute();
 		
 		// Turn away so to hit the same robot again

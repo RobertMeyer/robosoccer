@@ -8,6 +8,18 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import robocode.BattleRules;
+import robocode.Rules;
+
+/**
+* Low Vision mode:
+*  Contains methods for initialising settings
+*  overwrites rules for Radar Scan
+*
+*
+* @author Team Microsolth
+* 
+* 
+*/
 
 
 /**
@@ -61,7 +73,6 @@ public class LowVision extends ClassicMode{
     public Hashtable<String, Object> getRulesPanelValues() {
 		return rulesPanel.getValues();
 	}
-     
 
     /**
      * Set the range using the modifier, overwrite the robot scan radius
@@ -89,20 +100,22 @@ public class LowVision extends ClassicMode{
     	return range;
     }
     
-    
+    /**
+    * JLabel to imput the value in term of percentage
+    */
     @SuppressWarnings("serial")
 	private class LowVisionRulesPanel extends JPanel {
 		private JTextField VisionModifier; 
 		public LowVisionRulesPanel() {
 			super();
 			
-			add(new JLabel("Vision modifier:"), BorderLayout.NORTH);
+			add(new JLabel("Vision:"), BorderLayout.NORTH);
 			
 			VisionModifier = new JTextField(5);
 			VisionModifier.setText("100");
 			add(VisionModifier);
 			
-			add(new JLabel("100 is standard"));
+			add(new JLabel("%"));
 		}
 		
 		/**

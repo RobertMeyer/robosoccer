@@ -1,4 +1,3 @@
-//<<<<<<< HEAD
 /*******************************************************************************
  * Copyright (c) 2001-2012 Mathew A. Nelson and Robocode contributors
  * All rights reserved. This program and the accompanying materials
@@ -46,6 +45,7 @@ import java.util.*;
 public final class TurnSnapshot implements java.io.Serializable, IXmlSerializable, ITurnSnapshot {
 
 	private static final long serialVersionUID = 1L;
+
 	private List<ILandmineSnapshot> landmines;
     /** List of snapshots for the robots participating in the battle */
     private List<IRobotSnapshot> robots;
@@ -93,7 +93,6 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		effArea = new ArrayList<IEffectAreaSnapshot>();
 		customObj = new ArrayList<IRenderableSnapshot>();
 		teleports = new ArrayList<ITeleporterSnapshot>();
-
 		for (RobotPeer robotPeer : battleRobots) {
 			robots.add(new RobotSnapshot(robotPeer, readoutText));
 		}
@@ -429,9 +428,8 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 	public ILandmineSnapshot[] getLandmines() {
 		return landmines.toArray(new ILandmineSnapshot[landmines.size()]);
 	}
-
-
 }
+
 //=======
 /*******************************************************************************
  * Copyright (c) 2001-2012 Mathew A. Nelson and Robocode contributors

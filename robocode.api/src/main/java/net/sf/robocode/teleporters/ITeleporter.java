@@ -69,12 +69,11 @@ public interface ITeleporter {
 	 * @return the width of the teleporter
 	 */
 	double getWidth();
+	
 	/**
 	 * Gets and returns the height of the teleporter
 	 * @return the height of the teleporter
 	 */
 	double getHeight();
-
-
 
 }

@@ -34,7 +34,7 @@ public class TestEquipRobotEnergy extends RobocodeTestBed {
     	super.onTurnEnded(event);
     	
     	switch((int) event.getTurnSnapshot().getTurn()) {
-    	case 10:
+    	case 1:
     		// Test the large robot has 120 starting energy
     		Assert.assertNear(120, event.getTurnSnapshot().getRobots()[0].
     				getEnergy());

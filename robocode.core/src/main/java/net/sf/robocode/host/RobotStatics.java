@@ -111,10 +111,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 	}
 
 	RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
+
                  boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isZombie, boolean isMinion,
 				 String name, String shortName, String veryShortName, String fullClassName, String shortClassName, 
-				 BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex) {
-		this.isJuniorRobot = isJuniorRobot;
+				 BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex) {		this.isJuniorRobot = isJuniorRobot;
 		this.isInteractiveRobot = isInteractiveRobot;
 		this.isPaintRobot = isPaintRobot;
 		this.isAdvancedRobot = isAdvancedRobot;
@@ -141,6 +141,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     }
 
     RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
+
                  boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isZombie, boolean isMinion, 
                  String name, String shortName, String veryShortName, String fullClassName, String shortClassName, 
                  BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot,

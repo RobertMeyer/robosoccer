@@ -903,6 +903,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
             }
         }
 
+
 		@Override
 
 		public void onWaypointPassed(WaypointPassedEvent event) {
@@ -912,6 +913,14 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
         @Override
 		public void onHitByLandmine(HitByLandmineEvent event) {
 
+
+			// TODO Auto-generated method stub
+			
+		//}
+    }
+
+		@Override
+		public void onRobotFrozen(RobotFrozenEvent event) {
 			// TODO Auto-generated method stub
 			
 		}

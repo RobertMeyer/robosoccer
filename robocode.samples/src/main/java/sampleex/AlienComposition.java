@@ -135,5 +135,9 @@ public class AlienComposition implements IBasicRobot {
 			// TODO Auto-generated method stub
 			
 		}
+		
+		public void onRobotFrozen(RobotFrozenEvent event) {
+			// TODO Auto-generated method stub 
+		}
     }
 }
