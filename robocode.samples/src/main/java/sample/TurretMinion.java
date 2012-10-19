@@ -19,7 +19,6 @@ public class TurretMinion extends Minion {
 	}
 	
 	public void run( ) {
-		MinionProxy parent = getParent();
 		
 		while (true) {
 			// Scan entire battlefield for enemy robots
