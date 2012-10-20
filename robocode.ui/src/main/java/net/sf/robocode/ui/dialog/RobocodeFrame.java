@@ -103,6 +103,7 @@ public class RobocodeFrame extends JFrame {
     private EffectAreaCheckbox box;
     private KillstreakCheckbox ksBox;
     private BackgroundMusicCheckbox mbox;
+    private FriendlyFireCheckbox fbox;
     private JLabel tpsLabel;
     private boolean iconified;
     private boolean exitOnClose = true;
@@ -140,6 +141,7 @@ public class RobocodeFrame extends JFrame {
         teleporterBox = new TeleporterCheckbox();
         blackholeBox = new BlackholeCheckbox();
         mbox = new BackgroundMusicCheckbox(battleManager.getBattleProperties());
+        fbox = new FriendlyFireCheckbox(battleManager.getBattleProperties());
         menuBar.setup(this);
         initialize();
     }
@@ -320,12 +322,13 @@ public class RobocodeFrame extends JFrame {
             sidePanel.setLayout(new BorderLayout());
             
             sideBooleans = new JPanel();
-            sideBooleans.setLayout(new GridLayout(5,1));
+            sideBooleans.setLayout(new GridLayout(6,1));
             sideBooleans.add(box);
             sideBooleans.add(ksBox);           
             sideBooleans.add(mbox);
             sideBooleans.add(teleporterBox);
             sideBooleans.add(blackholeBox);
+            sideBooleans.add(fbox);
            
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container
@@ -941,8 +944,7 @@ public class RobocodeFrame extends JFrame {
         	counter = 0;
         	eliminateCounter = 0;
         	
-            if (event.getRound() == 0 &&
-            		battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
+            if (battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
                 getRobotButtonsPanel().removeAll();
 
                 final List<IRobotSnapshot> robots = Arrays.asList(event
