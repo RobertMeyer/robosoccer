@@ -1,7 +1,5 @@
 package net.sf.robocode.mode;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
@@ -12,10 +10,8 @@ import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.host.CpuManager;
 import net.sf.robocode.host.HostManager;
 import net.sf.robocode.host.security.ThreadManager;
-import net.sf.robocode.io.Logger;
 import net.sf.robocode.recording.RecordManager;
 import net.sf.robocode.repository.RepositoryManager;
-import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.SettingsManager;
 
 import org.junit.Test;
@@ -25,7 +21,6 @@ import org.mockito.Mockito;
 import robocode.BattleRules;
 import robocode.control.BattleSpecification;
 import robocode.control.BattlefieldSpecification;
-import robocode.control.RobocodeEngine;
 import robocode.control.RobotSpecification;
 
 import static org.junit.Assert.*;
@@ -44,6 +39,9 @@ public class ObstacleModeTest {
 	private Battle battle;
 	private BattleRules br;
 	
+	/**
+	 * Sets up the required variables for testing
+	 */
 	@Before
 	public void setup() {
 		/*tm = new ThreadManager();
@@ -62,7 +60,6 @@ public class ObstacleModeTest {
 		Mockito.when(bp.getInactivityTime()).thenReturn((long) 450);
 		Mockito.when(bp.getNumRounds()).thenReturn(1);
 		Mockito.when(bp.getHideEnemyNames()).thenReturn(false);
-		Mockito.when(bp.getSelectedRobots()).thenReturn("sample.Walls, sample.Target");
 		Mockito.when(bp.getInitialPositions()).thenReturn(null);
 		Mockito.when(bp.getBattleMode()).thenReturn(new ObstacleMode());
 		
@@ -71,12 +68,18 @@ public class ObstacleModeTest {
 		
 	}
 	
+	/**
+	 * Tests if mode's toString method returns the correct string representation 
+	 */
 	@Test
 	public void testToString() {
 		String output = battle.getBattleMode().toString();
 		assertEquals("toString method is incorrect", output, "Obstacle Mode");
 	}
 	
+	/**
+	 * Tests if mode returns the correct description
+	 */
 	@Test
 	public void testDescription() {
 		String output = battle.getBattleMode().getDescription();
@@ -84,6 +87,9 @@ public class ObstacleModeTest {
 				"A mode with obstacles that robots have to avoid.");
 	}
 	
+	/**
+	 * Tests if the mode generates the correct number of obstacles (with a reasonable number of obstacles)
+	 */
 	@Test
 	public void testNumObstacles() {
 		List<ObstaclePeer> obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
