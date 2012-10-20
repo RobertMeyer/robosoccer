@@ -31,66 +31,108 @@ public class EquipmentSet {
 		parts.put(
 				"Division 9 Plasmaprojector",
 				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav")
-						.set(RobotAttribute.VELOCITY, -20)
-						.set(RobotAttribute.GUN_HEAT_RATE, 70)
-						.set(RobotAttribute.BULLET_DAMAGE, 90).build());
+						.soundPath("/net/sf/robocode/sound/sounds/boom.wav")
+						.set(RobotAttribute.GUN_HEAT_RATE, 110)
+						.set(RobotAttribute.BULLET_DAMAGE, 1500)
+						.set(RobotAttribute.ENERGY, -10)
+						.set(RobotAttribute.BULLET_SPEED, 20000)
+						.build());
 
 		parts.put(
-				"Guardian Tank Armor",
+				"Guardian Heavy Tank Armor",
 				new EquipmentPart.Builder(EquipmentSlot.BODY)
-						.set(RobotAttribute.ARMOR, 40)
-						.set(RobotAttribute.VELOCITY, -20)
+						.set(RobotAttribute.ARMOR, 150)
+						.set(RobotAttribute.ACCELERATION, -10)
 						.set(RobotAttribute.RAM_ATTACK, 10)
 						.set(RobotAttribute.RAM_DEFENSE, 10).build());
+		
+		parts.put(
+				"Scout armour",
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
+						.set(RobotAttribute.ARMOR, -100)
+						.set(RobotAttribute.ACCELERATION, 60)
+						.set(RobotAttribute.RAM_ATTACK, -10)
+						.set(RobotAttribute.ENERGY, -30)
+						.set(RobotAttribute.RAM_DEFENSE, -10).build());
+		
+		parts.put(
+				"Tank armour",
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
+						.set(RobotAttribute.ARMOR, 10)
+						.set(RobotAttribute.ACCELERATION, 10)
+						.set(RobotAttribute.RAM_ATTACK, -10)
+						.set(RobotAttribute.ENERGY, 30)
+						.set(RobotAttribute.RAM_DEFENSE, -10).build());
 
 		parts.put(
 				"Thorium Power Cell",
 				new EquipmentPart.Builder(EquipmentSlot.POWER)
 						.set(RobotAttribute.ENERGY, 30)
 						.set(RobotAttribute.ENERGY_REGEN, 50)
-						.set(RobotAttribute.VELOCITY, -5).build());
+						.set(RobotAttribute.ACCELERATION, -5).build());
 
 		parts.put(
 				"Stealth Tracks",
 				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
-						.set(RobotAttribute.VELOCITY, 40)
+						.set(RobotAttribute.ACCELERATION, 40)
 						.set(RobotAttribute.GUN_HEAT_RATE, 50)
 						.set(RobotAttribute.BULLET_SPEED, 90)
 						.set(RobotAttribute.ENERGY, -60).build());
+		
+		parts.put(
+				"All terrain tracks",
+				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
+						.set(RobotAttribute.ACCELERATION, -10)
+						.set(RobotAttribute.GUN_HEAT_RATE, 10)
+						.set(RobotAttribute.BULLET_SPEED, 90)
+						.set(RobotAttribute.ENERGY, 20).build());
 
 		parts.put(
 				"Small Radar",
 				new EquipmentPart.Builder(EquipmentSlot.RADAR)
 						.set(RobotAttribute.ACCELERATION, 20)
-						.set(RobotAttribute.RADAR_ANGLE, -25)
+						.set(RobotAttribute.RADAR_ANGLE, -10)
+						.set(RobotAttribute.SCAN_RADIUS, 90)
+						.set(RobotAttribute.ACCELERATION, 30).build());
+		
+		parts.put(
+				"Broad Radar",
+				new EquipmentPart.Builder(EquipmentSlot.RADAR)
+						.set(RobotAttribute.ACCELERATION, -10)
+						.set(RobotAttribute.RADAR_ANGLE, 45)
 						.set(RobotAttribute.SCAN_RADIUS, 50)
-						.set(RobotAttribute.VELOCITY, 30).build());
+						.set(RobotAttribute.ACCELERATION, -5).build());
 
 		parts.put(
 				"Twin Turret",
 				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.set(RobotAttribute.VELOCITY, -10)
-						.set(RobotAttribute.GUN_HEAT_RATE, -50)
-						.set(RobotAttribute.BULLET_SPEED, 100)
-						.set(RobotAttribute.ENERGY, -60)
 						.imagePath("/net/sf/robocode/ui/images/twinturret.png")
-						.build());
-
-		// add an new weapon option for robot and the RobotAttribute
-		// will be set for the system to run properly
+						.set(RobotAttribute.ACCELERATION, 10)
+						.soundPath("/net/sf/robocode/sound/sounds/burst.wav")
+						.set(RobotAttribute.GUN_HEAT_RATE, -80)
+						.set(RobotAttribute.BULLET_SPEED, 500)
+						.set(RobotAttribute.BULLET_DAMAGE, -50)
+						.set(RobotAttribute.ENERGY, -30).build());
+		
+		parts.put(
+				"Pistol",
+				new EquipmentPart.Builder(EquipmentSlot.GUN)
+						.set(RobotAttribute.ACCELERATION, 30)
+						.set(RobotAttribute.BULLET_DAMAGE, -50)
+						.set(RobotAttribute.BULLET_SPEED, 20)
+						.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav")
+						.set(RobotAttribute.GUN_HEAT_RATE, 10)
+						.set(RobotAttribute.GUN_TURN_ANGLE, 40)
+						.set(RobotAttribute.ACCELERATION, 20)
+						.set(RobotAttribute.ENERGY_REGEN, 30).build());
 		parts.put(
 				"Sword",
 				new EquipmentPart.Builder(EquipmentSlot.GUN)
 						.set(RobotAttribute.ACCELERATION, 20)
 						.set(RobotAttribute.RADAR_ANGLE, -25)
 						.set(RobotAttribute.SCAN_RADIUS, 50)
-						.set(RobotAttribute.VELOCITY, 30)
-						.imagePath("/net/sf/robocode/ui/images/Sword.png")
-						.build());
-
-		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.GUN)
-				.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav").build());
+						.set(RobotAttribute.ACCELERATION, 30)
+						.imagePath("/net/sf/robocode/ui/images/Sword.png").build());
 
 		/*
 		 * Do not remove the following items or change them, as doing so would
@@ -159,6 +201,11 @@ public class EquipmentSet {
 				new EquipmentPart.Builder(EquipmentSlot.POWER)
 						.set(RobotAttribute.RADAR_ANGLE, 40)
 						.set(RobotAttribute.SCAN_RADIUS, 40).build());
+		
+
+		// Do not remove, this will cause the tests to fail.
+		parts.put("InvalidFileTest", new EquipmentPart.Builder(EquipmentSlot.GUN)
+				.soundPath("/net/sf/robocode/sound/sounds/InvalidFileTest.jpg").build());
 
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.GUN)
@@ -167,6 +214,10 @@ public class EquipmentSet {
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test2", new EquipmentPart.Builder(EquipmentSlot.GUN)
 				.soundPath("Test2").build());
+		
+		// Do not remove, this will cause the tests to fail.
+		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.GUN)
+		.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav").build());
 
 		/*
 		 * End of Test equipment
