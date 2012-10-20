@@ -887,8 +887,8 @@ public class BattleView extends Canvas {
                 	bodyPath = part.getImagePath();
                 }
                 
-                if(partsMap.containsKey(EquipmentSlot.WEAPON)) {
-                	EquipmentPart part = partsMap.get(EquipmentSlot.WEAPON);
+                if(partsMap.containsKey(EquipmentSlot.GUN)) {
+                	EquipmentPart part = partsMap.get(EquipmentSlot.GUN);
                 	weaponPath = part.getImagePath();
                 }
 
