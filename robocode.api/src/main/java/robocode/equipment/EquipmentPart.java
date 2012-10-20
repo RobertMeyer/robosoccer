@@ -39,6 +39,10 @@ public class EquipmentPart {
 
 		public Builder(EquipmentSlot slot) {
 			this.slot = slot;
+			// All modifiers default to 0.
+			for (RobotAttribute attribute : RobotAttribute.values()) {
+				attributes.put(attribute, 0.0);
+			}
 		}
 
 		public EquipmentPart build() {
@@ -55,13 +59,14 @@ public class EquipmentPart {
 			return this;
 		}
 
+		/**
+		 * @param attribute the attribute to set the modifier of.
+		 * @param value the modifier value; 1 represents +1% effectiveness.
+		 * @return the builder object for chained modifications.
+		 */
 		public Builder set(RobotAttribute attribute, double value) {
-			attributes.put(attribute, value);
+			attributes.put(attribute, value / 100.0);
 			return this;
-		}
-
-		public Double get(RobotAttribute attribute) {
-			return attributes.get(attribute);
 		}
 	}
 
@@ -69,15 +74,7 @@ public class EquipmentPart {
 		slot = builder.slot;
 		soundPath = builder.soundPath;
 		imagePath = builder.imagePath;
-
-		// Copy attributes from builder; default to 0 if attribute wasn't set.
-		for (RobotAttribute attribute : RobotAttribute.values()) {
-			Double value = builder.get(attribute);
-			if (value == null) {
-				value = Double.valueOf(0);
-			}
-			attributes.put(attribute, value);
-		}
+		attributes = builder.attributes;
 	}
 
 	/**
@@ -97,18 +94,17 @@ public class EquipmentPart {
 	}
 
 	/**
-	 * @return the equipment slot this part may be equipped to
+	 * @return the equipment slot that this part will occupy on the robot.
 	 */
 	public EquipmentSlot getSlot() {
 		return slot;
 	}
 
 	/**
-	 * Returns the part's modifier for the given attribute. Part modifiers are
-	 * defined as 1=+1% effectiveness.
-	 * 
-	 * @param attribute the attribute modifier value to return
-	 * @return the part's modifier value for the given attribute
+	 * @param attribute
+	 *            the attribute to return the modifier value of.
+	 * @return the modifier value of the given attribute; 1.0 represents +100%
+	 *         effectiveness.
 	 */
 	public double get(RobotAttribute attribute) {
 		return attributes.get(attribute);
