@@ -19,23 +19,23 @@ public class SucideMinion extends Minion {
 	}
 	
 	public void run( ) {		
-		MinionProxy parent = getParent( );
-		parentName = parent.getName( );
+
 		while (true) {
-			// Scan entire battlefield for enemy robots
+			//Scan entire battlefield for enemy robots
 			turnRadarRight(360);
 		}
 	}
 	
 	public void onScannedRobot(ScannedRobotEvent e) {
-		// If we have a target and this isn't it then scan again
+		//If we have a target and this isn't it then keep scan again
 		if (targetName != e.getName( ) && targetName != null) {
 			return;
 		} else if (e.getName( ) == parentName) { // If this is the parent then scan again
 			return;
 		}
 		
-		// If we have no target then this is now our target
+		//If no robot is being targeted, then target this robot 
+		// and latch onto it
 		if (targetName == null) {
 			targetName = e.getName( );
 		}

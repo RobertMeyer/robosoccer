@@ -127,6 +127,28 @@ public class Equipment {
 						.set(RobotAttribute.GUN_HEAT_RATE, -40)
 						.set(RobotAttribute.GUN_TURN_ANGLE, -40).build());
 		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Body Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
+						.set(RobotAttribute.ROBOT_TURN_ANGLE, -40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Body Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
+						.set(RobotAttribute.ROBOT_TURN_ANGLE, 40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Radar Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.POWER)
+						.set(RobotAttribute.RADAR_ANGLE, -40)
+						.set(RobotAttribute.SCAN_RADIUS, -40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Radar Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.POWER)
+						.set(RobotAttribute.RADAR_ANGLE, 40)
+						.set(RobotAttribute.SCAN_RADIUS, 40).build());
+		
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
 				.sound("Test1").build());

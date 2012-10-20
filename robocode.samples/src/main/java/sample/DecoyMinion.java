@@ -3,7 +3,6 @@ package sample;
 import robocode.HitByBulletEvent;
 import robocode.Minion;
 import robocode.MinionProxy;
-import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
 /**
@@ -12,7 +11,7 @@ import robocode.util.Utils;
  *
  */
 public class DecoyMinion extends Minion {
-	String parentName = null;
+	double distanceToParent = 0;
 	
 	@Override
 	public int getMinionType() {
@@ -20,32 +19,31 @@ public class DecoyMinion extends Minion {
 	}
 	
 	public void run( ) {		
-		MinionProxy parent = getParent( );
-		parentName = parent.getName( );
+		MinionProxy parent = getParent();
 		while (true) {
-			// Scan entire battlefield for enemy robots
-			turnRadarRight(360);
+    		// parentX = parent.getX( );
+    		// parentY = parent.getY( );
+			
+			// double parentDisplacementX = parentX - getX( );
+			// double parentDisplacementY = parentY - getY( );
+			// double bearingToParent = Utils.normalAbsoluteAngle(Math.atan2(parentDisplacementX, parentDisplacementY));
+			
+	    	// double sqrParentDistX = Math.pow((parentDisplacementX - getX( )), 2);
+	    	// double sqrParentDistY = Math.pow((parentDisplacementY - getY( )), 2);
+	    	// distanceToParent = Math.sqrt(sqrParentDistX + sqrParentDistY);
+	    	
+	    	// setTurnRight(bearingToParent);
+	    	setAhead(distanceToParent - 10);	    	
 		}
 	}
 	
-	public void onScannedRobot(ScannedRobotEvent e) {
-		// If this isn't the parent then scan again
-		if (parentName != e.getName( )) {
-			return;
-		}
-		
-		// Continuously trail parent, making sure not to ram it
-		turnRight(e.getBearing( ));
-		setAhead(e.getDistance() - 200);	
-	}
-	
-   /* public void onHitByBullet(HitByBulletEvent e) {
+    public void onHitByBullet(HitByBulletEvent e) {
 		// If trailing parent and parent is hit, move towards bullet's origin
     	if (distanceToParent < 20) {
     		turnRight(e.getBearing( ));
     		setAhead(300);
     	}
     	// Return to trailing parent
-    }*/
+    }
 
 }

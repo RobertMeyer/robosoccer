@@ -20,7 +20,7 @@ public class TurretMinion extends Minion {
 	}
 	
 	public void run( ) {
-		MinionProxy parent = getParent( );
+		MinionProxy parent = getParent();
 		parentName = parent.getName( );
 		while (true) {
 			// Scan entire battlefield for enemy robots
@@ -36,7 +36,7 @@ public class TurretMinion extends Minion {
 			return;
 		}
 		
-		// If no robot is being targeted, then target this robot
+		// If no robot is being targeted, then target this robot 
 		if (targetName == null) {
 			targetName = e.getName( );
 		}

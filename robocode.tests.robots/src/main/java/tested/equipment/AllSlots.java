@@ -16,8 +16,8 @@ public class AllSlots extends AdvancedRobot {
 	public void run(){
 		equip("Plasma Test");
 		equip("Energy Test Large");
-		equip("Thorium Power Cell"); // add a test one here
-		equip("Stealth Tracks"); // add a test one here
+		equip("Radar Test Large");
+		equip("Body Test Large");
 		equip("Gun Test Large");
 	}
 }

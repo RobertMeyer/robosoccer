@@ -48,8 +48,8 @@ public class TestEquipRobotGun extends RobocodeTestBed {
     	switch((int) event.getTurnSnapshot().getTurn()) {
     	
     	case 1:
-    		testGunTurnAngle(largeGun, 28, true);
-    		testGunTurnAngle(smallGun, 12, false);
+    		testGunTurnAngle(largeGun, 28);
+    		testGunTurnAngle(smallGun, 12);
     		testGunHeat(largeGun, 2.86);
     		testGunHeat(smallGun, 2.94);
     		break;
@@ -59,15 +59,15 @@ public class TestEquipRobotGun extends RobocodeTestBed {
     		break;
     		
     	case 31:
-    		testGunTurnAngle(largeGun, 58, true);
-    		testGunTurnAngle(smallGun, 26, false);
+    		testGunTurnAngle(largeGun, 58);
+    		testGunTurnAngle(smallGun, 26);
     		testGunHeat(largeGun, 2.1);
     		testGunHeat(smallGun, 1.14);
     		break;
     		
     	case 48:
-    		testGunTurnAngle(largeGun, 88, true);
-    		testGunTurnAngle(smallGun, 40, false);
+    		testGunTurnAngle(largeGun, 88);
+    		testGunTurnAngle(smallGun, 40);
     		testGunHeat(largeGun, 1.288);
     		testGunHeat(smallGun, 0.12);
     		break;
@@ -77,8 +77,8 @@ public class TestEquipRobotGun extends RobocodeTestBed {
     		break;
     		
     	case 61:
-    		testGunTurnAngle(largeGun, 118, true);
-    		testGunTurnAngle(smallGun, 54, false);
+    		testGunTurnAngle(largeGun, 118);
+    		testGunTurnAngle(smallGun, 54);
     		testGunHeat(largeGun, 2.1);
     		testGunHeat(smallGun, 0.9);
     		break;
@@ -89,8 +89,8 @@ public class TestEquipRobotGun extends RobocodeTestBed {
     		break;
     		
     	case 95:
-    		testGunTurnAngle(largeGun, 148, true);
-    		testGunTurnAngle(smallGun, 68, false);
+    		testGunTurnAngle(largeGun, 148);
+    		testGunTurnAngle(smallGun, 68);
     		testGunHeat(largeGun, 1.288);
     		testGunHeat(smallGun, 0.552);
     		break;
@@ -105,16 +105,9 @@ public class TestEquipRobotGun extends RobocodeTestBed {
 		Assert.assertNear(expectedHeat, robot.getGunHeat());
 	}
 	
-	private void testGunTurnAngle(IRobotSnapshot robot, int expectedAngle, 
-			boolean largeGun){
-		if(largeGun) {
-			Assert.assertNear(expectedAngle, Math.toDegrees(robot.
-					getGunHeading()));
-		}
-		else {
-			Assert.assertNear(expectedAngle, Math.toDegrees(robot.
-					getGunHeading()));
-		}
+	private void testGunTurnAngle(IRobotSnapshot robot, int expectedAngle){
+		Assert.assertNear(expectedAngle, Math.toDegrees(robot.
+				getGunHeading()));
 	}
 
 }
