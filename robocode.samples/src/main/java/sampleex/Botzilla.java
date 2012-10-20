@@ -1,3 +1,12 @@
+/******************************************************************************
+ * Copyright (c) 2012 The Fightin' Mongooses team.
+ *
+ * Contributors:
+ *    Paul Wade
+ *    Chris Irving
+ *    Jesse Claven
+******************************************************************************/
+
 package sampleex;
 
 import java.awt.Color;
@@ -9,6 +18,7 @@ import robocode.ScannedRobotEvent;
 /**
  * Behaviour for Botzilla. For the most part, just uses RamFire's ramming 
  * behaviour.
+ *
  * @author The Fightin' Mongooses
  */
 public class Botzilla extends BotzillaBot {
@@ -47,5 +57,4 @@ public class Botzilla extends BotzillaBot {
 			turnDirection = -1;
 		}
 	}
-	
 }

@@ -1082,7 +1082,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isHouseRobot()){
 			energy = 500;
 
-		//Botzilla gets extra energy, for the unlikely case of energy drain
+		// Botzilla gets extra energy, for the unlikely case of energy drain.
 		} else if (statics.isBotzilla()){
 			energy = 999;
 		//Dispensers get extra energy, for they are purely defensive

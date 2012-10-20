@@ -427,6 +427,13 @@ public class BattleManager implements IBattleManager {
         }
     }
     
+    /**
+     * Passes the current battle.
+     *
+     * @param   battle
+     * @return  Returns the current battle to where needed. 
+     */
+    @Override
     public Battle getBattle() {
     	return (Battle) battle;
     }
