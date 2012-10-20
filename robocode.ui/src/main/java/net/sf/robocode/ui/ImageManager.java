@@ -56,6 +56,10 @@ public class ImageManager implements IImageManager {
 	
 	//For storing spike image
 	private Image spikeImage;
+	
+	// image paths for the currently rendered images
+	private String bodyPath;
+	private String gunPath;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -336,7 +340,7 @@ public class ImageManager implements IImageManager {
     public RenderImage getColoredBodyRenderImage(Integer color, String imagePath) {
         RenderImage img = robotBodyImageCache.get(color);
 
-        if (img == null) {
+        if (img == null || imagePath != bodyPath) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(imagePath), new Color(color, true)));
             robotBodyImageCache.put(color, img);
         }
@@ -347,7 +351,7 @@ public class ImageManager implements IImageManager {
     public RenderImage getColoredGunRenderImage(Integer color, String imagePath) {
         RenderImage img = robotGunImageCache.get(color);
 
-        if (img == null) {
+        if (img == null || imagePath != gunPath) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(imagePath), new Color(color, true)));
             robotGunImageCache.put(color, img);
         }

@@ -141,7 +141,6 @@ import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
-import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
 import robocode.exception.AbortedException;
@@ -446,7 +445,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * equipment.get(Weapon)==getEquipmentPart("Sword")
 	 */
 	public boolean checkSword() {
-		EquipmentPart part = getEquipmentPart("Sword");
+		EquipmentPart part = battle.getEquipmentPart("Sword");
 		if (equipment.get().get(part.getSlot()) == part) {
 			return true;
 		} else {
@@ -2498,94 +2497,71 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * @param name the name of the part
-	 * @return the part associated with the given name, or null if none
+	 * @param attribute
+	 *            the attribute to set.
+	 * @param value
+	 *            the modifier value to set the attribute to.
 	 */
-	private EquipmentPart getEquipmentPart(String name) {
-		return battle.getEquipmentPart(name);
+	private void setAttributeModifier(RobotAttribute attribute, double value) {
+		attributes.get().put(attribute,  value);
+	}
+
+	/**
+	 * @param attribute
+	 *            the attribute to return the modifier value of
+	 * @return the modifier value for the given attribute
+	 */
+	private double getAttributeModifier(RobotAttribute attribute) {
+		return attributes.get().get(attribute);
+	}
+
+	/**
+	 * @param slot
+	 *            the slot containing the part to return
+	 * @return the part equipped to the given slot, or null if none
+	 */
+	private EquipmentPart getEquipmentPartInSlot(EquipmentSlot slot) {
+		return equipment.get().get(slot);
 	}
 
 	/**
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
 	 * 
-	 * This will reset any calls to: 
+	 * This will reset any calls to:
 	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
 	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
-	 *
-	 * @param name the name of the part to equip
-	 * @see EquipmentSet
-	 * @see robocode.AdvancedRobot#setMaxVelocity()
-	 * @see robocode.AdvancedRobot#setMaxTurnRate()
+	 * 
+	 * @param name
+	 *            the name of the part to equip
 	 */
 	public void equip(String name) {
-		EquipmentPart part = getEquipmentPart(name);
+		EquipmentPart newPart = battle.getEquipmentPart(name);
 
 		// If no part was found with the given name, don't do anything.
-		if (part == null) {
+		if (newPart == null) {
 			return;
 		}
 
-		// Replace whatever's currently occupying this slot with the new part
-		unequip(part.getSlot());
-		equipment.get().put(part.getSlot(), part);
+		EquipmentPart oldPart = getEquipmentPartInSlot(newPart.getSlot());
 
-		/* Add all the attribute modifiers of the part to the current
-		 * attribute modifiers (many attributes of the part may be 0).
-		 */
+		// Replace whatever's currently occupying this slot with the new part.
+		equipment.get().put(newPart.getSlot(), newPart);
+
+		// For every possible robot attribute, subtract the modifier provided by
+		// the old part in this slot, and add the modifier provided by the new
+		// part being equipped.
 		for (RobotAttribute attribute : RobotAttribute.values()) {
-
-			double partValue = part.get(attribute);
-			double currentValue = attributes.get().get(attribute);
-
-			/* Part modifiers are represented as 1=+1% effectiveness, hence
-			 * the division by 100 (as this.attributes represents 1.0 as 100%
-			 * effectiveness for easy multiplication).
-			 */
-			double newValue = currentValue + (partValue / 100.0);
-
-			attributes.get().put(attribute, newValue);
+			double currentValue = getAttributeModifier(attribute);
+			double oldPartValue = oldPart == null ? 0 : oldPart.get(attribute);
+			double newPartValue = newPart.get(attribute);
+			double newValue = currentValue - oldPartValue + newPartValue;
+			setAttributeModifier(attribute, newValue);
 		}
+
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
 		currentCommands.setMaxTurnRate(getMaxTurnRateRadians());
 		energy = energy + getStartingEnergy() - 100;
-	}
-
-	/**
-	 * Unequips the part equipped to the given slot, if any, and resets all
-	 * attributes provided by the part.
-	 * 
-	 * This will reset any calls to: 
-	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
-	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
-	 *
-	 * @param slot the slot to clear
-	 * @see robocode.AdvancedRobot#setMaxVelocity()
-	 * @see robocode.AdvancedRobot#setMaxTurnRate()
-	 */
-	public void unequip(EquipmentSlot slot) {
-		EquipmentPart part = equipment.get().get(slot);
-
-		/* If there is any part in the given slot, add all the attribute
-		 * modifiers of the part to the current attribute modifiers (many
-		 * attributes of the part may be 0).
-		 */
-		if (part != null) {
-			for (RobotAttribute attribute : RobotAttribute.values()) {
-				double partValue = part.get(attribute);
-				double currentValue = attributes.get().get(attribute);
-
-				/* Part modifiers are represented as 1=+1% effectiveness,
-				 * hence the division by 100 (as this.attributes represents
-				 * 1.0 as 100% effectiveness for easy multiplication).
-				 */
-				double newValue = currentValue - (partValue / 100.0);
-
-				attributes.get().put(attribute, newValue);
-			}
-		}
-		currentCommands.setMaxVelocity(getRealMaxVelocity());
-		currentCommands.setMaxTurnRate(getMaxTurnRateRadians());
 	}
 
 	/**
