@@ -1076,6 +1076,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		} else if (statics.isDispenser()) {
 			energy = 500;
+			
+		// FreezeRobot moves slower to give the other robots a chance.
+		// Gets extra energy so it doesn't die too quickly
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
 			attributes.get().put(RobotAttribute.SPEED, 0.40);

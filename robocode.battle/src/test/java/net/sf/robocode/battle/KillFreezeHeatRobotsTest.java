@@ -64,6 +64,7 @@ public class KillFreezeHeatRobotsTest {
 				"", "", "", "", "", "", "");
 	}
 	
+	@Ignore
 	@Test
 	public void killFreezeHeatRobotsTest(){
 		Mockito.when(battle.getBattleMode()).thenReturn(new ClassicMode());

@@ -85,10 +85,10 @@ public class FreezeRobotDeathEventTest {
 		d.freezeEverything(robots);
 		
 		assertTrue("FreezeRobot should be dead", freezeRobot.energy == 0);
-		assertTrue("First Robot should be frozen", otherRobot1.frozen == 120);
-		assertTrue("Second Robot should be frozen", otherRobot2.frozen == 120);
-		assertTrue("Third Robot should not be frozen", otherRobot3.frozen == 0);
-		assertTrue("Fourth Robot should be frozen", otherRobot4.frozen == 120);
-		assertTrue("Fifth Robot should be frozen", otherRobot5.frozen == 120);
+		assertTrue("First Robot should be frozen", otherRobot1.robotFrozen == 120);
+		assertTrue("Second Robot should be frozen", otherRobot2.robotFrozen == 120);
+		assertTrue("Third Robot should not be frozen", otherRobot3.robotFrozen == 0);
+		assertTrue("Fourth Robot should be frozen", otherRobot4.robotFrozen == 120);
+		assertTrue("Fifth Robot should be frozen", otherRobot5.robotFrozen == 120);
 	}
 }
