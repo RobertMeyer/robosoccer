@@ -101,6 +101,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -321,6 +322,9 @@ public class Battle extends BaseBattle {
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
+		for(Iterator<RobotPeer> i = r.getMinionPeers().iterator(); i.hasNext(); ){
+			i.next().kill();
+		}
 		deathRobots.add(r);
 	}
 
