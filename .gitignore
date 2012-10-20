@@ -23,3 +23,9 @@ target/
 
 # Netbeans
 nb-configuration.xml
+
+robocode.core/config/robocode.properties
+
+robocode.core/config/window.properties
+
+*.database

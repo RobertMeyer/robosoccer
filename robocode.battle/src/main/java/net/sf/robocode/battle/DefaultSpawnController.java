@@ -52,6 +52,7 @@ public final class DefaultSpawnController implements ISpawnController {
 
     @Override
     public double[] getSpawnLocation(RobotPeer r, Battle b) {
+    	Logger.realOut.println("GSL = " + r + ", " + b);
         Random random = RandomFactory.getRandom();
         BattleRules battleRules = b.getBattleRules();
         for (int i = 0; i < controllers.size(); i++) {
