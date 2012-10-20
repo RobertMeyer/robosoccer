@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import robocode.BattleRules;
-import robocode.Rules;
 
 /**
 * Low Vision mode:
@@ -24,7 +23,8 @@ import robocode.Rules;
 
 /**
  * Low Vision mode:
- *  Contains methods for initialising settings
+ *  Contains methods for initializing settings
+ *  use user input percentage
  *  overwrites rules for Radar Scan
  *
  *
@@ -40,7 +40,7 @@ public class LowVision extends ClassicMode{
     private final String description = "This mode will reduce the vision of the Robots by a user specified amount.";
 
     /**
-     * To display the mode title
+     * To display the mode title (Mode Name)
      * @return title
      */
     public String toString() {
@@ -56,7 +56,8 @@ public class LowVision extends ClassicMode{
     }
 
     /**
-     * set the rules panel
+     * collect rules panel from classic mode
+     * overwrite the rules panel
      * @return rules
      */
     public JPanel getRulesPanel(){
@@ -76,6 +77,8 @@ public class LowVision extends ClassicMode{
 
     /**
      * Set the range using the modifier, overwrite the robot scan radius
+     * modifier is input as a percentage
+     * if exception is caught when no value is found, it will be using 100% 
      * @param standard it is the original radar scan radius
      * @param rules Type of battle rules
      * @return range the new radar scan radius to overwrite classic mode
@@ -101,7 +104,9 @@ public class LowVision extends ClassicMode{
     }
     
     /**
-    * JLabel to imput the value in term of percentage
+    * JLabel to input the value in term of percentage
+    * users will input from 0-100
+    * if no value found, standard will be 100
     */
     @SuppressWarnings("serial")
 	private class LowVisionRulesPanel extends JPanel {
@@ -120,7 +125,7 @@ public class LowVision extends ClassicMode{
 		
 		/**
 		 * 
-		 * @return
+		 * @return hashtable values
 		 */
 		public Hashtable<String, Object> getValues() {
 			Hashtable<String, Object> values = new Hashtable<String, Object>();
