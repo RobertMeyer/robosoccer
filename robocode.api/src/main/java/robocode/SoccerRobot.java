@@ -8,10 +8,10 @@ import robocode.robotinterfaces.peer.ISoccerRobotPeer;
 /**
  * An advanced type of robot specifically for playing SoccerMode based games.
  * Can be safely added to other game modes, but may not be very effective.
- * SoccerRobot extends TeamRobot so advanced players can program team startegy
- * although this is unnecessary.
+ * SoccerRobot extends TeamRobot so advanced players can program team strategy
+ * although this is not necessary.
  * 
- * @author Team-G1
+ * @author Carl Hattenfels - Team-G1
  * 
  * @see JuniorRobot
  * @see Robot
@@ -26,18 +26,39 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 	private static final int LEFT = 1;
 	private static final int RIGHT = -1;
 	
-
+	/**
+	 * Returns the location and size of the players ownGoal, in the form of
+	 * a Rectangle2D.Float object.
+	 * See java.awt.geom.Rectangle2D.
+	 * @return Rectangle2D.Float - own goal bounding rectangle.
+	 */
 	public Rectangle2D.Float getOwnGoal() {
 		Rectangle2D.Float ownGoal = ((ISoccerRobotPeer) peer).getOwnGoal();
+		/* 
+		 * ownGoal will be null if we are not in soccerMode, so we create 
+		 * imaginary goals so this robot can play soccer by himself. This 
+		 * allows SoccerRobots to be added to regular games without Exceptions. 
+		 */
 		if (ownGoal == null) {
 			ownGoal = new Rectangle2D.Float(0, (int) (getBattleFieldWidth() / 2) 
 					- (GOALY / 2), GOALX, GOALY);
 		}
 		return ownGoal;
 	}
-
+	
+	/**
+	 * Returns the location and size of the players enemy Goal, in the form of
+	 * a Rectangle2D.Float object.
+	 * See java.awt.geom.Rectangle2D.
+	 * @return Rectangle2D.Float - enemy goal bounding rectangle.
+	 */
 	public Rectangle2D.Float getEnemyGoal() {
 		Rectangle2D.Float enemyGoal = ((ISoccerRobotPeer) peer).getEnemyGoal();
+		/* 
+		 * ownGoal will be null if we are not in soccerMode, so we create 
+		 * imaginary goals so this robot can play soccer by himself. This 
+		 * allows SoccerRobots to be added to regular games without Exceptions. 
+		 */
 		if (enemyGoal == null) {
 			enemyGoal = new Rectangle2D.Float((int) getBattleFieldWidth()
 					- GOALX, (int) (getBattleFieldHeight() / 2) - (GOALY / 2),
@@ -45,13 +66,27 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 		}
 		return enemyGoal;
 	}
-
+	
+	/**
+	 * Returns SoccerRobot.LEFT if the enemy goal is located on the left of
+	 * the screen, and SoccerRobot.RIGHT if the enemy goal is located on the 
+	 * right of the screen.
+	 * @return int - SoccerRobot.LEFT or SoccerRobot.RIGHT, dependant on enemy
+	 * goal side.
+	 */
 	public int getGoalSide() {
 		return (getEnemyGoal().getCenterX() < getBattleFieldWidth() / 2) ? LEFT
 				: RIGHT;
 	}
 
-	@Override
+	/**
+	 * Sets Robot gun colour and radar colour, the parameter bodyColor will be
+	 * unused as SoccerRobots are assigned a body colour according to their
+	 * current team (red or blue).
+	 * @param bodyColor - unused
+	 * @param gunColor - java.awt.Color value to make gun colour.
+	 * @param radarColor - java.awt.Color value to make radar colour.
+	 */
 	public void setColors(Color bodyColor, Color gunColor, Color radarColor) {
 		if (peer != null) {
 			Color teamColor = (getGoalSide() == LEFT) ? Color.RED : Color.BLUE;
@@ -63,7 +98,16 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 		}
 	}
 
-	@Override
+	/**
+	 * Sets Robot gun colour, radar colour, bullet colour and scan arc colour. 
+	 * The parameter bodyColor will be unused as SoccerRobots are assigned a 
+	 * body colour according to their current team (red or blue).
+	 * @param bodyColor - unused
+	 * @param gunColor - java.awt.Color value to make gun colour.
+	 * @param radarColor - java.awt.Color value to make radar colour.
+	 * @param bulletColor - java.awt.Color value to make radar colour.
+	 * @param scanArcColor - java.awt.Color value to make scan arc colour.
+	 */
 	public void setColors(Color bodyColor, Color gunColor, Color radarColor,
 			Color bulletColor, Color scanArcColor) {
 		if (peer != null) {
@@ -78,7 +122,12 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 		}
 	}
 
-	@Override
+	/**
+	 * Sets Robot colour to parameter color, except for robot body colour, which
+	 * is automatically assigned to a team colour for SoccerRobots.
+	 * @param bodyColor - unused
+	 * @param color - java.awt.Color value to make all robot colour, except body
+	 */
 	public void setAllColors(Color color) {
 		if (peer != null) {
 			Color teamColor = (getGoalSide() == LEFT) ? Color.RED : Color.BLUE;
@@ -92,7 +141,13 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 		}
 	}
 
-	@Override
+	/**
+	 * This function ignores color parameter and assigns the body color of a 
+	 * SoccerRobot to either Blue or Red according to whether it is on the 
+	 * Blue or Red soccer team. When not playing SoccerMode, all SoccerRobots
+	 * are assigned to the Red team.
+	 * @param color - unused
+	 */
 	public void setBodyColor(Color color) {
 		if (peer != null) {
 			Color teamColor = (getGoalSide() == LEFT) ? Color.RED : Color.BLUE;

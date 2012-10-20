@@ -1,8 +1,11 @@
 package robocode.robotinterfaces;
 
+import java.awt.geom.Rectangle2D;
+
 /**
- * A robot interface for creating a soccer robot like {@link robocode.SoccerRobot}
- * that is able to receive team events.
+ * A robot interface for creating a soccer robot like 
+ * {@link robocode.SoccerRobot}
+ * that is able to receive team events. Shares the same methods as ITeamRobot
  *
  * @author Carl Hattenfels - Team G1
  * @see robocode.SoccerRobot
@@ -14,5 +17,5 @@ package robocode.robotinterfaces;
  * @since 1.6
  */
 public interface ISoccerRobot extends ITeamRobot {
-
+	
 }
