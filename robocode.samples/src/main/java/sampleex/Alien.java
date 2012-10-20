@@ -105,4 +105,8 @@ public class Alien implements IBasicEvents, IBasicRobot, Runnable {
     @Override
     public void onWin(WinEvent e) {
     }
+
+    @Override
+    public void onWaypointPassed(WaypointPassedEvent event) {
+    }
 }

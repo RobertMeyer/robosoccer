@@ -19,6 +19,8 @@ import java.nio.ByteBuffer;
  */
 public interface IRobotPeer {
 
+	boolean checkSword();
+	
     void drainEnergy();
 
     void punishBadBehavior(BadBehavior badBehavior);
