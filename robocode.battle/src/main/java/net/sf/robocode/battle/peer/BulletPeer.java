@@ -52,6 +52,7 @@ import java.util.List;
 
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.FriendlyFireTracker;
 import net.sf.robocode.battle.KillstreakTracker;
 import net.sf.robocode.peer.BulletStatus;
 import robocode.BattleRules;
@@ -214,7 +215,15 @@ public class BulletPeer {
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
-				if (!teamFire) {
+				if(FriendlyFireTracker.enableFriendlyfire == true){
+					if(teamFire){
+						otherRobot.updateEnergy(+damage);
+					}
+				}else{
+					otherRobot.updateEnergy(-damage);
+				}
+				
+				if(!teamFire){
 					owner.getRobotStatistics().scoreBulletDamage(
 							otherRobot.getName(), score);
 				}
