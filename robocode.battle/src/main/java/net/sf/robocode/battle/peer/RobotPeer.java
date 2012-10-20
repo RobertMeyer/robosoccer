@@ -268,7 +268,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final RbSerializer rbSerializer;
 
 	// The number of turns the robot is frozen for, 0 if not frozen
-	protected int frozen = 0;
+	protected int robotFrozen = 0;
+	
+	// The same as robotFrozen. Except it doesn't get set to 0 when a robot melts itself
+	// This is so when a robots melts others still see it as frozen.
+	// Just another advantage to melting.
+	protected int seenAsFrozen = 0;
 	
 	// The robot can use these to melt itself without losing energy
 	protected int meltCredit = 0;
@@ -638,6 +643,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	public boolean isFrozen() {
 		return state == RobotState.FROZEN;
+	}
+	
+	public boolean isSeenAsFrozen() {
+		return seenAsFrozen > 0;
 	}
 
     @Override
@@ -1321,6 +1330,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return;
 		}
 		
+		if (seenAsFrozen > 0)
+			seenAsFrozen--;
+		
 		// Creates a new instance of KillFreezeHeatRobots class
 		KillFreezeHeatRobots killFreezeHeatRobot = new KillFreezeHeatRobots();
 		
@@ -1330,15 +1342,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		// Stop the robot being both dead and frozen.
 		if (isFrozen() && energy > 0) {
 			if(melt == true){
-				frozen = 1; //unfreeze robot
+				robotFrozen = 1; //unfreeze robot
 				if(meltCredit > 0)
 					meltCredit--;
 				else
 					energy *= 0.7; //sacrifice 30% of health to do so
 				melt = false;
 			}
-			frozen--;
-			if (frozen != 0) {
+			robotFrozen--;
+			if (robotFrozen != 0) {
 				return;
 			}
 			setState(RobotState.ACTIVE);
@@ -1485,7 +1497,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		
 		if (isFrozen()) {
-			addEvent(new RobotFrozenEvent());
+			addEvent(new RobotFrozenEvent(robotFrozen));
 			return;
 		}
 
@@ -1781,7 +1793,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public void makeFrozen(RobotPeer robot, int turns){
 		robot.setState(RobotState.FROZEN);
-		robot.frozen = turns;
+		robot.robotFrozen = turns;
+		robot.seenAsFrozen = turns;
 	}
 
 	/**
@@ -2259,10 +2272,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					if (!otherRobot.isScannable()) {
 						return;
 					}
-					boolean x = isHeatRobot();
+					
 					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-							otherRobot.getVelocity(), otherRobot.isFrozen(), otherRobot.isFreezeRobot(), otherRobot.isHeatRobot());
+							otherRobot.getVelocity(), otherRobot.isSeenAsFrozen(), otherRobot.isFreezeRobot(), otherRobot.isHeatRobot());
 	
 					addEvent(event);
 				}

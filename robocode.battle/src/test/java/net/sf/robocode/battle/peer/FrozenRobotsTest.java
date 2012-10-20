@@ -75,17 +75,17 @@ public class FrozenRobotsTest {
 				0, null, 0);
 		
 		otherRobot.checkForFreezeBot(freezeRobot);
-		assertTrue("Robot should be frozen", otherRobot.frozen == 100);
+		assertTrue("Robot should be frozen", otherRobot.robotFrozen == 100);
 		
-		otherRobot.frozen = 0;
+		otherRobot.robotFrozen = 0;
 		freezeRobot.checkForFreezeBot(otherRobot);
-		assertTrue("Robot should be frozen again", otherRobot.frozen == 100);
+		assertTrue("Robot should be frozen again", otherRobot.robotFrozen == 100);
 		
-		otherRobot.frozen = 0;
+		otherRobot.robotFrozen = 0;
 		otherRobot.checkForFreezeBot(otherRobot);
-		assertTrue("Robot should not be frozen", otherRobot.frozen == 0);
+		assertTrue("Robot should not be frozen", otherRobot.robotFrozen == 0);
 		
 		freezeRobot.checkForFreezeBot(freezeRobot);
-		assertTrue("FreezeRobot should not be frozen", freezeRobot.frozen == 0);
+		assertTrue("FreezeRobot should not be frozen", freezeRobot.robotFrozen == 0);
 	}
 }

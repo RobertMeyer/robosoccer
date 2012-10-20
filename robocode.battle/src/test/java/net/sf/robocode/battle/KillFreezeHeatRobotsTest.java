@@ -15,6 +15,7 @@ import net.sf.robocode.security.HiddenAccess;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
