@@ -2,6 +2,8 @@ package net.sf.robocode.battle;
 
 import java.util.List;
 
+import robocode.control.snapshot.RobotState;
+
 import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
@@ -36,7 +38,7 @@ public class KillFreezeHeatRobots {
 				if (robotList.get(i).isFreezeRobot()
 						|| robotList.get(i).isHeatRobot()) {
 					// kills the freeze and heat robots
-					robotList.get(i).kill();
+					robotList.get(i).setState(RobotState.DEAD);
 				}
 			}
 		}
