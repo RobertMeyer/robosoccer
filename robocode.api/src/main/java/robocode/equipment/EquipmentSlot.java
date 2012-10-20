@@ -1,9 +1,9 @@
 package robocode.equipment;
 
 /**
- * The slots of a the robot that a single equipment part may occupy.
+ * Represents the slots of a robot that a single equipment part may occupy.
  *
- * @author Malcolm Inglis (CSSE2003)
+ * @author CSSE2003 Team Forkbomb
  *
  */
 public enum EquipmentSlot {

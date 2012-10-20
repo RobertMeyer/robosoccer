@@ -4,13 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import robocode.RobotAttribute;
-import robocode.equipment.EquipmentPart.Builder;
 
 /**
  * A container for all the parts that can be equipped by AdvancedRobots.
- *
- * @author Malcolm Inglis (CSSE2003)
- *
+ * 
+ * @author CSSE2003 Team Forkbomb
+ * 
  */
 public class Equipment {
 
@@ -24,7 +23,7 @@ public class Equipment {
 		parts.put(
 				"Division 9 Plasmaprojector",
 				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
+						.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav")
 						.set(RobotAttribute.VELOCITY, -20)
 						.set(RobotAttribute.GUN_HEAT_RATE, 70)
 						.set(RobotAttribute.BULLET_DAMAGE, 90).build());
@@ -67,7 +66,7 @@ public class Equipment {
 						.set(RobotAttribute.GUN_HEAT_RATE, -50)
 						.set(RobotAttribute.BULLET_SPEED, 100)
 						.set(RobotAttribute.ENERGY, -60)
-						.image("/net/sf/robocode/ui/images/twinturret.png")
+						.imagePath("/net/sf/robocode/ui/images/twinturret.png")
 						.build());
 
 		// add an new weapon option for robot and the RobotAttribute
@@ -79,10 +78,11 @@ public class Equipment {
 						.set(RobotAttribute.RADAR_ANGLE, -25)
 						.set(RobotAttribute.SCAN_RADIUS, 50)
 						.set(RobotAttribute.VELOCITY, 30)
-						.image("/net/sf/robocode/ui/images/Sword.png").build());
+						.imagePath("/net/sf/robocode/ui/images/Sword.png")
+						.build());
 
 		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.GUN)
-				.sound("/net/sf/robocode/sound/sounds/pewpew.wav").build());
+				.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav").build());
 
 		/*
 		 * Do not remove the following items or change them, as doing so would
@@ -107,68 +107,66 @@ public class Equipment {
 						.set(RobotAttribute.GUN_TURN_ANGLE, 40)
 						.set(RobotAttribute.VELOCITY, 40)
 						.set(RobotAttribute.ENERGY_REGEN, 30).build());
-		
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Energy Test Large",
-				new EquipmentPart.Builder(EquipmentSlot.BODY)
-						.set(RobotAttribute.ENERGY, 20).build());
-		
+		parts.put("Energy Test Large", new EquipmentPart.Builder(
+				EquipmentSlot.BODY).set(RobotAttribute.ENERGY, 20).build());
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Energy Test Small",
-				new EquipmentPart.Builder(EquipmentSlot.BODY)
-						.set(RobotAttribute.ENERGY, -20).build());
-		
+		parts.put("Energy Test Small", new EquipmentPart.Builder(
+				EquipmentSlot.BODY).set(RobotAttribute.ENERGY, -20).build());
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Gun Test Large",
+		parts.put(
+				"Gun Test Large",
 				new EquipmentPart.Builder(EquipmentSlot.RADAR)
 						.set(RobotAttribute.GUN_HEAT_RATE, 40)
 						.set(RobotAttribute.GUN_TURN_ANGLE, 40).build());
-		
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Gun Test Small",
-				new EquipmentPart.Builder(EquipmentSlot.RADAR)
-						.set(RobotAttribute.GUN_HEAT_RATE, -40)
-						.set(RobotAttribute.GUN_TURN_ANGLE, -40).build());
-		
+		parts.put("Gun Test Small", new EquipmentPart.Builder(
+				EquipmentSlot.RADAR).set(RobotAttribute.GUN_HEAT_RATE, -40)
+				.set(RobotAttribute.GUN_TURN_ANGLE, -40).build());
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Body Test Small",
-				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
-						.set(RobotAttribute.ROBOT_TURN_ANGLE, -40).build());
-		
+		parts.put("Body Test Small", new EquipmentPart.Builder(
+				EquipmentSlot.TRACKS).set(RobotAttribute.ROBOT_TURN_ANGLE, -40)
+				.build());
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Body Test Large",
-				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
-						.set(RobotAttribute.ROBOT_TURN_ANGLE, 40).build());
-		
+		parts.put("Body Test Large", new EquipmentPart.Builder(
+				EquipmentSlot.TRACKS).set(RobotAttribute.ROBOT_TURN_ANGLE, 40)
+				.build());
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Radar Test Small",
+		parts.put(
+				"Radar Test Small",
 				new EquipmentPart.Builder(EquipmentSlot.POWER)
 						.set(RobotAttribute.RADAR_ANGLE, -40)
 						.set(RobotAttribute.SCAN_RADIUS, -40).build());
-		
+
 		// Do not remove, this will cause the tests to fail
-		parts.put("Radar Test Large",
+		parts.put(
+				"Radar Test Large",
 				new EquipmentPart.Builder(EquipmentSlot.POWER)
 						.set(RobotAttribute.RADAR_ANGLE, 40)
 						.set(RobotAttribute.SCAN_RADIUS, 40).build());
-		
+
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.GUN)
-				.sound("Test1").build());
+				.soundPath("Test1").build());
 
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test2", new EquipmentPart.Builder(EquipmentSlot.GUN)
-				.sound("Test2").build());
+				.soundPath("Test2").build());
 
 		/*
 		 * End of Test equipment
 		 */
-
 	}
 
 	/**
-	 * @param name
-	 *            the name of the part
+	 * @param name the name of the part
 	 * @return the part associated with the given name, or null if none
 	 */
 	public static EquipmentPart getPart(String name) {
