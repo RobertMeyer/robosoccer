@@ -215,13 +215,13 @@ public class BulletPeer {
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
-				if(FriendlyFireTracker.enableFriendlyfire == true){
-					if(teamFire){
-						otherRobot.updateEnergy(+damage);
-					}
-				}else{
-					otherRobot.updateEnergy(-damage);
-				}
+//				if(FriendlyFireTracker.enableFriendlyfire == true){
+//					if(teamFire){
+//						otherRobot.updateEnergy(+damage);
+//					}
+//				}else{
+//					otherRobot.updateEnergy(-damage);
+//				}
 				
 				if(!teamFire){
 					owner.getRobotStatistics().scoreBulletDamage(
