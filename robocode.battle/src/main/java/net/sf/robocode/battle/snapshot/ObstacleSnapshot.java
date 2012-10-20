@@ -44,10 +44,10 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	private double y;
 	
 	/** Obstacle Width */
-	private double width;
+	private int width;
 	
 	/** Obstacle Height */
-	private double height;
+	private int height;
 
 	/** The ARGB color of the bullet */
 	private int color = ExecCommands.defaultBulletColor;
@@ -71,6 +71,8 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	public ObstacleSnapshot(ObstaclePeer obstacle) {
 		x = obstacle.getX();
 		y = obstacle.getY();
+		height = obstacle.getHeight();
+		width = obstacle.getWidth();
 
 		//color = obstacle.getColor();
 
@@ -248,13 +250,13 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	}
 
 	@Override
-	public double getHeight() {
-		return 0;
+	public int getHeight() {
+		return height;
 	}
 
 	@Override
-	public double getWidth() {
-		return 0;
+	public int getWidth() {
+		return width;
 	}
 
 	@Override

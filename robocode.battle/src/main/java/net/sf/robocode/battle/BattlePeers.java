@@ -164,8 +164,7 @@ public class BattlePeers {
             }
             Integer duplicate = robotDuplicates.get(i);
             // TODO Follow back from here to RobotPeer etc, to
-            RobotPeer robotPeer = new RobotPeer(battle, hostManager, specification, duplicate, team, robotIndex);
-
+            RobotPeer robotPeer = new RobotPeer(battle, hostManager, specification, duplicate, team, robotIndex, null);
             robots.add(robotPeer);
             if (team == null) {
                 contestants.add(robotPeer);
@@ -194,9 +193,8 @@ public class BattlePeers {
 		robots.add(peer);
 	}
 	
-
 	public void addContestant(ContestantPeer peer) {
-		botzillaContestant =  peer;
+		botzillaContestant = peer;
 		contestants.add(peer);
 	}
 	
@@ -204,6 +202,12 @@ public class BattlePeers {
 		robots.remove(botzillaRobot);
 		contestants.remove(botzillaContestant);
 		System.out.println("botzilla is totally removed?");
+	}
+	
+	public void removeRobots(ArrayList<RobotPeer> robotsToRemove){
+		for(RobotPeer peer : robotsToRemove){
+			robots.remove(peer);
+		}
 	}
 	
 	public void cleanup() {

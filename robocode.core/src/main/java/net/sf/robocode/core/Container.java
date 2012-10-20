@@ -71,7 +71,7 @@ public final class Container extends ContainerBase {
         factory = new DefaultClassLoadingPicoContainer(engineLoader, new OptInCaching(), cache);
         loadModule("net.sf.robocode.api", systemLoader);
         final String[] cp = classPath.split(File.pathSeparator);
-
+System.out.print(cp.toString());
         // load core first
         for (String path : cp) {
             if (path.toLowerCase().contains("robocode.core")) {

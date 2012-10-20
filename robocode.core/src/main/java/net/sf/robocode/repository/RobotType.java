@@ -29,11 +29,13 @@ public class RobotType implements Serializable {
 	transient public static final RobotType PAINTING = new RobotType(64);
 	transient public static final RobotType HOUSE = new RobotType(128);
 	transient public static final RobotType BALL = new RobotType(256);
-	transient public static final RobotType SOCCER = new RobotType(512);
+	transient public static final RobotType SOCCER = new RobotType(512);	
 	transient public static final RobotType BOTZILLA = new RobotType(1024);
 	transient public static final RobotType ZOMBIE = new RobotType(2048);
 	transient public static final RobotType DISPENSER = new RobotType(4096);
 	transient public static final RobotType FREEZE = new RobotType(8192);
+	transient public static final RobotType MINION = new RobotType(16384);
+	
 	private int code;
 
 	public RobotType(int code) {
@@ -52,9 +54,10 @@ public class RobotType implements Serializable {
 			boolean isFreeze,
 			boolean isBall,
 			boolean isSoccerRobot,
-			boolean isBotzillaBot,
+			boolean isBotzilla,
 			boolean isZombie,
-			boolean isDispenser
+			boolean isDispenser,
+			boolean isMinion
 			) {
 		this.code = 0;
 		if (isJuniorRobot) {
@@ -87,10 +90,12 @@ public class RobotType implements Serializable {
 		if (isBall) {
 			code += BALL.getCode();
 		}
+
 		if (isSoccerRobot) {
 			code += SOCCER.getCode();
 		}
-	    if (isBotzillaBot) {
+
+		if (isBotzilla) {
 	    	code += BOTZILLA.getCode();
 	    }
 		if (isZombie) {
@@ -98,6 +103,9 @@ public class RobotType implements Serializable {
 		}
 		if (isDispenser) {
 			code += DISPENSER.getCode();
+		}
+		if (isMinion) {
+			code += MINION.getCode();
 		}
 	}
 
@@ -163,6 +171,10 @@ public class RobotType implements Serializable {
 	
 	public boolean isDispenser() {
 		return (code & DISPENSER.code) != 0;
+	}
+	
+	public boolean isMinion() {
+		return (code & MINION.code) != 0; 
 	}
 
 	@Override

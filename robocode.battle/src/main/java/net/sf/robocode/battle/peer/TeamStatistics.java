@@ -152,6 +152,15 @@ public class TeamStatistics implements ContestantStatistics {
         }
         return d;
     }
+    
+    public int getTotalKills(){
+    	int d = 0;
+
+        for (RobotPeer teammate : teamPeer) {
+            d += teammate.getRobotStatistics().getTotalKills();
+        }
+        return d;
+    }
 
     @Override
     public double getCurrentScore() {
@@ -213,6 +222,7 @@ public class TeamStatistics implements ContestantStatistics {
         return d;
     }
 
+    @Override
     public double getCurrentFlagScore() {
     	double d = 0;
 
@@ -221,6 +231,16 @@ public class TeamStatistics implements ContestantStatistics {
         }
         return d;
     }
+    
+	@Override
+	public int getCurrentKills() {
+		int k = 0;
+		for (RobotPeer teammate : teamPeer) {
+            k += teammate.getRobotStatistics().getCurrentKills();
+        }
+        return k;
+	}
+
     
     public double getCurrentRammingKillBonus() {
         double d = 0;
@@ -236,10 +256,12 @@ public class TeamStatistics implements ContestantStatistics {
         return new BattleResults(teamPeer.getName(), rank, getTotalScore(), getTotalSurvivalScore(),
                                  getTotalLastSurvivorBonus(), getTotalBulletDamageScore(), getTotalBulletKillBonus(),
                                  getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFlagScore(), getTotalFirsts(), getTotalSeconds(),
-                                 getTotalThirds());
+                                 getTotalThirds(), getTotalKills());
     }
 
 	@Override
 	public void incrementScore() {	
 	}
+
+
 }

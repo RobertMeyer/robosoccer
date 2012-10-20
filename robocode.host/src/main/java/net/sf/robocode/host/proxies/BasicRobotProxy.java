@@ -14,21 +14,43 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-import java.awt.*;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
-import net.sf.robocode.peer.*;
+import net.sf.robocode.peer.BulletCommand;
+import net.sf.robocode.peer.BulletStatus;
+import net.sf.robocode.peer.ExecCommands;
+import net.sf.robocode.peer.ExecResults;
+import net.sf.robocode.peer.IRobotPeer;
+import net.sf.robocode.peer.LandmineCommand;
+import net.sf.robocode.peer.LandmineStatus;
+import net.sf.robocode.peer.TeamMessage;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.security.HiddenAccess;
-import robocode.*;
+import robocode.BattleEndedEvent;
+import robocode.Bullet;
+import robocode.Condition;
 import robocode.Event;
+import robocode.Landmine;
+import robocode.MinionProxy;
+import robocode.PaintEvent;
+import robocode.RobotStatus;
+import robocode.Rules;
+import robocode.ScannedRobotEvent;
+import robocode.StatusEvent;
+import robocode._RobotBase;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.DisabledException;
@@ -50,7 +72,9 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     protected ExecCommands commands;
     private ExecResults execResults;
     private final Hashtable<Integer, Bullet> bullets = new Hashtable<Integer, Bullet>();
+    private final Hashtable<Integer,Landmine> landmines= new Hashtable<Integer, Landmine>();
     private int bulletCounter = -1;
+    private int landmineCounter=-1;
     private final AtomicInteger setCallCount = new AtomicInteger(0);
     private final AtomicInteger getCallCount = new AtomicInteger(0);
     protected Condition waitCondition;
@@ -67,17 +91,31 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         graphicsProxy = new Graphics2DSerialized();
 
         // dummy
-        execResults = new ExecResults(null, null, null, null, null, false, false, false);
+        execResults = new ExecResults(null, null, null, null, null,null, false, false, false);
 
         setSetCallCount(0);
         setGetCallCount(0);
     }
     
     @Override
-    public boolean checkSword() {
-		return super.checkSword();
-	}
-  
+    public void spawnMinion(int minionType) {
+    	if(minionType == _RobotBase.MINION_TYPE_RND) {
+    		Random rnd = new Random();
+    		minionType = rnd.nextInt(_RobotBase.MINION_TYPE_RND);
+    	}
+    	commands.setSpawnMinion(true, minionType);
+    	execute();
+    }
+    
+    @Override
+    public List<MinionProxy> getMinions() {
+    	return commands.getMinions();
+    }
+    
+    @Override
+    public MinionProxy getParent() {
+    	return commands.getParent();
+    }
 
     @Override
     protected void initializeRound(ExecCommands commands, RobotStatus status) {
@@ -112,7 +150,24 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         status = null;
         commands = null;
     }
+    
+ 
 
+    //asynchronous actions
+    @Override
+    public Landmine setLandmine(double power)
+    {
+    	setCall();
+    	return setLandmineFireImpl(power);
+    	
+    }
+    
+    @Override
+    public Landmine fireLandmine(double power) {
+    	Landmine landmine = setLandmineFireImpl(power);
+        execute();
+        return landmine;
+    }
     // asynchronous actions
     @Override
     public Bullet setFire(double power) {
@@ -181,6 +236,12 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     public void setBulletColor(Color color) {
         setCall();
         commands.setBulletColor(color != null ? color.getRGB() : ExecCommands.defaultBulletColor);
+    }
+    
+    @Override
+    public void setLandmineColor(Color color) {
+    	setCall();
+    	commands.setLandmineColor(color != null ? color.getRGB() : ExecCommands.defaultLandmineColor);
     }
 
     @Override
@@ -451,6 +512,20 @@ public class BasicRobotProxy extends HostingRobotProxy implements
                 }
             }
         }
+        
+        if (execResults.getLandmineUpdate() != null) {
+            for (LandmineStatus landmineStatus : execResults.getLandmineUpdate()) {
+                final Landmine landmine = landmines.get(landmineStatus.landmineId);
+
+                if (landmine != null) {
+                    HiddenAccess.updateLandmine(landmine, landmineStatus.x, landmineStatus.y, landmineStatus.victimName,
+                    		landmineStatus.isActive);
+                    if (!landmineStatus.isActive) {
+                        landmines.remove(landmineStatus.landmineId);
+                    }
+                }
+            }
+        }
 
         // add new team messages
         loadTeamMessages(execResults.getTeamMessages());
@@ -562,6 +637,48 @@ public class BasicRobotProxy extends HostingRobotProxy implements
 
         return bullet;
     }
+    
+    protected final Landmine setLandmineFireImpl(double power) {
+        if (Double.isNaN(power)) {
+            println("SYSTEM: You cannot call landminefire(NaN)");
+            return null;
+        }
+        if (getGunHeatImpl() > 0 || getEnergyImpl() == 0) {
+            return null;
+        }
+
+        power = min(getEnergyImpl(), min(max(power, Rules.MIN_BULLET_POWER), Rules.MAX_BULLET_POWER));
+
+        Landmine landmine;
+        LandmineCommand wrapper;
+        //Event currentTopEvent = eventManager.getCurrentTopEvent();
+
+        landmineCounter++;
+/**
+       if (currentTopEvent != null && currentTopEvent.getTime() == status.getTime() && !statics.isAdvancedRobot()
+                && ScannedRobotEvent.class.isAssignableFrom(currentTopEvent.getClass())) {
+            // this is angle assisted bullet
+            ScannedRobotEvent e = (ScannedRobotEvent) currentTopEvent;
+            landmine = new Landmine( getX(), getY(), power, statics.getName(), null, true, landmineCounter);
+            wrapper = new LandmineCommand(power, true, landmineCounter);
+        } else {
+            // this is normal bullet
+             * 
+             */
+            landmine = new Landmine(getX(), getY(), power, statics.getName(), null, true,
+            		landmineCounter);
+         wrapper = new LandmineCommand(power, false, landmineCounter);
+       // }
+
+        firedEnergy += power;
+        firedHeat += Rules.getGunHeat(power);
+
+        commands.getLandmines().add(wrapper);
+
+        landmines.put(landmineCounter, landmine);
+
+        return landmine;
+    }
 
     protected final void setTurnGunImpl(double radians) {
         commands.setGunTurnRemaining(radians);
@@ -666,4 +783,18 @@ public class BasicRobotProxy extends HostingRobotProxy implements
 		getCall();
         return status.getRobotHitAttack();
 	}
+
+	/**
+	 * melt a frozen robot at the cost of 30% of robots health
+	 */
+	@Override
+	public void melt() {
+		setCall();
+		setMelt();
+	}
+
+	private void setMelt() {
+		commands.setMelt(true);
+	}
+
 }

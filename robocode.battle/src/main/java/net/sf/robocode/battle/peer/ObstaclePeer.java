@@ -46,7 +46,6 @@ package net.sf.robocode.battle.peer;
 
 
 import robocode.*;
-
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.item.BoundingRectangle;
 
@@ -58,8 +57,8 @@ import net.sf.robocode.battle.item.BoundingRectangle;
 public class ObstaclePeer {
 
 	// Use width and height of the background squares
-	public final static int WIDTH = 32;
-    public final static int HEIGHT = 32;
+	private int width = 32;
+    private int height = 32;
     protected BattleRules battleRules;
     protected Battle battle;
     protected final BoundingRectangle boundingBox;
@@ -74,13 +73,37 @@ public class ObstaclePeer {
 		this.boundingBox = new BoundingRectangle();
 		updateBoundingBox();
 	}
+	
+	public void destroy() {
+		battle.registerDestroyedWall(this);
+	}
 
 	public void setX(double x) {
 		this.x = x;
+		updateBoundingBox();
 	}
 
 	public void setY(double y) {
 		this.y = y;
+		updateBoundingBox();
+	}
+	
+	public void setWidth(int width) {
+		this.width = width;
+		updateBoundingBox();
+	}
+	
+	public void setHeight(int height) {
+		this.height = height;
+		updateBoundingBox();
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 
     public double getX() {
@@ -92,7 +115,7 @@ public class ObstaclePeer {
     }
 	
     public void updateBoundingBox() {
-        boundingBox.setRect(x - WIDTH / 2, y - HEIGHT / 2, WIDTH, HEIGHT);
+        boundingBox.setRect(x - width / 2, y - height / 2, width, height);
     }
 	
     public BoundingRectangle getBoundingBox() {
@@ -101,7 +124,8 @@ public class ObstaclePeer {
 	
 	@Override
 	public String toString() {
-		return "Obstacle";
+		return "Obstacle (" + getX() + ", " + getY() + ")";
+		//return "Obstacle"
 	}
 	
 	public boolean obstacleIntersect(ObstaclePeer o) {
@@ -112,4 +136,5 @@ public class ObstaclePeer {
 		}
 		return false;		
 	}
+    /* Test edit to see if it works now */
 }

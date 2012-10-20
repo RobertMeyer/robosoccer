@@ -77,11 +77,7 @@ public abstract class HostingRobotProxy implements IHostingRobotProxy,
     private JavaHost getHost(IRobotRepositoryItem robotSpecification) {
         return (JavaHost) Container.cache.getComponent("robocode.host." + robotSpecification.getRobotLanguage());
     }
-    
-    public boolean checkSword() {
-		return peer.checkSword();
-	}
-
+  
     @Override
     public void cleanup() {
         robot = null;

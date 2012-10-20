@@ -108,6 +108,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		scoreTitles.put(11, "3rds");
 		scoreTitles.put(12, "Flag Score");
 		scoreTitles.put(13, "Team Leader");
+		scoreTitles.put(14, "Kills");
 	}
 	
 	/**
@@ -225,6 +226,9 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		case 13:
 			/* Team Leader */
 			return statistics.getTeamLeaderName();
+		case 14:
+			/* Kills */
+			return statistics.getKills();
 		default:
 			return "";	
 		}
@@ -619,5 +623,15 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	public void showTeam(boolean show, String title) {
 		this.updateColumn(13, show, title);
 	}
+	
+	/**
+	 * Show the robot's kills
+	 * @param show
+	 * @param title
+	 */
+	public void showKills(boolean show, String title){
+		this.updateColumn(14, show, title);
+	}
+	
 	/*********** END MODE SPECIFIC OPTIONS THAT CAN BE ADDED AS SCORES ***********/
 }

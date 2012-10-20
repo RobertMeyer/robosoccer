@@ -321,6 +321,14 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
 			isValid = false;
 		}
 	}
+	
+	public int getMinionType() {
+		populate();
+		
+		final IHostManager hostManager = Container.getComponent(IHostManager.class);
+		
+		return hostManager.getMinionType(this,  classURL != null);
+	}
 
 	// Stronger than update
 	public boolean validate() {
@@ -508,6 +516,16 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     @Override
     public boolean isDispenser() {
     	return robotType.isDispenser();
+    }
+    
+    @Override
+    public boolean isMinion() {
+    	return robotType.isMinion();
+    }
+
+    @Override
+    public boolean isZombie() {
+    	return robotType.isZombie();
     }
 
     @Override

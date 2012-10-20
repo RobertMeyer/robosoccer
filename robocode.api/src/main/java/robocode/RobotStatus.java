@@ -22,6 +22,7 @@ import net.sf.robocode.serialization.RbSerializer;
  * {@link StatusEvent#getStatus()}.
  *
  * @author Flemming N. Larsen (original)
+ * @author CSSE2003 Team forkbomb (contributor)
  * @since 1.5
  */
 public final class RobotStatus implements Serializable {
@@ -338,11 +339,11 @@ public final class RobotStatus implements Serializable {
      * Returns the maximum velocity of the robot measured in pixels/turn.
      * <p/>
      * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
-     * * {@link RobotAttribute#SPEED}
+     * * {@link RobotAttribute#VELOCITY}
      * 
      * @return the maximum velocity of the robot in pixels/turn
      * @see Rules#MAX_VELOCITY
-     * @see RobotAttribute#SPEED
+     * @see RobotAttribute#VELOCITY
      */
     public double getMaxVelocity(){
     	return maxVelocity;

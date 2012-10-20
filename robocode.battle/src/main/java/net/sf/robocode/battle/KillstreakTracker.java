@@ -34,6 +34,9 @@ public class KillstreakTracker {
 		battle = b;
 		killstreakAbilities = new HashMap<Integer, IKillstreakAbility>();
 
+		//System.out.println("Enabled: ");
+		//System.out.println(enableKillstreaks);
+
 		/* add the default killstreak abilities to the map */
 		addKillstreakAbility(3, new RadarJammer());
 		addKillstreakAbility(5, new AirStrike());

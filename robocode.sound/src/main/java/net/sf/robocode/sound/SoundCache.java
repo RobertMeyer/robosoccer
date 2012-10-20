@@ -149,6 +149,8 @@ class SoundCache {
         try {
             clones = new ClipClones(mixer, data, numClones);
             soundTable.put(key, clones);
+         
+
         } catch (LineUnavailableException e) {
             Logger.logError(
                     "The audio mixer " + mixer.getMixerInfo().getName()
@@ -197,6 +199,20 @@ class SoundCache {
         return clones.next();
     }
 
+    /**
+     * Returns true if the sound table contains the key
+     *
+     * @param key the key that is being checked
+     */
+    public boolean contains(Object key) {
+        if(soundTable.containsKey(key)){
+        	return true;
+        }
+        else{
+        	return false;
+        }
+    }
+    
     /**
      * Removes all clip copies of a given sound, closing all its dependent resources
      *

@@ -107,4 +107,10 @@ public interface IRenderableSnapshot {
 	 * @return a java.color representation of colour.
 	 */
 	Color getColour();
+	
+	int getSpriteWidth();
+	int getSpriteHeight();
+	int getRows();
+	int getCols();
+	int getLoops();
 }

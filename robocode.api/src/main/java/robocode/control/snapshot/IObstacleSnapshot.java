@@ -27,14 +27,14 @@ public interface IObstacleSnapshot {
 	 *
 	 * @return the height of the obstacle.
 	 */
-	double getHeight();
+	int getHeight();
 	
 	/**
 	 * Returns the width of the obstacle.
 	 *
 	 * @return the width of the obstacle.
 	 */
-	double getWidth();
+	int getWidth();
 
 	/**
 	 * Returns the color of the obstacle.

@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Waypoint {
 	ArrayList<SingleWaypoint> wayPoints = new ArrayList<SingleWaypoint>();
-	
+
 	/**
 	 * A WayPoint cannot be empty and must contain at least one SingleWaypoint
 	 * when being initialised
@@ -25,19 +25,19 @@ public class Waypoint {
 	Waypoint(double x, double y){
 		wayPoints.add(new SingleWaypoint(x, y));
 	}
-	
+
 	public void addSingleWaypoint(double x, double y){
 		wayPoints.add(new SingleWaypoint(x, y));
 	}
-	
+
 	public double getSingleWaypointX(int SingleWaypointIndex){
 		return wayPoints.get(SingleWaypointIndex).getXLocation();
 	}
-	
+
 	public double getSingleWaypointY(int SingleWaypointIndex){
 		return wayPoints.get(SingleWaypointIndex).getYLocation();
 	}
-	
+
 	//class used to store x & y co-ordinates of each waypoint.
 	public class SingleWaypoint{
 		private double xLocation;
@@ -52,10 +52,10 @@ public class Waypoint {
 		public double getXLocation(){
 			return xLocation;
 		}
-	
+
 		public double getYLocation(){
 			return yLocation;
 		}
-	
+
 	}
 }

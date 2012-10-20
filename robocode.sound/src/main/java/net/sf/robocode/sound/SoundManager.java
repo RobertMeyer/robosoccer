@@ -31,8 +31,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Mixer;
+
 import net.sf.robocode.battle.IBattleManager;
-import net.sf.robocode.io.Logger;
 import net.sf.robocode.settings.ISettingsListener;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.control.events.BattleAdaptor;
@@ -115,17 +115,11 @@ public class SoundManager implements ISoundManager {
      *
      * @return a SoundCache instance
      */
-    private SoundCache getSounds(String path) {
+    private SoundCache getSounds(String path) {    	
+    	if(sounds == null){
             sounds = new SoundCache(getMixer());
 
-            // Sound effects
-            if(path != null){
-            	 sounds.addSound("gunshot", path, 5);
-            }
-            else {
-            	sounds.addSound("gunshot", properties.getFileGunshotSfx(), 5);
-           }
-           
+            sounds.addSound("gunshot", properties.getFileGunshotSfx(), 5); 
             sounds.addSound("robot death", properties.getRobotDeathSfx(), 3);
             sounds.addSound("bullet hits robot", properties.getBulletHitsRobotSfx(), 3);
             sounds.addSound("bullet hits bullet", properties.getBulletHitsBulletSfx(), 2);
@@ -136,7 +130,22 @@ public class SoundManager implements ISoundManager {
             sounds.addSound("theme", properties.getFileThemeMusic(), 1);
             sounds.addSound("background", properties.getFileBackgroundMusic(), 1);
             sounds.addSound("endOfBattle", properties.getFileEndOfBattleMusic(), 1);
-        
+    	}
+    	
+    	//If the sound table does not already contain the custom path, adds it
+    	
+    	//The try catch is to deal with a null pointer exception that gets
+    	//thrown when you close robotcode and there are still sounds in the 
+    	//cache
+    	try{
+	    	if(!sounds.contains(path) && !path.equals("") && !path.equals(null)){
+	    		sounds.addSound(path, path, 5);
+	    	}
+    	}
+    	catch(NullPointerException e){
+    		
+    	}
+
         return sounds;
     }
 
@@ -239,7 +248,13 @@ public class SoundManager implements ISoundManager {
         switch (bp.getState()) {
             case FIRED:
                 if (properties.getOptionsSoundEnableGunshot()) {
-                    playSound("gunshot", pan, calcBulletVolume(bp), 0, bp.getBulletSound());
+                	if(bp.getBulletSound() == null){
+                		playSound("gunshot", pan, calcBulletVolume(bp), 0, bp.getBulletSound());
+                	}
+                	else{
+                
+                    playSound(bp.getBulletSound(), pan, calcBulletVolume(bp), 0, bp.getBulletSound());
+                	}
                 }
                 break;
 
@@ -352,14 +367,13 @@ public class SoundManager implements ISoundManager {
      * @param bp the bullet peer
      * @return the volume value, ranging from 0 to 1
      */
-    private float calcBulletVolume(IBulletSnapshot bp) {
-    	if(bp.getPower() > robocode.Rules.MAX_BULLET_POWER){
-    		return 1;
-    	}
-    	else{
-        return (float) (bp.getPower() / robocode.Rules.MAX_BULLET_POWER);
-    	}
-    }
+	private float calcBulletVolume(IBulletSnapshot bp) {
+		if (bp.getPower() > robocode.Rules.MAX_BULLET_POWER) {
+			return 1;
+		} else {
+			return (float) (bp.getPower() / robocode.Rules.MAX_BULLET_POWER);
+		}
+	}
 
     private class BattleObserver extends BattleAdaptor {
 
@@ -380,6 +394,7 @@ public class SoundManager implements ISoundManager {
 
         @Override
         public void onTurnEnded(TurnEndedEvent event) {
+        	
             if (isSoundEnabled()) {
                 int battleFieldWidth = battleManager.getBattleProperties().getBattlefieldWidth();
                 
@@ -402,6 +417,7 @@ public class SoundManager implements ISoundManager {
 
                     playRobotSound(rp, battleFieldWidth);
                 }
+                
             }
         }
     }

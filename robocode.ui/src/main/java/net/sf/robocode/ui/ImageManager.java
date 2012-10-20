@@ -37,16 +37,24 @@ public class ImageManager implements IImageManager {
     private Image[] groundImages;
     private RenderImage[][] explosionRenderImages;
     private RenderImage debriseRenderImage;
+	private RenderImage teleporterImage;
+	private RenderImage[] blackHoleImages;
+	
+	
     private Image bodyImage;
     private Image gunImage;
     private Image radarImage;
     private Image healthImage;
+    private Image landmineImage;
     private static final int MAX_NUM_COLORS = 256;
     private HashMap<Integer, RenderImage> robotBodyImageCache;
     private HashMap<Integer, RenderImage> robotGunImageCache;
     private HashMap<Integer, RenderImage> robotRadarImageCache;
     private HashMap<String, RenderImage> customImageCache;
+    private HashMap<String, List<RenderImage>> customAnimCache;
 	private Image[] soccerField;
+	
+	//For storing spike image
 	private Image spikeImage;
 
     public ImageManager(ISettingsManager properties) {
@@ -61,12 +69,14 @@ public class ImageManager implements IImageManager {
         groundImages = new Image[9];
 		soccerField = new Image[2];
         explosionRenderImages = null;
+
         debriseRenderImage = null;
         bodyImage = null;
         gunImage = null;
         radarImage = null;
         healthImage = null;
         customImageCache = new RenderCache<String, RenderImage>();
+        customAnimCache = new RenderCache<String, List<RenderImage>>();
         robotBodyImageCache = new RenderCache<Integer, RenderImage>();
         robotGunImageCache = new RenderCache<Integer, RenderImage>();
         robotRadarImageCache = new RenderCache<Integer, RenderImage>();
@@ -98,12 +108,18 @@ public class ImageManager implements IImageManager {
         }
         return groundImages[index];
     }
-	
+
+	/**
+	 * Returns the image of spike for Spike Mode
+	 * 
+	 * @return the image of spike
+	 */
 	@Override
     public Image getSpikeTileImage() {
 		spikeImage = getImage("/net/sf/robocode/ui/images/ground/spike/spike.png");
         return spikeImage;
     }
+
 
     @Override
     public RenderImage getExplosionRenderImage(int which, int frame) {
@@ -152,6 +168,15 @@ public class ImageManager implements IImageManager {
         return debriseRenderImage;
     }
 
+    public RenderImage getLandmineImage()
+    {
+
+        if (landmineImage == null) {
+        	landmineImage = getImage("/net/sf/robocode/ui/images/landmine1.png");
+        }
+        return debriseRenderImage;
+    
+    }
     private Image getImage(String filename) {
         Image image = ImageUtil.getImage(filename);
         
@@ -165,6 +190,7 @@ public class ImageManager implements IImageManager {
         return image;
     }
     
+
     /**
      * This method loads in a image from a given file path. 
      * 
@@ -191,6 +217,29 @@ public class ImageManager implements IImageManager {
     }
     
     /**
+     * This method loads in a spritesheet from a given file path. 
+     * 
+     * @param String name - Key name for hashmap.
+     * @param String filename - path to file.
+     */
+	public List<RenderImage> addCustomAnim(String name, String filename, int width, int height, int rows, int cols) {
+    	// Check if already cached
+    	if (customAnimCache.containsKey(name)) {
+    		getCustomAnim(name);
+    	}
+    	// Load image into memory
+    	List<RenderImage> imgs = ImageUtil.getSprites(filename, width, height, rows, cols);
+    	
+    	// Check to see valid image
+    	if(imgs != null) {
+    		customAnimCache.put(name, imgs);
+    		return imgs;
+    	}
+    	
+    	return null;
+    }
+    
+    /**
      * Returns a custom image from cache.
      * 
      * @param String name - Name of key to return.
@@ -201,6 +250,19 @@ public class ImageManager implements IImageManager {
     	}
     	return null;
     }	
+    
+    /**
+     * Returns a custom anim from cache.
+     * 
+     * @param String name - Name of key to return.
+     */
+    public List<RenderImage> getCustomAnim(String name) {
+    	if (customAnimCache.containsKey(name)) {
+    		return customAnimCache.get(name);
+    	}
+    	return null;
+    }	
+    
     
     /**
      * Gets the body image
@@ -273,7 +335,7 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredBodyRenderImage(Integer color, String imagePath) {
         RenderImage img = robotBodyImageCache.get(color);
-        
+
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(imagePath), new Color(color, true)));
             robotBodyImageCache.put(color, img);
@@ -284,6 +346,11 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredGunRenderImage(Integer color, String imagePath) {
         RenderImage img = robotGunImageCache.get(color);
+        
+        // sets a custom gun image if one is provided and it is necessary.
+        if(imagePath != null || gunImage == null) {
+        	gunImage = getImage(imagePath);
+        }
 
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(imagePath), new Color(color, true)));
@@ -295,6 +362,11 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredRadarRenderImage(Integer color, String imagePath) {
         RenderImage img = robotRadarImageCache.get(color);
+        
+        // sets a custom radar image if one is provided and it is necessary.
+        if(imagePath != null || radarImage == null) {
+        	radarImage = getImage(imagePath);
+        }
 
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(imagePath), new Color(color, true)));
@@ -339,4 +411,21 @@ public class ImageManager implements IImageManager {
             return size() > MAX_NUM_COLORS;
         }
     }
+
+	public RenderImage getTeleporterRenderImage() {
+		if (teleporterImage == null) {
+			teleporterImage = new RenderImage(getImage("/net/sf/robocode/ui/images/portal.png"));
+		}
+		return teleporterImage;
+	}
+	
+	public RenderImage getBlackHoleRenderImage(int size){
+		if(blackHoleImages == null){
+			blackHoleImages = new RenderImage[3];
+			blackHoleImages[0] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole40.png"));
+			blackHoleImages[1] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole80.png"));
+			blackHoleImages[2] = new RenderImage(getImage("/net/sf/robocode/ui/images/blackhole120.png"));
+		}
+		return blackHoleImages[size];
+	}
 }

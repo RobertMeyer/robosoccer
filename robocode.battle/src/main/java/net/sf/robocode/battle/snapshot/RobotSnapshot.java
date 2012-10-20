@@ -16,6 +16,7 @@ package net.sf.robocode.battle.snapshot;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +29,11 @@ import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
-import robocode.EquipmentPart;
-import robocode.EquipmentSlot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.RobotState;
+import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSlot;
 
 /**
  * A snapshot of a robot at a specific time instant in a battle.
@@ -106,7 +107,11 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private IScoreSnapshot robotScoreSnapshot;
 	/** Flag specifying if the robot is a FreezeRobot */
 	private boolean isFreezeRobot;
-    
+    /** Flag specifying if the robot is a Minion */
+	private boolean isMinion;
+	/** List holding minion snapshots */
+	private List<IRobotSnapshot> minions = new ArrayList<IRobotSnapshot>(); 
+	
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
     
     private double fullEnergy;
@@ -138,6 +143,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 
 		state = robot.getState();
 
+
         energy = robot.getEnergy();
         acceleration = robot.getRobotAcceleration();
         velocity = robot.getVelocity();
@@ -165,7 +171,11 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		isPaintEnabled = robot.isPaintEnabled();
 		isSGPaintEnabled = robot.isSGPaintEnabled();
 		isFreezeRobot = robot.isFreezeRobot();
-
+		isMinion = robot.isMinion();
+		//Create snapshots of minions.
+		for(RobotPeer peer: robot.getMinionPeers()) {
+			minions.add(new RobotSnapshot(peer, readoutText));
+		}
 		scanArc = robot.getScanArc() != null ? new SerializableArc((Arc2D.Double) robot.getScanArc()) : null;
 
 		graphicsCalls = robot.getGraphicsCalls();
@@ -388,7 +398,21 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	public boolean isDroid() {
 		return isDroid;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isMinion() {
+		return isMinion;
+	}
+    
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<IRobotSnapshot> getMinions() { 
+		return minions;
+	}
+    
 	/**
 	 * {@inheritDoc}
 	 */
