@@ -277,7 +277,6 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		}
 		return totalScore;
 	}
-
 	
 	/**
 	 * Get the Title of the Highscores
@@ -299,8 +298,9 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * Set the title of the highscores
 	 * @param title The new Title
 	 */
-	public void setTitle(String title) {
+	public BattleResultsTableModel setTitle(String title) {
 		this.title = title;
+		return this;
 	}
 	
 	/*********** PRINTER METHODS ***********/
@@ -374,57 +374,43 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show Show the score or not in the Results Table
 	 * @param title The new title
 	 */
-	private void updateColumn(int id, boolean show, String title) {
-		if (show) {
-			columns.add(id);
-			if (title != null && title != "") {
-				scoreTitles.put(id, title);
-			}
-		} else {
-			columns.remove(id);
+	private void updateColumn(int id, String title) {
+		columns.add(id);
+		if (title != null && title != "") {
+			scoreTitles.put(id, title);
 		}
 	}
 	/*********** OPTIONS THAT CAN BE ADDED AS SCORES ***********/
-	/**
-	 * Show the overall rank
-	 * @param show
-	 */
- 	public void showOverallRank(boolean show) {
-		this.showOverallRank(show, "");
+	public BattleResultsTableModel showOverallRank() {
+		return this.showOverallRank("");
 	}
- 	
+	
  	/**
 	 * Show the overall rank
 	 * @param show
 	 * @param title The new title
 	 */
- 	public void showOverallRank(boolean show, String title) {
- 		this.updateColumn(0, show, title);
+ 	public BattleResultsTableModel showOverallRank(String title) {
+ 		this.updateColumn(0, title);
+ 		return this;
  	}
 	
-	/**
-	 * Show the robot's name
-	 * @param show
-	 */
-	public void showRobotName(boolean show) {
-		this.showRobotName(show, "");
-	}
-	
+ 	public BattleResultsTableModel showRobotName() {
+ 		return this.showRobotName("");
+ 	}
+ 	
 	/**
 	 * Show the robot's name
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showRobotName(boolean show, String title) {
-		this.updateColumn(1, show, title);
+	public BattleResultsTableModel showRobotName(String title) {
+		this.updateColumn(1, title);
+		return this;
 	}
-	
-	/**
-	 * Show the total score
-	 * @param show
-	 */
-	public void showTotalScore(boolean show) {
-		this.showTotalScore(show, "");
+
+	public BattleResultsTableModel showTotalScore() {
+		return this.showTotalScore("");
 	}
 	
 	/**
@@ -432,16 +418,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showTotalScore(boolean show, String title) {
-		this.updateColumn(2, show, title);
+	public BattleResultsTableModel showTotalScore(String title) {
+		this.updateColumn(2, title);
+		return this;
 	}
 	
-	/**
-	 * Show the survival score
-	 * @param show
-	 */
-	public void showSurvival(boolean show) {
-		this.showSurvival(show, "");
+	public BattleResultsTableModel showSurvival() {
+		return this.showSurvival("");
 	}
 	
 	/**
@@ -449,16 +432,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showSurvival(boolean show, String title) {
-		this.updateColumn(3, show, title);
+	public BattleResultsTableModel showSurvival(String title) {
+		this.updateColumn(3, title);
+		return this;
 	}
 	
-	/**
-	 * Show the survival bonus
-	 * @param show
-	 */
-	public void showSurvivalBonus(boolean show) {
-		this.showSurvivalBonus(show, "");
+	public BattleResultsTableModel showSurvivalBonus() {
+		return this.showSurvivalBonus("");
 	}
 	
 	/**
@@ -466,16 +446,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showSurvivalBonus(boolean show, String title) {
-		this.updateColumn(4, show, title);
+	public BattleResultsTableModel showSurvivalBonus(String title) {
+		this.updateColumn(4, title);
+		return this;
 	}
-	
-	/**
-	 * Show the bullet damage score
-	 * @param show
-	 */
-	public void showBulletDamage(boolean show) {
-		this.showBulletDamage(show, "");
+
+	public BattleResultsTableModel showBulletDamage() {
+		return this.showBulletDamage("");
 	}
 	
 	/**
@@ -483,16 +460,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showBulletDamage(boolean show, String title) {
-		this.updateColumn(5,  show, title);
+	public BattleResultsTableModel showBulletDamage(String title) {
+		this.updateColumn(5, title);
+		return this;
 	}
-	
-	/**
-	 * Show the bullet bonus score
-	 * @param show
-	 */
-	public void showBulletBonus(boolean show) {
-		this.showBulletBonus(show, "");
+
+	public BattleResultsTableModel showBulletBonus() {
+		return this.showBulletBonus("");
 	}
 	
 	/**
@@ -500,16 +474,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showBulletBonus(boolean show, String title) {
-		this.updateColumn(6, show, title);
+	public BattleResultsTableModel showBulletBonus(String title) {
+		this.updateColumn(6, title);
+		return this;
 	}
-	
-	/**
-	 * Show the total ram damage score
-	 * @param show
-	 */
-	public void showRamDamage(boolean show) {
-		this.showRamDamage(show, "");
+
+	public BattleResultsTableModel showRamDamage() {
+		return this.showRamDamage("");
 	}
 	
 	/**
@@ -517,16 +488,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showRamDamage(boolean show, String title) {
-		this.updateColumn(7, show, title);
+	public BattleResultsTableModel showRamDamage(String title) {
+		this.updateColumn(7, title);
+		return this;
 	}
-	
-	/**
-	 * Show the total ram bonus score
-	 * @param show
-	 */
-	public void showRamBonus(boolean show) {
-		this.showRamBonus(show, "");
+
+	public BattleResultsTableModel showRamBonus() {
+		return this.showRamBonus("");
 	}
 	
 	/**
@@ -534,16 +502,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showRamBonus(boolean show, String title) {
-		this.updateColumn(8, show, title);
+	public BattleResultsTableModel showRamBonus(String title) {
+		this.updateColumn(8, title);
+		return this;
 	}
 	
-	/**
-	 * Show the total amount of first placings
-	 * @param show
-	 */
-	public void showFirsts(boolean show) {
-		this.updateColumn(9, show, "");
+	public BattleResultsTableModel showFirsts() {
+		return this.showFirsts("");
 	}
 	
 	/**
@@ -551,16 +516,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showFirsts(boolean show, String title) {
-		this.updateColumn(9, show, title);
+	public BattleResultsTableModel showFirsts(String title) {
+		this.updateColumn(9, title);
+		return this;
 	}
 	
-	/**
-	 * Show the total amount of second placings
-	 * @param show
-	 */
-	public void showSeconds(boolean show) {
-		this.showSeconds(show, "");
+	public BattleResultsTableModel showSeconds() {
+		return this.showSeconds("");
 	}
 	
 	/**
@@ -568,16 +530,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showSeconds(boolean show, String title) {
-		this.updateColumn(10, show, title);
+	public BattleResultsTableModel showSeconds(String title) {
+		this.updateColumn(10, title);
+		return this;
 	}
-	
-	/**
-	 * Show the total amount of third placings
-	 * @param show
-	 */
-	public void showThirds(boolean show) {
-		this.showThirds(show, "");
+
+	public BattleResultsTableModel showThirds() {
+		return this.showThirds("");
 	}
 	
 	/**
@@ -585,17 +544,14 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showThirds(boolean show, String title) {
-		this.updateColumn(11, show, title);
+	public BattleResultsTableModel showThirds(String title) {
+		this.updateColumn(11, title);
+		return this;
 	}
 	/*********** END OPTIONS THAT CAN BE ADDED AS SCORES ***********/
 	/*********** MODE SPECIFIC OPTIONS THAT CAN BE ADDED AS SCORES ***********/
-	/**
-	 * Show the flag score
-	 * @param show
-	 */
-	public void showFlagScore(boolean show) {
-		this.showFlagScore(show, "");
+	public BattleResultsTableModel showFlagScore() {
+		return this.showFlagScore("");
 	}
 	
 	/**
@@ -603,16 +559,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showFlagScore(boolean show, String title) {
-		this.updateColumn(12, show, title);
+	public BattleResultsTableModel showFlagScore(String title) {
+		this.updateColumn(12, title);
+		return this;
 	}
-	
-	/**
-	 * Show the team's name
-	 * @param show
-	 */
-	public void showTeam(boolean show) {
-		this.showTeam(show, "");
+
+	public BattleResultsTableModel showTeam() {
+		return this.showTeam("");
 	}
 	
 	/**
@@ -620,8 +573,13 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title The new title
 	 */
-	public void showTeam(boolean show, String title) {
-		this.updateColumn(13, show, title);
+	public BattleResultsTableModel showTeam(String title) {
+		this.updateColumn(13, title);
+		return this;
+	}
+	
+	public BattleResultsTableModel showKills() {
+		return this.showKills("");
 	}
 	
 	/**
@@ -629,8 +587,9 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 	 * @param show
 	 * @param title
 	 */
-	public void showKills(boolean show, String title){
-		this.updateColumn(14, show, title);
+	public BattleResultsTableModel showKills(String title){
+		this.updateColumn(14, title);
+		return this;
 	}
 	
 	/*********** END MODE SPECIFIC OPTIONS THAT CAN BE ADDED AS SCORES ***********/

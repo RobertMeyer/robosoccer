@@ -95,16 +95,12 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-import static java.lang.Math.round;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.sf.robocode.battle.events.BattleEventDispatcher;
@@ -147,7 +143,6 @@ import robocode.control.events.TurnStartedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.LandmineState;
-import robocode.control.snapshot.RobotState;
 import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
 
@@ -185,7 +180,7 @@ public class Battle extends BaseBattle {
 	private EquipmentSet equipment;
 
 	// List of effect areas
-	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+	private EffectAreaManager eaManager = new EffectAreaManager();
 	private List<IRenderable> customObject = new ArrayList<IRenderable>();
 	private int activeRobots;
 	// Death events
@@ -235,6 +230,7 @@ public class Battle extends BaseBattle {
 	private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
 
 	private int numObstacles;
+	private static DefaultSpawnController spawnController = new DefaultSpawnController();
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager,
 			IHostManager hostManager, IRepositoryManager repositoryManager,
@@ -250,23 +246,19 @@ public class Battle extends BaseBattle {
 	public void setup(RobotSpecification[] battlingRobotsList,
 			BattleProperties battleProperties, boolean paused,
 			IRepositoryManager repositoryManager) {
+		bp = battleProperties;
 		isPaused = paused;
-		battleRules = HiddenAccess.createRules(
-				battleProperties.getBattlefieldWidth(),
-				battleProperties.getBattlefieldHeight(),
-				battleProperties.getNumRounds(),
-				battleProperties.getGunCoolingRate(),
-				battleProperties.getInactivityTime(),
-				battleProperties.getHideEnemyNames(),
-				battleProperties.getModeRules());
+		battleRules = HiddenAccess.createRules(bp.getBattlefieldWidth(),
+				bp.getBattlefieldHeight(), bp.getNumRounds(),
+				bp.getGunCoolingRate(), bp.getInactivityTime(),
+				bp.getHideEnemyNames(), bp.getModeRules());
 		robotsCount = battlingRobotsList.length;
 		// get width and height of the battlefield
-		width = battleProperties.getBattlefieldWidth();
-		height = battleProperties.getBattlefieldHeight();
-		battleMode = (ClassicMode) battleProperties.getBattleMode();
+		width = bp.getBattlefieldWidth();
+		height = bp.getBattlefieldHeight();
+		battleMode = (ClassicMode) bp.getBattleMode();
 
-		// TODO: load the equipment from the battle properties
-		equipment = EquipmentSet.fromFile(new File("fakepath"));
+		equipment = EquipmentSet.fromFile(bp.getEquipmentFile());
 
 		// System.out.println("Battle mode: " + battleMode.toString());
 		// TODO Just testing spawning any bot for now
@@ -281,7 +273,6 @@ public class Battle extends BaseBattle {
 
 		botzillaActive = false;
 
-		bp = battleProperties;
 		if (battleMode.toString() == "Obstacle Mode") {
 			numObstacles = battleMode.setNumObstacles(battleRules);
 			cellWidth = battleMode.setCellWidth(battleRules);
@@ -302,23 +293,27 @@ public class Battle extends BaseBattle {
 		}
 		this.getBattleMode().setGuiOptions();
 		initialRobotPositions = this.getBattleMode().computeInitialPositions(
-				battleProperties.getInitialPositions(),
-				battleProperties.getBattlefieldWidth(),
-				battleProperties.getBattlefieldHeight(), robotsCount);
+				bp.getInitialPositions(), bp.getBattlefieldWidth(),
+				bp.getBattlefieldHeight(), robotsCount);
 
 		peers = new BattlePeers(this, battlingRobotsList, hostManager,
 				repositoryManager);
 
 		if (battleMode.toString() == "Botzilla Mode") {
-			setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
-			if (Integer.parseInt((String) setTimeHashTable.get("botzillaSpawn")) != 0) {
-				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable.get("botzillaSpawn"));
-			} else if (Integer.parseInt((String) setTimeHashTable.get("botzillaModifier")) != 0) {
-				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable.get("botzillaModifier")) * robotsCount;
+			setTimeHashTable = battleManager.getBattleProperties()
+					.getBattleMode().getRulesPanelValues();
+			if (Integer
+					.parseInt((String) setTimeHashTable.get("botzillaSpawn")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable
+						.get("botzillaSpawn"));
+			} else if (Integer.parseInt((String) setTimeHashTable
+					.get("botzillaModifier")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable
+						.get("botzillaModifier")) * robotsCount;
 			}
-			System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
+			System.out.println("Botzilla will spawn at " + botzillaSpawnTime
+					+ " turns.");
 		}
-		bp = battleProperties;
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
@@ -338,6 +333,16 @@ public class Battle extends BaseBattle {
 
 	public List<IRenderable> getCustomObject() {
 		return customObject;
+	}
+
+	/**
+	 * @param name
+	 *            the name of the part
+	 * @return the part associated with the given name, or null if there is no
+	 *         part with that name.
+	 */
+	public EquipmentPart getEquipmentPart(String name) {
+		return equipment.getPart(name);
 	}
 
 	public ItemController getItemControl() {
@@ -409,21 +414,6 @@ public class Battle extends BaseBattle {
 
 	public KillstreakTracker getKillstreakTracker() {
 		return killstreakTracker;
-	}
-
-	// Method for killing the freeze robot if it is one of the last two
-	// remaining robots
-	public void killFreezeRobot() {
-		// Checks if number of active robots == 2
-		if (activeRobots == 2) {
-			// finds the freeze robot
-			for (int i = 0; i < robotList.size(); i++) {
-				if (robotList.get(i).isFreezeRobot()) {
-					// sets the freeze robots state to dead.
-					robotList.get(i).setState(RobotState.DEAD);
-				}
-			}
-		}
 	}
 
 	@Override
@@ -519,7 +509,7 @@ public class Battle extends BaseBattle {
 
 		/* Start to initialise all the items */
 		this.initialiseItems();
-		effArea.clear();
+		eaManager.clearEffectArea();
 
 		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null) {
@@ -532,7 +522,7 @@ public class Battle extends BaseBattle {
 		// boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {
 			// clear effect area and recreate every round
-			createEffectAreas();
+			eaManager.createRandomEffectAreas(bp, 1);
 		}
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules,
@@ -584,7 +574,7 @@ public class Battle extends BaseBattle {
 		Logger.logMessage(""); // puts in a new-line in the log message
 
 		final ITurnSnapshot snapshot = new TurnSnapshot(this,
-				peers.getRobots(), bullets, landmines, effArea, customObject,
+				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
 				itemControl.getItems(), obstacles, teleporters, false);
 		// final ITurnSnapshot snapshot = new TurnSnapshot(this,
 		// peers.getRobots(), bullets, landmines,effArea, customObject,
@@ -617,7 +607,6 @@ public class Battle extends BaseBattle {
 		this.getBattleMode().scoreRoundPoints();
 
 		bullets.clear();
-
 		items.clear();
 		teleporters.clear();
 
@@ -625,6 +614,8 @@ public class Battle extends BaseBattle {
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(),
 				currentTime, totalTurns));
+        
+        getBattleMode().endRound(peers);
 	}
 
 	@Override
@@ -653,7 +644,7 @@ public class Battle extends BaseBattle {
 
 		updateLandmines();
 
-		updateEffectAreas();
+		eaManager.updateEffectAreas(peers);
 
 		this.getBattleMode().updateRenderables(customObject);
 
@@ -679,8 +670,6 @@ public class Battle extends BaseBattle {
 		inactiveTurnCount++;
 
 		computeActiveRobots();
-
-		killFreezeRobot();
 
 		publishStatuses();
 
@@ -796,7 +785,7 @@ public class Battle extends BaseBattle {
 	@Override
 	protected void finalizeTurn() {
 		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
-				peers.getRobots(), bullets, landmines, effArea, customObject,
+				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
 				itemControl.getItems(), obstacles, teleporters, true)));
 
 		// eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
@@ -1171,19 +1160,19 @@ public class Battle extends BaseBattle {
 		case 4:
 			// Effect area 1
 			EffectArea deathEffect1 = new EffectArea(finalX, finalY, 64, 64, 1);
-			effArea.add(deathEffect1);
+			eaManager.addEffectArea(deathEffect1);
 			break;
 		case 5:
 			// Effect area 2
 			EffectArea deathEffect2 = new EffectArea(deadRobot.getX(),
 					deadRobot.getY(), 64, 64, 2);
-			effArea.add(deathEffect2);
+			eaManager.addEffectArea(deathEffect2);
 			break;
 		case 6:
 			// Effect area 3
 			EffectArea deathEffect3 = new EffectArea(deadRobot.getX(),
 					deadRobot.getY(), 64, 64, 3);
-			effArea.add(deathEffect3);
+			eaManager.addEffectArea(deathEffect3);
 			break;
 		}
 	}
@@ -1396,60 +1385,22 @@ public class Battle extends BaseBattle {
 		teleporters.add(new TeleporterPeer(x1, y1, x2, y2));
 	}
 
-	private void createEffectAreas() {
-		int tileWidth = 64;
-		int tileHeight = 64;
-		double xCoord, yCoord;
-		final int NUM_HORZ_TILES = bp.getBattlefieldWidth() / tileWidth + 1;
-		final int NUM_VERT_TILES = bp.getBattlefieldHeight() / tileHeight + 1;
-		int numEffectAreasModifier = 100000; // smaller the number -> more
-												// effect areas
-		int numEffectAreas = (int) round((bp.getBattlefieldWidth()
-				* bp.getBattlefieldHeight() / numEffectAreasModifier));
-		Random effectAreaR = new Random();
-		int effectAreaRandom;
-
-		while (numEffectAreas > 0) {
-			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
-				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
-					effectAreaRandom = effectAreaR.nextInt(51) + 1; // The 51 is
-																	// the
-																	// modifier
-																	// for the
-																	// odds of
-																	// the tile
-																	// appearing
-					if (effectAreaRandom == 10) {
-						xCoord = x * tileWidth;
-						yCoord = bp.getBattlefieldHeight() - (y * tileHeight);
-						EffectArea effectArea = new EffectArea(xCoord, yCoord,
-								tileWidth, tileHeight, 0);
-						effArea.add(effectArea);
-						numEffectAreas--;
-					}
-				}
-			}
-		}
+	
+	
+	public static boolean addController(ISpawnController e) {
+		return spawnController.addController(e);
 	}
-
-	private void updateEffectAreas() {
-		// update robots with effect areas
-		for (EffectArea effAreas : effArea) {
-			int collided = 0;
-			for (RobotPeer r : peers.getRobots()) {
-				// for all effect areas, check if all robots collide
-				if (effAreas.collision(r)) {
-					if (effAreas.getActiveEffect() == 0) {
-						// if collide, give a random effect
-						Random effR = new Random();
-						collided = effR.nextInt(3) + 1;
-						effAreas.setActiveEffect(collided);
-					}
-					// handle effect
-					effAreas.handleEffect(r);
-				}
-			}
-		}
+	
+	public static boolean removeController(ISpawnController e) {
+		return spawnController.removeController(e);
+	}
+	
+	public static void clearControllers() {
+		spawnController.clearControllers();
+	}
+	
+	public ISpawnController getSpawnController() {
+		return spawnController;
 	}
 
 	/**
@@ -1509,15 +1460,6 @@ public class Battle extends BaseBattle {
 
 	public IRepositoryManager getRepositoryManager() {
 		return repositoryManager;
-	}
-
-	/**
-	 * @param name
-	 *            the name of the part
-	 * @return the part associated with the given name, or null if none
-	 */
-	public EquipmentPart getEquipmentPart(String name) {
-		return equipment.getPart(name);
 	}
 
 }

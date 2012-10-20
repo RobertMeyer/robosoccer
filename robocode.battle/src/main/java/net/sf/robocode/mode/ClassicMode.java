@@ -330,7 +330,7 @@ public class ClassicMode implements IMode {
         Collections.shuffle(shuffledList, RandomFactory.getRandom());
         return shuffledList;
     }
-
+    
     @Override
     public void setItems() {
         // TODO Auto-generated method stub
@@ -374,6 +374,14 @@ public class ClassicMode implements IMode {
     public void addRobots(int currentTurn, BattlePeers peers){
         // do nothing
     }
+	
+	/** What to do at the end of a mode's specific round.
+	 * @author Laurence McLean 42373414
+	 * @param peers See BattlePeers.class
+	 */
+	public void endRound(BattlePeers peers) {
+		//Do nothing by default.
+	}
 
     /**
      *
@@ -417,18 +425,18 @@ public class ClassicMode implements IMode {
         }
 
         /* Set it to show the default scores */
-        resultsTable.showOverallRank(true);
-        resultsTable.showRobotName(true);
-        resultsTable.showTotalScore(true);
-        resultsTable.showSurvival(true);
-        resultsTable.showSurvivalBonus(true);
-        resultsTable.showBulletDamage(true);
-        resultsTable.showBulletBonus(true);
-        resultsTable.showRamDamage(true);
-        resultsTable.showRamBonus(true);
-        resultsTable.showFirsts(true);
-        resultsTable.showSeconds(true);
-        resultsTable.showThirds(true);
+        resultsTable.showOverallRank()
+        			.showRobotName()
+        			.showTotalScore()
+        			.showSurvival()
+        			.showSurvivalBonus()
+        			.showBulletDamage()
+        			.showBulletBonus()
+        			.showRamDamage()
+        			.showRamBonus()
+        			.showFirsts()
+        			.showSeconds()
+        			.showThirds();
     }
 
     /**

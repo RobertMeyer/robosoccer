@@ -74,6 +74,7 @@ import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.Event;
 import robocode.control.BattleSpecification;
+import robocode.control.BattlefieldSpecification;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 import robocode.control.events.BattlePausedEvent;
@@ -87,356 +88,388 @@ import robocode.control.events.IBattleListener;
  * @author Robert D. Maupin (contributor)
  * @author Nathaniel Troutman (contributor)
  * @author Pavel Savara (contributor)
+ * @author CSSE2003 Team Forkbomb (equipment)
  */
 public class BattleManager implements IBattleManager {
 
-    private final ISettingsManager properties;
-    private final IHostManager hostManager;
-    private final ICpuManager cpuManager;
-    private final IRecordManager recordManager;
-    private final IRepositoryManager repositoryManager;
-    private volatile IBattle battle;
-    private BattleProperties battleProperties = new BattleProperties();
-    private final BattleEventDispatcher battleEventDispatcher;
-    private String battleFilename;
-    private String battlePath;
-    private int pauseCount = 0;
-    public Boolean effectAreaOn = false;
-    private final AtomicBoolean isManagedTPS = new AtomicBoolean(false);
-    
-    //To store the Spike position
-    private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
-    private ArrayList<Integer> spikePosY = new ArrayList<Integer>();
+	private final ISettingsManager properties;
+	private final IHostManager hostManager;
+	private final ICpuManager cpuManager;
+	private final IRecordManager recordManager;
+	private final IRepositoryManager repositoryManager;
+	private volatile IBattle battle;
+	private BattleProperties battleProperties = new BattleProperties();
+	private final BattleEventDispatcher battleEventDispatcher;
+	private String battleFilename;
+	private String battlePath;
+	private int pauseCount = 0;
+	private final AtomicBoolean isManagedTPS = new AtomicBoolean(false);
 
-    public BattleManager(ISettingsManager properties, IRepositoryManager repositoryManager, IHostManager hostManager, ICpuManager cpuManager, BattleEventDispatcher battleEventDispatcher, IRecordManager recordManager) {
-        this.properties = properties;
-        this.recordManager = recordManager;
-        this.repositoryManager = repositoryManager;
-        this.cpuManager = cpuManager;
-        this.hostManager = hostManager;
-        this.battleEventDispatcher = battleEventDispatcher;
-        Logger.setLogListener(battleEventDispatcher);
-    }
+	// To store the Spike position
+	private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
+	private ArrayList<Integer> spikePosY = new ArrayList<Integer>();
 
-    @Override
-    public synchronized void cleanup() {
-        if (battle != null) {
-            battle.waitTillOver();
-            battle.cleanup();
-            battle = null;
-        }
-    }
+	public BattleManager(ISettingsManager properties,
+			IRepositoryManager repositoryManager, IHostManager hostManager,
+			ICpuManager cpuManager,
+			BattleEventDispatcher battleEventDispatcher,
+			IRecordManager recordManager) {
+		this.properties = properties;
+		this.recordManager = recordManager;
+		this.repositoryManager = repositoryManager;
+		this.cpuManager = cpuManager;
+		this.hostManager = hostManager;
+		this.battleEventDispatcher = battleEventDispatcher;
+		Logger.setLogListener(battleEventDispatcher);
+	}
 
-    // Called when starting a new battle from GUI
-    @Override
-    public void startNewBattle(BattleProperties battleProperties, boolean waitTillOver, boolean enableCLIRecording) {
-        this.battleProperties = battleProperties;
-        final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(battleProperties.getSelectedRobots());
+	@Override
+	public synchronized void cleanup() {
+		if (battle != null) {
+			battle.waitTillOver();
+			battle.cleanup();
+			battle = null;
+		}
+	}
 
-        startNewBattleImpl(robots, waitTillOver, enableCLIRecording);
-    }
+	// Called when starting a new battle from GUI
+	@Override
+	public void startNewBattle(BattleProperties battleProperties,
+			boolean waitTillOver, boolean enableCLIRecording) {
+		this.battleProperties = battleProperties;
+		final RobotSpecification[] robots = repositoryManager
+				.loadSelectedRobots(battleProperties.getSelectedRobots());
 
-    // Called from the RobocodeEngine
-    @Override
-    public void startNewBattle(BattleSpecification spec, String initialPositions, boolean waitTillOver, boolean enableCLIRecording) {
-        battleProperties = new BattleProperties();
-        battleProperties.setBattlefieldWidth(spec.getBattlefield().getWidth());
-        battleProperties.setBattlefieldHeight(spec.getBattlefield().getHeight());
-        battleProperties.setGunCoolingRate(spec.getGunCoolingRate());
-        battleProperties.setInactivityTime(spec.getInactivityTime());
-        battleProperties.setNumRounds(spec.getNumRounds());
-        battleProperties.setHideEnemyNames(spec.getHideEnemyNames());
-        battleProperties.setSelectedRobots(spec.getRobots());
-        battleProperties.setInitialPositions(initialPositions);
-        battleProperties.setBattleMode(new ClassicMode());
+		startNewBattleImpl(robots, waitTillOver, enableCLIRecording);
+	}
 
-        final RobotSpecification[] robots = repositoryManager.loadSelectedRobots(spec.getRobots());
+	// Called from the RobocodeEngine
+	@Override
+	public void startNewBattle(BattleSpecification spec,
+			String initialPositions, boolean waitTillOver,
+			boolean enableCLIRecording) {
+		battleProperties = new BattleProperties();
 
-        startNewBattleImpl(robots, waitTillOver, enableCLIRecording);
-    }
+		BattlefieldSpecification battlefield = spec.getBattlefield();
+		battleProperties.setBattlefieldWidth(battlefield.getWidth());
+		battleProperties.setBattlefieldHeight(battlefield.getHeight());
 
-    private void startNewBattleImpl(RobotSpecification[] battlingRobotsList, boolean waitTillOver, boolean enableCLIRecording) {
-        stop(true);
+		battleProperties.setGunCoolingRate(spec.getGunCoolingRate());
+		battleProperties.setInactivityTime(spec.getInactivityTime());
+		battleProperties.setNumRounds(spec.getNumRounds());
+		battleProperties.setHideEnemyNames(spec.getHideEnemyNames());
+		battleProperties.setSelectedRobots(spec.getRobots());
+		battleProperties.setInitialPositions(initialPositions);
 
-        logMessage("Preparing battle...");
+		battleProperties.setEquipmentFile(spec.getEquipmentFile());
+		battleProperties.setBattleMode(new ClassicMode());
 
-        final boolean recording = (properties.getOptionsCommonEnableReplayRecording()
-                                   && System.getProperty("TESTING", "none").equals("none"))
-                || enableCLIRecording;
+		final RobotSpecification[] robots = repositoryManager
+				.loadSelectedRobots(spec.getRobots());
 
-        if (recording) {
-            recordManager.attachRecorder(battleEventDispatcher);
-        } else {
-            recordManager.detachRecorder();
-        }
+		startNewBattleImpl(robots, waitTillOver, enableCLIRecording);
+	}
 
-        // resets seed for deterministic behavior of Random
-        final String seed = System.getProperty("RANDOMSEED", "none");
+	private void startNewBattleImpl(RobotSpecification[] battlingRobotsList,
+			boolean waitTillOver, boolean enableCLIRecording) {
+		stop(true);
 
-        if (!seed.equals("none")) {
-            // init soon as it reads random
-            cpuManager.getCpuConstant();
+		logMessage("Preparing battle...");
 
-            RandomFactory.resetDeterministic(Long.valueOf(seed));
-        }
+		final boolean recording = (properties
+				.getOptionsCommonEnableReplayRecording() && System.getProperty(
+				"TESTING", "none").equals("none"))
+				|| enableCLIRecording;
 
-        Battle realBattle = Container.createComponent(Battle.class);
+		if (recording) {
+			recordManager.attachRecorder(battleEventDispatcher);
+		} else {
+			recordManager.detachRecorder();
+		}
 
-        realBattle.setup(battlingRobotsList, battleProperties, isPaused(), repositoryManager);
+		// resets seed for deterministic behavior of Random
+		final String seed = System.getProperty("RANDOMSEED", "none");
 
-        battle = realBattle;
+		if (!seed.equals("none")) {
+			// init soon as it reads random
+			cpuManager.getCpuConstant();
 
-        Thread battleThread = new Thread(Thread.currentThread().getThreadGroup(), realBattle);
+			RandomFactory.resetDeterministic(Long.valueOf(seed));
+		}
 
-		
-        battleThread.setPriority(Thread.NORM_PRIORITY);
-        battleThread.setName("Battle Thread");
-        realBattle.setBattleThread(battleThread);
+		Battle realBattle = Container.createComponent(Battle.class);
 
-        if (!System.getProperty("NOSECURITY", "false").equals("true")) {
-            hostManager.addSafeThread(battleThread);
-        }
+		realBattle.setup(battlingRobotsList, battleProperties, isPaused(),
+				repositoryManager);
 
-        // Start the realBattle thread
-        battleThread.start();
+		battle = realBattle;
 
-        // Wait until the realBattle is running and ended.
-        // This must be done as a new realBattle could be started immediately after this one causing
-        // multiple realBattle threads to run at the same time, which must be prevented!
-        realBattle.waitTillStarted();
-        if (waitTillOver) {
-            realBattle.waitTillOver();
-        }
-    }
+		Thread battleThread = new Thread(Thread.currentThread()
+				.getThreadGroup(), realBattle);
 
-    @Override
-    public void waitTillOver() {
-        if (battle != null) {
-            battle.waitTillOver();
-        }
-    }
+		battleThread.setPriority(Thread.NORM_PRIORITY);
+		battleThread.setName("Battle Thread");
+		realBattle.setBattleThread(battleThread);
 
-    private void replayBattle() {
-        if (!recordManager.hasRecord()) {
-            return;
-        }
-        logMessage("Preparing replay...");
+		if (!System.getProperty("NOSECURITY", "false").equals("true")) {
+			hostManager.addSafeThread(battleThread);
+		}
 
-        if (battle != null && battle.isRunning()) {
-            battle.stop(true);
-        }
+		// Start the realBattle thread
+		battleThread.start();
 
-        Logger.setLogListener(battleEventDispatcher);
+		// Wait until the realBattle is running and ended. This must be done as
+		// a new realBattle could be started immediately after this one causing
+		// multiple realBattle threads to run at the same time, which must be
+		// prevented!
+		realBattle.waitTillStarted();
+		if (waitTillOver) {
+			realBattle.waitTillOver();
+		}
+	}
 
-        recordManager.detachRecorder();
-        battle = Container.createComponent(BattlePlayer.class);
+	@Override
+	public void waitTillOver() {
+		if (battle != null) {
+			battle.waitTillOver();
+		}
+	}
 
-        Thread battleThread = new Thread(Thread.currentThread().getThreadGroup(), battle);
+	private void replayBattle() {
+		if (!recordManager.hasRecord()) {
+			return;
+		}
+		logMessage("Preparing replay...");
 
-        battleThread.setPriority(Thread.NORM_PRIORITY);
-        battleThread.setName("BattlePlayer Thread");
+		if (battle != null && battle.isRunning()) {
+			battle.stop(true);
+		}
 
-        // Start the battlePlayer thread
-        battleThread.start();
-    }
+		Logger.setLogListener(battleEventDispatcher);
 
-    @Override
-    public String getBattleFilename() {
-        return battleFilename;
-    }
+		recordManager.detachRecorder();
+		battle = Container.createComponent(BattlePlayer.class);
 
-    @Override
-    public void setBattleFilename(String newBattleFilename) {
-        if (newBattleFilename != null) {
-            battleFilename = newBattleFilename.replace((File.separatorChar == '/') ? '\\' : '/', File.separatorChar);
+		Thread battleThread = new Thread(Thread.currentThread()
+				.getThreadGroup(), battle);
 
-            if (battleFilename.indexOf(File.separatorChar) < 0) {
-                try {
-                    battleFilename = FileUtil.getBattlesDir().getCanonicalPath() + File.separatorChar + battleFilename;
-                } catch (IOException ignore) {
-                }
-            }
-            if (!battleFilename.endsWith(".battle")) {
-                battleFilename += ".battle";
-            }
-        }
-    }
+		battleThread.setPriority(Thread.NORM_PRIORITY);
+		battleThread.setName("BattlePlayer Thread");
 
-    @Override
-    public String getBattlePath() {
-        if (battlePath == null) {
-            battlePath = System.getProperty("BATTLEPATH");
-            if (battlePath == null) {
-                battlePath = "battles";
-            }
-            battlePath = new File(FileUtil.getCwd(), battlePath).getAbsolutePath();
-        }
-        return battlePath;
-    }
+		// Start the battlePlayer thread
+		battleThread.start();
+	}
 
-    @Override
-    public void saveBattleProperties() {
-        if (battleProperties == null) {
-            logError("Cannot save null battle properties");
-            return;
-        }
-        if (battleFilename == null) {
-            logError("Cannot save battle to null path, use setBattleFilename()");
-            return;
-        }
-        FileOutputStream out = null;
+	@Override
+	public String getBattleFilename() {
+		return battleFilename;
+	}
 
-        try {
-            out = new FileOutputStream(battleFilename);
+	@Override
+	public void setBattleFilename(String newBattleFilename) {
+		if (newBattleFilename != null) {
+			battleFilename = newBattleFilename.replace(
+					(File.separatorChar == '/') ? '\\' : '/',
+					File.separatorChar);
 
-            battleProperties.store(out, "Battle Properties");
-        } catch (IOException e) {
-            logError("IO Exception saving battle properties: " + e);
-        } finally {
-            FileUtil.cleanupStream(out);
-        }
-    }
+			if (battleFilename.indexOf(File.separatorChar) < 0) {
+				try {
+					battleFilename = FileUtil.getBattlesDir()
+							.getCanonicalPath()
+							+ File.separatorChar
+							+ battleFilename;
+				} catch (IOException ignore) {
+				}
+			}
+			if (!battleFilename.endsWith(".battle")) {
+				battleFilename += ".battle";
+			}
+		}
+	}
 
-    @Override
-    public BattleProperties loadBattleProperties() {
-        BattleProperties res = new BattleProperties();
-        FileInputStream in = null;
+	@Override
+	public String getBattlePath() {
+		if (battlePath == null) {
+			battlePath = System.getProperty("BATTLEPATH");
+			if (battlePath == null) {
+				battlePath = "battles";
+			}
+			battlePath = new File(FileUtil.getCwd(), battlePath)
+					.getAbsolutePath();
+		}
+		return battlePath;
+	}
 
-        try {
-            in = new FileInputStream(getBattleFilename());
-            res.load(in);
-        } catch (FileNotFoundException e) {
-            logError("No file " + battleFilename + " found, using defaults.");
-        } catch (IOException e) {
-            logError("Error while reading " + getBattleFilename() + ": " + e);
-        } finally {
-            FileUtil.cleanupStream(in);
-        }
-        return res;
-    }
+	@Override
+	public void saveBattleProperties() {
+		if (battleProperties == null) {
+			logError("Cannot save null battle properties");
+			return;
+		}
+		if (battleFilename == null) {
+			logError("Cannot save battle to null path, use setBattleFilename()");
+			return;
+		}
+		FileOutputStream out = null;
 
-    @Override
-    public BattleProperties getBattleProperties() {
-        if (battleProperties == null) {
-            battleProperties = new BattleProperties();
-        }
-        return battleProperties;
-    }
+		try {
+			out = new FileOutputStream(battleFilename);
 
-    @Override
-    public void setDefaultBattleProperties() {
-        battleProperties = new BattleProperties();
-    }
+			battleProperties.store(out, "Battle Properties");
+		} catch (IOException e) {
+			logError("IO Exception saving battle properties: " + e);
+		} finally {
+			FileUtil.cleanupStream(out);
+		}
+	}
 
-    @Override
-    public boolean isManagedTPS() {
-        return isManagedTPS.get();
-    }
+	@Override
+	public BattleProperties loadBattleProperties() {
+		BattleProperties res = new BattleProperties();
+		FileInputStream in = null;
 
-    @Override
-    public void setManagedTPS(boolean value) {
-        isManagedTPS.set(value);
-    }
+		try {
+			in = new FileInputStream(getBattleFilename());
+			res.load(in);
+		} catch (FileNotFoundException e) {
+			logError("No file " + battleFilename + " found, using defaults.");
+		} catch (IOException e) {
+			logError("Error while reading " + getBattleFilename() + ": " + e);
+		} finally {
+			FileUtil.cleanupStream(in);
+		}
+		return res;
+	}
 
-    @Override
-    public synchronized void addListener(IBattleListener listener) {
-        battleEventDispatcher.addListener(listener);
-    }
+	@Override
+	public BattleProperties getBattleProperties() {
+		if (battleProperties == null) {
+			battleProperties = new BattleProperties();
+		}
+		return battleProperties;
+	}
 
-    @Override
-    public synchronized void removeListener(IBattleListener listener) {
-        battleEventDispatcher.removeListener(listener);
-    }
+	@Override
+	public void setDefaultBattleProperties() {
+		battleProperties = new BattleProperties();
+	}
 
-    @Override
-    public synchronized void stop(boolean waitTillEnd) {
-        if (battle != null && battle.isRunning()) {
-            battle.stop(waitTillEnd);
-        }
-    }
+	@Override
+	public boolean isManagedTPS() {
+		return isManagedTPS.get();
+	}
 
-    @Override
-    public synchronized void restart() {
-        // Start new battle. The old battle is automatically stopped
-        startNewBattle(battleProperties, false, false);
-    }
+	@Override
+	public void setManagedTPS(boolean value) {
+		isManagedTPS.set(value);
+	}
 
-    @Override
-    public synchronized void replay() {
-        replayBattle();
-    }
+	@Override
+	public synchronized void addListener(IBattleListener listener) {
+		battleEventDispatcher.addListener(listener);
+	}
 
-    private boolean isPaused() {
-        return (pauseCount != 0);
-    }
+	@Override
+	public synchronized void removeListener(IBattleListener listener) {
+		battleEventDispatcher.removeListener(listener);
+	}
 
-    @Override
-    public synchronized void togglePauseResumeBattle() {
-        if (isPaused()) {
-            resumeBattle();
-        } else {
-            pauseBattle();
-        }
-    }
+	@Override
+	public synchronized void stop(boolean waitTillEnd) {
+		if (battle != null && battle.isRunning()) {
+			battle.stop(waitTillEnd);
+		}
+	}
 
-    @Override
-    public synchronized void pauseBattle() {
-        if (++pauseCount == 1) {
-            if (battle != null && battle.isRunning()) {
-                battle.pause();
-            } else {
-                battleEventDispatcher.onBattlePaused(new BattlePausedEvent());
-            }
-        }
-    }
+	@Override
+	public synchronized void restart() {
+		// Start new battle. The old battle is automatically stopped
+		startNewBattle(battleProperties, false, false);
+	}
 
-    @Override
-    public synchronized void pauseIfResumedBattle() {
-        if (pauseCount == 0) {
-            pauseCount++;
-            if (battle != null && battle.isRunning()) {
-                battle.pause();
-            } else {
-                battleEventDispatcher.onBattlePaused(new BattlePausedEvent());
-            }
-        }
-    }
+	@Override
+	public synchronized void replay() {
+		replayBattle();
+	}
 
-    @Override
-    public synchronized void resumeIfPausedBattle() {
-        if (pauseCount == 1) {
-            pauseCount--;
-            if (battle != null && battle.isRunning()) {
-                battle.resume();
-            } else {
-                battleEventDispatcher.onBattleResumed(new BattleResumedEvent());
-            }
-        }
-    }
+	private boolean isPaused() {
+		return (pauseCount != 0);
+	}
 
-    @Override
-    public synchronized void resumeBattle() {
-        if (--pauseCount < 0) {
-            pauseCount = 0;
-            logError("SYSTEM: pause game bug!");
-        } else if (pauseCount == 0) {
-            if (battle != null && battle.isRunning()) {
-                battle.resume();
-            } else {
-                battleEventDispatcher.onBattleResumed(new BattleResumedEvent());
-            }
-        }
-    }
-    
-    public Battle getBattle() {
-    	return (Battle) battle;
-    }
-    
+	@Override
+	public synchronized void togglePauseResumeBattle() {
+		if (isPaused()) {
+			resumeBattle();
+		} else {
+			pauseBattle();
+		}
+	}
+
+	@Override
+	public synchronized void pauseBattle() {
+		if (++pauseCount == 1) {
+			if (battle != null && battle.isRunning()) {
+				battle.pause();
+			} else {
+				battleEventDispatcher.onBattlePaused(new BattlePausedEvent());
+			}
+		}
+	}
+
+	@Override
+	public synchronized void pauseIfResumedBattle() {
+		if (pauseCount == 0) {
+			pauseCount++;
+			if (battle != null && battle.isRunning()) {
+				battle.pause();
+			} else {
+				battleEventDispatcher.onBattlePaused(new BattlePausedEvent());
+			}
+		}
+	}
+
+	@Override
+	public synchronized void resumeIfPausedBattle() {
+		if (pauseCount == 1) {
+			pauseCount--;
+			if (battle != null && battle.isRunning()) {
+				battle.resume();
+			} else {
+				battleEventDispatcher.onBattleResumed(new BattleResumedEvent());
+			}
+		}
+	}
+
+	@Override
+	public synchronized void resumeBattle() {
+		if (--pauseCount < 0) {
+			pauseCount = 0;
+			logError("SYSTEM: pause game bug!");
+		} else if (pauseCount == 0) {
+			if (battle != null && battle.isRunning()) {
+				battle.resume();
+			} else {
+				battleEventDispatcher.onBattleResumed(new BattleResumedEvent());
+			}
+		}
+	}
+
 	/**
-	 * Retrieve the list of all robots and do a comparison on the energy level of all the robots.
-	 * During the comparison, kill the robot with the lower energy level.
-	 * If both robot have the same energy level, randomly pick and kill one robot.
-	 * Only the top energy level robot will survive. 
+	 * Passes the current battle.
+	 * 
+	 * @param battle
+	 * @return Returns the current battle to where needed.
+	 */
+	@Override
+	public Battle getBattle() {
+		return (Battle) battle;
+	}
+
+	/**
+	 * Retrieve the list of all robots and do a comparison on the energy level
+	 * of all the robots. During the comparison, kill the robot with the lower
+	 * energy level. If both robot have the same energy level, randomly pick and
+	 * kill one robot. Only the top energy level robot will survive.
 	 */
 	@Override
 	public void getTopRobot() {
@@ -444,31 +477,32 @@ public class BattleManager implements IBattleManager {
 		double currentRobotEnergy = 0;
 		double topRobotEnergy = 0;
 		int topRobotIndex = 0;
-		
-		for(int i=0; i < robotList.size(); i++){
-			//Get first robot energy level for comparison
-			if(i == 0){
+
+		for (int i = 0; i < robotList.size(); i++) {
+			// Get first robot energy level for comparison
+			if (i == 0) {
 				topRobotEnergy = robotList.get(i).getEnergy();
-				topRobotIndex= i;
+				topRobotIndex = i;
 			}
-			//Do robot energy level comparison
-			if(i > 0){
+			// Do robot energy level comparison
+			if (i > 0) {
 				currentRobotEnergy = robotList.get(i).getEnergy();
-				//Randomly pick and kill one robot if their energy level is the same
-				if(topRobotEnergy == currentRobotEnergy){
+				// Randomly pick and kill one robot if their energy level is the
+				// same
+				if (topRobotEnergy == currentRobotEnergy) {
 					Random random = new Random();
 					int ranNum = random.nextInt(5);
-					if(ranNum >= 3){
+					if (ranNum >= 3) {
 						robotList.get(i).kill();
-					}else{
+					} else {
 						robotList.get(topRobotIndex).kill();
 						topRobotIndex = i;
 						topRobotEnergy = robotList.get(i).getEnergy();
 					}
-				//Kill the robot with a lower energy level
-				}else if(topRobotEnergy > currentRobotEnergy){
+					// Kill the robot with a lower energy level
+				} else if (topRobotEnergy > currentRobotEnergy) {
 					robotList.get(i).kill();
-				}else{
+				} else {
 					robotList.get(topRobotIndex).kill();
 					topRobotIndex = i;
 					topRobotEnergy = robotList.get(i).getEnergy();
@@ -476,38 +510,42 @@ public class BattleManager implements IBattleManager {
 			}
 		}
 	}
-	
+
 	/**
-	 * Retrieve the list of all robots and do a comparison on the energy level of all the robots.
-	 * During the comparison, save the index of the robot with the lowest energy level.
-	 * After the comparison, kill the robot with the lowest energy level.
+	 * Retrieve the list of all robots and do a comparison on the energy level
+	 * of all the robots. During the comparison, save the index of the robot
+	 * with the lowest energy level. After the comparison, kill the robot with
+	 * the lowest energy level.
 	 */
 	@Override
 	public void eliminateWeakestRobot() {
 		List<RobotPeer> robotList = ((Battle) battle).getRobotList();
 		double lowestEnergy = 101;
 		int lowestEnergyIndex = 0;
-		
-		//Find the robot with the lowest energy level
-		for(int i=0; i < robotList.size(); i++){
-			if(robotList.get(i).getEnergy() <= lowestEnergy && robotList.get(i).getEnergy() != 0)
-			{	
+
+		// Find the robot with the lowest energy level
+		for (int i = 0; i < robotList.size(); i++) {
+			if (robotList.get(i).getEnergy() <= lowestEnergy
+					&& robotList.get(i).getEnergy() != 0) {
 				lowestEnergyIndex = i;
 				lowestEnergy = robotList.get(i).getEnergy();
 			}
 		}
-		//Kill robot with the lowest energy level
+		// Kill robot with the lowest energy level
 		robotList.get(lowestEnergyIndex).kill();
 	}
-	
+
 	/**
 	 * Save the position of all spikes for Spike mode
 	 * 
-	 * @param spikeArrayPosX the X-axis of all spikes
-	 * @param spikeArrayPosY the Y-axis of all spikes 
+	 * @param spikeArrayPosX
+	 *            the X-axis of all spikes
+	 * @param spikeArrayPosY
+	 *            the Y-axis of all spikes
 	 */
 	@Override
-	public void saveSpikePos(ArrayList<Integer> spikeArrayPosX, ArrayList<Integer> spikeArrayPosY){
+	public void saveSpikePos(ArrayList<Integer> spikeArrayPosX,
+			ArrayList<Integer> spikeArrayPosY) {
 		spikePosX = spikeArrayPosX;
 		spikePosY = spikeArrayPosY;
 	}
@@ -518,62 +556,64 @@ public class BattleManager implements IBattleManager {
 	 * @return X-axis of all spikes
 	 */
 	@Override
-	public ArrayList<Integer> getSpikePosX(){
+	public ArrayList<Integer> getSpikePosX() {
 		return spikePosX;
 	}
-	
+
 	/**
 	 * Return the Y-axis of all spikes for Spike mode
 	 * 
 	 * @return Y-axis of all spikes
 	 */
 	@Override
-	public ArrayList<Integer> getSpikePosY(){
+	public ArrayList<Integer> getSpikePosY() {
 		return spikePosY;
 	}
 
-    /**
-     * Steps for a single turn, then goes back to paused
-     */
-    @Override
-    public synchronized void nextTurn() {
-        if (battle != null && battle.isRunning()) {
-            battle.step();
-        }
-    }
+	/**
+	 * Steps for a single turn, then goes back to paused
+	 */
+	@Override
+	public synchronized void nextTurn() {
+		if (battle != null && battle.isRunning()) {
+			battle.step();
+		}
+	}
 
-    @Override
-    public synchronized void prevTurn() {
-        if (battle != null && battle.isRunning() && battle instanceof BattlePlayer) {
-            ((BattlePlayer) battle).stepBack();
-        }
-    }
+	@Override
+	public synchronized void prevTurn() {
+		if (battle != null && battle.isRunning()
+				&& battle instanceof BattlePlayer) {
+			((BattlePlayer) battle).stepBack();
+		}
+	}
 
-    @Override
-    public synchronized void killRobot(int robotIndex) {
-        if (battle != null && battle.isRunning() && battle instanceof Battle) {
-            ((Battle) battle).killRobot(robotIndex);
-        }
-    }
+	@Override
+	public synchronized void killRobot(int robotIndex) {
+		if (battle != null && battle.isRunning() && battle instanceof Battle) {
+			((Battle) battle).killRobot(robotIndex);
+		}
+	}
 
-    @Override
-    public synchronized void setPaintEnabled(int robotIndex, boolean enable) {
-        if (battle != null && battle.isRunning()) {
-            battle.setPaintEnabled(robotIndex, enable);
-        }
-    }
+	@Override
+	public synchronized void setPaintEnabled(int robotIndex, boolean enable) {
+		if (battle != null && battle.isRunning()) {
+			battle.setPaintEnabled(robotIndex, enable);
+		}
+	}
 
-    @Override
-    public synchronized void setSGPaintEnabled(int robotIndex, boolean enable) {
-        if (battle != null && battle.isRunning() && battle instanceof Battle) {
-            ((Battle) battle).setSGPaintEnabled(robotIndex, enable);
-        }
-    }
+	@Override
+	public synchronized void setSGPaintEnabled(int robotIndex, boolean enable) {
+		if (battle != null && battle.isRunning() && battle instanceof Battle) {
+			((Battle) battle).setSGPaintEnabled(robotIndex, enable);
+		}
+	}
 
-    @Override
-    public synchronized void sendInteractiveEvent(Event event) {
-        if (battle != null && battle.isRunning() && !isPaused() && battle instanceof Battle) {
-            ((Battle) battle).sendInteractiveEvent(event);
-        }
-    }
+	@Override
+	public synchronized void sendInteractiveEvent(Event event) {
+		if (battle != null && battle.isRunning() && !isPaused()
+				&& battle instanceof Battle) {
+			((Battle) battle).sendInteractiveEvent(event);
+		}
+	}
 }

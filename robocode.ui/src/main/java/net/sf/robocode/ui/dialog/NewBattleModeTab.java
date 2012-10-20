@@ -45,6 +45,7 @@ public class NewBattleModeTab extends JPanel {
 		new EliminationMode(),
 		new SharingMode(),
 		new LowVision(),
+		new HouseRobotMode(),
 		new SpikeMode()
 	};
 

@@ -140,6 +140,11 @@ public class BattleView extends Canvas {
     //To store spike position
     private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
     private ArrayList<Integer> spikePosY = new ArrayList<Integer>();  
+    
+    private String bodyPath;
+    private String weaponPath;
+    private String radarPath;
+    private HashMap<Integer, Double> robotEnergy = new HashMap<Integer, Double>();
 
 	public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
 		this.properties = properties;
@@ -282,7 +287,7 @@ public class BattleView extends Canvas {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
         	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
-        		//Add image for Botzilla, if Botzilla mode
+        		// Add image for Botzilla, if Botzilla mode is active.
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
         	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
@@ -849,7 +854,7 @@ public class BattleView extends Canvas {
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
                 
-            //if robot is Botzilla, render the custom image
+          // If the robot is Botzilla, render the custom image.
         	} else if (robotSnapshot.getName().contains("botzilla")
         			   || robotSnapshot.getName().contains("Botzilla")) {
         		x = robotSnapshot.getX();
@@ -886,25 +891,12 @@ public class BattleView extends Canvas {
                 at.rotate(robotSnapshot.getBodyHeading());
                 
                 // sets the image paths to null
-                String bodyPath = null;
-                String weaponPath = null;
-                String radarPath = null;
-                double fullEnergy = robotSnapshot.getFullEnergy();
-                double currentEnergy = robotSnapshot.getEnergy();
+                bodyPath = null;
+                weaponPath = null;
+                radarPath = null;
                 
-                
-                // If a custom body part is present in the robots equipment
-                // then the body image path is changed to the custom one.
-                Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
-                if(partsMap.containsKey(EquipmentSlot.BODY)) {
-                	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
-                	bodyPath = part.getImagePath();
-                }
-                
-                if(partsMap.containsKey(EquipmentSlot.GUN)) {
-                	EquipmentPart part = partsMap.get(EquipmentSlot.GUN);
-                	weaponPath = part.getImagePath();
-                }
+                // selects what images to use for the robots turret and body
+                selectImages(robotSnapshot);
 
 				RenderImage robotRenderImage = imageManager
 						.getColoredBodyRenderImage(
@@ -913,7 +905,7 @@ public class BattleView extends Canvas {
 				robotRenderImage.setTransform(at);
 				robotRenderImage.paint(g);
 
-				if (!robotSnapshot.isFreezeRobot()) {
+				if (!robotSnapshot.isFreezeRobot() || !robotSnapshot.isHeatRobot()) {
 					at = AffineTransform.getTranslateInstance(x, y);
 					at.rotate(robotSnapshot.getGunHeading());
 	
@@ -934,6 +926,48 @@ public class BattleView extends Canvas {
 				}
 			}
 		}
+	}
+	
+	private void selectImages(IRobotSnapshot robotSnapshot) {
+        if(!robotEnergy.containsKey(robotSnapshot.getRobotIndex())) {
+        	robotEnergy.put(robotSnapshot.getRobotIndex(), robotSnapshot.getEnergy());
+        } else if(robotEnergy.get(robotSnapshot.getRobotIndex()) > robotSnapshot.getEnergy()) {
+        	robotEnergy.put(robotSnapshot.getRobotIndex(), robotSnapshot.getEnergy());
+        }
+        
+        double fullEnergy = robotSnapshot.getFullEnergy();
+        double currentEnergy = robotEnergy.get(robotSnapshot.getRobotIndex());
+
+        // If a custom body part is present in the robots equipment
+        // then the body image path is changed to the custom one.
+        Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
+        
+        // Shows the damage on a robot by how much health it has
+        if(fullEnergy <= robotSnapshot.getEnergy()){
+        	robotEnergy.put(robotSnapshot.getRobotIndex(), robotSnapshot.getEnergy());
+        	bodyPath = "/net/sf/robocode/ui/images/body.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret.png";
+        }
+        if(fullEnergy*0.25 >= currentEnergy) {
+        	bodyPath = "/net/sf/robocode/ui/images/body-damaged-heavy.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-heavy.png";
+        } else if(fullEnergy*0.5 >= currentEnergy){
+        	bodyPath = "/net/sf/robocode/ui/images/body-damaged-medium.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-medium.png";
+        } else if(fullEnergy*0.75 >= currentEnergy){
+        	bodyPath = "/net/sf/robocode/ui/images/body-damaged-light.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-light.png";
+        } 
+        
+        if(partsMap.containsKey(EquipmentSlot.BODY)) {
+        	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
+        	bodyPath = part.getImagePath();
+        }
+        
+        if(partsMap.containsKey(EquipmentSlot.GUN)) {
+        	EquipmentPart part = partsMap.get(EquipmentSlot.GUN);
+        	weaponPath = part.getImagePath();
+        }
 	}
 
 	

@@ -1,9 +1,21 @@
+/******************************************************************************
+ * Copyright (c) 2012 The Fightin' Mongooses team.
+ *
+ * Contributors:
+ *    Paul Wade
+ *    Chris Irving
+ *    Jesse Claven
+******************************************************************************/
+
 package au.edu.uq.itee.csse2003.weapons.types;
 
 import au.edu.uq.itee.csse2003.weapons.WeaponType;
 
 /**
- * A laser, a futuristic weapon..
+ * A laser, a futuristic weapon
+ *
+ * @author The Fightin' Moongooses
+ * @depreceated   This feature has temporarily been postponed.
  */
 public class Laser extends WeaponType {
 

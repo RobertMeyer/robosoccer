@@ -107,6 +107,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private IScoreSnapshot robotScoreSnapshot;
 	/** Flag specifying if the robot is a FreezeRobot */
 	private boolean isFreezeRobot;
+	/** Flag specifying if the robot is a HeatRobot */
+	private boolean isHeatRobot;
     /** Flag specifying if the robot is a Minion */
 	private boolean isMinion;
 	/** List holding minion snapshots */
@@ -171,6 +173,7 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		isPaintEnabled = robot.isPaintEnabled();
 		isSGPaintEnabled = robot.isSGPaintEnabled();
 		isFreezeRobot = robot.isFreezeRobot();
+		isHeatRobot = robot.isHeatRobot();
 		isMinion = robot.isMinion();
 		//Create snapshots of minions.
 		for(RobotPeer peer: robot.getMinionPeers()) {
@@ -418,6 +421,13 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	 */
 	public boolean isFreezeRobot(){
 		return isFreezeRobot;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isHeatRobot(){
+		return isHeatRobot;
 	}
 
 	/**

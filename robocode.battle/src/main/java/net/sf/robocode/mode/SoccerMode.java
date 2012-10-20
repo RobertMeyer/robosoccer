@@ -334,9 +334,9 @@ public class SoccerMode extends ClassicMode implements IMode {
 		if (resultsTable == null) {
 			resultsTable = new BattleResultsTableModel();
 		}
-		resultsTable.showOverallRank(true);
-		resultsTable.showTeam(true, "Team Name");
-		resultsTable.showTotalScore(true);
+		resultsTable.showOverallRank()
+					.showTeam("Team Name")
+					.showTotalScore();
 	}
 
 	/**

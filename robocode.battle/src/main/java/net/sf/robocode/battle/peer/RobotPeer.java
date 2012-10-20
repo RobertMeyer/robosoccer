@@ -91,13 +91,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.KillFreezeHeatRobots;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.item.BoundingRectangle;
@@ -136,12 +136,10 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
 import robocode.WinEvent;
-import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
-import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
 import robocode.exception.AbortedException;
@@ -164,6 +162,9 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author Patrick Cupka (contributor)
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
+ * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
+ * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
+ * @author CSSE2003 Team HoneyBadgers (contributor)
  * @author CSSE2003 Team Forkbomb (attributes, equipment)
  * @author CSSE2003 Team Mysterious-Incontinence (minion functionality)
  */
@@ -255,7 +256,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final RbSerializer rbSerializer;
 
 	// The number of turns the robot is frozen for, 0 if not frozen
-	protected int frozen = 0;
+	protected int robotFrozen = 0;
+	
+	// The same as robotFrozen. Except it doesn't get set to 0 when a robot melts itself
+	// This is so when a robots melts others still see it as frozen.
+	// Just another advantage to melting.
+	protected int seenAsFrozen = 0;
+	
+	// The robot can use these to melt itself without losing energy
+	protected int meltCredit = 0;
 
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
@@ -446,7 +455,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * equipment.get(Weapon)==getEquipmentPart("Sword")
 	 */
 	public boolean checkSword() {
-		EquipmentPart part = getEquipmentPart("Sword");
+		EquipmentPart part = battle.getEquipmentPart("Sword");
 		if (equipment.get().get(part.getSlot()) == part) {
 			return true;
 		} else {
@@ -548,6 +557,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isTeamRobot() {
 		return statics.isTeamRobot();
 	}
+	
+	public boolean isHeatRobot() {
+		return statics.isHeatRobot();
+	}
 
 	/**
 	 * Test for checking if current robot is Botzilla.
@@ -640,6 +653,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	public boolean isFrozen() {
 		return state == RobotState.FROZEN;
+	}
+	
+	public boolean isSeenAsFrozen() {
+		return seenAsFrozen > 0;
 	}
 
     @Override
@@ -1014,36 +1031,43 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 			if (robotIndex >= 0 && robotIndex < initialRobotPositions.length) {
 				double[] pos = initialRobotPositions[robotIndex];
+                x = pos[0];
+                y = pos[1];
+                bodyHeading = pos[2];
+                gunHeading = radarHeading = bodyHeading;
+                updateBoundingBox();
+                valid = validSpot(robots);
+            }
+        }
+        if (!valid) {
 
-				x = pos[0];
-				y = pos[1];
-				bodyHeading = pos[2];
-				gunHeading = radarHeading = bodyHeading;
-				updateBoundingBox();
-				valid = validSpot(robots);
-			}
-		}
-		if (!valid) {
-			final Random random = RandomFactory.getRandom();
+            for (int j = 0; j < 1000; j++) {
+                double[] sl = battle.getSpawnController().getSpawnLocation(this, battle);
+//                if (!isBotzilla()) {
+//                    x = RobotPeer.WIDTH + random.nextDouble()* (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
+//                    y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+//                } else {
+//                    x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
+//                    y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
+//                }
+//                                x= sl[0];
+//                                y=sl[1];
+//                gunHeading = radarHeading = bodyHeading =
+//                        2 * Math.PI * random.nextDouble();
+////                Logger.realOut.println(x + " <- " + sl[0]);
+//                Logger.realOut.println(y + " <- " + sl[1]);
+//                Logger.realOut.println(bodyHeading + " <- " + sl[2]);
+                gunHeading = radarHeading = bodyHeading = sl[2];
+                x = sl[0];
+                y = sl[1];
 
-			for (int j = 0; j < 1000; j++) {
-				//As this involves hitbox, we need a special Botzilla case
-				if (!isBotzilla()) {
-					x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-					y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
-				} else {
-					x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
-					y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
-				}
-				bodyHeading = 2 * Math.PI * random.nextDouble();
-				gunHeading = radarHeading = bodyHeading;
-				updateBoundingBox();
+                updateBoundingBox();
 
-				if (validSpot(robots)) {
-					break;
-				}
-			}
-		}
+                if (validSpot(robots)) {
+                    break;
+                }
+            }
+        }
 
 		setState(RobotState.ACTIVE);
 
@@ -1058,17 +1082,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 120;
 		} else if (statics.isHouseRobot()){
 			energy = 500;
-			//TODO: Change to actual starting spots [Team Awesome]
-			x = 0;
-			y = 0;
 
-		//Botzilla gets extra energy, for the unlikely case of energy drain
+		// Botzilla gets extra energy, for the unlikely case of energy drain.
 		} else if (statics.isBotzilla()){
 			energy = 999;
 		//Dispensers get extra energy, for they are purely defensive
 
 		} else if (statics.isDispenser()) {
 			energy = 500;
+			
+		// FreezeRobot moves slower to give the other robots a chance.
+		// Gets extra energy so it doesn't die too quickly
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
 			attributes.get().put(RobotAttribute.VELOCITY, 0.40);
@@ -1327,15 +1351,27 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return;
 		}
 		
+		if (seenAsFrozen > 0)
+			seenAsFrozen--;
+		
+		// Creates a new instance of KillFreezeHeatRobots class
+		KillFreezeHeatRobots killFreezeHeatRobot = new KillFreezeHeatRobots();
+		
+		// Calls the killFreezeHeatRobots method on the robots list
+		killFreezeHeatRobot.killFreezeHeatRobot(robots);
+		
 		// Stop the robot being both dead and frozen.
 		if (isFrozen() && energy > 0) {
 			if(melt == true){
-				frozen = 1; //unfreeze robot
-				energy *= 0.7; //sacrifice 30% of health to do so
+				robotFrozen = 1; //unfreeze robot
+				if(meltCredit > 0)
+					meltCredit--;
+				else
+					energy *= 0.7; //sacrifice 30% of health to do so
 				melt = false;
 			}
-			frozen--;
-			if (frozen != 0) {
+			robotFrozen--;
+			if (robotFrozen != 0) {
 				return;
 			}
 			setState(RobotState.ACTIVE);
@@ -1491,7 +1527,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		
 		if (isFrozen()) {
-			addEvent(new RobotFrozenEvent());
+			addEvent(new RobotFrozenEvent(robotFrozen));
 			return;
 		}
 
@@ -1675,7 +1711,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					}
 					
                     // Check if one of the robots is a FreezeRobot, if so, freeze the other robot.
-                    if (!checkForFreezeBot(otherRobot)) {
+                    if (!checkForFreezeBot(otherRobot) || !checkForHeatBot(otherRobot)) {
                     	
                    
 	                    //Use a factor of the armor if it has been changed
@@ -1729,10 +1765,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     }
                     addEvent(
                             new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
-                                              otherRobot.energy, atFault));
+                                              otherRobot.energy, atFault, otherRobot.isHeatRobot()));
                     otherRobot.addEvent(
                             new HitRobotEvent(getNameForEvent(this),
-                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false));
+                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false, isHeatRobot()));
                 }
             }
         }
@@ -1749,7 +1785,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return true if one of the robots is a FreezeRobot, false otherwise
 	 */
 	protected boolean checkForFreezeBot(RobotPeer otherRobot) {
-		// Make sure that at least one of the robots is not a FreezeRobot
+		// Make sure no more than one robot is a FreezeRobot
 		// FreezeRobot cannot freeze another FreezeRobot
 		if (!this.isFreezeRobot() || !otherRobot.isFreezeRobot()) {
 			if (otherRobot.isFreezeRobot()) {
@@ -1773,9 +1809,35 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public void makeFrozen(RobotPeer robot, int turns){
 		robot.setState(RobotState.FROZEN);
-		robot.frozen = turns;
+		robot.robotFrozen = turns;
+		robot.seenAsFrozen = turns;
 	}
 
+	/**
+	 * Checks if this robot or the other robot is a HeatRobot. 
+	 * If so, the HeatRobot will give meltCredit to the robot that has hit it.
+	 * @param otherRobot: The other robot in the collision
+	 * @return true if one of the robots is a HeatRobot, false otherwise
+	 */
+	protected boolean checkForHeatBot(RobotPeer otherRobot) {
+		// Make sure no more than one robot is a HeatRobot
+		// HeatRobot gives meltCredit to robot that has hit it
+		if (!this.isHeatRobot() || !otherRobot.isHeatRobot()) {
+			if (otherRobot.isHeatRobot()) {
+				meltCredit++;
+				return true;
+			}
+			
+			if (this.isHeatRobot()) {
+				otherRobot.meltCredit++;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
 	protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {
         boolean hitObstacle = false;
         double angle = 0;
@@ -2228,6 +2290,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					if (!otherRobot.isScannable()) {
 						return;
 					}
+					
 					if(minionList.contains(otherRobot) || (this.isMinion() && otherRobot.isParent(this)) 
 							|| (this.isMinion() && otherRobot.isMinion() && 
 									this.getMinionParent().equals(otherRobot.getMinionParent()))) {
@@ -2239,7 +2302,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-							otherRobot.getVelocity(), otherRobot.isFrozen(), otherRobot.isFreezeRobot());
+							otherRobot.getVelocity(), otherRobot.isSeenAsFrozen(), otherRobot.isFreezeRobot(), otherRobot.isHeatRobot());
 	
 					addEvent(event);
 				}
@@ -2505,94 +2568,71 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * @param name the name of the part
-	 * @return the part associated with the given name, or null if none
+	 * @param attribute
+	 *            the attribute to set.
+	 * @param value
+	 *            the modifier value to set the attribute to.
 	 */
-	private EquipmentPart getEquipmentPart(String name) {
-		return battle.getEquipmentPart(name);
+	private void setAttributeModifier(RobotAttribute attribute, double value) {
+		attributes.get().put(attribute,  value);
+	}
+
+	/**
+	 * @param attribute
+	 *            the attribute to return the modifier value of
+	 * @return the modifier value for the given attribute
+	 */
+	private double getAttributeModifier(RobotAttribute attribute) {
+		return attributes.get().get(attribute);
+	}
+
+	/**
+	 * @param slot
+	 *            the slot containing the part to return
+	 * @return the part equipped to the given slot, or null if none
+	 */
+	private EquipmentPart getEquipmentPartInSlot(EquipmentSlot slot) {
+		return equipment.get().get(slot);
 	}
 
 	/**
 	 * If the part's slot attribute matches the given slot, it equips the part
 	 * in that slot and loads the attributes provided by the part.
 	 * 
-	 * This will reset any calls to: 
+	 * This will reset any calls to:
 	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
 	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
-	 *
-	 * @param name the name of the part to equip
-	 * @see EquipmentSet
-	 * @see robocode.AdvancedRobot#setMaxVelocity()
-	 * @see robocode.AdvancedRobot#setMaxTurnRate()
+	 * 
+	 * @param name
+	 *            the name of the part to equip
 	 */
 	public void equip(String name) {
-		EquipmentPart part = getEquipmentPart(name);
+		EquipmentPart newPart = battle.getEquipmentPart(name);
 
 		// If no part was found with the given name, don't do anything.
-		if (part == null) {
+		if (newPart == null) {
 			return;
 		}
 
-		// Replace whatever's currently occupying this slot with the new part
-		unequip(part.getSlot());
-		equipment.get().put(part.getSlot(), part);
+		EquipmentPart oldPart = getEquipmentPartInSlot(newPart.getSlot());
 
-		/* Add all the attribute modifiers of the part to the current
-		 * attribute modifiers (many attributes of the part may be 0).
-		 */
+		// Replace whatever's currently occupying this slot with the new part.
+		equipment.get().put(newPart.getSlot(), newPart);
+
+		// For every possible robot attribute, subtract the modifier provided by
+		// the old part in this slot, and add the modifier provided by the new
+		// part being equipped.
 		for (RobotAttribute attribute : RobotAttribute.values()) {
-
-			double partValue = part.get(attribute);
-			double currentValue = attributes.get().get(attribute);
-
-			/* Part modifiers are represented as 1=+1% effectiveness, hence
-			 * the division by 100 (as this.attributes represents 1.0 as 100%
-			 * effectiveness for easy multiplication).
-			 */
-			double newValue = currentValue + (partValue / 100.0);
-
-			attributes.get().put(attribute, newValue);
+			double currentValue = getAttributeModifier(attribute);
+			double oldPartValue = oldPart == null ? 0 : oldPart.get(attribute);
+			double newPartValue = newPart.get(attribute);
+			double newValue = currentValue - oldPartValue + newPartValue;
+			setAttributeModifier(attribute, newValue);
 		}
+
 		currentCommands.setMaxVelocity(getRealMaxVelocity());
 		currentCommands.setMaxTurnRate(getMaxTurnRateRadians());
 		energy = energy + getStartingEnergy() - 100;
-	}
-
-	/**
-	 * Unequips the part equipped to the given slot, if any, and resets all
-	 * attributes provided by the part.
-	 * 
-	 * This will reset any calls to: 
-	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
-	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
-	 *
-	 * @param slot the slot to clear
-	 * @see robocode.AdvancedRobot#setMaxVelocity()
-	 * @see robocode.AdvancedRobot#setMaxTurnRate()
-	 */
-	public void unequip(EquipmentSlot slot) {
-		EquipmentPart part = equipment.get().get(slot);
-
-		/* If there is any part in the given slot, add all the attribute
-		 * modifiers of the part to the current attribute modifiers (many
-		 * attributes of the part may be 0).
-		 */
-		if (part != null) {
-			for (RobotAttribute attribute : RobotAttribute.values()) {
-				double partValue = part.get(attribute);
-				double currentValue = attributes.get().get(attribute);
-
-				/* Part modifiers are represented as 1=+1% effectiveness,
-				 * hence the division by 100 (as this.attributes represents
-				 * 1.0 as 100% effectiveness for easy multiplication).
-				 */
-				double newValue = currentValue - (partValue / 100.0);
-
-				attributes.get().put(attribute, newValue);
-			}
-		}
-		currentCommands.setMaxVelocity(getRealMaxVelocity());
-		currentCommands.setMaxTurnRate(getMaxTurnRateRadians());
 	}
 
 	/**
@@ -3039,6 +3079,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return false;
 	}
 	
+	/**
+	 * Returns the amount of meltCredit that the robot has
+	 * @return meltCredit
+	 */
+	public int getMeltCredit() {
+		return meltCredit;
+	}
+
 	/**
 	 * Returns the bounding rectangles representing the enemy goal of this robot
 	 * in SoccerMode. Returns null in other modes.

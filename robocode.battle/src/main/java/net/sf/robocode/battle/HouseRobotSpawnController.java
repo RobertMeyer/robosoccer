@@ -26,23 +26,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import net.sf.robocode.battle.peer.RobotPeer;
-import net.sf.robocode.mode.IMode;
 import robocode.control.RandomFactory;
 
 /**
  *
  * @author lee
+ * @author Laurence McLean 42373414 (fixed parts)
  */
-public class HouseRobotSpawnController extends IModeSpawnController {
+public class HouseRobotSpawnController implements ISpawnController {
 
     private static final Random random = RandomFactory.getRandom();
     private static final HashMap<WeakReference<Battle>, HouseRobotBattlePositions> battlePositions =
             new HashMap<WeakReference<Battle>, HouseRobotBattlePositions>();
-
-    public HouseRobotSpawnController(Class<? extends IMode> mode) {
-        super(mode);
-    }
-
 
     public static void cleanMap() {
         for (Iterator<WeakReference<Battle>> it = battlePositions.keySet().iterator(); it.hasNext();) {
@@ -54,7 +49,7 @@ public class HouseRobotSpawnController extends IModeSpawnController {
     }
 
     @Override
-    public double[] getSpawnLocation(RobotPeer r, Battle battle) {
+    public synchronized double[] getSpawnLocation(RobotPeer r, Battle battle) {
         if (r.isHouseRobot()) {
             cleanMap();
             for (Map.Entry<WeakReference<Battle>, HouseRobotBattlePositions> entry : battlePositions.entrySet()) {
@@ -74,12 +69,13 @@ public class HouseRobotSpawnController extends IModeSpawnController {
     }
 
     @Override
-    public void resetSpawnLocation(RobotPeer r, Battle b) {
+    public synchronized void resetSpawnLocation(RobotPeer r, Battle b) {
         cleanMap();
         for (Map.Entry<WeakReference<Battle>, HouseRobotBattlePositions> entry : battlePositions.entrySet()) {
             WeakReference<Battle> pr = entry.getKey();
             if (pr.get() != null && pr.get().equals(b)) {
                 entry.getValue().remove(r);
+                return;
             }
         }
     }

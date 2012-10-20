@@ -1,19 +1,19 @@
-/**
- * Copyright (c) 2012 Team Steel.
+/******************************************************************************
+ * Copyright (c) 2012 The Fightin' Mongooses team.
  *
  * Contributors:
- * 	Paul Wade
- * 	Chris Iriving
- * 	Jesse Claven
- */
+ *    Paul Wade
+ *    Chris Irving
+ *    Jesse Claven
+******************************************************************************/
+
 package au.edu.uq.itee.csse2003.weapons;
 
 /**
  * Represents a weapon.
  *
- * @author Chris Irving
- * @author Paul Wade
- * @author Jesse Claven
+ * @author The Fightin' Moongooses
+ * @deprecated This feature has temporarily been postponed.
  */
 public class Weapon {
 
