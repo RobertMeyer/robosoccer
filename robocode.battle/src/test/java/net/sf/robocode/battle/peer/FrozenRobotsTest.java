@@ -70,9 +70,9 @@ public class FrozenRobotsTest {
 	@Test
 	public void testCollision() {
 		RobotPeer freezeRobot = new RobotPeer(battle, hostManager, freezeSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		RobotPeer otherRobot = new RobotPeer(battle, hostManager, otherSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		
 		otherRobot.checkForFreezeBot(freezeRobot);
 		assertTrue("Robot should be frozen", otherRobot.robotFrozen == 100);
@@ -89,3 +89,4 @@ public class FrozenRobotsTest {
 		assertTrue("FreezeRobot should not be frozen", freezeRobot.robotFrozen == 0);
 	}
 }
+

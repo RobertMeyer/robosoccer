@@ -65,12 +65,12 @@ public class FreezeRobotDeathEventTest {
 	
 	@Test
 	public void testCollision() {
-		RobotPeer freezeRobot = new RobotPeer(battle, hostManager, freezeSpecification,	0, null, 0);
-		RobotPeer otherRobot1 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0);
-		RobotPeer otherRobot2 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0);
-		RobotPeer otherRobot3 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0);
-		RobotPeer otherRobot4 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0);
-		RobotPeer otherRobot5 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0);
+		RobotPeer freezeRobot = new RobotPeer(battle, hostManager, freezeSpecification,	0, null, 0, null);
+		RobotPeer otherRobot1 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0, null);
+		RobotPeer otherRobot2 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0, null);
+		RobotPeer otherRobot3 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0, null);
+		RobotPeer otherRobot4 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0, null);
+		RobotPeer otherRobot5 = new RobotPeer(battle, hostManager, otherSpecification,	0, null, 0, null);
 		
 		FreezeRobotDeath d = new FreezeRobotDeath(freezeRobot, otherRobot3);
 		List<RobotPeer> robots = new ArrayList<RobotPeer>();

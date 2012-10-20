@@ -12,10 +12,10 @@ import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlReader.Element;
 import net.sf.robocode.serialization.XmlWriter;
-import robocode.EquipmentSlot;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ILandmineSnapshot;
 import robocode.control.snapshot.LandmineState;
+import robocode.equipment.EquipmentSlot;
 
 public class LandmineSnapshot implements java.io.Serializable,
 IXmlSerializable, ILandmineSnapshot{

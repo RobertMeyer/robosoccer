@@ -1,10 +1,12 @@
 package net.sf.robocode.mode;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -55,6 +57,11 @@ public class MazeMode extends ClassicMode {
     	return (int) Integer.parseInt((String) rules.getModeRules().get("wallHeight"));
 	}
     
+    @Override
+    public boolean dWallSetting(BattleRules rules) {
+    	return (Boolean) rules.getModeRules().get("dWall");
+    }
+    
     public JPanel getRulesPanel(){
 		if(rulesPanel == null){
 			rulesPanel = new MazeModeRulesPanel();
@@ -68,34 +75,59 @@ public class MazeMode extends ClassicMode {
 	
 	@SuppressWarnings("serial")
 	private class MazeModeRulesPanel extends JPanel {
-		private JTextField cellWidth, cellHeight, wallWidth, wallHeight;
+		private JTextField minPassW, minPassH, minWallW, minWallH;
+		private JCheckBox dWall;
 		public MazeModeRulesPanel() {
 			super();
-			
-			add(new JLabel("Width of Passages:"), BorderLayout.NORTH);
-			cellWidth = new JTextField("64", 5);
-			add(cellWidth);
-			
-
-			add(new JLabel("Height of Passages:"), BorderLayout.SOUTH);
-			cellHeight = new JTextField("64", 5);
-			add(cellHeight);
-
-			add(new JLabel("Width of Walls:"), BorderLayout.NORTH);
-			wallWidth = new JTextField("10", 5);
-			add(wallWidth);
-			
-			add(new JLabel("Height of Walls:"), BorderLayout.NORTH);
-			wallHeight = new JTextField("10", 5);
-			add(wallHeight);
+			GridBagConstraints c = new GridBagConstraints();
+	        setLayout(new GridBagLayout());
+	        
+	        JLabel minPassWLbl = new JLabel("Minimum Width of Passages:");
+	        minPassW = new JTextField("50", 5);
+	        JLabel minPassHLbl = new JLabel("Minimum Height of Passages:");
+	        minPassH = new JTextField("50", 5);
+	        JLabel minWallWLbl = new JLabel("Minimum Width of Walls:");
+	        minWallW = new JTextField("1", 5);
+	        JLabel minWallHLbl = new JLabel("Minimum Height of Walls:");
+	        minWallH = new JTextField("1", 5);
+	        JLabel dWallLbl = new JLabel("Enable Destructable Walls:");
+	        dWall = new JCheckBox();
+	        dWall.setSelected(false);
+	        
+	        c.gridx = 0;
+	        c.gridy = 0;
+	        c.weightx = 0.1;
+	        c.anchor = GridBagConstraints.LINE_START;
+	        add(minPassWLbl, c);
+	        c.gridy = 1;
+	        add(minPassHLbl, c);
+	        c.gridy = 2;
+	        add(minWallWLbl, c);
+	        c.gridy = 3;
+	        add(minWallHLbl, c);
+	        c.gridy = 4;
+	        add(dWallLbl, c);
+	        
+	        c.gridy = 0;
+	        c.anchor = GridBagConstraints.LINE_END;
+	        add(minPassW, c);
+	        c.gridy = 1;
+	        add(minPassH, c);
+	        c.gridy = 2;
+	        add(minWallW, c);
+	        c.gridy = 3;
+	        add(minWallH, c);
+	        c.gridy = 4;
+	        add(dWall, c);
 		}
 		
 		public Hashtable<String, Object> getValues() {
 			Hashtable<String, Object> values = new Hashtable<String, Object>();
-			values.put("cellWidth", cellWidth.getText());
-			values.put("cellHeight", cellHeight.getText());
-			values.put("wallWidth", wallWidth.getText());
-			values.put("wallHeight", wallHeight.getText());
+			values.put("cellWidth", minPassW.getText());
+			values.put("cellHeight", minPassH.getText());
+			values.put("wallWidth", minWallW.getText());
+			values.put("wallHeight", minWallH.getText());
+			values.put("dWall", dWall.isSelected());
 			return values;
 		}
 	}

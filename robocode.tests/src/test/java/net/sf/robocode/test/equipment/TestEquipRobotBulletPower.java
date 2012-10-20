@@ -10,8 +10,8 @@ import net.sf.robocode.test.helpers.Assert;
  * A simple test to test the bullet power of equipment robots.
  * 
  * Thus, this tests:
- * RobotAttribute#BULLET_POWER
- * RobotAttribute#ENERGY_REGEN
+ * {@link robocode.RobotAttribute#BULLET_DAMAGE}
+ * {@link robocode.RobotAttribute#ENERGY_REGEN}
  * 
  * @author Jayke Anderson - CSSE2003
  */

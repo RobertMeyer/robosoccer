@@ -29,11 +29,11 @@ import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
-import robocode.EquipmentPart;
-import robocode.EquipmentSlot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.RobotState;
+import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSlot;
 
 /**
  * A snapshot of a robot at a specific time instant in a battle.

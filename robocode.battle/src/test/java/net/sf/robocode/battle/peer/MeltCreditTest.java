@@ -70,9 +70,9 @@ public class MeltCreditTest {
 	@Test
 	public void testCollision() {
 		RobotPeer heatRobot = new RobotPeer(battle, hostManager, heatSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		RobotPeer otherRobot = new RobotPeer(battle, hostManager, otherSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		
 		otherRobot.checkForHeatBot(heatRobot);
 		assertTrue("Robot should get meltCredit", otherRobot.meltCredit == 1);

@@ -84,13 +84,13 @@ public class KillFreezeHeatRobotsTest {
 		
 		// Creates four robots of different specifications
 		RobotPeer heatRobot = new RobotPeer(battle, hostManager, heatSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		RobotPeer freezeRobot = new RobotPeer(battle, hostManager, freezeSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		RobotPeer otherRobot = new RobotPeer(battle, hostManager, otherSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		RobotPeer fourthRobot = new RobotPeer(battle, hostManager, otherSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		
 		// Creates a new instance of KillFreezeHeatRobots
 		KillFreezeHeatRobots killFreezeHeatRobots = new KillFreezeHeatRobots();
