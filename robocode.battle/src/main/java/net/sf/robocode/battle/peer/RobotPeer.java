@@ -173,6 +173,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	protected static final int HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
+	
+	// Special hitbox settings for Ball
+	public static final int BALL_WIDTH = 15, BALL_HEIGHT = 15;
 
 	// Special hitbox settings for Botzilla
 	public static final int BZ_WIDTH = WIDTH * 2, BZ_HEIGHT = HEIGHT * 2;
@@ -1879,10 +1882,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public void updateBoundingBox() {
 		//Botzilla has larger hitbox, and hence requires a special case
-		if(!isBotzilla()) {
-			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
-		} else {
+		if(isBotzilla()) {
 			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
+		} else if(isBall()) {
+			boundingBox.setRect(x - BALL_WIDTH / 2 + 2, y - BALL_HEIGHT / 2 + 2, BALL_WIDTH - 4, BALL_HEIGHT - 4);
+		} else {
+			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
 		}
 	}
 
