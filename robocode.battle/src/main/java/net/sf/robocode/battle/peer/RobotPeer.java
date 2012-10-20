@@ -370,7 +370,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	public void spawnMinions() {
-		if(currentCommands.getSpawnMinion() && !isMinion()) {
+		if(currentCommands.getSpawnMinion() && !isMinion() && MinionData.getMinionsEnabled()) {
 			int minionType = currentCommands.getMinionType();
 			IRepositoryManager repo = battle.getRepositoryManager();
 			RobotSpecification[] minionSpecs;
@@ -380,7 +380,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			else {
 				return;
 			}
+			//Validate the robot has enough power to spawn a minion.
+			double energyConsumption = MinionData.getEnergyConsumption();
+			if(energy <= energyConsumption)
+				//If minion spawns, parent will have no energy.
+				return;
+			else
+				energy -= energyConsumption;
 			
+			//Spawn the minion.
 			RobotSpecification minion = minionSpecs[minionType];
 			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
