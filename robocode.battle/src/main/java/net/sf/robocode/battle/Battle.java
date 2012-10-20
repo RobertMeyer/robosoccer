@@ -412,21 +412,6 @@ public class Battle extends BaseBattle {
 		return killstreakTracker;
 	}
 
-	// Method for killing the freeze robot if it is one of the last two
-	// remaining robots
-	public void killFreezeRobot() {
-		// Checks if number of active robots == 2
-		if (activeRobots == 2) {
-			// finds the freeze robot
-			for (int i = 0; i < robotList.size(); i++) {
-				if (robotList.get(i).isFreezeRobot()) {
-					// sets the freeze robots state to dead.
-					robotList.get(i).setState(RobotState.DEAD);
-				}
-			}
-		}
-	}
-
 	@Override
 	public void cleanup() {
 		peers.cleanup();
@@ -681,8 +666,6 @@ public class Battle extends BaseBattle {
 		inactiveTurnCount++;
 
 		computeActiveRobots();
-
-		killFreezeRobot();
 
 		publishStatuses();
 

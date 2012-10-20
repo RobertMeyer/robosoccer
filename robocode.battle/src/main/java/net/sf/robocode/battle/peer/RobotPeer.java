@@ -98,6 +98,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.KillFreezeHeatRobots;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.item.BoundingRectangle;
@@ -163,6 +164,9 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author Patrick Cupka (contributor)
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
+ * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
+ * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
+ * @author CSSE2003 Team HoneyBadgers (contributor)
  * @author CSSE2003 Team Forkbomb (attributes, equipment)
  * @author CSSE2003 Team Mysterious-Incontinence (minion functionality)
  */
@@ -254,7 +258,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected final RbSerializer rbSerializer;
 
 	// The number of turns the robot is frozen for, 0 if not frozen
-	protected int frozen = 0;
+	protected int robotFrozen = 0;
+	
+	// The same as robotFrozen. Except it doesn't get set to 0 when a robot melts itself
+	// This is so when a robots melts others still see it as frozen.
+	// Just another advantage to melting.
+	protected int seenAsFrozen = 0;
+	
+	// The robot can use these to melt itself without losing energy
+	protected int meltCredit = 0;
 
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
@@ -543,6 +555,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	public boolean isTeamRobot() {
 		return statics.isTeamRobot();
 	}
+	
+	public boolean isHeatRobot() {
+		return statics.isHeatRobot();
+	}
 
 	/**
 	 * Test for checking if current robot is Botzilla.
@@ -635,6 +651,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	public boolean isFrozen() {
 		return state == RobotState.FROZEN;
+	}
+	
+	public boolean isSeenAsFrozen() {
+		return seenAsFrozen > 0;
 	}
 
     @Override
@@ -1069,6 +1089,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		} else if (statics.isDispenser()) {
 			energy = 500;
+			
+		// FreezeRobot moves slower to give the other robots a chance.
+		// Gets extra energy so it doesn't die too quickly
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
 			attributes.get().put(RobotAttribute.VELOCITY, 0.40);
@@ -1324,15 +1347,27 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return;
 		}
 		
+		if (seenAsFrozen > 0)
+			seenAsFrozen--;
+		
+		// Creates a new instance of KillFreezeHeatRobots class
+		KillFreezeHeatRobots killFreezeHeatRobot = new KillFreezeHeatRobots();
+		
+		// Calls the killFreezeHeatRobots method on the robots list
+		killFreezeHeatRobot.killFreezeHeatRobot(robots);
+		
 		// Stop the robot being both dead and frozen.
 		if (isFrozen() && energy > 0) {
 			if(melt == true){
-				frozen = 1; //unfreeze robot
-				energy *= 0.7; //sacrifice 30% of health to do so
+				robotFrozen = 1; //unfreeze robot
+				if(meltCredit > 0)
+					meltCredit--;
+				else
+					energy *= 0.7; //sacrifice 30% of health to do so
 				melt = false;
 			}
-			frozen--;
-			if (frozen != 0) {
+			robotFrozen--;
+			if (robotFrozen != 0) {
 				return;
 			}
 			setState(RobotState.ACTIVE);
@@ -1488,7 +1523,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		
 		if (isFrozen()) {
-			addEvent(new RobotFrozenEvent());
+			addEvent(new RobotFrozenEvent(robotFrozen));
 			return;
 		}
 
@@ -1672,7 +1707,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					}
 					
                     // Check if one of the robots is a FreezeRobot, if so, freeze the other robot.
-                    if (!checkForFreezeBot(otherRobot)) {
+                    if (!checkForFreezeBot(otherRobot) || !checkForHeatBot(otherRobot)) {
                     	
                    
 	                    //Use a factor of the armor if it has been changed
@@ -1726,10 +1761,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     }
                     addEvent(
                             new HitRobotEvent(getNameForEvent(otherRobot), normalRelativeAngle(angle - bodyHeading),
-                                              otherRobot.energy, atFault));
+                                              otherRobot.energy, atFault, otherRobot.isHeatRobot()));
                     otherRobot.addEvent(
                             new HitRobotEvent(getNameForEvent(this),
-                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false));
+                                              normalRelativeAngle(PI + angle - otherRobot.getBodyHeading()), energy, false, isHeatRobot()));
                 }
             }
         }
@@ -1746,7 +1781,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return true if one of the robots is a FreezeRobot, false otherwise
 	 */
 	protected boolean checkForFreezeBot(RobotPeer otherRobot) {
-		// Make sure that at least one of the robots is not a FreezeRobot
+		// Make sure no more than one robot is a FreezeRobot
 		// FreezeRobot cannot freeze another FreezeRobot
 		if (!this.isFreezeRobot() || !otherRobot.isFreezeRobot()) {
 			if (otherRobot.isFreezeRobot()) {
@@ -1770,9 +1805,35 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 */
 	public void makeFrozen(RobotPeer robot, int turns){
 		robot.setState(RobotState.FROZEN);
-		robot.frozen = turns;
+		robot.robotFrozen = turns;
+		robot.seenAsFrozen = turns;
 	}
 
+	/**
+	 * Checks if this robot or the other robot is a HeatRobot. 
+	 * If so, the HeatRobot will give meltCredit to the robot that has hit it.
+	 * @param otherRobot: The other robot in the collision
+	 * @return true if one of the robots is a HeatRobot, false otherwise
+	 */
+	protected boolean checkForHeatBot(RobotPeer otherRobot) {
+		// Make sure no more than one robot is a HeatRobot
+		// HeatRobot gives meltCredit to robot that has hit it
+		if (!this.isHeatRobot() || !otherRobot.isHeatRobot()) {
+			if (otherRobot.isHeatRobot()) {
+				meltCredit++;
+				return true;
+			}
+			
+			if (this.isHeatRobot()) {
+				otherRobot.meltCredit++;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
 	protected void checkObstacleCollision(List<ObstaclePeer> obstacles) {
         boolean hitObstacle = false;
         double angle = 0;
@@ -2225,13 +2286,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					if (!otherRobot.isScannable()) {
 						return;
 					}
+					
 					if(minionList.contains(otherRobot) || (this.isMinion() && otherRobot.isParent(this))) {
 						return;
 					}
 
 					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
-							otherRobot.getVelocity(), otherRobot.isFrozen(), otherRobot.isFreezeRobot());
+							otherRobot.getVelocity(), otherRobot.isSeenAsFrozen(), otherRobot.isFreezeRobot(), otherRobot.isHeatRobot());
 	
 					addEvent(event);
 				}
@@ -3008,6 +3070,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return false;
 	}
 	
+	/**
+	 * Returns the amount of meltCredit that the robot has
+	 * @return meltCredit
+	 */
+	public int getMeltCredit() {
+		return meltCredit;
+	}
+
 	/**
 	 * Returns the bounding rectangles representing the enemy goal of this robot
 	 * in SoccerMode. Returns null in other modes.

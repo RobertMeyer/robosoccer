@@ -290,4 +290,6 @@ public interface IRobotSnapshot {
 	List<IRobotSnapshot> getMinions();
 	
 	boolean isFreezeRobot();
+
+	boolean isHeatRobot();
 }

@@ -913,7 +913,7 @@ public class BattleView extends Canvas {
 				robotRenderImage.setTransform(at);
 				robotRenderImage.paint(g);
 
-				if (!robotSnapshot.isFreezeRobot()) {
+				if (!robotSnapshot.isFreezeRobot() || !robotSnapshot.isHeatRobot()) {
 					at = AffineTransform.getTranslateInstance(x, y);
 					at.rotate(robotSnapshot.getGunHeading());
 	

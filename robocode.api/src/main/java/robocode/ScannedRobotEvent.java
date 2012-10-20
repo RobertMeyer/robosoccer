@@ -53,6 +53,8 @@ public class ScannedRobotEvent extends Event {
 	private final boolean frozen;
 	// Is the robot a FreezeRobot?
 	private final boolean freezeBot;
+	// Is the robot a HeatRobot?
+	private final boolean heatBot;
 
 	/**
 	 * This constructor is only provided in order to preserve backwards compatibility with old robots that
@@ -74,6 +76,7 @@ public class ScannedRobotEvent extends Event {
 		this.velocity = 0;
 		this.frozen = false;
 		this.freezeBot = false;
+		this.heatBot = false;
 	}
 
 	/**
@@ -86,7 +89,7 @@ public class ScannedRobotEvent extends Event {
 	 * @param heading  the heading of the scanned robot
 	 * @param velocity the velocity of the scanned robot
 	 */
-	public ScannedRobotEvent(String name, double energy, double bearing, double distance, double heading, double velocity, boolean frozen, boolean freezeBot) {
+	public ScannedRobotEvent(String name, double energy, double bearing, double distance, double heading, double velocity, boolean frozen, boolean freezeBot, boolean heatBot) {
 		super();
 		this.name = name;
 		this.energy = energy;
@@ -96,6 +99,7 @@ public class ScannedRobotEvent extends Event {
 		this.velocity = velocity;
 		this.frozen = frozen;
 		this.freezeBot = freezeBot;
+		this.heatBot = heatBot;
 	}
 
 	/**
@@ -279,6 +283,10 @@ public class ScannedRobotEvent extends Event {
 		return freezeBot;
 	}
 	
+	public boolean isHeatBot() {
+		return heatBot;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -361,7 +369,7 @@ public class ScannedRobotEvent extends Event {
 			double velocity = buffer.getDouble();
 			
 
-			return new ScannedRobotEvent(name, energy, bearing, distance, heading, velocity, false, false);
+			return new ScannedRobotEvent(name, energy, bearing, distance, heading, velocity, false, false, false);
 		}
 	}
 }
