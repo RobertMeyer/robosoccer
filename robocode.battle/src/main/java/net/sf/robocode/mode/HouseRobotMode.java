@@ -17,6 +17,13 @@ import robocode.control.RobocodeEngine;
 public class HouseRobotMode extends ClassicMode {
 	
 	protected GuiOptions uiOptions;
+	
+	private RobotPeer houseRobot1;
+	private RobotPeer houseRobot2;
+	private RobotPeer houseRobot3;
+	private RobotPeer houseRobot4;
+	
+	private int numberOfHouseRobots = 2;
 
     /**
      * {@inheritDoc}
@@ -35,19 +42,44 @@ public class HouseRobotMode extends ClassicMode {
     public void addRobots(int currentTurn, BattlePeers peers){
     	if(currentTurn==1) Battle.addController(new HouseRobotSpawnController(this.getClass()));
     	if(currentTurn==1) {
-    		RobotPeer houseRobot1 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
+    		houseRobot1 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
     				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
     				null, peers.getBattle().getRobotsCount());
     		peers.addRobot(houseRobot1);
         	houseRobot1.initializeRound(peers.getRobots(), null);
         	houseRobot1.startRound(0, 0);
-    		RobotPeer houseRobot2 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
+        	if(numberOfHouseRobots==1) return;
+    		houseRobot2 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
     				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
     				null, peers.getBattle().getRobotsCount());
     		peers.addRobot(houseRobot2);
         	houseRobot2.initializeRound(peers.getRobots(), null);
         	houseRobot2.startRound(0, 0);
+        	if(numberOfHouseRobots==2) return;
+    		houseRobot3 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
+    				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
+    				null, peers.getBattle().getRobotsCount());
+    		peers.addRobot(houseRobot3);
+        	houseRobot3.initializeRound(peers.getRobots(), null);
+        	houseRobot3.startRound(0, 0);
+        	if(numberOfHouseRobots==3) return;
+    		houseRobot4 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
+    				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
+    				null, peers.getBattle().getRobotsCount());
+    		peers.addRobot(houseRobot4);
+        	houseRobot4.initializeRound(peers.getRobots(), null);
+        	houseRobot4.startRound(0, 0);
     	}
+    }
+    
+    public void endRound(BattlePeers peers) {
+    	peers.removeRobot(houseRobot1);
+    	if(numberOfHouseRobots==1) return;
+    	peers.removeRobot(houseRobot2);
+    	if(numberOfHouseRobots==2) return;
+    	peers.removeRobot(houseRobot3);
+    	if(numberOfHouseRobots==3) return;
+    	peers.removeRobot(houseRobot4);
     }
 
     /**
@@ -131,6 +163,10 @@ public class HouseRobotMode extends ClassicMode {
         }
 
         return initialRobotPositions;
+    }
+    
+    public boolean allowsOneRobot() {
+    	return true;
     }
 
 }

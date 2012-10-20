@@ -346,6 +346,14 @@ public class ClassicMode implements IMode {
 	public void addRobots(int currentTurn, BattlePeers peers){
 		// do nothing
 	}
+	
+	/** What to do at the end of a mode's specific round.
+	 * @author Laurence McLean 42373414
+	 * @param peers See BattlePeers.class
+	 */
+	public void endRound(BattlePeers peers) {
+		//Do nothing by default.
+	}
 
 	public double modifyVision(double standard) {
 		return standard;

@@ -218,5 +218,14 @@ public class BattlePeers {
 		}
 
 	}
+
+	/**
+	 * @author Laurence McLean 42373414
+	 * @param houseRobot1
+	 */
+	public void removeRobot(RobotPeer r) {
+		robots.remove(r);
+		contestants.remove(r.getTeamPeer());
+	}
 	
 }

@@ -32,6 +32,7 @@ import robocode.control.RandomFactory;
 /**
  *
  * @author lee
+ * @author Laurence McLean 42373414 (fixed parts)
  */
 public class HouseRobotSpawnController extends IModeSpawnController {
 
@@ -56,6 +57,9 @@ public class HouseRobotSpawnController extends IModeSpawnController {
     @Override
     public double[] getSpawnLocation(RobotPeer r, Battle battle) {
         if (r.isHouseRobot()) {
+        	
+        	//OLD CODE
+        	
             cleanMap();
             for (Map.Entry<WeakReference<Battle>, HouseRobotBattlePositions> entry : battlePositions.entrySet()) {
                 WeakReference<Battle> pr = entry.getKey();
