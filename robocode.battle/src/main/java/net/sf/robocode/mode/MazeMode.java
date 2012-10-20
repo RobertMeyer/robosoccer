@@ -19,8 +19,10 @@ import robocode.BattleRules;
 
 /**
  * Creates a game mode with obstacles placed on the battlefield
+ * in a maze pattern.  Maze is randomly generated each time a new battle is run.
  * 
  * @author Team a-MAZE-ing
+ * @author Jack Toohey
  *
  */
 public class MazeMode extends ClassicMode {
@@ -132,6 +134,21 @@ public class MazeMode extends ClassicMode {
 		}
 	}
 	
+	/**
+	 * Creates a new maze for the given battle,
+	 * and returns a list of obstacles describing the walls of the maze.
+	 * 
+	 * All *Width and *Height parameters must be greater than 0.
+	 * 
+	 * @param bp			Properties of the battle the maze will be generated for
+	 * @param battleRules	Rules of the battle the maze will be generated for
+	 * @param battle		Battle that the maze will be generated for
+	 * @param cellWidth 	Minimum width of maze passages
+	 * @param cellHeight	Minimum height of maze passages
+	 * @param wallWidth		Minimum width of maze walls
+	 * @param wallHeight	Minimum height of maze walls
+	 * @return	List of all the obstacles which are acting as maze walls.
+	 */
 	public static List<ObstaclePeer> generateMaze(BattleProperties bp, BattleRules battleRules, Battle battle,
 			int cellWidth, int cellHeight, int wallWidth, int wallHeight) {
 		List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
