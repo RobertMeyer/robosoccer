@@ -1,4 +1,4 @@
-/*package net.sf.robocode.battle;
+package net.sf.robocode.battle;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -30,8 +30,7 @@ public class KillFreezeHeatRobotsTest {
 	RobotSpecification freezeSpecification;
 	RobotSpecification heatSpecification;
 	RobotSpecification otherSpecification;
-	
-	
+	List<RobotPeer> robots;
 	Battle battle;
 	IHostManager hostManager;
 	
@@ -47,8 +46,7 @@ public class KillFreezeHeatRobotsTest {
 	public void setUp(){
 		
 		hostManager = Mockito.mock(IHostManager.class);
-		battle = Mockito.mock(Battle.class);
-		
+		battle = Mockito.mock(Battle.class);		
 		
 		freezeRobotItem = Mockito.mock(IRobotRepositoryItem.class);
 		when(freezeRobotItem.isFreezeRobot()).thenReturn(true);
@@ -75,16 +73,21 @@ public class KillFreezeHeatRobotsTest {
 		RobotPeer otherRobot = new RobotPeer(battle, hostManager, otherSpecification,
 				0, null, 0);
 		
-		List<RobotPeer> robots = new ArrayList<RobotPeer>();
+		robots = new ArrayList<RobotPeer>();
 		
 		robots.add(heatRobot);
 		robots.add(freezeRobot);
 		robots.add(otherRobot);
-		robots.add(otherRobot);
+		//robots.add(otherRobot);
 		
 		assertTrue("Heat robot should be alive", heatRobot.isAlive());
+		assertTrue("Robot should be a heat robot", heatRobot.isHeatRobot());
+		
 		assertTrue("Freeze robot should be alive", freezeRobot.isAlive());
+		assertTrue("Robot should be a freeze robot", freezeRobot.isFreezeRobot());
+		
 		assertTrue("Other robot should be alive", otherRobot.isAlive());
+		assertFalse("Other robot should not be a heat or freeze robot", otherRobot.isFreezeRobot() || otherRobot.isHeatRobot());
 		
 		//assertTrue("list should have 3 robots in it", robots.size() == 3);
 		
@@ -94,4 +97,3 @@ public class KillFreezeHeatRobotsTest {
 	}
 	
 }
-*/

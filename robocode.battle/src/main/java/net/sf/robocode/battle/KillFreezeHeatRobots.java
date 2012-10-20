@@ -4,6 +4,14 @@ import java.util.List;
 
 import net.sf.robocode.battle.peer.RobotPeer;
 
+/**
+ * This class kills all the heat and freeze robots on the battlefield.
+ * They are only killed when there is 1 robot on the field that is neither a freeze
+ * robot or a heat robot. 
+ * 
+ * @author Roan Coetzee CSSE2003
+ *
+ */
 public class KillFreezeHeatRobots {
 
 	/**

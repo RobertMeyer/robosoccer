@@ -378,35 +378,7 @@ public class Battle extends BaseBattle {
     	return killstreakTracker;
     }
     
-	/**
-	 * Kills all freeze robots on the battlefield if there is only 1 non freeze robot remaining
-	 */
-	public void killFreezeAndHeatRobot(){
-		//stores number of non freeze or non heat robots
-		int numberOfNonFreezeOrHeatBots = 0;
-		//finds all the alive non freeze or non heat robots
-		for(int i = 0; i < robotList.size(); i++){
-			if(!robotList.get(i).isFreezeRobot() && robotList.get(i).isAlive()){
-				if(!robotList.get(i).isHeatRobot() && robotList.get(i).isAlive()){
-					numberOfNonFreezeOrHeatBots++;
-				}
-			}
-		}
-		//Checks if number of non freeze or heat robots == 1
-		if(numberOfNonFreezeOrHeatBots == 1){
-			//finds all the alive freeze and heat robots
-			for(int i = 0; i < robotList.size(); i++){
-				if(robotList.get(i).isFreezeRobot() && robotList.get(i).isAlive()){
-					//kills the freeze or heat robot
-					robotList.get(i).kill();
-				}
-				if(robotList.get(i).isHeatRobot() && robotList.get(i).isAlive()){
-					//kills the freeze or heat robot
-					robotList.get(i).kill();
-				}
-			}
-		}
-	}
+	
 
 	@Override
 	public void cleanup() {
@@ -689,7 +661,6 @@ public class Battle extends BaseBattle {
 			itemControl.removeItem(item);
 		}
 		
-		killFreezeAndHeatRobot();
 		
 		currentTurn++;
 

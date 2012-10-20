@@ -175,6 +175,7 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author "Positive" (contributor)
  * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
  * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
+ * @author CSSE2003 Team HoneyBadgers (contributor)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
