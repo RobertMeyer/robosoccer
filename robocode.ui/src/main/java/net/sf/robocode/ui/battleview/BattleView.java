@@ -144,6 +144,7 @@ public class BattleView extends Canvas {
     private String bodyPath;
     private String weaponPath;
     private String radarPath;
+    private HashMap<Integer, Double> robotEnergy = new HashMap<Integer, Double>();
 
 	public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
 		this.properties = properties;
@@ -928,16 +929,25 @@ public class BattleView extends Canvas {
 	}
 	
 	private void selectImages(IRobotSnapshot robotSnapshot) {
-		// sets the image paths to null
+        if(!robotEnergy.containsKey(robotSnapshot.getRobotIndex())) {
+        	robotEnergy.put(robotSnapshot.getRobotIndex(), robotSnapshot.getEnergy());
+        } else if(robotEnergy.get(robotSnapshot.getRobotIndex()) > robotSnapshot.getEnergy()) {
+        	robotEnergy.put(robotSnapshot.getRobotIndex(), robotSnapshot.getEnergy());
+        }
         
         double fullEnergy = robotSnapshot.getFullEnergy();
-        double currentEnergy = robotSnapshot.getEnergy();
+        double currentEnergy = robotEnergy.get(robotSnapshot.getRobotIndex());
 
         // If a custom body part is present in the robots equipment
         // then the body image path is changed to the custom one.
         Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
         
-     // Shows the damage on a robot by how much health it has
+        // Shows the damage on a robot by how much health it has
+        if(fullEnergy <= robotSnapshot.getEnergy()){
+        	robotEnergy.put(robotSnapshot.getRobotIndex(), robotSnapshot.getEnergy());
+        	bodyPath = "/net/sf/robocode/ui/images/body.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret.png";
+        }
         if(fullEnergy*0.25 >= currentEnergy) {
         	bodyPath = "/net/sf/robocode/ui/images/body-damaged-heavy.png";
         	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-heavy.png";
@@ -947,10 +957,7 @@ public class BattleView extends Canvas {
         } else if(fullEnergy*0.75 >= currentEnergy){
         	bodyPath = "/net/sf/robocode/ui/images/body-damaged-light.png";
         	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-light.png";
-        } else if(fullEnergy >= currentEnergy){
-        	bodyPath = "/net/sf/robocode/ui/images/body.png";
-        	weaponPath = "/net/sf/robocode/ui/images/turret.png";
-        }
+        } 
         
         if(partsMap.containsKey(EquipmentSlot.BODY)) {
         	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
