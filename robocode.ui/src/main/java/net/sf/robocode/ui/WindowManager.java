@@ -320,6 +320,7 @@ public class WindowManager implements IWindowManagerExt {
     public void showResultsDialog(BattleCompletedEvent event) {
     	IMode battleMode = battleManager.getBattleProperties().getBattleMode();
     	ResultsDialog dialog = null;
+    	/* Retrieve results specific to soccer mode, unsorted */
     	if (battleMode.toString().equals("Soccer Mode")) {
     		 dialog = Container.getComponent(ResultsDialog.class);
     		dialog.setup(battleMode.getFinalResults(), event.getBattleRules().getNumRounds(), battleMode);

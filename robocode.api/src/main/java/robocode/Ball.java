@@ -27,6 +27,7 @@ package robocode;
 
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IBall;
+import robocode.robotinterfaces.ISoccerRobot;
 
 
 /**
@@ -48,6 +49,6 @@ import robocode.robotinterfaces.IBall;
  * @see TeamRobot
  * @see Droid
  */
-public class Ball extends AdvancedRobot implements IBall, IAdvancedEvents {
-
+public class Ball extends SoccerRobot implements IBall, ISoccerRobot, 
+		IAdvancedEvents {
 }

@@ -505,6 +505,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     	return statics.isBall();
     }
 	
+	public boolean isSoccerRobot() {
+		return statics.isSoccerRobot();
+	}
+
 	public boolean isZombie() {
 		return statics.isZombie();
 	}
@@ -1550,7 +1554,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
-				addEvent(new HitItemEvent(item.getName(), item.getIsEquippable(), item.getIsDestroyable()));
+				addEvent(new HitItemEvent(item.getName(), item.getHealth(), item.getIsEquippable(), item.getIsDestroyable()));
 				item.doItemEffect(this);
 				item.setXLocation(-50);
 				item.setYLocation(-50);
@@ -3007,5 +3011,27 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns the bounding rectangles representing the enemy goal of this robot
+	 * in SoccerMode. Returns null in other modes.
+	 * @return BoundingRectangle[] - goal boxes
+	 */
+	public BoundingRectangle getEnemyGoal() {
+		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
+		int index = (getTeamIndex() + 1) % 2;
+		return (goals == null) ? null : goals[index];
+	}
+	
+	/**
+	 * Returns the bounding rectangles representing the own goal of this robot
+	 * in SoccerMode. Returns null in other modes.
+	 * @return BoundingRectangle[] - goal boxes
+	 */
+	public BoundingRectangle getOwnGoal() {
+		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
+		int index = getTeamIndex() % 2;
+		return (goals == null) ? null : goals[index];
 	}
 }
