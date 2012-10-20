@@ -7,9 +7,8 @@ package robocode.equipment;
  *
  */
 public enum EquipmentSlot {
-
     BODY,
-    WEAPON,
+    GUN,
     TRACKS,
     RADAR,
     POWER;

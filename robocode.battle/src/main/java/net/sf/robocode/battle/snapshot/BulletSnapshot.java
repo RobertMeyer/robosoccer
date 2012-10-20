@@ -115,7 +115,7 @@ public final class BulletSnapshot implements java.io.Serializable,
         heading = bullet.getHeading();
         
         try{
-        	bulletPath = owner.getEquipment().get().get(EquipmentSlot.WEAPON).getSoundPath();
+        	bulletPath = owner.getEquipment().get().get(EquipmentSlot.GUN).getSoundPath();
         	}
         catch(NullPointerException e){
         	bulletPath = null;

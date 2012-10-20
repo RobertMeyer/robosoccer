@@ -23,7 +23,7 @@ public class Equipment {
 	static {
 		parts.put(
 				"Division 9 Plasmaprojector",
-				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+				new EquipmentPart.Builder(EquipmentSlot.GUN)
 						.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
 						.set(RobotAttribute.VELOCITY, -20)
 						.set(RobotAttribute.GUN_HEAT_RATE, 70)
@@ -62,7 +62,7 @@ public class Equipment {
 
 		parts.put(
 				"Twin Turret",
-				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+				new EquipmentPart.Builder(EquipmentSlot.GUN)
 						.set(RobotAttribute.VELOCITY, -10)
 						.set(RobotAttribute.GUN_HEAT_RATE, -50)
 						.set(RobotAttribute.BULLET_SPEED, 100)
@@ -74,14 +74,14 @@ public class Equipment {
 		// will be set for the system to run properly
 		parts.put(
 				"Sword",
-				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+				new EquipmentPart.Builder(EquipmentSlot.GUN)
 						.set(RobotAttribute.ACCELERATION, 20)
 						.set(RobotAttribute.RADAR_ANGLE, -25)
 						.set(RobotAttribute.SCAN_RADIUS, 50)
 						.set(RobotAttribute.VELOCITY, 30)
 						.image("/net/sf/robocode/ui/images/Sword.png").build());
 
-		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.GUN)
 				.sound("/net/sf/robocode/sound/sounds/pewpew.wav").build());
 
 		/*
@@ -91,7 +91,7 @@ public class Equipment {
 		// Do not Remove, this will cause tests to fail.
 		parts.put(
 				"Plasma Test",
-				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+				new EquipmentPart.Builder(EquipmentSlot.GUN)
 						.set(RobotAttribute.VELOCITY, -20)
 						.set(RobotAttribute.GUN_HEAT_RATE, 70)
 						.set(RobotAttribute.BULLET_DAMAGE, 90).build());
@@ -99,7 +99,7 @@ public class Equipment {
 		// Do not remove, this will cause the tests to fail.
 		parts.put(
 				"Pistol Test",
-				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+				new EquipmentPart.Builder(EquipmentSlot.GUN)
 						.set(RobotAttribute.ACCELERATION, 30)
 						.set(RobotAttribute.BULLET_DAMAGE, -30)
 						.set(RobotAttribute.BULLET_SPEED, 20)
@@ -153,11 +153,11 @@ public class Equipment {
 						.set(RobotAttribute.SCAN_RADIUS, 40).build());
 		
 		// Do not remove, this will cause the tests to fail.
-		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.GUN)
 				.sound("Test1").build());
 
 		// Do not remove, this will cause the tests to fail.
-		parts.put("Test2", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
+		parts.put("Test2", new EquipmentPart.Builder(EquipmentSlot.GUN)
 				.sound("Test2").build());
 
 		/*
