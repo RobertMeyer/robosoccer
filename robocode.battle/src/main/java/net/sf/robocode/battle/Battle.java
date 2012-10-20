@@ -190,7 +190,7 @@ public final class Battle extends BaseBattle {
     /** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
     private int numObstacles;
-    private static DefaultSpawnController spawnController = new DefaultSpawnController();
+    //private static DefaultSpawnController spawnController = new DefaultSpawnController();
 
     public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
         super(properties, battleManager, eventDispatcher);
@@ -1216,7 +1216,7 @@ public final class Battle extends BaseBattle {
         }
     }
 
-    public static boolean addController(ISpawnController e) {
+    /*public static boolean addController(ISpawnController e) {
         return spawnController.addController(e);
     }
 
@@ -1230,7 +1230,7 @@ public final class Battle extends BaseBattle {
 
     public ISpawnController getSpawnController() {
         return spawnController;
-    }
+    }*/
 
     private void updateEffectAreas() {
         //update robots with effect areas

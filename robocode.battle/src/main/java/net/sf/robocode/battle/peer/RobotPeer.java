@@ -874,7 +874,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
             final Random random = RandomFactory.getRandom();
 
             for (int j = 0; j < 1000; j++) {
-                double[] sl = battle.getSpawnController().getSpawnLocation(this, battle);
+                //double[] sl = battle.getSpawnController().getSpawnLocation(this, battle);
 //                if (!isBotzilla()) {
 //                    x = RobotPeer.WIDTH + random.nextDouble()* (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
 //                    y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
@@ -889,9 +889,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 ////                Logger.realOut.println(x + " <- " + sl[0]);
 //                Logger.realOut.println(y + " <- " + sl[1]);
 //                Logger.realOut.println(bodyHeading + " <- " + sl[2]);
-                gunHeading = radarHeading = bodyHeading = sl[2];
-                x = sl[0];
-                y = sl[1];
+                //gunHeading = radarHeading = bodyHeading = sl[2];
+                //x = sl[0];
+                //y = sl[1];
 
                 updateBoundingBox();
 
