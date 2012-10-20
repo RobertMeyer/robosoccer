@@ -948,8 +948,8 @@ public class BattleView extends Canvas {
 			int x = (int) robotSnapshot.getX();
 			int y = battleField.getHeight() - (int) robotSnapshot.getY();
 
-
-			if (drawRobotEnergy) {
+			
+			if (drawRobotEnergy ) {
 				g.setColor(Color.white);
 				int ll = (int) robotSnapshot.getEnergy();
 				int rl = (int) ((robotSnapshot.getEnergy() - ll + .001) * 10.0);
@@ -962,8 +962,10 @@ public class BattleView extends Canvas {
 				if (robotSnapshot.getEnergy() == 0 && robotSnapshot.getState().isAlive()) {
 					energyString = "Disabled";
 				}
-				centerString(g, energyString, x, y - ROBOT_TEXT_Y_OFFSET - smallFontMetrics.getHeight() / 2, smallFont,
+				if (!(battleManager.getBattleProperties().getBattleMode() instanceof SoccerMode)) {
+					centerString(g, energyString, x, y - ROBOT_TEXT_Y_OFFSET - smallFontMetrics.getHeight() / 2, smallFont,
 						smallFontMetrics);
+				}
 			}
 			if (drawRobotName) {
 				g.setColor(Color.white);

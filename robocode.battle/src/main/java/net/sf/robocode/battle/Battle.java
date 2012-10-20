@@ -101,6 +101,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -233,7 +234,8 @@ public class Battle extends BaseBattle {
 	/** List of obstacles in the battlefield */
 	private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
 
-	private int numObstacles;
+    private int numObstacles;
+    private static DefaultSpawnController spawnController = new DefaultSpawnController();
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager,
 			IHostManager hostManager, IRepositoryManager repositoryManager,
@@ -321,6 +323,9 @@ public class Battle extends BaseBattle {
 	}
 
 	public void registerDeathRobot(RobotPeer r) {
+		for(Iterator<RobotPeer> i = r.getMinionPeers().iterator(); i.hasNext(); ){
+			i.next().kill();
+		}
 		deathRobots.add(r);
 	}
 
@@ -613,7 +618,6 @@ public class Battle extends BaseBattle {
 		this.getBattleMode().scoreRoundPoints();
 
 		bullets.clear();
-
 		items.clear();
 		teleporters.clear();
 
@@ -621,6 +625,8 @@ public class Battle extends BaseBattle {
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(),
 				currentTime, totalTurns));
+        
+        getBattleMode().endRound(peers);
 	}
 
 	@Override
@@ -1426,6 +1432,22 @@ public class Battle extends BaseBattle {
 				}
 			}
 		}
+	}
+	
+	public static boolean addController(ISpawnController e) {
+		return spawnController.addController(e);
+	}
+	
+	public static boolean removeController(ISpawnController e) {
+		return spawnController.removeController(e);
+	}
+	
+	public static void clearControllers() {
+		spawnController.clearControllers();
+	}
+	
+	public ISpawnController getSpawnController() {
+		return spawnController;
 	}
 
 	private void updateEffectAreas() {

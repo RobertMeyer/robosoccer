@@ -172,6 +172,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	protected static final int HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
+	
+	// Special hitbox settings for Ball
+	public static final int BALL_WIDTH = 15, BALL_HEIGHT = 15;
 
 	// Special hitbox settings for Botzilla
 	public static final int BZ_WIDTH = WIDTH * 2, BZ_HEIGHT = HEIGHT * 2;
@@ -369,7 +372,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	public void spawnMinions() {
-		if(currentCommands.getSpawnMinion() && !isMinion()) {
+		if(currentCommands.getSpawnMinion() && !isMinion() && 
+		(MinionData.getMinionsEnabled() || !MinionData.getIsGui())) {
 			int minionType = currentCommands.getMinionType();
 			IRepositoryManager repo = battle.getRepositoryManager();
 			RobotSpecification[] minionSpecs;
@@ -379,7 +383,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			else {
 				return;
 			}
+			//Validate the robot has enough power to spawn a minion.
+			double energyConsumption = MinionData.getEnergyConsumption();
+			if(energy <= energyConsumption)
+				//If minion spawns, parent will have no energy.
+				return;
+			else
+				energy -= energyConsumption;
 			
+			//Spawn the minion.
 			RobotSpecification minion = minionSpecs[minionType];
 			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
@@ -997,36 +1009,44 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 			if (robotIndex >= 0 && robotIndex < initialRobotPositions.length) {
 				double[] pos = initialRobotPositions[robotIndex];
+                x = pos[0];
+                y = pos[1];
+                bodyHeading = pos[2];
+                gunHeading = radarHeading = bodyHeading;
+                updateBoundingBox();
+                valid = validSpot(robots);
+            }
+        }
+        if (!valid) {
+            final Random random = RandomFactory.getRandom();
 
-				x = pos[0];
-				y = pos[1];
-				bodyHeading = pos[2];
-				gunHeading = radarHeading = bodyHeading;
-				updateBoundingBox();
-				valid = validSpot(robots);
-			}
-		}
-		if (!valid) {
-			final Random random = RandomFactory.getRandom();
+            for (int j = 0; j < 1000; j++) {
+                double[] sl = battle.getSpawnController().getSpawnLocation(this, battle);
+//                if (!isBotzilla()) {
+//                    x = RobotPeer.WIDTH + random.nextDouble()* (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
+//                    y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+//                } else {
+//                    x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
+//                    y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
+//                }
+//                                x= sl[0];
+//                                y=sl[1];
+//                gunHeading = radarHeading = bodyHeading =
+//                        2 * Math.PI * random.nextDouble();
+////                Logger.realOut.println(x + " <- " + sl[0]);
+//                Logger.realOut.println(y + " <- " + sl[1]);
+//                Logger.realOut.println(bodyHeading + " <- " + sl[2]);
+                gunHeading = radarHeading = bodyHeading = sl[2];
+                x = sl[0];
+                y = sl[1];
 
-			for (int j = 0; j < 1000; j++) {
-				//As this involves hitbox, we need a special Botzilla case
-				if (!isBotzilla()) {
-					x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-					y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
-				} else {
-					x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
-					y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
-				}
-				bodyHeading = 2 * Math.PI * random.nextDouble();
-				gunHeading = radarHeading = bodyHeading;
-				updateBoundingBox();
+                updateBoundingBox();
 
-				if (validSpot(robots)) {
-					break;
-				}
-			}
-		}
+                if (validSpot(robots)) {
+                    break;
+                }
+            }
+        }
 
 		setState(RobotState.ACTIVE);
 
@@ -1041,9 +1061,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 120;
 		} else if (statics.isHouseRobot()){
 			energy = 500;
-			//TODO: Change to actual starting spots [Team Awesome]
-			x = 0;
-			y = 0;
 
 		//Botzilla gets extra energy, for the unlikely case of energy drain
 		} else if (statics.isBotzilla()){
@@ -1869,10 +1886,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public void updateBoundingBox() {
 		//Botzilla has larger hitbox, and hence requires a special case
-		if(!isBotzilla()) {
-			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
-		} else {
+		if(isBotzilla()) {
 			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
+		} else if(isBall()) {
+			boundingBox.setRect(x - BALL_WIDTH / 2 + 2, y - BALL_HEIGHT / 2 + 2, BALL_WIDTH - 4, BALL_HEIGHT - 4);
+		} else {
+			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
 		}
 	}
 
