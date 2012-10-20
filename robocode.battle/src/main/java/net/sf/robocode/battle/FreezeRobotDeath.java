@@ -1,7 +1,6 @@
 package net.sf.robocode.battle;
 
 import java.util.List;
-
 import net.sf.robocode.battle.peer.RobotPeer;
 
 public class FreezeRobotDeath {
