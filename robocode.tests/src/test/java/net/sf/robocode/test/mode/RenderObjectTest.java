@@ -47,7 +47,7 @@ public class RenderObjectTest {
 		assertEquals(100, mockObject.getTranslateX(), DELTA);
 		assertEquals(100, mockObject.getTranslateY(), DELTA);
 		assertEquals(0.5f, mockObject.getAlpha(), DELTA);
-		assertEquals(Color.BLACK, mockObject.getColor());
+		assertEquals(Color.BLACK, mockObject.getColour());
 		assertEquals(45, mockObject.getRotationDegree(), DELTA);
 		assertEquals(Math.toRadians(45), mockObject.getRotationRadian(), DELTA);
 		assertEquals(mockTransform.getScaleX(), mockObject.getScale()
@@ -74,7 +74,7 @@ public class RenderObjectTest {
 		assertEquals(100, mockString.getTranslateX(), DELTA);
 		assertEquals(100, mockString.getTranslateY(), DELTA);
 		assertEquals(0.5f, mockString.getAlpha(), DELTA);
-		assertEquals(Color.BLACK, mockString.getColor());
+		assertEquals(Color.BLACK, mockString.getColour());
 		assertEquals(45, mockString.getRotationDegree(), DELTA);
 		assertEquals(Math.toRadians(45), mockString.getRotationRadian(), DELTA);
 		assertEquals(mockTransform.getScaleX(), mockString.getScale()

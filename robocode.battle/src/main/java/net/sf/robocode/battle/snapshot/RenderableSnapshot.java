@@ -56,7 +56,7 @@ public final class RenderableSnapshot implements IRenderableSnapshot {
 		this.alpha = co.getAlpha();
 		this.rotation = co.getRotationRadian();
 		this.type = co.getType();
-		this.colour = co.getColor();
+		this.colour = co.getColour();
 		if (this.type == RenderableType.SPRITE) {
 			this.filename = ((RenderObject)co).getFilename();
 		} else if (this.type == RenderableType.SPRITE_ANIMATION) {
