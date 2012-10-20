@@ -185,7 +185,7 @@ public class Battle extends BaseBattle {
 	private EquipmentSet equipment;
 
 	// List of effect areas
-	private List<EffectArea> effArea = new ArrayList<EffectArea>();
+	private EffectAreaManager eaManager = new EffectAreaManager();
 	private List<IRenderable> customObject = new ArrayList<IRenderable>();
 	private int activeRobots;
 	// Death events
@@ -505,7 +505,7 @@ public class Battle extends BaseBattle {
 
 		/* Start to initialise all the items */
 		this.initialiseItems();
-		effArea.clear();
+		eaManager.clearEffectArea();
 
 		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null) {
@@ -518,7 +518,7 @@ public class Battle extends BaseBattle {
 		// boolean switch to switch off effect areas
 		if (battleManager.getBattleProperties().getEffectArea()) {
 			// clear effect area and recreate every round
-			createEffectAreas();
+			eaManager.createRandomEffectAreas(bp, 1);
 		}
 		if (getRoundNum() == 0) {
 			eventDispatcher.onBattleStarted(new BattleStartedEvent(battleRules,
@@ -570,7 +570,7 @@ public class Battle extends BaseBattle {
 		Logger.logMessage(""); // puts in a new-line in the log message
 
 		final ITurnSnapshot snapshot = new TurnSnapshot(this,
-				peers.getRobots(), bullets, landmines, effArea, customObject,
+				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
 				itemControl.getItems(), obstacles, teleporters, false);
 		// final ITurnSnapshot snapshot = new TurnSnapshot(this,
 		// peers.getRobots(), bullets, landmines,effArea, customObject,
@@ -640,7 +640,7 @@ public class Battle extends BaseBattle {
 
 		updateLandmines();
 
-		updateEffectAreas();
+		eaManager.updateEffectAreas(peers);
 
 		this.getBattleMode().updateRenderables(customObject);
 
@@ -781,7 +781,7 @@ public class Battle extends BaseBattle {
 	@Override
 	protected void finalizeTurn() {
 		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
-				peers.getRobots(), bullets, landmines, effArea, customObject,
+				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
 				itemControl.getItems(), obstacles, teleporters, true)));
 
 		// eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
@@ -1156,19 +1156,19 @@ public class Battle extends BaseBattle {
 		case 4:
 			// Effect area 1
 			EffectArea deathEffect1 = new EffectArea(finalX, finalY, 64, 64, 1);
-			effArea.add(deathEffect1);
+			eaManager.addEffectArea(deathEffect1);
 			break;
 		case 5:
 			// Effect area 2
 			EffectArea deathEffect2 = new EffectArea(deadRobot.getX(),
 					deadRobot.getY(), 64, 64, 2);
-			effArea.add(deathEffect2);
+			eaManager.addEffectArea(deathEffect2);
 			break;
 		case 6:
 			// Effect area 3
 			EffectArea deathEffect3 = new EffectArea(deadRobot.getX(),
 					deadRobot.getY(), 64, 64, 3);
-			effArea.add(deathEffect3);
+			eaManager.addEffectArea(deathEffect3);
 			break;
 		}
 	}
@@ -1381,41 +1381,7 @@ public class Battle extends BaseBattle {
 		teleporters.add(new TeleporterPeer(x1, y1, x2, y2));
 	}
 
-	private void createEffectAreas() {
-		int tileWidth = 64;
-		int tileHeight = 64;
-		double xCoord, yCoord;
-		final int NUM_HORZ_TILES = bp.getBattlefieldWidth() / tileWidth + 1;
-		final int NUM_VERT_TILES = bp.getBattlefieldHeight() / tileHeight + 1;
-		int numEffectAreasModifier = 100000; // smaller the number -> more
-												// effect areas
-		int numEffectAreas = (int) round((bp.getBattlefieldWidth()
-				* bp.getBattlefieldHeight() / numEffectAreasModifier));
-		Random effectAreaR = new Random();
-		int effectAreaRandom;
-
-		while (numEffectAreas > 0) {
-			for (int y = NUM_VERT_TILES - 1; y >= 0; y--) {
-				for (int x = NUM_HORZ_TILES - 1; x >= 0; x--) {
-					effectAreaRandom = effectAreaR.nextInt(51) + 1; // The 51 is
-																	// the
-																	// modifier
-																	// for the
-																	// odds of
-																	// the tile
-																	// appearing
-					if (effectAreaRandom == 10) {
-						xCoord = x * tileWidth;
-						yCoord = bp.getBattlefieldHeight() - (y * tileHeight);
-						EffectArea effectArea = new EffectArea(xCoord, yCoord,
-								tileWidth, tileHeight, 0);
-						effArea.add(effectArea);
-						numEffectAreas--;
-					}
-				}
-			}
-		}
-	}
+	
 	
 	public static boolean addController(ISpawnController e) {
 		return spawnController.addController(e);
@@ -1431,26 +1397,6 @@ public class Battle extends BaseBattle {
 	
 	public ISpawnController getSpawnController() {
 		return spawnController;
-	}
-
-	private void updateEffectAreas() {
-		// update robots with effect areas
-		for (EffectArea effAreas : effArea) {
-			int collided = 0;
-			for (RobotPeer r : peers.getRobots()) {
-				// for all effect areas, check if all robots collide
-				if (effAreas.collision(r)) {
-					if (effAreas.getActiveEffect() == 0) {
-						// if collide, give a random effect
-						Random effR = new Random();
-						collided = effR.nextInt(3) + 1;
-						effAreas.setActiveEffect(collided);
-					}
-					// handle effect
-					effAreas.handleEffect(r);
-				}
-			}
-		}
 	}
 
 	/**
