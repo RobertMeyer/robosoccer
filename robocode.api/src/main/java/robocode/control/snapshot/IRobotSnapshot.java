@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import robocode.EquipmentPart;
-import robocode.EquipmentSlot;
 import robocode.MinionProxy;
+import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSlot;
 
 /**
  * Interface of a robot snapshot at a specific time in a battle.

@@ -1,7 +1,10 @@
-package robocode;
+package robocode.equipment;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import robocode.RobotAttribute;
+import robocode.equipment.EquipmentPart.Builder;
 
 /**
  * A container for all the parts that can be equipped by AdvancedRobots.

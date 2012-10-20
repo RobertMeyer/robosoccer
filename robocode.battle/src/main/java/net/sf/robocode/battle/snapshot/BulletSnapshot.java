@@ -22,9 +22,9 @@ import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
-import robocode.EquipmentSlot;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.IBulletSnapshot;
+import robocode.equipment.EquipmentSlot;
 
 /**
  * A snapshot of a bullet at a specific time instant in a battle.

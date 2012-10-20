@@ -26,6 +26,8 @@ package robocode;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import robocode.equipment.Equipment;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;

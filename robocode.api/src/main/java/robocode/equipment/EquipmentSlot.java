@@ -1,4 +1,4 @@
-package robocode;
+package robocode.equipment;
 
 /**
  * The slots of a the robot that a single equipment part may occupy.

@@ -65,8 +65,6 @@ import net.sf.robocode.ui.IWindowManagerExt;
 import net.sf.robocode.ui.gfx.GraphicsState;
 import net.sf.robocode.ui.gfx.RenderImage;
 import net.sf.robocode.ui.gfx.RobocodeLogo;
-import robocode.EquipmentPart;
-import robocode.EquipmentSlot;
 import robocode.control.events.BattleAdaptor;
 import robocode.control.events.BattleFinishedEvent;
 import robocode.control.events.BattleStartedEvent;
@@ -82,6 +80,8 @@ import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.IEffectAreaSnapshot;
 import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.RenderableType;
+import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSlot;
 
 /**
  * @author Mathew A. Nelson (original)
