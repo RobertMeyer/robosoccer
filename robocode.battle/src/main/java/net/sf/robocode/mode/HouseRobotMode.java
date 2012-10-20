@@ -15,7 +15,9 @@ import robocode.control.RandomFactory;
 import robocode.control.RobocodeEngine;
 
 public class HouseRobotMode extends ClassicMode {
-	
+static {
+	 Battle.addController(new HouseRobotSpawnController());
+}
 	protected GuiOptions uiOptions;
 	
 	private RobotPeer[] houseRobots = new RobotPeer[4];
@@ -43,7 +45,6 @@ public class HouseRobotMode extends ClassicMode {
      * @author Laurence McLean 42373414
      */
     public void addRobots(int currentTurn, BattlePeers peers){
-    	if(currentTurn==1) Battle.addController(new HouseRobotSpawnController(this.getClass()));
     	if(currentTurn==1) {
     		for(int i = 0; i<numberOfHouseRobots; i++) {
 	    		//Ensure to make a new RobotPeer with peer's settings. We need sampleex.MyFirstHouseRobot which
