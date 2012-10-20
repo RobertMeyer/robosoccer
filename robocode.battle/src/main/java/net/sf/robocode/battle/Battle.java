@@ -97,7 +97,6 @@ package net.sf.robocode.battle;
 
 import static java.lang.Math.round;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -150,6 +149,7 @@ import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
 import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSpecification;
 
 /**
  * The {@code Battle} class is used for controlling a battle.
@@ -234,8 +234,8 @@ public class Battle extends BaseBattle {
 	/** List of obstacles in the battlefield */
 	private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
 
-    private int numObstacles;
-    private static DefaultSpawnController spawnController = new DefaultSpawnController();
+	private int numObstacles;
+	private static DefaultSpawnController spawnController = new DefaultSpawnController();
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager,
 			IHostManager hostManager, IRepositoryManager repositoryManager,
@@ -249,8 +249,9 @@ public class Battle extends BaseBattle {
 	}
 
 	public void setup(RobotSpecification[] battlingRobotsList,
-			BattleProperties battleProperties, boolean paused,
-			IRepositoryManager repositoryManager) {
+			EquipmentSpecification[] equipmentSpecifications,
+			BattleProperties battleProperties,
+			boolean paused, IRepositoryManager repositoryManager) {
 		isPaused = paused;
 		battleRules = HiddenAccess.createRules(
 				battleProperties.getBattlefieldWidth(),
@@ -266,8 +267,7 @@ public class Battle extends BaseBattle {
 		height = battleProperties.getBattlefieldHeight();
 		battleMode = (ClassicMode) battleProperties.getBattleMode();
 
-		// TODO: load the equipment from the battle properties
-		equipment = EquipmentSet.fromFile(new File("fakepath"));
+		equipment = EquipmentSet.load(equipmentSpecifications);
 
 		// System.out.println("Battle mode: " + battleMode.toString());
 		// TODO Just testing spawning any bot for now
@@ -339,6 +339,16 @@ public class Battle extends BaseBattle {
 
 	public List<IRenderable> getCustomObject() {
 		return customObject;
+	}
+
+	/**
+	 * @param name
+	 *            the name of the part
+	 * @return the part associated with the given name, or null if there is no
+	 *         part with that name.
+	 */
+	public EquipmentPart getEquipmentPart(String name) {
+		return equipment.getPart(name);
 	}
 
 	public ItemController getItemControl() {
@@ -1527,15 +1537,6 @@ public class Battle extends BaseBattle {
 
 	public IRepositoryManager getRepositoryManager() {
 		return repositoryManager;
-	}
-
-	/**
-	 * @param name
-	 *            the name of the part
-	 * @return the part associated with the given name, or null if none
-	 */
-	public EquipmentPart getEquipmentPart(String name) {
-		return equipment.getPart(name);
 	}
 
 }
