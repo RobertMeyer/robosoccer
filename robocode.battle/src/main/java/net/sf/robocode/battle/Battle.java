@@ -97,6 +97,7 @@ package net.sf.robocode.battle;
 
 import static java.lang.Math.round;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -146,6 +147,8 @@ import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
+import robocode.equipment.EquipmentSet;
+import robocode.equipment.EquipmentPart;
 
 
 /**
@@ -175,6 +178,10 @@ public class Battle extends BaseBattle {
 	//Height and width of the battefield
 	private int height;
 	private int width;
+
+	/** The set of equipment parts that the robots of this battle may equip. */
+	private EquipmentSet equipment;
+
 	//List of effect areas
 	private List<EffectArea> effArea = new ArrayList<EffectArea>();
 	private List<IRenderable> customObject = new ArrayList<IRenderable>();
@@ -250,6 +257,10 @@ public class Battle extends BaseBattle {
 		width = battleProperties.getBattlefieldWidth();
 		height = battleProperties.getBattlefieldHeight();
         battleMode = (ClassicMode) battleProperties.getBattleMode();
+
+        // TODO: load the equipment from the battle properties
+        equipment = EquipmentSet.fromFile(new File("fakepath"));
+
 		//System.out.println("Battle mode: " + battleMode.toString());
         //TODO Just testing spawning any bot for now
         final RobotSpecification[] temp = repositoryManager.getSpecifications();
@@ -1430,6 +1441,14 @@ public class Battle extends BaseBattle {
 
 	public IRepositoryManager getRepositoryManager() {
 		return repositoryManager;
+	}
+
+	/**
+	 * @param name the name of the part
+	 * @return the part associated with the given name, or null if none
+	 */
+	public EquipmentPart getEquipmentPart(String name) {
+		return equipment.getPart(name);
 	}
 
 }

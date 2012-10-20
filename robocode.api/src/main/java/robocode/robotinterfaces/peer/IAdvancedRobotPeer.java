@@ -16,7 +16,7 @@ package robocode.robotinterfaces.peer;
 import java.io.File;
 import java.util.List;
 import robocode.*;
-import robocode.equipment.Equipment;
+import robocode.equipment.EquipmentSet;
 
 /**
  * The advanced robot peer for advanced robot types like
@@ -756,7 +756,7 @@ public interface IAdvancedRobotPeer extends IStandardRobotPeer {
      * previously equipped to the slot of this new part.
      *
      * @param partName the name of the part to equip
-     * @see Equipment
+     * @see EquipmentSet
      */
     void equip(String partName);
 }

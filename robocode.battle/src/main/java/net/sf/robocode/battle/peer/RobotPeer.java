@@ -141,7 +141,7 @@ import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
-import robocode.equipment.Equipment;
+import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
 import robocode.exception.AbortedException;
@@ -430,18 +430,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	/**
-	 * check whether robot equip Sword
-	 * by checking the equipment.get(Weapon)==Equipment.getPart("Sword")
+	 * check whether robot equip Sword by checking the
+	 * equipment.get(Weapon)==getEquipmentPart("Sword")
 	 */
-	public boolean checkSword()
-	{
-		EquipmentPart part = Equipment.getPart("Sword");
-		if(equipment.get().get(part.getSlot())==part)
-		{
+	public boolean checkSword() {
+		EquipmentPart part = getEquipmentPart("Sword");
+		if (equipment.get().get(part.getSlot()) == part) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -2483,7 +2479,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the part associated with the given name, or null if none
 	 */
 	private EquipmentPart getEquipmentPart(String name) {
-		return Equipment.getPart(name);
+		return battle.getEquipmentPart(name);
 	}
 
 	/**
@@ -2495,7 +2491,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
 	 *
 	 * @param name the name of the part to equip
-	 * @see Equipment
+	 * @see EquipmentSet
 	 * @see robocode.AdvancedRobot#setMaxVelocity()
 	 * @see robocode.AdvancedRobot#setMaxTurnRate()
 	 */
