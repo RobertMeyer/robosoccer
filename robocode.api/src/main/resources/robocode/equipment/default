@@ -1,0 +1,134 @@
+Division 9 Plasmaprojector : GUN
+SOUND_PATH = /net/sf/robocode/sound/sounds/boom.wav
+GUN_HEAT_RATE = 110
+BULLET_DAMAGE = 1500
+ENERGY = -10
+BULLET_SPEED = 20000
+
+Guardian Heavy Tank Armor : BODY
+ARMOR = 150
+ACCELERATION = -10
+RAM_ATTACK = 10
+RAM_DEFENSE = 10
+
+Scout armour : BODY
+ARMOR = -100
+ACCELERATION = 60
+RAM_ATTACK = -10
+ENERGY = -30
+RAM_DEFENSE = -10
+
+Tank armour : BODY
+ARMOR = 10
+ACCELERATION = 10
+RAM_ATTACK = -10
+ENERGY = 30
+RAM_DEFENSE = -10
+
+Thorium Power Cell : POWER
+ENERGY = 30
+ENERGY_REGEN = 50
+ACCELERATION = -5
+
+Stealth Tracks : TRACKS
+ACCELERATION = 40
+GUN_HEAT_RATE = 50
+BULLET_SPEED = 90
+ENERGY = -60
+
+All terrain tracks : TRACKS
+ACCELERATION = -10
+GUN_HEAT_RATE = 10
+BULLET_SPEED = 90
+ENERGY = 20
+
+Small Radar : RADAR
+ACCELERATION = 20
+RADAR_ANGLE = -10
+SCAN_RADIUS = 90
+ACCELERATION = 30
+
+Broad Radar : RADAR
+ACCELERATION = -10
+RADAR_ANGLE = 45
+SCAN_RADIUS = 50
+ACCELERATION = -5
+
+Twin Turret : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/twinturret.png
+SOUND_PATH = /net/sf/robocode/sound/sounds/burst.wav
+ACCELERATION = 10
+GUN_HEAT_RATE = -80
+BULLET_SPEED = 500
+BULLET_DAMAGE = -50
+ENERGY = -30
+
+Pistol : GUN
+ACCELERATION = 20
+BULLET_DAMAGE = -50
+BULLET_SPEED = 20
+GUN_HEAT_RATE = 10
+GUN_TURN_ANGLE = 40
+ENERGY_REGEN = 30
+
+Sword : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/Sword.png
+ACCELERATION = 20
+RADAR_ANGLE = -25
+SCAN_RADIUS = 50
+ACCELERATION = 30
+
+Plasma Test : GUN
+VELOCITY = -20
+GUN_HEAT_RATE = 70
+BULLET_DAMAGE = 90
+
+Pistol Test : GUN
+ACCELERATION = 30
+BULLET_DAMAGE = -30
+BULLET_SPEED = 20
+GUN_HEAT_RATE = -20
+GUN_TURN_ANGLE = 40
+VELOCITY = 40
+ENERGY_REGEN = 30
+
+Energy Test Large : BODY
+ENERGY = 20
+
+Energy Test Small : BODY
+ENERGY = -20
+
+Gun Test Large : RADAR
+GUN_HEAT_RATE = 40
+GUN_TURN_ANGLE = 40
+
+Gun Test Small : RADAR
+GUN_HEAT_RATE = -40
+GUN_TURN_ANGLE = -40
+
+Body Test Small : TRACKS
+ROBOT_TURN_ANGLE = -40
+
+Body Test Large : TRACKS
+ROBOT_TURN_ANGLE = 40
+
+Radar Test Small : POWER
+RADAR_ANGLE = -40
+SCAN_RADIUS = -40
+
+Radar Test Large : POWER
+RADAR_ANGLE = 40
+SCAN_RADIUS = 40
+
+InvalidFileTest : GUN
+SOUND_PATH = /net/sf/robocode/sound/sounds/InvalidFileTest.jpg
+
+Test1 : GUN
+SOUND_PATH = Test1
+
+Test2 : GUN
+SOUND_PATH = Test2
+
+Test : GUN
+SOUND_PATH = /net/sf/robocode/sound/sounds/pewpew.wav
+

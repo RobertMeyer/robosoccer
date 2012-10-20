@@ -435,10 +435,11 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 		JTextArea textArea = new JTextArea();
 		JScrollPane textAreaScrollPane = new JScrollPane(textArea);
 
-		private File file = EquipmentSet.defaultFile();
+		private File file;
 
 		EquipmentPanel() {
 			super();
+			setFile(EquipmentSet.defaultFile());
 			textArea.setEditable(false);
 			setLayout(new BorderLayout());
 			add(openButton, BorderLayout.NORTH);
