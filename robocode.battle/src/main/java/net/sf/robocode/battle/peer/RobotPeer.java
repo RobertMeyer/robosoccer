@@ -1554,7 +1554,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
-				addEvent(new HitItemEvent(item.getName(), item.getIsEquippable(), item.getIsDestroyable()));
+				addEvent(new HitItemEvent(item.getName(), item.getHealth(), item.getIsEquippable(), item.getIsDestroyable()));
 				item.doItemEffect(this);
 				item.setXLocation(-50);
 				item.setYLocation(-50);
