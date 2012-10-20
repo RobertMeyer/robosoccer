@@ -229,7 +229,6 @@ public class Battle extends BaseBattle {
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
 
     private int numObstacles;
-   
     private static DefaultSpawnController spawnController = new DefaultSpawnController();
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -583,9 +582,10 @@ public class Battle extends BaseBattle {
 		teleporters.clear();
 
 		landmines.clear();
-
-		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
-	}
+        eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
+        
+        getBattleMode().endRound(peers);
+    }
 
 	@Override
 	protected void initializeTurn() {
@@ -1319,12 +1319,7 @@ public class Battle extends BaseBattle {
 		double x2 = Math.random()*(width-80)+40;
 		double y1 = Math.random()*(height-80)+40;
 		double y2 = Math.random()*(height-80)+40;
-
-
-		//add a new TeleporterPeer
-		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
 	}
-
 
 	private void createEffectAreas(){
 		int tileWidth = 64;

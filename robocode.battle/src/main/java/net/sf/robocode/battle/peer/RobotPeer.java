@@ -998,36 +998,44 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 			if (robotIndex >= 0 && robotIndex < initialRobotPositions.length) {
 				double[] pos = initialRobotPositions[robotIndex];
+                x = pos[0];
+                y = pos[1];
+                bodyHeading = pos[2];
+                gunHeading = radarHeading = bodyHeading;
+                updateBoundingBox();
+                valid = validSpot(robots);
+            }
+        }
+        if (!valid) {
+            final Random random = RandomFactory.getRandom();
 
-				x = pos[0];
-				y = pos[1];
-				bodyHeading = pos[2];
-				gunHeading = radarHeading = bodyHeading;
-				updateBoundingBox();
-				valid = validSpot(robots);
-			}
-		}
-		if (!valid) {
-			final Random random = RandomFactory.getRandom();
+            for (int j = 0; j < 1000; j++) {
+                double[] sl = battle.getSpawnController().getSpawnLocation(this, battle);
+//                if (!isBotzilla()) {
+//                    x = RobotPeer.WIDTH + random.nextDouble()* (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
+//                    y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+//                } else {
+//                    x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
+//                    y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
+//                }
+//                                x= sl[0];
+//                                y=sl[1];
+//                gunHeading = radarHeading = bodyHeading =
+//                        2 * Math.PI * random.nextDouble();
+////                Logger.realOut.println(x + " <- " + sl[0]);
+//                Logger.realOut.println(y + " <- " + sl[1]);
+//                Logger.realOut.println(bodyHeading + " <- " + sl[2]);
+                gunHeading = radarHeading = bodyHeading = sl[2];
+                x = sl[0];
+                y = sl[1];
 
-			for (int j = 0; j < 1000; j++) {
-				//As this involves hitbox, we need a special Botzilla case
-				if (!isBotzilla()) {
-					x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-					y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
-				} else {
-					x = RobotPeer.BZ_WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.BZ_WIDTH);
-					y = RobotPeer.BZ_HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.BZ_HEIGHT);
-				}
-				bodyHeading = 2 * Math.PI * random.nextDouble();
-				gunHeading = radarHeading = bodyHeading;
-				updateBoundingBox();
+                updateBoundingBox();
 
-				if (validSpot(robots)) {
-					break;
-				}
-			}
-		}
+                if (validSpot(robots)) {
+                    break;
+                }
+            }
+        }
 
 		setState(RobotState.ACTIVE);
 

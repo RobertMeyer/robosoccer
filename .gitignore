@@ -21,7 +21,18 @@
 # Maven
 target/
 
+<<<<<<< HEAD
 # Robocode config
 robocode.core/config/
 
 robocode.core/nb-configuration.xml
+=======
+# Netbeans
+nb-configuration.xml
+
+robocode.core/config/robocode.properties
+
+robocode.core/config/window.properties
+
+*.database
+>>>>>>> house_robot_branch
