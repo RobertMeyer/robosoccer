@@ -55,7 +55,11 @@ public class EffectArea {
 		return battleRules.getBattlefieldWidth();
 	}
 	
-
+	/**
+	 * Check if Robot is in effect area
+	 * @param r RobotPeer to check
+	 * @return True if it is in effect area
+	 */
 	public Boolean collision(RobotPeer r){
 		//check collision
 		if(r.getX() >= getXCoord() && r.getX() < getXCoord() + 
@@ -67,6 +71,10 @@ public class EffectArea {
 		return false;
 	}
 	
+	/**
+	 * Handle effect to robotpeer according to active effect
+	 * @param r Robot to modify
+	 */
 	public void handleEffect(RobotPeer r) {
 		switch (getActiveEffect()) {
 		case 1: 

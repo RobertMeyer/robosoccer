@@ -891,11 +891,26 @@ public class BattleView extends Canvas {
                 String radarPath = null;
                 double fullEnergy = robotSnapshot.getFullEnergy();
                 double currentEnergy = robotSnapshot.getEnergy();
-                
-                
+
                 // If a custom body part is present in the robots equipment
                 // then the body image path is changed to the custom one.
                 Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
+                
+                // Shows the damage on a robot by how much health it has
+                if(fullEnergy*0.25 >= currentEnergy) {
+                	bodyPath = "/net/sf/robocode/ui/images/body-damaged-heavy.png";
+                	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-heavy.png";
+                } else if(fullEnergy*0.5 >= currentEnergy){
+                	bodyPath = "/net/sf/robocode/ui/images/body-damaged-medium.png";
+                	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-medium.png";
+                } else if(fullEnergy*0.75 >= currentEnergy){
+                	bodyPath = "/net/sf/robocode/ui/images/body-damaged-light.png";
+                	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-light.png";
+                } else if(fullEnergy >= currentEnergy){
+                	bodyPath = "/net/sf/robocode/ui/images/body.png";
+                	weaponPath = "/net/sf/robocode/ui/images/turret.png";
+                }
+                
                 if(partsMap.containsKey(EquipmentSlot.BODY)) {
                 	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
                 	bodyPath = part.getImagePath();

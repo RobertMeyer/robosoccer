@@ -101,7 +101,6 @@ public class BattleManager implements IBattleManager {
     private String battleFilename;
     private String battlePath;
     private int pauseCount = 0;
-    public Boolean effectAreaOn = false;
     private final AtomicBoolean isManagedTPS = new AtomicBoolean(false);
     
     //To store the Spike position
