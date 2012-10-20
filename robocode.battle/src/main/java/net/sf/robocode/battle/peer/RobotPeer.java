@@ -141,7 +141,7 @@ import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.LandmineState;
 import robocode.control.snapshot.RobotState;
-import robocode.equipment.Equipment;
+import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
 import robocode.exception.AbortedException;
@@ -173,6 +173,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	protected static final int HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
+	
+	// Special hitbox settings for Ball
+	public static final int BALL_WIDTH = 15, BALL_HEIGHT = 15;
 
 	// Special hitbox settings for Botzilla
 	public static final int BZ_WIDTH = WIDTH * 2, BZ_HEIGHT = HEIGHT * 2;
@@ -370,7 +373,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	public void spawnMinions() {
-		if(currentCommands.getSpawnMinion() && !isMinion()) {
+		if(currentCommands.getSpawnMinion() && !isMinion() && 
+		(MinionData.getMinionsEnabled() || !MinionData.getIsGui())) {
 			int minionType = currentCommands.getMinionType();
 			IRepositoryManager repo = battle.getRepositoryManager();
 			RobotSpecification[] minionSpecs;
@@ -380,7 +384,15 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			else {
 				return;
 			}
+			//Validate the robot has enough power to spawn a minion.
+			double energyConsumption = MinionData.getEnergyConsumption();
+			if(energy <= energyConsumption)
+				//If minion spawns, parent will have no energy.
+				return;
+			else
+				energy -= energyConsumption;
 			
+			//Spawn the minion.
 			RobotSpecification minion = minionSpecs[minionType];
 			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
@@ -430,18 +442,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	/**
-	 * check whether robot equip Sword
-	 * by checking the equipment.get(Weapon)==Equipment.getPart("Sword")
+	 * check whether robot equip Sword by checking the
+	 * equipment.get(Weapon)==getEquipmentPart("Sword")
 	 */
-	public boolean checkSword()
-	{
-		EquipmentPart part = Equipment.getPart("Sword");
-		if(equipment.get().get(part.getSlot())==part)
-		{
+	public boolean checkSword() {
+		EquipmentPart part = getEquipmentPart("Sword");
+		if (equipment.get().get(part.getSlot()) == part) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -509,6 +517,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     	return statics.isBall();
     }
 	
+	public boolean isSoccerRobot() {
+		return statics.isSoccerRobot();
+	}
+
 	public boolean isZombie() {
 		return statics.isZombie();
 	}
@@ -1050,9 +1062,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 120;
 		} else if (statics.isHouseRobot()){
 			energy = 500;
-			//TODO: Change to actual starting spots [Team Awesome]
-			x = 0;
-			y = 0;
 
 		//Botzilla gets extra energy, for the unlikely case of energy drain
 		} else if (statics.isBotzilla()){
@@ -1562,7 +1571,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				if (item.getHealth() <= 0){
 					itemsDestroyed.add(item);
 				}
-				addEvent(new HitItemEvent(item.getName(), item.getIsEquippable(), item.getIsDestroyable()));
+				addEvent(new HitItemEvent(item.getName(), item.getHealth(), item.getIsEquippable(), item.getIsDestroyable()));
 				item.doItemEffect(this);
 				item.setXLocation(-50);
 				item.setYLocation(-50);
@@ -1878,10 +1887,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public void updateBoundingBox() {
 		//Botzilla has larger hitbox, and hence requires a special case
-		if(!isBotzilla()) {
-			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
-		} else {
+		if(isBotzilla()) {
 			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
+		} else if(isBall()) {
+			boundingBox.setRect(x - BALL_WIDTH / 2 + 2, y - BALL_HEIGHT / 2 + 2, BALL_WIDTH - 4, BALL_HEIGHT - 4);
+		} else {
+			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
 		}
 	}
 
@@ -2491,7 +2502,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the part associated with the given name, or null if none
 	 */
 	private EquipmentPart getEquipmentPart(String name) {
-		return Equipment.getPart(name);
+		return battle.getEquipmentPart(name);
 	}
 
 	/**
@@ -2503,7 +2514,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
 	 *
 	 * @param name the name of the part to equip
-	 * @see Equipment
+	 * @see EquipmentSet
 	 * @see robocode.AdvancedRobot#setMaxVelocity()
 	 * @see robocode.AdvancedRobot#setMaxTurnRate()
 	 */
@@ -3019,5 +3030,27 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns the bounding rectangles representing the enemy goal of this robot
+	 * in SoccerMode. Returns null in other modes.
+	 * @return BoundingRectangle[] - goal boxes
+	 */
+	public BoundingRectangle getEnemyGoal() {
+		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
+		int index = (getTeamIndex() + 1) % 2;
+		return (goals == null) ? null : goals[index];
+	}
+	
+	/**
+	 * Returns the bounding rectangles representing the own goal of this robot
+	 * in SoccerMode. Returns null in other modes.
+	 * @return BoundingRectangle[] - goal boxes
+	 */
+	public BoundingRectangle getOwnGoal() {
+		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
+		int index = getTeamIndex() % 2;
+		return (goals == null) ? null : goals[index];
 	}
 }

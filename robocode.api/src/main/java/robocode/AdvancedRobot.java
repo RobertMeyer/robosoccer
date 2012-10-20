@@ -27,7 +27,7 @@ package robocode;
 import java.io.File;
 import java.util.ArrayList;
 
-import robocode.equipment.Equipment;
+import robocode.equipment.EquipmentSet;
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IAdvancedRobot;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
@@ -2056,7 +2056,7 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
      * in that slot.
      *
      * @param partName the name of the part to equip
-     * @see Equipment
+     * @see EquipmentSet
      */
     public void equip(String partName) {
         if (peer != null) {

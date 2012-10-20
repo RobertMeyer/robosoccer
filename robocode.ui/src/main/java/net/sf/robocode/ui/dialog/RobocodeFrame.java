@@ -944,8 +944,7 @@ public class RobocodeFrame extends JFrame {
         	counter = 0;
         	eliminateCounter = 0;
         	
-            if (event.getRound() == 0 &&
-            		battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
+            if (battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
                 getRobotButtonsPanel().removeAll();
 
                 final List<IRobotSnapshot> robots = Arrays.asList(event

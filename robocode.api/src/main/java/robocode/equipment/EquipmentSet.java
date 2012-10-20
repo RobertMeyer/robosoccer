@@ -1,25 +1,34 @@
 package robocode.equipment;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import robocode.RobotAttribute;
 
 /**
- * A container for all the parts that can be equipped by AdvancedRobots.
+ * Represents a set of equipment parts, allowing battles to have different sets
+ * of equipment to allow the robots in that battle to equip.
  * 
  * @author CSSE2003 Team Forkbomb
- * 
  */
-public class Equipment {
+public class EquipmentSet {
+	private Map<String, EquipmentPart> parts;
+
+	private EquipmentSet(Map<String, EquipmentPart> parts) {
+		this.parts = parts;
+	}
 
 	/**
-	 * Maps names to EquipmentPart objects, such that the robot programmer can
-	 * equip parts just by referring to their name.
+	 * TODO: document the file format
+	 * 
+	 * @param file
+	 *            the file containing the equipment part definitions
+	 * @return a new Equipment object if the file was successfully parsed, null
+	 *         otherwise.
 	 */
-	private static final Map<String, EquipmentPart> parts = new HashMap<String, EquipmentPart>();
-
-	static {
+	public static EquipmentSet fromFile(File file) {
+		Map<String, EquipmentPart> parts = new HashMap<String, EquipmentPart>();
 		parts.put(
 				"Division 9 Plasmaprojector",
 				new EquipmentPart.Builder(EquipmentSlot.GUN)
@@ -163,13 +172,16 @@ public class Equipment {
 		/*
 		 * End of Test equipment
 		 */
+
+		return new EquipmentSet(parts);
 	}
 
 	/**
-	 * @param name the name of the part
+	 * @param name
+	 *            the name of the part
 	 * @return the part associated with the given name, or null if none
 	 */
-	public static EquipmentPart getPart(String name) {
+	public EquipmentPart getPart(String name) {
 		return parts.get(name);
 	}
 }
