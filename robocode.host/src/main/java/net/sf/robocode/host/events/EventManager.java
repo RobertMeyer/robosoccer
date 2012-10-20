@@ -708,7 +708,7 @@ public class EventManager implements IEventManager {
 		registerNamedEvent(new BulletMissedEvent(null));
 		registerNamedEvent(new DeathEvent());
 		registerNamedEvent(new HitByBulletEvent(0, null));
-		registerNamedEvent(new HitRobotEvent(null, 0, 0, false));
+		registerNamedEvent(new HitRobotEvent(null, 0, 0, false, false));
 		registerNamedEvent(new HitWallEvent(0));
 		registerNamedEvent(new KeyPressedEvent(null));
 		registerNamedEvent(new KeyReleasedEvent(null));

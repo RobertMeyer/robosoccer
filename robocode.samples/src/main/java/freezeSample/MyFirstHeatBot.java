@@ -6,12 +6,14 @@ import robocode.FreezeRobot;
 import robocode.HeatRobot;
 import robocode.HitByBulletEvent;
 import robocode.HitRobotEvent;
+import robocode.HitWallEvent;
 import robocode.ScannedRobotEvent;
 
 
 public class MyFirstHeatBot extends HeatRobot {
 	private int scanDirection = 1;
 	private int moveDirection = 1;
+	private int turnDirection = 1;
 	
 	public void run() {
 		// Allow parts to move separately
@@ -40,7 +42,8 @@ public class MyFirstHeatBot extends HeatRobot {
 		execute();
 		
 		// Turn away so to hit the same robot again
-		setTurnRight(55);
+		turnDirection *= -1;
+		setTurnRight(e.getBearing() + 90 * turnDirection);
 		execute();
 		
 		// Scan for next target
@@ -62,9 +65,17 @@ public class MyFirstHeatBot extends HeatRobot {
 		setTurnRadarRight(360*scanDirection);
 		
 		// Slightly face the enemy so we can dodge but still move closer
-		setTurnRight(-e.getBearing());
+		turnDirection *= -1;
+		setTurnRight(e.getBearing() + 100 * turnDirection);
 		setAhead(500);
 
 		scan();
+	}
+	
+	public void onHitWallEvent(HitWallEvent e) {
+		turnDirection *= -1;
+		setTurnRight(e.getBearing() + 90 * turnDirection);
+		setAhead(100);
+		execute();
 	}
 }

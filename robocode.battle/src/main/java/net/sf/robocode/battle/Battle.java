@@ -378,28 +378,7 @@ public class Battle extends BaseBattle {
     	return killstreakTracker;
     }
     
-	/**
-	 * Kills the freeze robot if it is one of the 2 remaining robots on the battlefield
-	 */
-	public void killFreezeRobot(){
-		int numberOfNonFreezeBots = 0;
-		//Checks if number of active robots == 2
-		for(int i = 0; i < robotList.size(); i++){
-			if(!robotList.get(i).isFreezeRobot()){
-				numberOfNonFreezeBots++;
-			}
-		}
-		if(numberOfNonFreezeBots == 1){
-			//finds the freeze robot
-			for(int i = 0; i < robotList.size(); i++){
-				if(robotList.get(i).isFreezeRobot()){
-					//kills the freeze robot
-					robotList.get(i).kill();
-				}
-			}
-		}
-	}
-
+	
 
 	@Override
 	public void cleanup() {
@@ -646,7 +625,7 @@ public class Battle extends BaseBattle {
 
         computeActiveRobots();
         
-        killFreezeRobot();
+        
         
         publishStatuses();
         
@@ -681,6 +660,7 @@ public class Battle extends BaseBattle {
 			}
 			itemControl.removeItem(item);
 		}
+		
 		
 		currentTurn++;
 

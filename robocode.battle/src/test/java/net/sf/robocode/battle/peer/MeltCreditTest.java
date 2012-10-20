@@ -26,16 +26,16 @@ import robocode.control.RobotSpecification;
 /**
  * Tests for the RobotPeer class.
  */
-public class FrozenRobotsTest {
+public class MeltCreditTest {
 	IHostManager hostManager;
 	IRobotRepositoryItem robotItem;
-	IRobotRepositoryItem freezeRobotItem;
+	IRobotRepositoryItem heatRobotItem;
 	IRobotRepositoryItem otherRobotItem;
 	ISettingsManager properties;
 	TeamPeer team;
 
 	RobotSpecification specification;
-	RobotSpecification freezeSpecification;
+	RobotSpecification heatSpecification;
 	RobotSpecification otherSpecification;
 	Battle battle;
 
@@ -57,35 +57,33 @@ public class FrozenRobotsTest {
 		specification = HiddenAccess.createSpecification(robotItem, "",
 				"", "", "", "", "", "", "");
 
-		freezeRobotItem = Mockito.mock(IRobotRepositoryItem.class);
-		when(freezeRobotItem.isFreezeRobot()).thenReturn(true);		
-		freezeSpecification = HiddenAccess.createSpecification(freezeRobotItem, "",
+		heatRobotItem = Mockito.mock(IRobotRepositoryItem.class);
+		when(heatRobotItem.isHeatRobot()).thenReturn(true);		
+		heatSpecification = HiddenAccess.createSpecification(heatRobotItem, "",
 				"", "", "", "", "", "", "");
 		otherRobotItem = Mockito.mock(IRobotRepositoryItem.class);
-		when(otherRobotItem.isFreezeRobot()).thenReturn(false);
+		when(otherRobotItem.isHeatRobot()).thenReturn(false);
 		otherSpecification = HiddenAccess.createSpecification(otherRobotItem, "",
 				"", "", "", "", "", "", "");
 	}
 	
 	@Test
 	public void testCollision() {
-		RobotPeer freezeRobot = new RobotPeer(battle, hostManager, freezeSpecification,
+		RobotPeer heatRobot = new RobotPeer(battle, hostManager, heatSpecification,
 				0, null, 0);
 		RobotPeer otherRobot = new RobotPeer(battle, hostManager, otherSpecification,
 				0, null, 0);
 		
-		otherRobot.checkForFreezeBot(freezeRobot);
-		assertTrue("Robot should be frozen", otherRobot.robotFrozen == 100);
+		otherRobot.checkForHeatBot(heatRobot);
+		assertTrue("Robot should get meltCredit", otherRobot.meltCredit == 1);
 		
-		otherRobot.robotFrozen = 0;
-		freezeRobot.checkForFreezeBot(otherRobot);
-		assertTrue("Robot should be frozen again", otherRobot.robotFrozen == 100);
+		heatRobot.checkForHeatBot(otherRobot);
+		assertTrue("Robot should get more meltCredit", otherRobot.meltCredit == 2);
 		
-		otherRobot.robotFrozen = 0;
-		otherRobot.checkForFreezeBot(otherRobot);
-		assertTrue("Robot should not be frozen", otherRobot.robotFrozen == 0);
+		otherRobot.checkForHeatBot(otherRobot);
+		assertTrue("Robot should not get meltCredit", otherRobot.meltCredit == 2);
 		
-		freezeRobot.checkForFreezeBot(freezeRobot);
-		assertTrue("FreezeRobot should not be frozen", freezeRobot.robotFrozen == 0);
+		heatRobot.checkForHeatBot(heatRobot);
+		assertTrue("FreezeRobot should not get meltCredit", heatRobot.meltCredit == 0);
 	}
 }
