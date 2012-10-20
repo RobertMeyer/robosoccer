@@ -25,7 +25,7 @@ public class Equipment {
 				"Division 9 Plasmaprojector",
 				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
 						.sound("/net/sf/robocode/sound/sounds/pewpew.wav")
-						.set(RobotAttribute.SPEED, -20)
+						.set(RobotAttribute.VELOCITY, -20)
 						.set(RobotAttribute.GUN_HEAT_RATE, 70)
 						.set(RobotAttribute.BULLET_DAMAGE, 90).build());
 
@@ -33,7 +33,7 @@ public class Equipment {
 				"Guardian Tank Armor",
 				new EquipmentPart.Builder(EquipmentSlot.BODY)
 						.set(RobotAttribute.ARMOR, 40)
-						.set(RobotAttribute.SPEED, -20)
+						.set(RobotAttribute.VELOCITY, -20)
 						.set(RobotAttribute.RAM_ATTACK, 10)
 						.set(RobotAttribute.RAM_DEFENSE, 10).build());
 
@@ -42,12 +42,12 @@ public class Equipment {
 				new EquipmentPart.Builder(EquipmentSlot.POWER)
 						.set(RobotAttribute.ENERGY, 30)
 						.set(RobotAttribute.ENERGY_REGEN, 50)
-						.set(RobotAttribute.SPEED, -5).build());
+						.set(RobotAttribute.VELOCITY, -5).build());
 
 		parts.put(
 				"Stealth Tracks",
 				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
-						.set(RobotAttribute.SPEED, 40)
+						.set(RobotAttribute.VELOCITY, 40)
 						.set(RobotAttribute.GUN_HEAT_RATE, 50)
 						.set(RobotAttribute.BULLET_SPEED, 90)
 						.set(RobotAttribute.ENERGY, -60).build());
@@ -58,12 +58,12 @@ public class Equipment {
 						.set(RobotAttribute.ACCELERATION, 20)
 						.set(RobotAttribute.RADAR_ANGLE, -25)
 						.set(RobotAttribute.SCAN_RADIUS, 50)
-						.set(RobotAttribute.SPEED, 30).build());
+						.set(RobotAttribute.VELOCITY, 30).build());
 
 		parts.put(
 				"Twin Turret",
 				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
-						.set(RobotAttribute.SPEED, -10)
+						.set(RobotAttribute.VELOCITY, -10)
 						.set(RobotAttribute.GUN_HEAT_RATE, -50)
 						.set(RobotAttribute.BULLET_SPEED, 100)
 						.set(RobotAttribute.ENERGY, -60)
@@ -78,7 +78,7 @@ public class Equipment {
 						.set(RobotAttribute.ACCELERATION, 20)
 						.set(RobotAttribute.RADAR_ANGLE, -25)
 						.set(RobotAttribute.SCAN_RADIUS, 50)
-						.set(RobotAttribute.SPEED, 30)
+						.set(RobotAttribute.VELOCITY, 30)
 						.image("/net/sf/robocode/ui/images/Sword.png").build());
 
 		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
@@ -92,7 +92,7 @@ public class Equipment {
 		parts.put(
 				"Plasma Test",
 				new EquipmentPart.Builder(EquipmentSlot.WEAPON)
-						.set(RobotAttribute.SPEED, -20)
+						.set(RobotAttribute.VELOCITY, -20)
 						.set(RobotAttribute.GUN_HEAT_RATE, 70)
 						.set(RobotAttribute.BULLET_DAMAGE, 90).build());
 
@@ -105,7 +105,7 @@ public class Equipment {
 						.set(RobotAttribute.BULLET_SPEED, 20)
 						.set(RobotAttribute.GUN_HEAT_RATE, -20)
 						.set(RobotAttribute.GUN_TURN_ANGLE, 40)
-						.set(RobotAttribute.SPEED, 40)
+						.set(RobotAttribute.VELOCITY, 40)
 						.set(RobotAttribute.ENERGY_REGEN, 30).build());
 		
 		// Do not remove, this will cause the tests to fail

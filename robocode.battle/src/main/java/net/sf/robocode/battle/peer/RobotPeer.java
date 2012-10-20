@@ -1071,7 +1071,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			energy = 500;
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
-			attributes.get().put(RobotAttribute.SPEED, 0.40);
+			attributes.get().put(RobotAttribute.VELOCITY, 0.40);
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -2697,7 +2697,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the speed (velocity) of the robot associated with this peer.
 	 */
 	public double getRealMaxVelocity(){
-		return attributes.get().get(RobotAttribute.SPEED) * Rules.MAX_VELOCITY;
+		return attributes.get().get(RobotAttribute.VELOCITY) * Rules.MAX_VELOCITY;
 	}
 
     /**
