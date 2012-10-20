@@ -140,6 +140,10 @@ public class BattleView extends Canvas {
     //To store spike position
     private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
     private ArrayList<Integer> spikePosY = new ArrayList<Integer>();  
+    
+    private String bodyPath;
+    private String weaponPath;
+    private String radarPath;
 
 	public BattleView(ISettingsManager properties, IWindowManager windowManager, IImageManager imageManager) {
 		this.properties = properties;
@@ -886,40 +890,12 @@ public class BattleView extends Canvas {
                 at.rotate(robotSnapshot.getBodyHeading());
                 
                 // sets the image paths to null
-                String bodyPath = null;
-                String weaponPath = null;
-                String radarPath = null;
-                double fullEnergy = robotSnapshot.getFullEnergy();
-                double currentEnergy = robotSnapshot.getEnergy();
-
-                // If a custom body part is present in the robots equipment
-                // then the body image path is changed to the custom one.
-                Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
+                bodyPath = null;
+                weaponPath = null;
+                radarPath = null;
                 
-                // Shows the damage on a robot by how much health it has
-                if(fullEnergy*0.25 >= currentEnergy) {
-                	bodyPath = "/net/sf/robocode/ui/images/body-damaged-heavy.png";
-                	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-heavy.png";
-                } else if(fullEnergy*0.5 >= currentEnergy){
-                	bodyPath = "/net/sf/robocode/ui/images/body-damaged-medium.png";
-                	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-medium.png";
-                } else if(fullEnergy*0.75 >= currentEnergy){
-                	bodyPath = "/net/sf/robocode/ui/images/body-damaged-light.png";
-                	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-light.png";
-                } else if(fullEnergy >= currentEnergy){
-                	bodyPath = "/net/sf/robocode/ui/images/body.png";
-                	weaponPath = "/net/sf/robocode/ui/images/turret.png";
-                }
-                
-                if(partsMap.containsKey(EquipmentSlot.BODY)) {
-                	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
-                	bodyPath = part.getImagePath();
-                }
-                
-                if(partsMap.containsKey(EquipmentSlot.GUN)) {
-                	EquipmentPart part = partsMap.get(EquipmentSlot.GUN);
-                	weaponPath = part.getImagePath();
-                }
+                // selects what images to use for the robots turret and body
+                selectImages(robotSnapshot);
 
 				RenderImage robotRenderImage = imageManager
 						.getColoredBodyRenderImage(
@@ -949,6 +925,42 @@ public class BattleView extends Canvas {
 				}
 			}
 		}
+	}
+	
+	private void selectImages(IRobotSnapshot robotSnapshot) {
+		// sets the image paths to null
+        
+        double fullEnergy = robotSnapshot.getFullEnergy();
+        double currentEnergy = robotSnapshot.getEnergy();
+
+        // If a custom body part is present in the robots equipment
+        // then the body image path is changed to the custom one.
+        Map<EquipmentSlot, EquipmentPart> partsMap = robotSnapshot.getEquipment().get();
+        
+     // Shows the damage on a robot by how much health it has
+        if(fullEnergy*0.25 >= currentEnergy) {
+        	bodyPath = "/net/sf/robocode/ui/images/body-damaged-heavy.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-heavy.png";
+        } else if(fullEnergy*0.5 >= currentEnergy){
+        	bodyPath = "/net/sf/robocode/ui/images/body-damaged-medium.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-medium.png";
+        } else if(fullEnergy*0.75 >= currentEnergy){
+        	bodyPath = "/net/sf/robocode/ui/images/body-damaged-light.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret-damaged-light.png";
+        } else if(fullEnergy >= currentEnergy){
+        	bodyPath = "/net/sf/robocode/ui/images/body.png";
+        	weaponPath = "/net/sf/robocode/ui/images/turret.png";
+        }
+        
+        if(partsMap.containsKey(EquipmentSlot.BODY)) {
+        	EquipmentPart part = partsMap.get(EquipmentSlot.BODY);
+        	bodyPath = part.getImagePath();
+        }
+        
+        if(partsMap.containsKey(EquipmentSlot.GUN)) {
+        	EquipmentPart part = partsMap.get(EquipmentSlot.GUN);
+        	weaponPath = part.getImagePath();
+        }
 	}
 
 	
