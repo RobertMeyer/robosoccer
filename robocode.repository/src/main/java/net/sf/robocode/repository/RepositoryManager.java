@@ -32,7 +32,6 @@ import net.sf.robocode.settings.ISettingsManager;
 import net.sf.robocode.ui.IWindowManager;
 import net.sf.robocode.version.IVersionManager;
 import robocode.control.RobotSpecification;
-import robocode.equipment.EquipmentSpecification;
 
 /**
  * @author Pavel Savara (original)
@@ -171,15 +170,6 @@ public class RepositoryManager implements IRepositoryManager {
         }
         return battlingRobotsList.toArray(new RobotSpecification[battlingRobotsList.size()]);
     }
-
-	public EquipmentSpecification[] loadEquipment(
-			EquipmentSpecification[] equipment) {
-		return null;
-	}
-
-	public EquipmentSpecification[] loadEquipment(String equipment) {
-		return null;
-	}
 
     private boolean loadItem(Collection<RobotSpecification> battlingRobotsList, RobotSpecification spec, IRepositoryItem item, int teamNum) {
         String teamId = String.format("%4d", teamNum);

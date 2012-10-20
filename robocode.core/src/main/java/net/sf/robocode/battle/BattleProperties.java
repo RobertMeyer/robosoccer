@@ -15,6 +15,7 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +26,6 @@ import net.sf.robocode.mode.*;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.control.RobotSpecification;
-import robocode.equipment.EquipmentSpecification;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -44,7 +44,7 @@ public class BattleProperties implements Serializable {
 			BATTLE_RULES_INACTIVITYTIME = "robocode.battle.rules.inactivityTime",
 			BATTLE_HIDE_ENEMY_NAMES = "robocode.battle.hideEnemyNames",
 			BATTLE_SELECTEDROBOTS = "robocode.battle.selectedRobots",
-			BATTLE_EQUIPMENT = "robots.battle.equipment",
+			BATTLE_EQUIPMENT_FILE = "robots.battle.equipmentFile",
 			BATTLE_INITIAL_POSITIONS = "robocode.battle.initialPositions";
 
 	private int battlefieldWidth = 800;
@@ -54,12 +54,13 @@ public class BattleProperties implements Serializable {
 	private long inactivityTime = 450;
 	private boolean hideEnemyNames;
 	private String selectedRobots;
-	private String equipment;
 	private String initialPositions;
+	private final Properties props = new Properties();
+
+	private File equipmentFile;
 	private IMode battleMode;
 	private Hashtable<String, Object> modeRules;
 	private Boolean effectAreaOn = false;
-	private final Properties props = new Properties();
 
 	/**
 	 * Gets the battlefieldWidth.
@@ -248,44 +249,6 @@ public class BattleProperties implements Serializable {
 		setSelectedRobots(robotString.toString());
 	}
 
-
-	/**
-	 * @return the equipment of the battle
-	 */
-	public String getEquipment() {
-		return equipment;
-	}
-
-	/**
-	 * @param equipment the new equipment for the battle
-	 */
-	public void setEquipment(String equipment) {
-		this.equipment = equipment;
-		props.setProperty(BATTLE_EQUIPMENT, this.equipment);
-	}
-
-	/**
-	 * @param equipment the new equipment for the battle
-	 */
-	public void setEquipment(EquipmentSpecification[] equipment) {
-		if (equipment == null) {
-			return;
-		}
-
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < equipment.length; i++) {
-			EquipmentSpecification spec = equipment[i];
-			if (spec == null) {
-				continue;
-			}
-			sb.append(spec.getClassName());
-			if (i < equipment.length - 1) {
-				sb.append(',');
-			}
-		}
-		setEquipment(sb.toString());
-	}
-
 	/**
 	 * Gets the initial robot positions and heading.
 	 *
@@ -309,6 +272,24 @@ public class BattleProperties implements Serializable {
 
 	}
 	
+	/**
+	 * @return the file containing the equipment definitions for the battle.
+	 */
+	public File getEquipmentFile() {
+		return equipmentFile;
+	}
+
+	/**
+	 * Sets the equipment definition file for the battle.
+	 * 
+	 * @param file
+	 *            the file containing the equipment definitions for the battle.
+	 */
+	public void setEquipmentFile(File file) {
+		equipmentFile = file;
+		props.setProperty(BATTLE_EQUIPMENT_FILE, String.valueOf(file));
+	}
+
 	/**
 	 * Gets the current battle mode.
 	 * @return mode as a ModeContext object

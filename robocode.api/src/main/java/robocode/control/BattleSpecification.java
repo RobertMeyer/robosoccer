@@ -17,7 +17,7 @@
  *******************************************************************************/
 package robocode.control;
 
-import robocode.equipment.EquipmentSpecification;
+import java.io.File;
 
 /**
  * A BattleSpecification defines a battle configuration used by the
@@ -37,7 +37,7 @@ public class BattleSpecification implements java.io.Serializable {
 	private final long inactivityTime;
 	private final boolean hideEnemyNames;
 	private final RobotSpecification[] robots;
-	private final EquipmentSpecification[] equipment;
+	private final File equipmentFile;
 
 	/**
 	 * Creates a new BattleSpecification with the given number of rounds,
@@ -68,13 +68,13 @@ public class BattleSpecification implements java.io.Serializable {
 	 *            the battlefield size
 	 * @param robots
 	 *            the robots participating in this battle
-	 * @param equipment
-	 *            the equipment available in this battle
+	 * @param equipmentFile
+	 *            the equipment definition file to be used in this battle
 	 */
 	public BattleSpecification(int numRounds,
 			BattlefieldSpecification battlefieldSize,
-			RobotSpecification[] robots, EquipmentSpecification[] equipment) {
-		this(numRounds, 450, .1, battlefieldSize, robots, equipment);
+			RobotSpecification[] robots, File equipmentFile) {
+		this(numRounds, 450, .1, battlefieldSize, robots, equipmentFile);
 	}
 
 	/**
@@ -91,14 +91,14 @@ public class BattleSpecification implements java.io.Serializable {
 	 *            the battlefield size
 	 * @param robots
 	 *            the robots participating in this battle
-	 * @param equipment
-	 *            the equipment available in this battle
+	 * @param equipmentFile
+	 *            the equipment definition file to be used in this battle
 	 */
 	public BattleSpecification(int numRounds, long inactivityTime,
 			double gunCoolingRate, BattlefieldSpecification battlefieldSize,
-			RobotSpecification[] robots, EquipmentSpecification[] equipment) {
+			RobotSpecification[] robots, File equipmentFile) {
 		this(numRounds, inactivityTime, gunCoolingRate, false, battlefieldSize,
-				robots, equipment);
+				robots, equipmentFile);
 	}
 
 	/**
@@ -117,15 +117,15 @@ public class BattleSpecification implements java.io.Serializable {
 	 *            the battlefield size
 	 * @param robots
 	 *            the robots participating in this battle
-	 * @param equipment
-	 *            the equipment available in this battle
+	 * @param equipmentFile
+	 *            the equipment definition file to be used in this battle
 	 * 
 	 * @since 1.7.3
 	 */
 	public BattleSpecification(int numRounds, long inactivityTime,
 			double gunCoolingRate, boolean hideEnemyNames,
 			BattlefieldSpecification battlefieldSize,
-			RobotSpecification[] robots, EquipmentSpecification[] equipment) {
+			RobotSpecification[] robots, File equipmentFile) {
 		this.numRounds = numRounds;
 		this.inactivityTime = inactivityTime;
 		this.gunCoolingRate = gunCoolingRate;
@@ -133,7 +133,7 @@ public class BattleSpecification implements java.io.Serializable {
 		this.battlefieldWidth = battlefieldSize.getWidth();
 		this.battlefieldHeight = battlefieldSize.getHeight();
 		this.robots = robots;
-		this.equipment = equipment;
+		this.equipmentFile = equipmentFile;
 	}
 
 	/**
@@ -202,14 +202,9 @@ public class BattleSpecification implements java.io.Serializable {
 	}
 
 	/**
-	 * @return the specifications of the equipment available in this battle.
+	 * @return the equipment definition file to be used in this battle
 	 */
-	public EquipmentSpecification[] getEquipment() {
-		if (equipment == null) {
-			return null;
-		}
-		EquipmentSpecification[] copy = new EquipmentSpecification[equipment.length];
-		System.arraycopy(equipment, 0, copy, 0, equipment.length);
-		return copy;
+	public File getEquipmentFile() {
+		return equipmentFile;
 	}
 }

@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import robocode.control.RobotSpecification;
-import robocode.equipment.EquipmentSpecification;
 
 /**
  * @author Pavel Savara (original)
@@ -50,7 +49,4 @@ public interface IRepositoryManager extends IRepositoryManagerBase {
     void createTeam(File target, URL web, String desc, String author, String members, String teamVersion) throws IOException;
 
     String createPackage(File target, URL web, String desc, String author, String version, boolean source, List<IRepositoryItem> selectedRobots);
-
-	EquipmentSpecification[] loadEquipment(String equipment);
-	EquipmentSpecification[] loadEquipment(EquipmentSpecification[] equipment);
 }

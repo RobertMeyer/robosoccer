@@ -145,7 +145,6 @@ import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.LandmineState;
 import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
-import robocode.equipment.EquipmentSpecification;
 
 /**
  * The {@code Battle} class is used for controlling a battle.
@@ -245,25 +244,21 @@ public class Battle extends BaseBattle {
 	}
 
 	public void setup(RobotSpecification[] battlingRobotsList,
-			EquipmentSpecification[] equipmentSpecifications,
-			BattleProperties battleProperties,
-			boolean paused, IRepositoryManager repositoryManager) {
+			BattleProperties battleProperties, boolean paused,
+			IRepositoryManager repositoryManager) {
+		bp = battleProperties;
 		isPaused = paused;
-		battleRules = HiddenAccess.createRules(
-				battleProperties.getBattlefieldWidth(),
-				battleProperties.getBattlefieldHeight(),
-				battleProperties.getNumRounds(),
-				battleProperties.getGunCoolingRate(),
-				battleProperties.getInactivityTime(),
-				battleProperties.getHideEnemyNames(),
-				battleProperties.getModeRules());
+		battleRules = HiddenAccess.createRules(bp.getBattlefieldWidth(),
+				bp.getBattlefieldHeight(), bp.getNumRounds(),
+				bp.getGunCoolingRate(), bp.getInactivityTime(),
+				bp.getHideEnemyNames(), bp.getModeRules());
 		robotsCount = battlingRobotsList.length;
 		// get width and height of the battlefield
-		width = battleProperties.getBattlefieldWidth();
-		height = battleProperties.getBattlefieldHeight();
-		battleMode = (ClassicMode) battleProperties.getBattleMode();
+		width = bp.getBattlefieldWidth();
+		height = bp.getBattlefieldHeight();
+		battleMode = (ClassicMode) bp.getBattleMode();
 
-		equipment = EquipmentSet.load(equipmentSpecifications);
+		equipment = EquipmentSet.fromFile(bp.getEquipmentFile());
 
 		// System.out.println("Battle mode: " + battleMode.toString());
 		// TODO Just testing spawning any bot for now
@@ -278,7 +273,6 @@ public class Battle extends BaseBattle {
 
 		botzillaActive = false;
 
-		bp = battleProperties;
 		if (battleMode.toString() == "Obstacle Mode") {
 			numObstacles = battleMode.setNumObstacles(battleRules);
 			cellWidth = battleMode.setCellWidth(battleRules);
@@ -299,23 +293,27 @@ public class Battle extends BaseBattle {
 		}
 		this.getBattleMode().setGuiOptions();
 		initialRobotPositions = this.getBattleMode().computeInitialPositions(
-				battleProperties.getInitialPositions(),
-				battleProperties.getBattlefieldWidth(),
-				battleProperties.getBattlefieldHeight(), robotsCount);
+				bp.getInitialPositions(), bp.getBattlefieldWidth(),
+				bp.getBattlefieldHeight(), robotsCount);
 
 		peers = new BattlePeers(this, battlingRobotsList, hostManager,
 				repositoryManager);
 
 		if (battleMode.toString() == "Botzilla Mode") {
-			setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
-			if (Integer.parseInt((String) setTimeHashTable.get("botzillaSpawn")) != 0) {
-				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable.get("botzillaSpawn"));
-			} else if (Integer.parseInt((String) setTimeHashTable.get("botzillaModifier")) != 0) {
-				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable.get("botzillaModifier")) * robotsCount;
+			setTimeHashTable = battleManager.getBattleProperties()
+					.getBattleMode().getRulesPanelValues();
+			if (Integer
+					.parseInt((String) setTimeHashTable.get("botzillaSpawn")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable
+						.get("botzillaSpawn"));
+			} else if (Integer.parseInt((String) setTimeHashTable
+					.get("botzillaModifier")) != 0) {
+				botzillaSpawnTime = Integer.parseInt((String) setTimeHashTable
+						.get("botzillaModifier")) * robotsCount;
 			}
-			System.out.println("Botzilla will spawn at " + botzillaSpawnTime + " turns.");
+			System.out.println("Botzilla will spawn at " + botzillaSpawnTime
+					+ " turns.");
 		}
-		bp = battleProperties;
 	}
 
 	public void registerDeathRobot(RobotPeer r) {

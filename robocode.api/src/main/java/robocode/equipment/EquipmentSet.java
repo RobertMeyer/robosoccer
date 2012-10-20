@@ -1,5 +1,6 @@
 package robocode.equipment;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class EquipmentSet {
 	 * @return a new Equipment object if the file was successfully parsed, null
 	 *         otherwise.
 	 */
-	public static EquipmentSet load(EquipmentSpecification[] partSpecs) {
+	public static EquipmentSet fromFile(File file) {
 		Map<String, EquipmentPart> parts = new HashMap<String, EquipmentPart>();
 		parts.put(
 				"Division 9 Plasmaprojector",
