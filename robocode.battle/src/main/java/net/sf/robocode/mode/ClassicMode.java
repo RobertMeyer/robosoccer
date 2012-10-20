@@ -425,18 +425,18 @@ public class ClassicMode implements IMode {
         }
 
         /* Set it to show the default scores */
-        resultsTable.showOverallRank(true);
-        resultsTable.showRobotName(true);
-        resultsTable.showTotalScore(true);
-        resultsTable.showSurvival(true);
-        resultsTable.showSurvivalBonus(true);
-        resultsTable.showBulletDamage(true);
-        resultsTable.showBulletBonus(true);
-        resultsTable.showRamDamage(true);
-        resultsTable.showRamBonus(true);
-        resultsTable.showFirsts(true);
-        resultsTable.showSeconds(true);
-        resultsTable.showThirds(true);
+        resultsTable.showOverallRank()
+        			.showRobotName()
+        			.showTotalScore()
+        			.showSurvival()
+        			.showSurvivalBonus()
+        			.showBulletDamage()
+        			.showBulletBonus()
+        			.showRamDamage()
+        			.showRamBonus()
+        			.showFirsts()
+        			.showSeconds()
+        			.showThirds();
     }
 
     /**

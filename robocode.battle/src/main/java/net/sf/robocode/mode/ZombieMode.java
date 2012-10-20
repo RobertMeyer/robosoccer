@@ -110,11 +110,10 @@ public class ZombieMode extends ClassicMode {
 			resultsTable = new BattleResultsTableModel();
 		}
     	
-    	resultsTable.showOverallRank(true);
-    	resultsTable.showRobotName(true);
-    	resultsTable.showKills(true, "Kills");
-    	
-    	resultsTable.setTitle("Zombie Results");
+    	resultsTable.showOverallRank()
+    				.showRobotName()
+    				.showKills("Kills")
+    				.setTitle("Zombie Results");
     }
     
     /**

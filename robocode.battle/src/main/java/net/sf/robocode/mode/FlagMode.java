@@ -231,9 +231,9 @@ public class FlagMode extends ClassicMode {
 			resultsTable = new BattleResultsTableModel();
 		}
     	
-    	resultsTable.showOverallRank(true);
-    	resultsTable.showRobotName(true);
-    	resultsTable.showTotalScore(true, "Flag Score");
+    	resultsTable.showOverallRank()
+    				.showRobotName()
+    				.showTotalScore("Flag Score");
     	
     	resultsTable.setTitle("Flag Results");
     }
