@@ -200,10 +200,12 @@ public class BattlePeers {
 		contestants.add(peer);
 	}
 	
+  /**
+   * Remove Botzilla from the list of robots and contestants.
+   */
 	public void removeBotzilla() {
 		robots.remove(botzillaRobot);
 		contestants.remove(botzillaContestant);
-		System.out.println("botzilla is totally removed?");
 	}
 	
 	public void removeRobots(ArrayList<RobotPeer> robotsToRemove){
