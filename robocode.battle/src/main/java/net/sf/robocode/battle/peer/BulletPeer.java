@@ -41,6 +41,9 @@
  *       as the battleField variable was not intialized
  *     Pavel Savara
  *     - disconnected from Bullet, now we rather send BulletStatus to proxy side
+ *     Jonathan Wong
+ *     - Implemented Friendly Fire.
+ *     	 Added boolean flag for negation of damage when bullet is from a friendly
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
@@ -215,13 +218,11 @@ public class BulletPeer {
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
-//				if(FriendlyFireTracker.enableFriendlyfire == true){
-//					if(teamFire){
-//						otherRobot.updateEnergy(+damage);
-//					}
-//				}else{
-//					otherRobot.updateEnergy(-damage);
-//				}
+				if(FriendlyFireTracker.enableFriendlyfire == true){
+					if(teamFire){
+						otherRobot.updateEnergy(damage);
+					}
+				}
 				
 				if(!teamFire){
 					owner.getRobotStatistics().scoreBulletDamage(
