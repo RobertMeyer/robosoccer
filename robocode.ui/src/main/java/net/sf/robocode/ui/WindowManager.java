@@ -31,6 +31,7 @@ import javax.swing.filechooser.FileFilter;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.io.FileUtil;
@@ -163,6 +164,7 @@ public class WindowManager implements IWindowManagerExt {
 
     @Override
     public void showRobocodeFrame(boolean visible, boolean iconified) {
+    	MinionData.setIsGui(true);
         RobocodeFrame frame = getRobocodeFrame();
 
         if (iconified) {

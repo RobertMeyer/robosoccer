@@ -370,7 +370,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 	
 	public void spawnMinions() {
-		if(currentCommands.getSpawnMinion() && !isMinion() && MinionData.getMinionsEnabled()) {
+		if(currentCommands.getSpawnMinion() && !isMinion() && 
+		(MinionData.getMinionsEnabled() || !MinionData.getIsGui())) {
 			int minionType = currentCommands.getMinionType();
 			IRepositoryManager repo = battle.getRepositoryManager();
 			RobotSpecification[] minionSpecs;

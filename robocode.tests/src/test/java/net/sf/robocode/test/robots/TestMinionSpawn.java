@@ -44,7 +44,6 @@ public class TestMinionSpawn extends RobocodeTestBed {
     
 	@Override
     public String getRobotNames() {
-		MinionData.setMinionsEnabled(true);
         return "sample.MinionParentBot";
     }
 
