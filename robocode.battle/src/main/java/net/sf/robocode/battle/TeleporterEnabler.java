@@ -8,7 +8,7 @@ package net.sf.robocode.battle;
 public class TeleporterEnabler {
 	private static boolean teleportersEnabled = false;
 	private static boolean blackholesEnabled = false;
-	
+
 	/**
 	 * 
 	 * @param enable
@@ -17,7 +17,7 @@ public class TeleporterEnabler {
 		teleportersEnabled = enable;
 		System.out.println("t enabled");
 	}
-	
+
 	/**
 	 * 
 	 * @param enable
@@ -26,7 +26,7 @@ public class TeleporterEnabler {
 		blackholesEnabled = enable;
 		System.out.println("b enabled");
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -34,7 +34,7 @@ public class TeleporterEnabler {
 	public static boolean isTeleportersEnabled() {
 		return teleportersEnabled;
 	}
-	
+
 	/**
 	 * 
 	 * @return

@@ -38,8 +38,6 @@ import robocode.robotinterfaces.IBasicEvents;
  * @since 1.6
  */
 public interface IBasicRobotPeer {
-	
-	boolean checkSword();
 
     /**
      * Returns the robot's name.
@@ -903,4 +901,31 @@ public interface IBasicRobotPeer {
      * @param effect
      */
 	void setDeathEffect(int effect);
+	
+    /**
+     * Spawns a minion. This method is called by a parent robot when it intends
+     * to spawn a minion.
+     * <p/>
+     * This call executes immediately.
+     * @param minionType the minion type to be spawned.
+     */
+	void spawnMinion(int minionType);
+	
+    /**
+     * Retrieves a list of MinionProxy that can be iterated through by a parent robot.
+     * <p/>
+     * MinionProxy can be used to communicate or control spawned minions.
+     * This call executes immediately.
+     */
+	java.util.List<MinionProxy> getMinions();
+
+    /**
+     * Retrieves a MinionProxy that refers to the parent robot.
+     * <p/>
+     * Calling this will return null if the calling robot is not a minion.
+     * This call executes immediately.
+     */
+	MinionProxy getParent();
+
+	void melt();
 }

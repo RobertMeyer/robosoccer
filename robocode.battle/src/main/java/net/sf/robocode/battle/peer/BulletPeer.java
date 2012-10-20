@@ -50,6 +50,7 @@ import static java.lang.Math.sin;
 import java.awt.geom.Line2D;
 import java.util.List;
 
+import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.battle.KillstreakTracker;
 import net.sf.robocode.peer.BulletStatus;
@@ -222,6 +223,10 @@ public class BulletPeer {
 					owner.battle.getBattleMode().robotKill(owner, otherRobot);
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
+						
+						FreezeRobotDeath massFreeze = new FreezeRobotDeath(otherRobot, owner);
+						massFreeze.freezeEverything(robots);
+						
 						if (owner.battle.getBattleMode().respawnsOn()) {
                     		otherRobot.respawn(robots);
                     	}
@@ -380,6 +385,9 @@ public class BulletPeer {
             		state = BulletState.HIT_WALL;
     				frame = 0;
     				owner.addEvent(new BulletMissedEvent(createBullet(false)));
+    				obstacle.destroy();
+    				/* Can only hit 1 obstacle with 1 bullet */
+    				return;
         		}
             }
 		}

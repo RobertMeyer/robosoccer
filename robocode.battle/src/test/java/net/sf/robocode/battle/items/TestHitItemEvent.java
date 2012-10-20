@@ -1,21 +1,21 @@
-package net.sf.robocode.test.items;
+package net.sf.robocode.battle.items;
 
 import java.awt.Color;
 
 import org.junit.Before;
 import org.junit.Test;
-//import org.mockito.Mockito;
-//import static org.mockito.Mockito.*;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.*;
 
 
 import robocode.HitItemEvent;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
-import sample.ItemDemoBot;
+
 
 public class TestHitItemEvent {
 
 	private ItemDemoBot bot = new ItemDemoBot();
-	/*private IAdvancedRobotPeer mockPeer = Mockito.mock(IAdvancedRobotPeer.class);
+	private IAdvancedRobotPeer mockPeer = Mockito.mock(IAdvancedRobotPeer.class);
 	
 	@Before
 	public void before(){
@@ -35,6 +35,6 @@ public class TestHitItemEvent {
 		verify(mockPeer).setBodyColor(Color.WHITE);
 		verify(mockPeer).setGunColor(Color.WHITE);
 		verify(mockPeer).setRadarColor(Color.WHITE);
-	}*/
+	}
 	
 }

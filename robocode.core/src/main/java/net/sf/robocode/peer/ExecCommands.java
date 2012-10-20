@@ -13,7 +13,9 @@ package net.sf.robocode.peer;
 
 import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
+import robocode.MinionProxy;
 import robocode.Rules;
+import robocode.robotinterfaces.peer.IBasicRobotPeer;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -56,13 +58,19 @@ public final class ExecCommands implements Serializable {
     private boolean scan;
     private boolean isIORobot;
     private boolean isTryingToPaint;
+    private boolean spawnMinion;
+    private int minionType;
     private String outputText;
     private List<BulletCommand> bullets = new ArrayList<BulletCommand>();
     private List<LandmineCommand> landmines= new ArrayList<LandmineCommand>();
     private List<TeamMessage> teamMessages = new ArrayList<TeamMessage>();
     private List<DebugProperty> debugProperties = new ArrayList<DebugProperty>();
+    private List<MinionProxy> minions = new ArrayList<MinionProxy>();
+    private MinionProxy parent;
     private Object graphicsCalls;
-
+    
+    private boolean melt; //indicator of robots wish to melt if frozen
+    
     public ExecCommands() {
         setMaxVelocity(Double.MAX_VALUE);
         setMaxTurnRate(Double.MAX_VALUE);
@@ -81,6 +89,8 @@ public final class ExecCommands implements Serializable {
         maxVelocity = origin.maxVelocity;
         copyColors(origin);
         deathEffect = origin.deathEffect;
+        minions = origin.minions;
+        parent = origin.parent;
         if (fromRobot) {
             debugProperties = origin.debugProperties;
             bullets = origin.bullets;
@@ -91,6 +101,9 @@ public final class ExecCommands implements Serializable {
             outputText = origin.outputText;
             teamMessages = origin.teamMessages;
             isTryingToPaint = origin.isTryingToPaint;
+            spawnMinion = origin.spawnMinion;
+            minionType = origin.minionType;
+            melt = origin.melt;
         }
     }
 
@@ -130,6 +143,35 @@ public final class ExecCommands implements Serializable {
         return scanColor;
     }
     
+    public List<MinionProxy> getMinions() {
+    	return minions;
+    }
+    
+    public MinionProxy getParent() {
+    	return parent;
+    }
+    
+    public void setParent(MinionProxy parent) {
+    	this.parent = parent;
+    }
+    
+    public void setMinions(List<MinionProxy> minionProxyList) {
+    	this.minions = minionProxyList;
+    }
+    
+    public boolean getSpawnMinion() {
+    	return spawnMinion;
+    }
+    
+    public int getMinionType() {
+    	return minionType;
+    }
+    
+    public void setSpawnMinion(boolean spawnMinion, int minionType) {
+    	this.minionType = minionType;
+    	this.spawnMinion = spawnMinion;
+    }
+        
     public int getDeathEffect() {
     	return deathEffect;
     }
@@ -266,13 +308,29 @@ public final class ExecCommands implements Serializable {
     public void setScan(boolean scan) {
         this.scan = scan;
     }
+    
+    /**
+     * Boolean indicating whether or not the robot wishes to melt if frozen
+     * at the sacrifice of 30% of it's health
+     * @return true or false indicating robots intentions
+     */
+    public boolean isMelt() {
+    	return melt;
+    }
+    
+    /**
+     * Change the status of variable boolean melt
+     * @param melt boolean indicating whether robot wishes to melt
+     */
+    public void setMelt(boolean melt) {
+    	this.melt = melt;
+    }
 
     public List<BulletCommand> getBullets() {
         return bullets;
     }
     
-    public List<LandmineCommand> getLandmines()
-    {
+    public List<LandmineCommand> getLandmines() {
     	return landmines;
     }
 
@@ -340,7 +398,7 @@ public final class ExecCommands implements Serializable {
             size += 4 * RbSerializer.SIZEOF_BOOL;
             size += 6 * RbSerializer.SIZEOF_INT;//number of item colors
             size += 2 * RbSerializer.SIZEOF_DOUBLE;
-            size += 4 * RbSerializer.SIZEOF_BOOL;
+            size += 6 * RbSerializer.SIZEOF_BOOL;
             size += serializer.sizeOf(obj.outputText);
 
             size += serializer.sizeOf((byte[]) obj.graphicsCalls);
@@ -396,6 +454,8 @@ public final class ExecCommands implements Serializable {
             serializer.serialize(buffer, obj.scan);
             serializer.serialize(buffer, obj.isIORobot);
             serializer.serialize(buffer, obj.isTryingToPaint);
+            serializer.serialize(buffer, obj.spawnMinion);
+            serializer.serialize(buffer, obj.melt);
 
             serializer.serialize(buffer, obj.outputText);
 
@@ -447,6 +507,8 @@ public final class ExecCommands implements Serializable {
             res.scan = serializer.deserializeBoolean(buffer);
             res.isIORobot = serializer.deserializeBoolean(buffer);
             res.isTryingToPaint = serializer.deserializeBoolean(buffer);
+            res.spawnMinion = serializer.deserializeBoolean(buffer);
+            res.melt = serializer.deserializeBoolean(buffer);
 
             res.outputText = serializer.deserializeString(buffer);
 

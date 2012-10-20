@@ -10,7 +10,7 @@ import net.sf.robocode.battle.TeleporterEnabler;
 public class BlackholeCheckbox extends JCheckBox {
 	public BlackholeCheckbox() {
 		this.setText("Blackholes");
-		
+
 		ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent action) {
 				BlackholeCheckbox checkbox = (BlackholeCheckbox) action.getSource();

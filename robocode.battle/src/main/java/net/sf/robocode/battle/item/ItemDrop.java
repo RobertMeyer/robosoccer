@@ -248,6 +248,9 @@ public abstract	class ItemDrop {
 			}
 		}
 		//Adds the item to the field.
+		//A renderobject should not be created unless a valid imageName has been set.
+		if(this.imageName == null)
+			return;
 		this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
 	}
 	
@@ -267,6 +270,10 @@ public abstract	class ItemDrop {
 		if (validSpotRobot(robots)) {
 			if (validSpotItem(items)){
 				setBoundingBox();
+				//A renderobject should not be created unless a valid imageName has been set.
+				if(this.imageName == null)
+					//return true, the item 'can' be added here, except the image is empty.
+					return true;
 				this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
 				return true;
 			}

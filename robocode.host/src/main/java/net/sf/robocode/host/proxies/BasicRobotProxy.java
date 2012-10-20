@@ -14,21 +14,43 @@
  *******************************************************************************/
 package net.sf.robocode.host.proxies;
 
-import java.awt.*;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
-import net.sf.robocode.peer.*;
+import net.sf.robocode.peer.BulletCommand;
+import net.sf.robocode.peer.BulletStatus;
+import net.sf.robocode.peer.ExecCommands;
+import net.sf.robocode.peer.ExecResults;
+import net.sf.robocode.peer.IRobotPeer;
+import net.sf.robocode.peer.LandmineCommand;
+import net.sf.robocode.peer.LandmineStatus;
+import net.sf.robocode.peer.TeamMessage;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.robotpaint.Graphics2DSerialized;
 import net.sf.robocode.robotpaint.IGraphicsProxy;
 import net.sf.robocode.security.HiddenAccess;
-import robocode.*;
+import robocode.BattleEndedEvent;
+import robocode.Bullet;
+import robocode.Condition;
 import robocode.Event;
+import robocode.Landmine;
+import robocode.MinionProxy;
+import robocode.PaintEvent;
+import robocode.RobotStatus;
+import robocode.Rules;
+import robocode.ScannedRobotEvent;
+import robocode.StatusEvent;
+import robocode._RobotBase;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
 import robocode.exception.DisabledException;
@@ -76,10 +98,24 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     }
     
     @Override
-    public boolean checkSword() {
-		return super.checkSword();
-	}
-  
+    public void spawnMinion(int minionType) {
+    	if(minionType == _RobotBase.MINION_TYPE_RND) {
+    		Random rnd = new Random();
+    		minionType = rnd.nextInt(_RobotBase.MINION_TYPE_RND);
+    	}
+    	commands.setSpawnMinion(true, minionType);
+    	execute();
+    }
+    
+    @Override
+    public List<MinionProxy> getMinions() {
+    	return commands.getMinions();
+    }
+    
+    @Override
+    public MinionProxy getParent() {
+    	return commands.getParent();
+    }
 
     @Override
     protected void initializeRound(ExecCommands commands, RobotStatus status) {
@@ -203,10 +239,9 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     }
     
     @Override
-    public void setLandmineColor(Color color)
-    {
-    	    setCall();
-    		commands.setLandmineColor(color != null ? color.getRGB() : ExecCommands.defaultLandmineColor);
+    public void setLandmineColor(Color color) {
+    	setCall();
+    	commands.setLandmineColor(color != null ? color.getRGB() : ExecCommands.defaultLandmineColor);
     }
 
     @Override
@@ -748,4 +783,18 @@ public class BasicRobotProxy extends HostingRobotProxy implements
 		getCall();
         return status.getRobotHitAttack();
 	}
+
+	/**
+	 * melt a frozen robot at the cost of 30% of robots health
+	 */
+	@Override
+	public void melt() {
+		setCall();
+		setMelt();
+	}
+
+	private void setMelt() {
+		commands.setMelt(true);
+	}
+
 }

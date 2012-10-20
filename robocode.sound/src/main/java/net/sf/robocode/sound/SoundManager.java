@@ -352,14 +352,13 @@ public class SoundManager implements ISoundManager {
      * @param bp the bullet peer
      * @return the volume value, ranging from 0 to 1
      */
-    private float calcBulletVolume(IBulletSnapshot bp) {
-    	if(bp.getPower() > robocode.Rules.MAX_BULLET_POWER){
-    		return 1;
-    	}
-    	else{
-        return (float) (bp.getPower() / robocode.Rules.MAX_BULLET_POWER);
-    	}
-    }
+	private float calcBulletVolume(IBulletSnapshot bp) {
+		if (bp.getPower() > robocode.Rules.MAX_BULLET_POWER) {
+			return 1;
+		} else {
+			return (float) (bp.getPower() / robocode.Rules.MAX_BULLET_POWER);
+		}
+	}
 
     private class BattleObserver extends BattleAdaptor {
 

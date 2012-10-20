@@ -178,7 +178,7 @@ public class Database {
         return result;
     }
 
-    public List<IRepositoryItem> filterSpecifications(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean onlyInJar) {
+    public List<IRepositoryItem> filterSpecifications(boolean onlyWithSource, boolean onlyWithPackage, boolean onlyRobots, boolean onlyDevelopment, boolean onlyNotDevelopment, boolean onlyInJar, boolean showMinions, int minionType) {
         final List<IRepositoryItem> res = new ArrayList<IRepositoryItem>();
 
         for (IItem item : items.values()) {
@@ -208,6 +208,19 @@ public class Database {
             if (res.contains(spec)) {
                 continue;
             }
+            if(item instanceof RobotItem) {
+            	if(((RobotItem)item).isMinion() && !showMinions) {
+            		continue;
+            	}
+            	else if(!((RobotItem)item).isMinion() && showMinions) {
+            		continue;
+            	}
+            	else if(showMinions) {
+            		//Filter by minion type.
+            		if(((RobotItem)item).getMinionType() != minionType)
+            			continue;
+            	}
+            }
             res.add(spec);
         }
         Collections.sort(res);
@@ -232,7 +245,6 @@ public class Database {
     }
 
     public List<IRepositoryItem> getSelectedSpecifications(String selectedRobots) {
-    	System.out.println(selectedRobots);
         List<IRepositoryItem> result = new ArrayList<IRepositoryItem>();
         StringTokenizer tokenizer = new StringTokenizer(selectedRobots, ",");
 

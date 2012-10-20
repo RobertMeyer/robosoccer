@@ -101,15 +101,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.item.ItemController;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.BulletPeer;
 import net.sf.robocode.battle.peer.ContestantPeer;
-import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.LandminePeer;
+import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.peer.TeleporterPeer;
@@ -142,13 +144,8 @@ import robocode.control.events.TurnEndedEvent;
 import robocode.control.events.TurnStartedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
-import robocode.control.snapshot.RobotState;
 import robocode.control.snapshot.LandmineState;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import robocode.control.snapshot.RobotState;
 
 
 /**
@@ -216,18 +213,21 @@ public class Battle extends BaseBattle {
 	private int robotsCount;
 	private final List<BulletPeer> bullets = new CopyOnWriteArrayList<BulletPeer>();
 
-	// Object to keep status of whether teleporters are enabled or not 
+
+	// Object to keep status of whether teleporters are enabled or not
 	private TeleporterEnabler teleporterEnabler = new TeleporterEnabler();
 	// List of teleporters in the arena
 	private List<TeleporterPeer> teleporters = new ArrayList<TeleporterPeer>();
 	private final List<LandminePeer> landmines=new CopyOnWriteArrayList<LandminePeer>();
 	private BattlePeers peers;
-	
+
 	/* Wall variables */
 	private int cellWidth, cellHeight, wallWidth, wallHeight;
+	private boolean dWalls = false;
 
 	/** List of obstacles in the battlefield */
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
+
     private int numObstacles;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
@@ -264,16 +264,21 @@ public class Battle extends BaseBattle {
         botzillaActive = false;
 
         bp = battleProperties;
-        numObstacles = battleMode.setNumObstacles(battleRules);
-        obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this);
+        if (battleMode.toString() == "Obstacle Mode") {
+        	numObstacles = battleMode.setNumObstacles(battleRules);
+        	cellWidth = battleMode.setCellWidth(battleRules);
+        	cellHeight = battleMode.setCellHeight(battleRules);
+            obstacles = ObstacleMode.generateRandomObstacles(numObstacles, bp, battleRules, this, cellWidth, cellHeight);
+        }
         if (battleMode.toString() == "Maze Mode") {
         	cellWidth = battleMode.setCellWidth(battleRules);
         	cellHeight = battleMode.setCellHeight(battleRules);
         	wallWidth = battleMode.setWallWidth(battleRules);
         	wallHeight = battleMode.setWallHeight(battleRules);
+        	dWalls = battleMode.dWallSetting(battleRules);
         	System.out.println(cellWidth + " " + cellHeight + " " + wallWidth + " " + wallHeight);
         	obstacles = MazeMode.generateMaze(bp, battleRules, this, cellWidth, cellHeight, wallWidth, wallHeight);
-        }        
+        }
         this.getBattleMode().setGuiOptions();
         initialRobotPositions = this.getBattleMode().computeInitialPositions(
         		battleProperties.getInitialPositions(), battleRules, this,
@@ -325,6 +330,17 @@ public class Battle extends BaseBattle {
 		bullets.add(bullet);
 	}
 
+	public void addMinion(RobotPeer minion) {
+		robotsCount++;
+		peers.addRobot(minion);
+		minion.initializeRound(peers.getRobots(), null);
+		//TODO:Move the following calculations into a function. It's used a few times.
+		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
+        final long waitMillis = waitTime / 1000000;
+        final int waitNanos = (int) (waitTime % 1000000);
+        minion.startRound(waitMillis, waitNanos);
+	}
+
 	public void addLandmine(LandminePeer landmine)
 	{
 		landmines.add(landmine);
@@ -367,6 +383,19 @@ public class Battle extends BaseBattle {
     	return killstreakTracker;
     }
 
+	//Method for killing the freeze robot if it is one of the last two remaining robots
+	public void killFreezeRobot(){
+		//Checks if number of active robots == 2
+		if(activeRobots == 2){
+			//finds the freeze robot
+			for(int i = 0; i < robotList.size(); i++){
+				if(robotList.get(i).isFreezeRobot()){
+					//sets the freeze robots state to dead.
+					robotList.get(i).setState(RobotState.DEAD);
+				}
+			}
+		}
+	}
 
 	@Override
 	public void cleanup() {
@@ -375,7 +404,7 @@ public class Battle extends BaseBattle {
 		super.cleanup();
 
 		items.clear();
-		
+
 		customObject.clear();
 
 		battleManager = null;
@@ -515,15 +544,12 @@ public class Battle extends BaseBattle {
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
             robotPeer.startRound(waitMillis, waitNanos);
         }
-        
+
         createTeleporters();
         Logger.logMessage(""); // puts in a new-line in the log message
 
-
         final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets,landmines, effArea, customObject, itemControl.getItems(), obstacles, teleporters, false);
-
         //final ITurnSnapshot snapshot = new TurnSnapshot(this, peers.getRobots(), bullets, landmines,effArea, customObject, itemControl.getItems(), false);
-
 
         eventDispatcher.onRoundStarted(new RoundStartedEvent(snapshot, getRoundNum()));
     }
@@ -536,11 +562,17 @@ public class Battle extends BaseBattle {
 			removeBotzilla();
 		}
 
-		for (RobotPeer robotPeer : peers.getRobots()) {
+		//Modified the following iteration to allow removal of minions.
+		ListIterator it = peers.getRobots().listIterator();
+		while(it.hasNext()) {
+			RobotPeer robotPeer = (RobotPeer)it.next();
 			robotPeer.waitForStop();
 			robotPeer.getRobotStatistics().generateTotals(bp);
+			if(robotPeer.isMinion()) {
+				it.remove();
+			}
 		}
-        
+
         // Increment mode specific points - TODO -team-Telos
 		this.getBattleMode().scoreTurnPoints();
 
@@ -550,7 +582,6 @@ public class Battle extends BaseBattle {
 		teleporters.clear();
 
 		landmines.clear();
-
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(), currentTime, totalTurns));
 	}
@@ -580,16 +611,14 @@ public class Battle extends BaseBattle {
 
         updateBullets();
 
-        
         updateLandmines();
-        
 
         updateEffectAreas();
 
         this.getBattleMode().updateRenderables(customObject);
 
         updateRobots();
-        
+
         //Check for Spike mode
         if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
         	checkRobotHitSpike();
@@ -597,7 +626,7 @@ public class Battle extends BaseBattle {
 
         handleDeadRobots();
         handleDeadFrozenRobots();
-        
+
         if (getBattleMode().respawnsOn()) {
         	if (super.getTime() > getBattleMode().turnLimit()) {
         		shutdownTurn();
@@ -610,11 +639,11 @@ public class Battle extends BaseBattle {
         inactiveTurnCount++;
 
         computeActiveRobots();
-        
+
         killFreezeRobot();
-        
+
         publishStatuses();
-        
+
 		if (totalTurns % 100 == 0 || totalTurns == 1){
 
 			for (ItemDrop item: items){
@@ -624,7 +653,7 @@ public class Battle extends BaseBattle {
 				}
 			}
 		}
-		
+
 		List <ItemDrop> itemDestroy = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
 		for (ItemDrop item : itemControl.getItems()){
@@ -646,26 +675,13 @@ public class Battle extends BaseBattle {
 			}
 			itemControl.removeItem(item);
 		}
-		
+
 		currentTurn++;
 
         // Robot time!
         wakeupRobots();
 
     }
-	//Method for killing the freeze robot if it one of the last two remaining robots
-	public void killFreezeRobot(){
-		//Checks if number of active robots == 2
-		if(activeRobots == 2){
-			//checks if one of the two remaining robots is a freezeRobot
-			for(int i = 0; i < robotList.size(); i++){
-				if(robotList.get(i).isFreezeRobot()){
-					//kills the freeze robot is it is one of the two remaining robots on the field
-					robotList.get(i).setState(RobotState.DEAD);
-				}
-			}
-		}
-	}
 
 	@Override
     protected void shutdownTurn() {
@@ -732,13 +748,11 @@ public class Battle extends BaseBattle {
         super.shutdownTurn();
     }
 
-	 @Override
+	@Override
     protected void finalizeTurn() {
-
         eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets,landmines, effArea, customObject, itemControl.getItems(), obstacles, teleporters, true)));
 
         //eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this, peers.getRobots(), bullets, landmines,effArea, customObject, itemControl.getItems(), true)));
-
 
         super.finalizeTurn();
     }
@@ -802,7 +816,7 @@ public class Battle extends BaseBattle {
 		Collections.shuffle(shuffledList, RandomFactory.getRandom());
 		return shuffledList;
 	}
-	
+
 	private List<LandminePeer> getLandminesAtRandom() {
 		List<LandminePeer> shuffledList = new ArrayList<LandminePeer>(landmines);
 
@@ -828,7 +842,7 @@ public class Battle extends BaseBattle {
 			robotPeer.performLoadCommands();
 		}
 	}
-	
+
 	/**
 	 * Check the whether robot is on top the spike.
 	 * If robot is on top of the spike, kill it instantly.
@@ -837,7 +851,7 @@ public class Battle extends BaseBattle {
 	private void checkRobotHitSpike() {
 		int spikeXSize = battleManager.getSpikePosX().size();
 		int spikeYSize = battleManager.getSpikePosY().size();
-		
+
 		for (int i= 0; i < robotList.size(); i++) {
 			for (int x=0; x < spikeXSize; x++){
 				if ((robotList.get(i).getX() < battleManager.getSpikePosX().get(x) + 64) && (robotList.get(i).getX() > battleManager.getSpikePosX().get(x))) {
@@ -859,7 +873,7 @@ public class Battle extends BaseBattle {
 			}
 		}
 	}
-	
+
 	private void updateLandmines() {
 		for (LandminePeer landmine : getLandminesAtRandom()) {
 			landmine.update(getRobotsAtRandom(), getLandminesAtRandom());
@@ -870,13 +884,15 @@ public class Battle extends BaseBattle {
 	}
 
 	private void updateRobots() {
-        boolean zap = (inactiveTurnCount > battleRules.getInactivityTime());
+		//zaps if inactive turn > allowed inactive turns or 5*allowed inactive turns for maze mode.
+        boolean zap = (inactiveTurnCount > ((battleMode.toString() == "Maze Mode")?10:1)*battleRules.getInactivityTime());
 
         final double zapEnergy = isAborted() ? 5 : zap ? .1 : 0;
 
         // Move all bots
         for (RobotPeer robotPeer : getRobotsAtRandom()) {
-            robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy, teleporters);
+            robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zapEnergy);
+            robotPeer.spawnMinions();
         }
 
         if (currentTurn >= botzillaSpawnTime &&
@@ -884,7 +900,7 @@ public class Battle extends BaseBattle {
         		!botzillaActive) {
         	addBotzilla();
         }
-        
+
         getBattleMode().addRobots(currentTurn, peers);
 
         // Increment mode specific points - TODO -team-Telos
@@ -909,7 +925,8 @@ public class Battle extends BaseBattle {
 				botzilla,
 				0,
 				null,
-				getRobotsCount());
+				getRobotsCount(),
+				null);
 		robotsCount++;
 		peers.addRobot(botzillaPeer);
 		peers.addContestant(botzillaPeer);
@@ -922,7 +939,7 @@ public class Battle extends BaseBattle {
 		// TODO make appear and running
 
 	}
-	
+
 	/**
 	 * Checks the battlefield for any dead frozen robots, and removes the ice
 	 * cube image, and force ends the freeze for the next round.
@@ -946,8 +963,8 @@ public class Battle extends BaseBattle {
 				double x1 = deadRobot.getX();
 				double y1 = deadRobot.getY();
 				teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
-			}	
-		
+			}
+
 		// Death effect
         	if (battleManager.getBattleProperties().getEffectArea()) {
         		deathEffect(deadRobot);
@@ -983,7 +1000,7 @@ public class Battle extends BaseBattle {
 
         deathRobots.clear();
     }
-    
+
     /**
      * Runs the death effect associated with deadRobot.
      * Effects 1-3 are different sizes of explosions.
@@ -998,7 +1015,7 @@ public class Battle extends BaseBattle {
 		// distance and damage variables used for case 1, 2 and 3
 		int damage = -5;
 		int explosionDistance = 75;
-		
+
 		if (deadRobot.getDeathEffect() > 3) {
 			// Round off to closest X and Y tiles
 			// Only applicable to case 4, 5 and 6
@@ -1008,7 +1025,7 @@ public class Battle extends BaseBattle {
 			finalY = (finalY/64)*64;
 			finalY = finalY+yOffset;
 		}
-		
+
 		switch(deadRobot.getDeathEffect()) {
 		case 1:
 			// Large explosion - small damage
@@ -1024,7 +1041,7 @@ public class Battle extends BaseBattle {
 					if (yDist < 0)
 						yDist = yDist*(-1);
 					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
-					
+
 					if (robotDistance <= explosionDistance) {
 						// robot is within explosion range
 						aliveRobot.updateEnergy(damage);
@@ -1047,7 +1064,7 @@ public class Battle extends BaseBattle {
 					if (yDist < 0)
 						yDist = yDist*(-1);
 					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
-					
+
 					if (robotDistance <= explosionDistance) {
 						// robot is within explosion range
 						aliveRobot.updateEnergy(damage);
@@ -1069,7 +1086,7 @@ public class Battle extends BaseBattle {
 					if (yDist < 0)
 						yDist = yDist*(-1);
 					double robotDistance = Math.sqrt(xDist*xDist+yDist*yDist);
-					
+
 					if (robotDistance <= explosionDistance) {
 						// robot is within explosion range
 						aliveRobot.updateEnergy(damage);
@@ -1084,12 +1101,12 @@ public class Battle extends BaseBattle {
 			break;
 		case 5:
 			// Effect area 2
-			EffectArea deathEffect2 = new EffectArea(finalX, finalY, 64, 64, 2);
+			EffectArea deathEffect2 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 2);
 			effArea.add(deathEffect2);
 			break;
 		case 6:
 			// Effect area 3
-			EffectArea deathEffect3 = new EffectArea(finalX, finalY, 64, 64, 3);
+			EffectArea deathEffect3 = new EffectArea(deadRobot.getX(), deadRobot.getY(), 64, 64, 3);
 			effArea.add(deathEffect3);
 			break;
 		}
@@ -1295,19 +1312,19 @@ public class Battle extends BaseBattle {
 		//do nothing if teleporters are not enabled
 		if (!teleporterEnabler.isTeleportersEnabled())
 			return;
-		
+
 		//randomise some x and y co-ordinates that are away from the walls by 5
 		double x1 = Math.random()*(width-80)+40;
 		double x2 = Math.random()*(width-80)+40;
 		double y1 = Math.random()*(height-80)+40;
 		double y2 = Math.random()*(height-80)+40;
-		
-		
+
+
 		//add a new TeleporterPeer
 		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
 	}
-	
-	
+
+
 	private void createEffectAreas(){
 		int tileWidth = 64;
 		int tileHeight = 64;
@@ -1355,10 +1372,10 @@ public class Battle extends BaseBattle {
 	        }
 	    }
 	}
-	 
+
 	/**
 	 * This method adds a IRenderable to the scene.
-	 * 
+	 *
 	 * @param obj
 	 *            a IRenderable object.
 	 */
@@ -1372,7 +1389,8 @@ public class Battle extends BaseBattle {
 
 	/**
 	 * This method removes a IRenderable in the scene.
-	 * 
+	 *
+	 *
 	 * @param obj
 	 *            a IRenderable object to remove.
 	 */
@@ -1384,7 +1402,8 @@ public class Battle extends BaseBattle {
 
 	/**
 	 * This method removes a IRenderable in the scene.
-	 * 
+	 *
+	 *
 	 * @param name
 	 *            of IRenderable to remove.
 	 */
@@ -1396,4 +1415,21 @@ public class Battle extends BaseBattle {
 			}
 		}
 	}
+
+	public void registerDestroyedWall(ObstaclePeer o) {
+		if (dWalls) {
+			for (ObstaclePeer obstacle : obstacles) {
+				if (obstacle == o) {
+					obstacles.remove(o);
+					return;
+				}
+			}
+		}
+
+	}
+
+	public IRepositoryManager getRepositoryManager() {
+		return repositoryManager;
+	}
+
 }

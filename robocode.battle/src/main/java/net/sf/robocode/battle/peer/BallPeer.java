@@ -15,7 +15,7 @@ public final class BallPeer extends RobotPeer {
 
         super(battle, hostManager,
               robotSpecification, duplicate, team,
-              robotIndex);
+              robotIndex, null);
     }
 
     /**

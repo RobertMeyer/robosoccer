@@ -18,15 +18,16 @@ import net.sf.robocode.serialization.ISerializableHelper;
  * @author Ameer Sabri (Dream Team)
  *
  */
+
 public class HitItemEvent extends Event {
 	
 	private static final long serialVersionUID = 1L;
 	private final static int DEFAULT_PRIORITY = 20;
-	
+
 	private final String itemName;
 	private final boolean isEquippable;
 	private final boolean isDestroyable;
-	
+
 	/**
 	 * Called by the game to create a new HitItemEvent.
 	 * 
@@ -39,7 +40,7 @@ public class HitItemEvent extends Event {
 		this.isEquippable = isEquippable;
 		this.isDestroyable = isDestroyable;
 	}
-	
+
 	/**
 	 * Returns the name of the item hit.
 	 * 
@@ -48,7 +49,7 @@ public class HitItemEvent extends Event {
 	public String getItemName() {
 		return itemName;
 	}
-	
+
 	/**
 	 * Checks if the item hit is equippable.
 	 * 
@@ -57,7 +58,7 @@ public class HitItemEvent extends Event {
 	public boolean isEquippable() {
 		return isEquippable;
 	}
-	
+
 	/**
 	 * Checks if the item hit is destroyable.
 	 * 
@@ -66,8 +67,8 @@ public class HitItemEvent extends Event {
 	public boolean isDestroyable() {
 		return isDestroyable;
 	}
-		
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -75,19 +76,19 @@ public class HitItemEvent extends Event {
 	final int getDefaultPriority() {
 		return DEFAULT_PRIORITY;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
 		IItemEvents listener = ((IItemRobot) robot).getItemEventListener();
-		
+
 		if (listener != null) {
 			listener.onHitItem(this);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -95,11 +96,11 @@ public class HitItemEvent extends Event {
 	byte getSerializationType() {
 		return RbSerializer.HitItemEvent_TYPE;
 	}
-	
+
 	static ISerializableHelper createHiddenSerializer() {
 		return new SerializableHelper();
 	}
-	
+
 	private static class SerializableHelper implements ISerializableHelper {
 		@Override
         public int sizeOf(RbSerializer serializer, Object object) {
@@ -108,7 +109,7 @@ public class HitItemEvent extends Event {
             return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.itemName) + 
                     + 2 * RbSerializer.SIZEOF_BOOL;
         }
-		
+
 		@Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             HitItemEvent obj = (HitItemEvent) object;
@@ -117,7 +118,7 @@ public class HitItemEvent extends Event {
             serializer.serialize(buffer, obj.isEquippable);
             serializer.serialize(buffer, obj.isDestroyable);
         }
-		
+
 		@Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String itemName = serializer.deserializeString(buffer);
@@ -127,4 +128,6 @@ public class HitItemEvent extends Event {
             return new HitItemEvent(itemName, isEquippable, isDestroyable);
         }
 	}
+
 }
+

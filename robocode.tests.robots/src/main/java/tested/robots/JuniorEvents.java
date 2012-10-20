@@ -160,8 +160,14 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
         counts.put(name, curr + 1);
     }
 
-	@Override
+    @Override
 	public void onWaypointPassed(WaypointPassedEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRobotFrozen(RobotFrozenEvent event) {
 		// TODO Auto-generated method stub
 		
 	}

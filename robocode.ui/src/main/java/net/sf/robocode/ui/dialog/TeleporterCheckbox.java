@@ -10,7 +10,7 @@ import net.sf.robocode.battle.TeleporterEnabler;
 public class TeleporterCheckbox extends JCheckBox {
 	public TeleporterCheckbox() {
 		this.setText("Teleporters");
-		
+
 		ActionListener listener = new ActionListener() {
 			public void actionPerformed(ActionEvent action) {
 				TeleporterCheckbox checkbox = (TeleporterCheckbox) action.getSource();

@@ -43,8 +43,11 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import static java.lang.Math.*;
 import java.util.ArrayList;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -76,8 +79,9 @@ import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.IEffectAreaSnapshot;
+import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.RenderableType;
-
 
 /**
  * @author Mathew A. Nelson (original)
@@ -126,6 +130,12 @@ public class BattleView extends Canvas {
 
     // Hold current custom images to be rendered.
     private HashMap<String, RenderImage> customImage;
+    // Hold current custom animated images to be rendered.
+    private HashMap<String, List<RenderImage>> customAnim;
+    // Hold current frame-index of each animated image.
+    private HashMap<String, Integer> customAnimFrames;
+    // Hold current loop count for each animation.
+    private HashMap<String, Integer> customAnimLoops;
     
     //To store spike position
     private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
@@ -137,8 +147,10 @@ public class BattleView extends Canvas {
 		this.imageManager = imageManager; 
         this.battleManager = windowManager.getBattleManager();
         this.customImage = new HashMap<String, RenderImage>();
-
-		battleField = new BattleField(800, 600);
+        this.customAnim = new HashMap<String, List<RenderImage>>();
+        this.customAnimFrames = new HashMap<String, Integer>();
+        this.customAnimLoops = new HashMap<String, Integer>();
+  		battleField = new BattleField(800, 600);
 
 		new BattleObserver(windowManager);
 
@@ -269,7 +281,7 @@ public class BattleView extends Canvas {
         		imageManager.addCustomImage("ball", "/net/sf/robocode/ui/images/ball.png");
         		createSoccerField();
         	} else if (battleManager.getBattleProperties().getBattleMode() instanceof BotzillaMode) {
-        		// Botzilla
+        		//Add image for Botzilla, if Botzilla mode
         		imageManager.addCustomImage("botzillaImage", "/net/sf/robocode/ui/images/botzilla-large.png");
         		createGroundImage();
         	} else if (battleManager.getBattleProperties().getBattleMode().toString() == "Spike Mode") {
@@ -284,6 +296,7 @@ public class BattleView extends Canvas {
             groundImage = null;
         }
         
+        //If there are Dispensers in the round, add the custom image for them
         if (battleManager.getBattleProperties().getSelectedRobots().contains("dispenser")
         		|| battleManager.getBattleProperties().getSelectedRobots().contains("Dispenser")) {
         	imageManager.addCustomImage("dispenserImage", "/net/sf/robocode/ui/images/dispenser.png");
@@ -529,13 +542,11 @@ public class BattleView extends Canvas {
 		// Draw the border of the battlefield
 		drawBorder(g);
 
-
         if (snapShot != null) {
             // Draw all bullets
             drawBullets(g, snapShot);
             
             drawLandmines(g,snapShot);
-
 
             // Draw all text
             drawText(g, snapShot);
@@ -691,10 +702,63 @@ public class BattleView extends Canvas {
 				g.setColor(oldColour);
 				g.setComposite(oldState);
 				g.setTransform(oldAt);
+			} else if(snap.getType() == RenderableType.SPRITE_ANIMATION) {
+				String name = snap.getName();
+				// Load image from cache
+				List<RenderImage> imgs = customAnim.get(name);
+				
+				// Check if image exists in Cache
+				if (imgs == null) {
+					// Load image into cache
+					imgs = addAnim(snap.getName(), snap.getFilename(), snap.getSpriteWidth(), snap.getSpriteHeight(), snap.getRows(), snap.getCols());
+				}
+				Integer loops = customAnimLoops.get(name);
+				Integer frame = customAnimFrames.get(name);
+				if(frame >= snap.getRows() * snap.getCols()) {
+					//Increment loops.
+					customAnimLoops.put(name, loops + 1);
+					//Check if max loops has been reached.
+					if(loops + 1 > snap.getLoops())
+						return;
+					frame = 0;
+				}
+				RenderImage img = imgs.get(frame);
+				
+				// Setup matrix transform of image
+
+				AffineTransform at = AffineTransform.getTranslateInstance(
+						snap.getX(), battleField.getHeight() - snap.getY());
+				at.rotate(snap.getRotation());
+				at.scale(snap.getScaleX(), snap.getScaleY());
+				at.shear(snap.getShearX(), snap.getShearY());
+				img.setTransform(at);
+
+				Color oldColour = g.getColor();
+
+				if (snap.getColour() != null) {
+					g.setColor(snap.getColour());
+				}
+
+				// Keep old alpha level state
+				Composite oldState = g.getComposite();
+				// Setup new alpha level state
+				AlphaComposite alphaComposite = AlphaComposite.getInstance(
+						AlphaComposite.SRC_OVER, snap.getAlpha());
+				g.setComposite(alphaComposite);
+
+				// Render to screen
+				if (!snap.getHide())
+					img.paint(g);
+
+				// Restore old alpha state
+				g.setColor(oldColour);
+				g.setComposite(oldState);
+				//update the frame.
+				customAnimFrames.put(name, frame + 1);
 			}
     	}
     }
-
+    
     /**
      * Loads image in from given filename, puts RenderImage in
      * Hashmap<String, RenderImage>. Once added it will get rendered
@@ -713,6 +777,28 @@ public class BattleView extends Canvas {
 		customImage.put(name, img);
 
 		return (img != null) ? img : null;
+	}
+	
+    /**
+     * Loads anim in from given filename, puts RenderImage in
+     * Hashmap<String, List<RenderImage>>. Once added it will get rendered
+     * each frame update.
+     *
+     * @param String name - Key used for hashmap, used to fetch.
+     * @param String filename - path to file
+     * @param int width - sprite width
+     * @param int height - sprite height
+     * @param int rows - spritesheet rows
+     * @param int cols - spritesheet cols
+     * 
+     * @return newly added List<RenderImage>
+     */
+	private List<RenderImage> addAnim(String name, String filename, int width, int height, int rows, int cols) {
+		List<RenderImage> imgs = imageManager.addCustomAnim(name, filename, width, height, rows, cols);
+		customAnim.put(name, imgs);
+		customAnimFrames.put(name, 0);
+		customAnimLoops.put(name, 0);
+		return (imgs != null) ? imgs : null;
 	}
     
 	private void drawRobots(Graphics2D g, ITurnSnapshot snapShot) {
@@ -748,6 +834,8 @@ public class BattleView extends Canvas {
 
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
+                
+            //if robot is Botzilla, render the custom image
         	} else if (robotSnapshot.getName().contains("botzilla")
         			   || robotSnapshot.getName().contains("Botzilla")) {
         		x = robotSnapshot.getX();
@@ -761,6 +849,7 @@ public class BattleView extends Canvas {
                 robotRenderImage.setTransform(at);
                 robotRenderImage.paint(g);
                 
+            //if robot is a Dispenser, render the custom image
         	} else if ((robotSnapshot.getName().contains("dispenser")
         			|| robotSnapshot.getName().contains("Dispenser"))
         			&& robotSnapshot.getState().isAlive()) {
@@ -788,6 +877,7 @@ public class BattleView extends Canvas {
                 String radarPath = null;
                 double fullEnergy = robotSnapshot.getFullEnergy();
                 double currentEnergy = robotSnapshot.getEnergy();
+                
                 
                 // If a custom body part is present in the robots equipment
                 // then the body image path is changed to the custom one.

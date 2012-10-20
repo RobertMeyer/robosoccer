@@ -5,9 +5,9 @@ import java.util.Map;
 
 /**
  * A container for all the parts that can be equipped by AdvancedRobots.
- * 
- * @author CSSE2003 Team Forkbomb
- * 
+ *
+ * @author Malcolm Inglis (CSSE2003)
+ *
  */
 public class Equipment {
 
@@ -111,9 +111,43 @@ public class Equipment {
 						.set(RobotAttribute.ENERGY, 20).build());
 		
 		// Do not remove, this will cause the tests to fail
-				parts.put("Energy Test Small",
-						new EquipmentPart.Builder(EquipmentSlot.BODY)
-								.set(RobotAttribute.ENERGY, -20).build());
+		parts.put("Energy Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.BODY)
+						.set(RobotAttribute.ENERGY, -20).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Gun Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.RADAR)
+						.set(RobotAttribute.GUN_HEAT_RATE, 40)
+						.set(RobotAttribute.GUN_TURN_ANGLE, 40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Gun Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.RADAR)
+						.set(RobotAttribute.GUN_HEAT_RATE, -40)
+						.set(RobotAttribute.GUN_TURN_ANGLE, -40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Body Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
+						.set(RobotAttribute.ROBOT_TURN_ANGLE, -40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Body Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
+						.set(RobotAttribute.ROBOT_TURN_ANGLE, 40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Radar Test Small",
+				new EquipmentPart.Builder(EquipmentSlot.POWER)
+						.set(RobotAttribute.RADAR_ANGLE, -40)
+						.set(RobotAttribute.SCAN_RADIUS, -40).build());
+		
+		// Do not remove, this will cause the tests to fail
+		parts.put("Radar Test Large",
+				new EquipmentPart.Builder(EquipmentSlot.POWER)
+						.set(RobotAttribute.RADAR_ANGLE, 40)
+						.set(RobotAttribute.SCAN_RADIUS, 40).build());
 		
 		// Do not remove, this will cause the tests to fail.
 		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.WEAPON)
@@ -137,5 +171,4 @@ public class Equipment {
 	public static EquipmentPart getPart(String name) {
 		return parts.get(name);
 	}
-
 }
