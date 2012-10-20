@@ -112,4 +112,5 @@ public interface IRenderableSnapshot {
 	int getSpriteHeight();
 	int getRows();
 	int getCols();
+	int getLoops();
 }

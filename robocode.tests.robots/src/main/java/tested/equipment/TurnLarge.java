@@ -9,7 +9,14 @@ import robocode.AdvancedRobot;
  */
 public class TurnLarge extends AdvancedRobot {
 	
-	public void run(){	
+	public void run(){
+		equip("Body Test Large");
+		while (true){
+			if(getTime()%10 == 0){
+				setTurnRight(16);
+			}
+			execute();
+		}
 	}
 	
 }

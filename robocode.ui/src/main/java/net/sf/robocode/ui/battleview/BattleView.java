@@ -134,6 +134,8 @@ public class BattleView extends Canvas {
     private HashMap<String, List<RenderImage>> customAnim;
     // Hold current frame-index of each animated image.
     private HashMap<String, Integer> customAnimFrames;
+    // Hold current loop count for each animation.
+    private HashMap<String, Integer> customAnimLoops;
     
     //To store spike position
     private ArrayList<Integer> spikePosX = new ArrayList<Integer>();
@@ -147,6 +149,7 @@ public class BattleView extends Canvas {
         this.customImage = new HashMap<String, RenderImage>();
         this.customAnim = new HashMap<String, List<RenderImage>>();
         this.customAnimFrames = new HashMap<String, Integer>();
+        this.customAnimLoops = new HashMap<String, Integer>();
   		battleField = new BattleField(800, 600);
 
 		new BattleObserver(windowManager);
@@ -709,10 +712,18 @@ public class BattleView extends Canvas {
 					// Load image into cache
 					imgs = addAnim(snap.getName(), snap.getFilename(), snap.getSpriteWidth(), snap.getSpriteHeight(), snap.getRows(), snap.getCols());
 				}
+				Integer loops = customAnimLoops.get(name);
 				Integer frame = customAnimFrames.get(name);
-				if(frame >= snap.getRows() * snap.getCols())
+				if(frame >= snap.getRows() * snap.getCols()) {
+					//Increment loops.
+					customAnimLoops.put(name, loops + 1);
+					//Check if max loops has been reached.
+					if(loops + 1 > snap.getLoops())
+						return;
 					frame = 0;
+				}
 				RenderImage img = imgs.get(frame);
+				
 				// Setup matrix transform of image
 
 				AffineTransform at = AffineTransform.getTranslateInstance(
@@ -784,10 +795,9 @@ public class BattleView extends Canvas {
      */
 	private List<RenderImage> addAnim(String name, String filename, int width, int height, int rows, int cols) {
 		List<RenderImage> imgs = imageManager.addCustomAnim(name, filename, width, height, rows, cols);
-		Integer frame = 0;
 		customAnim.put(name, imgs);
-		customAnimFrames.put(name, frame);
-		
+		customAnimFrames.put(name, 0);
+		customAnimLoops.put(name, 0);
 		return (imgs != null) ? imgs : null;
 	}
     

@@ -376,7 +376,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.statics = new RobotStatics(robotSpecification, duplicate, isTeamLeader, battleRules, teamName, teamMembers,
 				robotIndex, teamIndex);
 		this.statistics = new RobotStatistics(this, battle.getRobotsCount());
-
+		
 		if(parentProxy != null) 
 			this.setParent(parentProxy);
 		
@@ -424,12 +424,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 	
+	public boolean isParent(RobotPeer child) {
+		if(minionList.contains(child))
+			return true;
+		return false;
+	}
+	
 	public void finalizeMinions() {
 		for(RobotPeer minion: minionList) {
 			minion.waitForStop();
 			minion.cleanup();
 		}
-
 	}
 
 
@@ -2232,6 +2237,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					if (!otherRobot.isScannable()) {
 						return;
 					}
+					if(minionList.contains(otherRobot) || (this.isMinion() && otherRobot.isParent(this))) {
+						return;
+					}
+
 					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
 							otherRobot.getVelocity(), otherRobot.isFrozen(), otherRobot.isFreezeRobot());

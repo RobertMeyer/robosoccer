@@ -15,6 +15,18 @@ public class MinionProxy {
 	}
 	
     /**
+     * Returns the parent robot's name.
+     *
+     * @return the parent robot's name.
+     */
+    public String getName() {
+        if (peer != null) {
+            return peer.getName();
+        }
+        return null; // never called
+    }
+	
+    /**
      * Returns the X position of the parent bot. (0,0) is at the bottom left of the
      * battlefield.
      *
