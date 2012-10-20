@@ -54,7 +54,7 @@ public class SoccerTeamStatistics extends TeamStatistics {
 	@Override
 	public BattleResults getFinalResults() {
 		return new BattleResults(teamPeer.getName(), rank, getTotalScore(), 0,
-				0, 0, 0, 0, 0, 0, 0, 0, 0);
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 
 }

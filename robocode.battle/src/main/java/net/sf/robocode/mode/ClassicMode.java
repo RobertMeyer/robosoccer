@@ -468,7 +468,6 @@ public class ClassicMode implements IMode {
 	public BoundingRectangle[] getGoals() {
 		return null;
 	}
-}
 
 	public void scoreRoundPoints() {
 	}
