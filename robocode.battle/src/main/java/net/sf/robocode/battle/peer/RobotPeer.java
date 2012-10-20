@@ -2296,9 +2296,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 									this.getMinionParent().equals(otherRobot.getMinionParent()))) {
 						return;
 					}
-					else {
-						int a = 0;
-					}
 
 					final ScannedRobotEvent event = new ScannedRobotEvent(getNameForEvent(otherRobot), otherRobot.energy,
 							normalRelativeAngle(angle - getBodyHeading()), dist, otherRobot.getBodyHeading(),
