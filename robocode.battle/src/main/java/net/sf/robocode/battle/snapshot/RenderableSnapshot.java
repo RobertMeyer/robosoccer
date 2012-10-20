@@ -32,6 +32,7 @@ public final class RenderableSnapshot implements IRenderableSnapshot {
 	private int spriteheight = 0;
 	private int rows = 0;
 	private int cols = 0;
+	private int loops = 0;
 
 	/**
 	 * Default Constructor
@@ -65,6 +66,7 @@ public final class RenderableSnapshot implements IRenderableSnapshot {
 			this.spriteheight = c.getSpriteHeight();
 			this.rows = c.getRows();
 			this.cols = c.getCols();
+			this.loops = c.getLoops();
 		} else if (this.type == RenderableType.SPRITE_STRING) {
 			this.filename = ((RenderString)co).getText();
 		}
@@ -213,6 +215,12 @@ public final class RenderableSnapshot implements IRenderableSnapshot {
 	public int getCols() {
 		return cols;
 	}
-
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getLoops() {
+		return loops;
+	}
 }
