@@ -9,14 +9,12 @@ import net.sf.robocode.battle.peer.*;
  * battlefield.
  * 
  * @author Jacob Klein (Dream Team)
- * 
- * Contributors:
- * @author Ameer Sabri (Dream Team) (documentation only)
+ * @author Ameer Sabri (Dream Team) (commenting only)
  */
 
 public class ItemController {
 
-	//Lists of the current battlefield
+	//Lists of items and robots on the current battlefield
 	private List<ItemDrop> battleItems = new ArrayList<ItemDrop>();
 	private List<RobotPeer> currentRobots = new ArrayList<RobotPeer>();
 	
@@ -24,20 +22,22 @@ public class ItemController {
 	private boolean debugMessage = true;
 	
 	/**
-	 * Updates the robot list used for collision detection
+	 * Updates the list of robots on the battlefield.
+	 * 
 	 * @param robots list of robots on the battlefield
 	 */	
 	public void updateRobots(List<RobotPeer> robots){
 		currentRobots = robots;
 	}
     /**
-     * Constructor
+     * Constructor.
      */
     public ItemController() {
     }
 
 	/**
-	 * Calls item initialiser to attempt spawning an item
+	 * Attempts to spawn an item on the battlefield.
+	 * 
 	 * @param item item to be spawned
 	 * @param x x-coordinate of the item
 	 * @param y y-coordinate of the item
@@ -72,8 +72,8 @@ public class ItemController {
 	}
 	
 	/**
-	 * Public method to access current items on the battlefield
-	 * @return List of the current items on the battlefield
+	 * Gets the list of items currently on the battlefield.
+	 * @return list of items currently on the battlefield
 	 */
 	public List<ItemDrop> getItems() {
 		return battleItems;

@@ -17,7 +17,9 @@
  *******************************************************************************/
 package robocode.robotinterfaces.peer;
 
+
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import robocode.*;
 import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
@@ -110,11 +112,11 @@ public interface IBasicRobotPeer {
      * Returns the maximum velocity of the robot measured in pixels/turn.
      * <p/>
      * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
-     * * {@link RobotAttribute#SPEED}
+     * * {@link RobotAttribute#VELOCITY}
      * 
      * @return the maximum velocity of the robot in pixels/turn
      * @see Rules#MAX_VELOCITY
-     * @see RobotAttribute#SPEED
+     * @see RobotAttribute#VELOCITY
      */
     double getRealMaxVelocity();
     

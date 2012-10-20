@@ -58,7 +58,7 @@ public class RobotPeerTest {
 	public void testKill() {
 		Mockito.when(battle.getBattleMode()).thenReturn(new ClassicMode());
 		RobotPeer peer = new RobotPeer(battle, hostManager, robotSpecification,
-				0, null, 0);
+				0, null, 0, null);
 		peer.initializeRound(new ArrayList<RobotPeer>(), new double[1][3]);
 
 		assertTrue("Peer should start alive", peer.isAlive());
@@ -80,7 +80,7 @@ public class RobotPeerTest {
 
 		Mockito.when(robotItem.isDroid()).thenReturn(true);
 		RobotPeer droid = new RobotPeer(battle, hostManager,
-				robotSpecification, 0, null, 0);
+				robotSpecification, 0, null, 0, null);
 		assertTrue("Droid should be a droid", droid.isDroid());
 	}
 

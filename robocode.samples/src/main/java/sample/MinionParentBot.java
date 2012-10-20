@@ -4,6 +4,7 @@ import java.util.List;
 
 import robocode.AdvancedRobot;
 import robocode.MinionProxy;
+import robocode.ScannedRobotEvent;
 import robocode.TurnCompleteCondition;
 
 public class MinionParentBot extends AdvancedRobot {
@@ -13,7 +14,6 @@ public class MinionParentBot extends AdvancedRobot {
     	MinionProxy parent = this.getParent();
     	List<MinionProxy> minions = getMinions();
         while (true) {
-        	
             setTurnGunRight(180); // Spin gun around
             waitFor(new TurnCompleteCondition(this));
         }

@@ -11,7 +11,7 @@ import robocode.control.events.TurnEndedEvent;
  * This is to test for the equipment robot energy attribute.
  * 
  * Thus it tests:
- * RobotAttribute#ENERGY
+ * {@link robocode.RobotAttribute#ENERGY}
  * 
  * @author Jayke Anderson - CSSE2003
  *
@@ -34,7 +34,7 @@ public class TestEquipRobotEnergy extends RobocodeTestBed {
     	super.onTurnEnded(event);
     	
     	switch((int) event.getTurnSnapshot().getTurn()) {
-    	case 10:
+    	case 1:
     		// Test the large robot has 120 starting energy
     		Assert.assertNear(120, event.getTurnSnapshot().getRobots()[0].
     				getEnergy());
