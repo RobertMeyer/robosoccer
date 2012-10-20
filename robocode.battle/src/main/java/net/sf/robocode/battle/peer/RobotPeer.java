@@ -91,7 +91,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -137,7 +136,6 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
 import robocode.WinEvent;
-import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.LandmineState;
@@ -1038,7 +1036,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
             }
         }
         if (!valid) {
-            final Random random = RandomFactory.getRandom();
 
             for (int j = 0; j < 1000; j++) {
                 double[] sl = battle.getSpawnController().getSpawnLocation(this, battle);

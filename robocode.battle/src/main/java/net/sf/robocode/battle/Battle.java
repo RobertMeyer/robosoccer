@@ -95,15 +95,12 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
-import static java.lang.Math.round;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.sf.robocode.battle.events.BattleEventDispatcher;
@@ -146,7 +143,6 @@ import robocode.control.events.TurnStartedEvent;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.snapshot.LandmineState;
-import robocode.control.snapshot.RobotState;
 import robocode.equipment.EquipmentSet;
 import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSpecification;
