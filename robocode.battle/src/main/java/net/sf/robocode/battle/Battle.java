@@ -229,6 +229,8 @@ public class Battle extends BaseBattle {
     private List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
 
     private int numObstacles;
+   
+    private static DefaultSpawnController spawnController = new DefaultSpawnController();
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager, IHostManager hostManager, IRepositoryManager repositoryManager, ICpuManager cpuManager, BattleEventDispatcher eventDispatcher) {
 		super(properties, battleManager, eventDispatcher);
@@ -577,7 +579,6 @@ public class Battle extends BaseBattle {
 		this.getBattleMode().scoreTurnPoints();
 
 		bullets.clear();
-
 		items.clear();
 		teleporters.clear();
 
@@ -1350,6 +1351,22 @@ public class Battle extends BaseBattle {
 				}
 			}
 		}
+	}
+	
+	public static boolean addController(ISpawnController e) {
+		return spawnController.addController(e);
+	}
+	
+	public static boolean removeController(ISpawnController e) {
+		return spawnController.removeController(e);
+	}
+	
+	public static void clearControllers() {
+		spawnController.clearControllers();
+	}
+	
+	public ISpawnController getSpawnController() {
+		return spawnController;
 	}
 
 	 private void updateEffectAreas() {

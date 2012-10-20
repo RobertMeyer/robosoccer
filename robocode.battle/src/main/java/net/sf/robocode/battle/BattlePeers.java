@@ -223,4 +223,13 @@ public class BattlePeers {
 
 	}
 	
+	/**
+	 * @author Laurence McLean
+	 * @param r Robot to remove
+	 */
+	public void removeRobot(RobotPeer r) {
+		robots.remove(r);
+		contestants.remove(r.getTeamPeer());
+	}
+	
 }
