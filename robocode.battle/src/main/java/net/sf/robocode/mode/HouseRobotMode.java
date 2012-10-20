@@ -43,28 +43,28 @@ public class HouseRobotMode extends ClassicMode {
     	if(currentTurn==1) Battle.addController(new HouseRobotSpawnController(this.getClass()));
     	if(currentTurn==1) {
     		houseRobot1 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
-    				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
+    				new RobocodeEngine().getLocalRepository("sampleex.MyFirstHouseRobot")[0], 0,
     				null, peers.getBattle().getRobotsCount());
     		peers.addRobot(houseRobot1);
         	houseRobot1.initializeRound(peers.getRobots(), null);
         	houseRobot1.startRound(0, 0);
         	if(numberOfHouseRobots==1) return;
     		houseRobot2 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
-    				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
+    				new RobocodeEngine().getLocalRepository("sampleex.MyFirstHouseRobot")[0], 0,
     				null, peers.getBattle().getRobotsCount());
     		peers.addRobot(houseRobot2);
         	houseRobot2.initializeRound(peers.getRobots(), null);
         	houseRobot2.startRound(0, 0);
         	if(numberOfHouseRobots==2) return;
     		houseRobot3 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
-    				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
+    				new RobocodeEngine().getLocalRepository("sampleex.MyFirstHouseRobot")[0], 0,
     				null, peers.getBattle().getRobotsCount());
     		peers.addRobot(houseRobot3);
         	houseRobot3.initializeRound(peers.getRobots(), null);
         	houseRobot3.startRound(0, 0);
         	if(numberOfHouseRobots==3) return;
     		houseRobot4 = new RobotPeer(peers.getBattle(), peers.getHostManager(),
-    				new RobocodeEngine().getLocalRepository("sample.MyFirstHouseRobot")[0], 0,
+    				new RobocodeEngine().getLocalRepository("sampleex.MyFirstHouseRobot")[0], 0,
     				null, peers.getBattle().getRobotsCount());
     		peers.addRobot(houseRobot4);
         	houseRobot4.initializeRound(peers.getRobots(), null);

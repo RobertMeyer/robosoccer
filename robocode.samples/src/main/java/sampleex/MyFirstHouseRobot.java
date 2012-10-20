@@ -1,4 +1,4 @@
-package sample;
+package sampleex;
 
 import java.awt.Color;
 
