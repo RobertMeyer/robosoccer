@@ -20,6 +20,14 @@ public class EquipmentSet {
 	}
 
 	/**
+	 * @return the definition file to be used by default
+	 */
+	public static File defaultFile() {
+		return new File(EquipmentSet.class
+				.getResource("/equipment/default.txt").getFile());
+	}
+
+	/**
 	 * TODO: document the file format
 	 * 
 	 * @param file
@@ -28,6 +36,10 @@ public class EquipmentSet {
 	 *         otherwise.
 	 */
 	public static EquipmentSet fromFile(File file) {
+		if (file == null) {
+			file = defaultFile();
+		}
+		System.out.println("EquipmentSet got file: " + file.getAbsolutePath());
 		Map<String, EquipmentPart> parts = new HashMap<String, EquipmentPart>();
 		parts.put(
 				"Division 9 Plasmaprojector",

@@ -37,7 +37,7 @@ public class BattleSpecification implements java.io.Serializable {
 	private final long inactivityTime;
 	private final boolean hideEnemyNames;
 	private final RobotSpecification[] robots;
-	private final File equipmentFile;
+	private File equipmentFile;
 
 	/**
 	 * Creates a new BattleSpecification with the given number of rounds,
