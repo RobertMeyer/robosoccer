@@ -98,6 +98,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.KillFreezeHeatRobots;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.Waypoint;
@@ -1319,6 +1320,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isDead()) {
 			return;
 		}
+		
+		// Creates a new instance of KillFreezeHeatRobots class
+		KillFreezeHeatRobots killFreezeHeatRobot = new KillFreezeHeatRobots();
+		
+		// Calls the killFreezeHeatRobots method on the robots list
+		killFreezeHeatRobot.killFreezeHeatRobot(robots);
 		
 		// Stop the robot being both dead and frozen.
 		if (isFrozen() && energy > 0) {
