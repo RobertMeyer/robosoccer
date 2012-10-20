@@ -100,12 +100,6 @@ import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
-import net.sf.robocode.battle.Waypoint;
-import net.sf.robocode.battle.item.BoundingRectangle;
-import net.sf.robocode.battle.item.ItemDrop;
-import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.EffectArea;
-import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -126,7 +120,6 @@ import net.sf.robocode.peer.LandmineStatus;
 import net.sf.robocode.peer.TeamMessage;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.mode.ClassicMode;
 import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.BattleRules;
@@ -142,7 +135,6 @@ import robocode.RobotStatus;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
-import robocode.WaypointPassedEvent;
 import robocode.WinEvent;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
@@ -173,7 +165,7 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author Patrick Cupka (contributor)
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
- * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
+ * @author CSSE2003 Team Forkbomb - attributes, equipment
  * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
@@ -1556,20 +1548,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return otherRobot.getName();
 	}
 
-	// check for, add, remove items
-	private boolean checkForItem(ItemDrop item){
-		return this.itemsList.contains(item);
-	}
-
-	private void addItem(ItemDrop item){
-		this.itemsList.add(item);
-	}
-
-	private void removeItem(ItemDrop item){
-		this.itemsList.remove(item);
-	}
-
-
 	private void checkItemCollision(List<ItemDrop> items){
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
@@ -2515,7 +2493,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * This will reset any calls to: 
 	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
 	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
-	 * 
 	 *
 	 * @param partName the name of the part to equip
 	 * @see Equipment
@@ -2597,8 +2574,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * Returns the speed of a bullet given a specific bullet power measured in pixels/turn.
-	 *
+	 * Returns the speed of a bullet given a specific bullet power measured in
+	 * pixels/turn.
+	 * 
 	 * @param bulletPower the energy power of the bullet.
 	 * @return bullet speed in pixels/turn
 	 */
@@ -2609,225 +2587,226 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * Returns the robots acceleration due to the items it has equipped or
-	 * other bonuses it may have received.
-	 *
+	 * Returns the robots acceleration due to the items it has equipped or other
+	 * bonuses it may have received.
+	 * 
 	 * @return The acceleration of the robot associated with this peer.
 	 */
-	public double getRobotAcceleration(){
-		return attributes.get().get(RobotAttribute.ACCELERATION) *
-				Rules.ACCELERATION;
+	public double getRobotAcceleration() {
+		return attributes.get().get(RobotAttribute.ACCELERATION)
+				* Rules.ACCELERATION;
 	}
 
 	/**
-	 * Returns the robots deceleration due to the items it has equipped or
-	 * other bonuses it may have received.
-	 *
+	 * Returns the robots deceleration due to the items it has equipped or other
+	 * bonuses it may have received.
+	 * 
 	 * @return The deceleration of the robot associated with this peer.
 	 */
-	public double getRobotDeceleration(){
-		return attributes.get().get(RobotAttribute.DECELERATION) *
-				Rules.DECELERATION;
+	public double getRobotDeceleration() {
+		return attributes.get().get(RobotAttribute.DECELERATION)
+				* Rules.DECELERATION;
 	}
 
 	/**
 	 * Returns the robots radar scan radius due to the items it has equipped or
 	 * other bonuses it may have received.
-	 *
+	 * 
 	 * @return The scan radius of the robot associated with this peer.
 	 */
-	public double getRadarScanRadius(){
-		return attributes.get().get(RobotAttribute.SCAN_RADIUS) *
-				Rules.RADAR_SCAN_RADIUS;
+	public double getRadarScanRadius() {
+		return attributes.get().get(RobotAttribute.SCAN_RADIUS)
+				* Rules.RADAR_SCAN_RADIUS;
 	}
 
 	/**
 	 * Returns the robots gun turn rate due to the items it has equipped or
 	 * other bonuses it may have received in degrees.
-	 *
+	 * 
 	 * @return The turning rate of the gun of the robot associated with this
-	 * 			peer in degrees.
+	 *         peer in degrees.
 	 */
-	public double getGunTurnRate(){
+	public double getGunTurnRate() {
 		// Avoid multiplying doubles if it is not needed
-		if(abs(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0) > 0.00001){
-			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) * Rules.GUN_TURN_RATE;
-		}
-		else return Rules.GUN_TURN_RATE;
+		if (abs(attributes.get().get(RobotAttribute.GUN_TURN_ANGLE) - 1.0) > 0.00001) {
+			return attributes.get().get(RobotAttribute.GUN_TURN_ANGLE)
+					* Rules.GUN_TURN_RATE;
+		} else
+			return Rules.GUN_TURN_RATE;
 	}
 
 	/**
 	 * Returns the robots gun turn rate due to the items it has equipped or
 	 * other bonuses it may have received in radians.
-	 *
+	 * 
 	 * @return The turning rate of the gun of the robot associated with this
-	 * 			peer in radians.
+	 *         peer in radians.
 	 */
-	public double getGunTurnRateRadians(){
+	public double getGunTurnRateRadians() {
 		return Math.toRadians(getGunTurnRate());
 	}
 
 	/**
 	 * Returns the maximum turn rate of the robot due to the items it has
 	 * equipped or the bonuses it may have received in degrees.
-	 *
+	 * 
 	 * @return The turning rate of the robot associated with this peer in
-	 * 			degrees
+	 *         degrees
 	 */
-	public double getMaxTurnRate(){
-		return attributes.get().get(RobotAttribute.ROBOT_TURN_ANGLE) *
-				Rules.MAX_TURN_RATE;
+	public double getMaxTurnRate() {
+		return attributes.get().get(RobotAttribute.ROBOT_TURN_ANGLE)
+				* Rules.MAX_TURN_RATE;
 	}
 
 	/**
 	 * Returns the maximum turn rate of the robot due to the items it has
 	 * equipped or the bonuses it may have received in radians.
-	 *
+	 * 
 	 * @return The turning rate of the robot associated with this peer in
-	 * 			radians
+	 *         radians
 	 */
-	public double getMaxTurnRateRadians(){
+	public double getMaxTurnRateRadians() {
 		return Math.toRadians(getMaxTurnRate());
 	}
 
 	/**
 	 * Returns the speed (velocity) of the robot due to the items it has
 	 * equipped or the bonuses it may have received.
-	 *
+	 * 
 	 * @return the speed (velocity) of the robot associated with this peer.
 	 */
-	public double getRealMaxVelocity(){
-		return attributes.get().get(RobotAttribute.VELOCITY) * Rules.MAX_VELOCITY;
+	public double getRealMaxVelocity() {
+		return attributes.get().get(RobotAttribute.VELOCITY)
+				* Rules.MAX_VELOCITY;
 	}
 
-    /**
-     * Returns the energy (life) of the robot due to the items it has equipped
-     * or the bonuses it may have received.
-     *
-     * Note: This is the life at the start of the round (not a constant update)
-     * 		That is it is the energy factor * 100 (base energy). To find the
-     * 		current energy: @see getEnergy()
-     *
-     * @return the starting energy of the robot associated with this peer.
-     */
-    public double getStartingEnergy() {
+	/**
+	 * Returns the energy (life) of the robot due to the items it has equipped
+	 * or the bonuses it may have received.
+	 * 
+	 * Note: This is the life at the start of the round (not a constant update)
+	 * That is it is the energy factor * 100 (base energy). To find the current
+	 * energy: @see getEnergy()
+	 * 
+	 * @return the starting energy of the robot associated with this peer.
+	 */
+	public double getStartingEnergy() {
 		return attributes.get().get(RobotAttribute.ENERGY) * 100;
 	}
-	
+
 	/**
 	 * Returns the current energy regeneration rate of the robot due to the
 	 * items it has equipped or other bonuses.
 	 * 
-	 * @return The current energy regeneration rate of the robot associated
-	 * 			with this peer.
+	 * @return The current energy regeneration rate of the robot associated with
+	 *         this peer.
 	 */
-    public double getEnergyRegen() {
+	public double getEnergyRegen() {
 		return attributes.get().get(RobotAttribute.ENERGY_REGEN);
 	}
-	
+
 	/**
 	 * Returns the armor of the robot has compared to standard. That is, 1 is
-	 * standard armor, 0.5 would be half armor and 2 would be double armor.
-	 * This reduces the amount of damage taken in battle, compared to normal
-	 * (or increases).  This is caused by the items it has equipped or the
-	 * bonuses it may have received.
+	 * standard armor, 0.5 would be half armor and 2 would be double armor. This
+	 * reduces the amount of damage taken in battle, compared to normal (or
+	 * increases). This is caused by the items it has equipped or the bonuses it
+	 * may have received.
 	 * 
 	 * @return the current armor factor of the robot associated with this peer.
 	 */
-    public double getRobotArmor() {
-        return attributes.get().get(RobotAttribute.ARMOR);
-    }
-
-    /**
-     * Returns the minimum bullet power of a robots bullet, which is the
-     * attribute factor * the value of @see Rules.MIN_BULLET_POWER
-     *
-     * This is caused by the items the robot has equipped or other bonuses
-     * it may have received.
-     *
-     * @return the robots minimum bullet power associated with this peer.
-     */
-    public double getMinBulletPower() {
-        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) *
-        		Rules.MIN_BULLET_POWER;
-    }
-
-    /**
-     * Returns the maximum bullet power of a robots bullet, which is the
-     * attribute factor * the value of @see Rules.MAX_BULLET_POWER
-     *
-     * This is caused by the items the robot has equipped or other bonuses
-     * it may have received.
-     *
-     * @return the robots maximum bullet power associated with this peer.
-     */
-    public double getMaxBulletPower() {
-        return attributes.get().get(RobotAttribute.BULLET_DAMAGE) *
-        		Rules.MAX_BULLET_POWER;
-    }
-
-    /**
-     * Returns the amount the gun will heat for a certain amount of bullet
-     * power, this may be increased by the effects of equipment or other
-     * bonuses (or decreased)
-     *
-     * @param bulletPower the energy power of the bullet
-     * @return the gun heat.
-     */
-    public double getGunHeat(double bulletPower) {
-        return attributes.get().get(RobotAttribute.GUN_HEAT_RATE)
-                * (1 + (bulletPower / 5));
+	public double getRobotArmor() {
+		return attributes.get().get(RobotAttribute.ARMOR);
 	}
-	
+
+	/**
+	 * Returns the minimum bullet power of a robots bullet, which is the
+	 * attribute factor * the value of @see Rules.MIN_BULLET_POWER
+	 * 
+	 * This is caused by the items the robot has equipped or other bonuses it
+	 * may have received.
+	 * 
+	 * @return the robots minimum bullet power associated with this peer.
+	 */
+	public double getMinBulletPower() {
+		return attributes.get().get(RobotAttribute.BULLET_DAMAGE)
+				* Rules.MIN_BULLET_POWER;
+	}
+
+	/**
+	 * Returns the maximum bullet power of a robots bullet, which is the
+	 * attribute factor * the value of @see Rules.MAX_BULLET_POWER
+	 * 
+	 * This is caused by the items the robot has equipped or other bonuses it
+	 * may have received.
+	 * 
+	 * @return the robots maximum bullet power associated with this peer.
+	 */
+	public double getMaxBulletPower() {
+		return attributes.get().get(RobotAttribute.BULLET_DAMAGE)
+				* Rules.MAX_BULLET_POWER;
+	}
+
+	/**
+	 * Returns the amount the gun will heat for a certain amount of bullet
+	 * power, this may be increased by the effects of equipment or other bonuses
+	 * (or decreased)
+	 * 
+	 * @param bulletPower the energy power of the bullet
+	 * @return the gun heat.
+	 */
+	public double getGunHeat(double bulletPower) {
+		return attributes.get().get(RobotAttribute.GUN_HEAT_RATE)
+				* (1 + (bulletPower / 5));
+	}
+
 	/**
 	 * Returns the bonus the robot gains from ramming another robot due to the
 	 * items equipped or other bonuses it may have received.
 	 * 
 	 * @return robot's ramming attack bonus associated with this peer.
 	 */
-    public double getRamAttack() {
-        return attributes.get().get(RobotAttribute.RAM_ATTACK)
-                * Rules.ROBOT_HIT_BONUS;
+	public double getRamAttack() {
+		return attributes.get().get(RobotAttribute.RAM_ATTACK)
+				* Rules.ROBOT_HIT_BONUS;
 	}
-	
+
 	/**
 	 * Returns the damage the robot receives from being hit by another robot,
 	 * due to having items equipped or receiving other bonuses.
 	 * 
 	 * @return the amount of damage this robot takes from being hit by another
-	 * 		robot
+	 *         robot
 	 */
-    public double getRamDamage() {
-        return attributes.get().get(RobotAttribute.RAM_DEFENSE)
-                * Rules.ROBOT_HIT_DAMAGE;
-    }
+	public double getRamDamage() {
+		return attributes.get().get(RobotAttribute.RAM_DEFENSE)
+				* Rules.ROBOT_HIT_DAMAGE;
+	}
 
-    /**
-     * Returns the radar turn rate of a robot in degrees due to having items
-     * equipped or having received other bonuses.
-     *
-     * @return the radar turn rate of the robot in degrees
-     */
-    public double getRadarTurnRate() {
-        return attributes.get().get(RobotAttribute.RADAR_ANGLE) *
-        		Rules.RADAR_TURN_RATE;
-    }
+	/**
+	 * Returns the radar turn rate of a robot in degrees due to having items
+	 * equipped or having received other bonuses.
+	 * 
+	 * @return the radar turn rate of the robot in degrees
+	 */
+	public double getRadarTurnRate() {
+		return attributes.get().get(RobotAttribute.RADAR_ANGLE)
+				* Rules.RADAR_TURN_RATE;
+	}
 
-    /**
-     * Returns the radar turn rate of a robot in radians due to having items
-     * equipped or having received other bonuses.
-     *
-     * @return the radar turn rate of the robot in radians
-     */
-    public double getRadarTurnRateRadians() {
+	/**
+	 * Returns the radar turn rate of a robot in radians due to having items
+	 * equipped or having received other bonuses.
+	 * 
+	 * @return the radar turn rate of the robot in radians
+	 */
+	public double getRadarTurnRateRadians() {
 		return Math.toRadians(getRadarTurnRate());
 	}
 
-    /**
-     * Effects
-     */
-    public void setEnergyEffect(double newEnergy, boolean
-    		resetInactiveTurnCount) {
+	/**
+	 * Effects
+	 */
+	public void setEnergyEffect(double newEnergy, boolean resetInactiveTurnCount) {
 		if (resetInactiveTurnCount && (energy != newEnergy)) {
 			battle.resetInactiveTurnCount(energy - newEnergy);
 		}
@@ -2841,44 +2820,43 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
-	public void setVelocityEffect(double v)
-	{
+	public void setVelocityEffect(double v) {
 		velocity = v;
 	}
 
-	public void setGunHeatEffect(double g)
-	{
+	public void setGunHeatEffect(double g) {
 		gunHeat = g;
 	}
 
-    @Override
-    public int compareTo(ContestantPeer cp) {
-    	if(cp.getStatistics() != null) {
-        double myScore = statistics.getTotalScore();
-        double hisScore = cp.getStatistics().getTotalScore();
+	@Override
+	public int compareTo(ContestantPeer cp) {
+		if (cp.getStatistics() != null) {
+			double myScore = statistics.getTotalScore();
+			double hisScore = cp.getStatistics().getTotalScore();
 
-        if (statistics.isInRound()) {
-            myScore += statistics.getCurrentScore();
-            hisScore += cp.getStatistics().getCurrentScore();
-        }
-        if (myScore < hisScore) {
-            return -1;
-        }
-        if (myScore > hisScore) {
-            return 1;
-        }
-    	}
-        return 0;
+			if (statistics.isInRound()) {
+				myScore += statistics.getCurrentScore();
+				hisScore += cp.getStatistics().getCurrentScore();
+			}
+			if (myScore < hisScore) {
+				return -1;
+			}
+			if (myScore > hisScore) {
+				return 1;
+			}
+		}
+		return 0;
+	}
 
-    }
+	@Override
+	public String toString() {
+		return statics.getShortName() + "(" + (int) energy + ") X" + (int) x
+				+ " Y" + (int) y + " " + state.toString()
+				+ (isSleeping() ? " sleeping " : "")
+				+ (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
+	}
 
-    @Override
-    public String toString() {
-        return statics.getShortName() + "(" + (int) energy + ") X" + (int) x + " Y" + (int) y + " " + state.toString()
-                + (isSleeping() ? " sleeping " : "") + (isRunning() ? " running" : "") + (isHalt() ? " halted" : "");
-    }
-
-    /**
+	/**
 	 * @return the isScannable
 	 */
 	public boolean isScannable() {
@@ -2895,67 +2873,29 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		//this.println("setting scannable to " + isScannable);
 		this.isScannable = isScannable;
 	}
-	
-	/**
-	 * Checks whether a robot has collided with a teleporter
-	 * @param teleporters list of teleporters
-	 */
-	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
-		BoundingRectangle bound = getBoundingBox();
-		double newHeading = getBodyHeading()+PI;
-		double[] xy;
-		double[] fail = {-1.0, -1.0};
-		double[] death = {-2.0, -2.0};
-		while(newHeading>(2*PI)){
-			newHeading -=(2*PI);
-		}
-		for(TeleporterPeer teleporter : teleporters){
-			xy = teleporter.getCollisionReaction(bound);
-			if(xy.equals(fail)){
-				
-			}else if(xy[0] == -2 && xy[1] == -2){
-				//if there is a collision with a black hole, update size, set
-				//the collision to true and kill the robot
-				teleporter.updateBlackHoleSize();
-				collidedWithBlackHole = true;
-				kill();
-				
-			}else if(xy[0]>0 && xy[1]>0){
-				this.x = xy[0]+(Math.sin(newHeading)*50);
-				this.y = xy[1]+(Math.cos(newHeading)*50);
-				this.bodyHeading = newHeading;
-				//update bounding box to prevent neverending teleportation
-				updateBoundingBox();
-				
-			}
-		}
-		
-	}
 
 	/**
 	 * Enables the RadarJamming ability for jamTime amount of turns. Robots who
 	 * call this are unscannable for this duration
-	 *
-	 * @param jamTime
-	 *            the amount of time to block other robot's radars
+	 * 
+	 * @param jamTime the amount of time to block other robot's radars
 	 */
 	public void enableRadarJammer(int jamTime) {
 		setScannable(false);
-		
+
 		/* create image */
-        RenderObject jammer = new RenderObject(
-                        "jammer",
-                        "/net/sf/robocode/ui/images/field.png",
-                        this.getX(), this.getY());
-        
-        /* make it transparent */
-        jammer.setAlpha(0.3f);
-        
-        /* add it to the battle */
-        battle.addCustomObject(jammer);
-        
-        /* add it to the robot */
-        ksImages.put(jammer.getName(), jammer);
+		RenderObject jammer = new RenderObject("jammer",
+				"/net/sf/robocode/ui/images/field.png", this.getX(),
+				this.getY());
+
+		/* make it transparent */
+		jammer.setAlpha(0.3f);
+
+		/* add it to the battle */
+		battle.addCustomObject(jammer);
+
+		/* add it to the robot */
+		ksImages.put(jammer.getName(), jammer);
 
 		radarJammerTimeout = battle.getTotalTurns() + jamTime;
 	}
@@ -2981,28 +2921,26 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	/**
 	 * Freezes the robot for freezeTime amount of turns
-	 *
-	 * @param freezeTime
-	 *            the amount of time to freeze the robot
+	 * 
+	 * @param freezeTime the amount of time to freeze the robot
 	 */
 	public void enableKsFreeze(int freezeTime) {
 		if (this.isAlive()) {
 			setKsFrozen(true);
 			/* create image */
-	        RenderObject freeze = new RenderObject(
-	                        "freeze",
-	                        "/net/sf/robocode/ui/images/cube.png",
-	                        this.getX(), this.getY());
-	        
-	        /* make it transparent */
-	        freeze.setAlpha(0.3f);
-	        
-	        /* add it to the battle */
-	        battle.addCustomObject(freeze);
-	        
-	        /* add it to the robot */
-	        ksImages.put(freeze.getName(), freeze);
-	
+			RenderObject freeze = new RenderObject("freeze",
+					"/net/sf/robocode/ui/images/cube.png", this.getX(),
+					this.getY());
+
+			/* make it transparent */
+			freeze.setAlpha(0.3f);
+
+			/* add it to the battle */
+			battle.addCustomObject(freeze);
+
+			/* add it to the robot */
+			ksImages.put(freeze.getName(), freeze);
+
 			frozenTimeout = battle.getTotalTurns() + freezeTime;
 		}
 	}
@@ -3019,31 +2957,29 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	/**
 	 * Turns robot into a Super Tank for superTankTimeout amount of turns
-	 *
-	 * @param superTankTime
-	 *            the amount of time to become a Super Tank
+	 * 
+	 * @param superTankTime the amount of time to become a Super Tank
 	 */
 	public void enableSuperTank(int superTankTime) {
 		setSuperTank(true);
 		superTankTimeout = battle.getTotalTurns() + superTankTime;
-        
-        /* create image */
-        RenderObject tank = new RenderObject(
-                        "tank",
-                        "/net/sf/robocode/ui/images/star.gif",
-                        this.getX(), this.getY());
-        
-        /* make it transparent */
-        tank.setAlpha(0.3f);
-        
-        /* add it to the battle */
-        battle.addCustomObject(tank);
-        
-        /* add it to the robot */
-        ksImages.put(tank.getName(), tank);
+
+		/* create image */
+		RenderObject tank = new RenderObject("tank",
+				"/net/sf/robocode/ui/images/star.gif", this.getX(), this.getY());
+
+		/* make it transparent */
+		tank.setAlpha(0.3f);
+
+		/* add it to the battle */
+		battle.addCustomObject(tank);
+
+		/* add it to the robot */
+		ksImages.put(tank.getName(), tank);
 
 		superTankTimeout = battle.getTotalTurns() + superTankTime;
 	}
+
 	/**
 	 * @return the isSuperTank
 	 */
@@ -3062,7 +2998,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return fullEnergy;
 	}
 
-
 	public void removeImage(String image) {
 		ksImages.remove(image);
 		battle.removeCustomObjectByName(image);
@@ -3075,6 +3010,4 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		return false;
 	}
-
-
 }
