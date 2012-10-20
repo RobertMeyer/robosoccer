@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import net.sf.robocode.battle.peer.RobotPeer;
-import net.sf.robocode.mode.IMode;
 import robocode.control.RandomFactory;
 
 /**
@@ -52,9 +51,6 @@ public class HouseRobotSpawnController implements ISpawnController {
     @Override
     public synchronized double[] getSpawnLocation(RobotPeer r, Battle battle) {
         if (r.isHouseRobot()) {
-        	
-        	//OLD CODE
-        	
             cleanMap();
             for (Map.Entry<WeakReference<Battle>, HouseRobotBattlePositions> entry : battlePositions.entrySet()) {
                 WeakReference<Battle> pr = entry.getKey();

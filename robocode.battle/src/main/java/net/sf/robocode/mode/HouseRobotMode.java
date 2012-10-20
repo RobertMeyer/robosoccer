@@ -10,19 +10,23 @@ import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.HouseRobotSpawnController;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.core.ContainerBase;
+import net.sf.robocode.io.Logger;
+import net.sf.robocode.repository.IRepositoryManagerBase;
 import robocode.BattleRules;
 import robocode.control.RandomFactory;
-import robocode.control.RobocodeEngine;
+import robocode.control.RobotSpecification;
 
 public class HouseRobotMode extends ClassicMode {
-static {
-	 Battle.addController(new HouseRobotSpawnController());
-}
+	static {
+		Battle.addController(new HouseRobotSpawnController());
+	}
 	protected GuiOptions uiOptions;
 	
+	final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
 	private RobotPeer[] houseRobots = new RobotPeer[4];
-	
-	private int numberOfHouseRobots = 2;
+	private int numberOfHouseRobots;
+	private boolean alreadyRemoved;
 
     /**
      * {@inheritDoc}
@@ -46,22 +50,39 @@ static {
      */
     public void addRobots(int currentTurn, BattlePeers peers){
     	if(currentTurn==1) {
+    		final Random random = RandomFactory.getRandom();
+    		numberOfHouseRobots = random.nextInt(4) + 1;
+    		alreadyRemoved = false;
     		for(int i = 0; i<numberOfHouseRobots; i++) {
 	    		//Ensure to make a new RobotPeer with peer's settings. We need sampleex.MyFirstHouseRobot which
 	    		// is the HouseRobot that will operate in HouseRobot mode.
+    			RobotSpecification[] specs = repository.loadSelectedRobots("sampleex.MyFirstHouseRobot");
 	    		houseRobots[i] = new RobotPeer(peers.getBattle(), peers.getHostManager(),
-	    				new RobocodeEngine().getLocalRepository("sampleex.MyFirstHouseRobot")[0], 0,
-	    				null, peers.getBattle().getRobotsCount(), null);
+	    				specs[0], 0, null, peers.getBattle().getRobotsCount(), null);
 	    		peers.addRobot(houseRobots[i]);
 	        	houseRobots[i].initializeRound(peers.getRobots(), null);
 	        	houseRobots[i].startRound(0, 0);
     		}
     	}
+    	int numHouseRobotsStillAlive = 0;
+    	if(!alreadyRemoved) {
+    		for(int i = 0; i<numberOfHouseRobots; i++) if(houseRobots[i].isAlive()) numHouseRobotsStillAlive++;
+	    	if(peers.getBattle().getActiveRobots()==numHouseRobotsStillAlive) {
+	    		Logger.logMessage("Only HouseRobots are left.");
+	    		endRound(peers);
+	    	}
+    	}
     }
     
     public void endRound(BattlePeers peers) {
-    	for(int i = 0; i<numberOfHouseRobots; i++) {
-    		peers.removeRobot(houseRobots[i]);
+    	if(!alreadyRemoved) {
+    		for(int i = 0; i<numberOfHouseRobots; i++) {
+	    		peers.removeRobot(houseRobots[i]);
+	    		//TODO Attempt at fixing bug where HouseRobots will spawn randomly after a few rounds.
+	    		peers.getBattle().getSpawnController().resetSpawnLocation(houseRobots[i], peers.getBattle());
+	    		houseRobots[i] = null;
+	    	}
+    		alreadyRemoved = true;
     	}
     }
 
