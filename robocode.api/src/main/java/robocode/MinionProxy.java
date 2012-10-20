@@ -174,4 +174,10 @@ public class MinionProxy {
         }
         return 0; // never called
     }
+    
+    public boolean equals(MinionProxy other) {
+    	if(other.peer == this.peer)
+    		return true;
+    	return false;
+    }
 }
