@@ -150,11 +150,10 @@ import robocode.exception.DeathException;
 import robocode.exception.WinException;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 
-
 /**
  * RobotPeer is an object that deals with game mechanics and rules, and makes
  * sure that robots abides the rules.
- *
+ * 
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
  * @author Luis Crespo (contributor)
@@ -165,25 +164,19 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author Patrick Cupka (contributor)
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
- * @author CSSE2003 Team Forkbomb - attributes, equipment
- * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
+ * @author CSSE2003 Team Forkbomb (attributes, equipment)
+ * @author CSSE2003 Team Mysterious-Incontinence (minion functionality)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
-	public static final int
-			WIDTH = 40,
-			HEIGHT = 40;
+	public static final int WIDTH = 40, HEIGHT = 40;
 
-	protected static final int
-			HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
+	protected static final int HALF_WIDTH_OFFSET = (WIDTH / 2 - 2),
 			HALF_HEIGHT_OFFSET = (HEIGHT / 2 - 2);
-	
-	//Special hitbox settings for Botzilla
-	public static final int
-			BZ_WIDTH = WIDTH*2,
-			BZ_HEIGHT = HEIGHT*2;
-	protected static final int
-			BZ_HALF_WIDTH_OFFSET = (BZ_WIDTH / 2 - 2),
+
+	// Special hitbox settings for Botzilla
+	public static final int BZ_WIDTH = WIDTH * 2, BZ_HEIGHT = HEIGHT * 2;
+	protected static final int BZ_HALF_WIDTH_OFFSET = (BZ_WIDTH / 2 - 2),
 			BZ_HALF_HEIGHT_OFFSET = (BZ_HEIGHT / 2 - 2);
 
 	protected static final int MAX_SKIPPED_TURNS = 30;
@@ -197,7 +190,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected IHostingRobotProxy robotProxy;
 	protected AtomicReference<RobotStatus> status = new AtomicReference<RobotStatus>();
 	protected AtomicReference<ExecCommands> commands = new AtomicReference<ExecCommands>();
-	protected AtomicReference<EventQueue> events = new AtomicReference<EventQueue>(new EventQueue());
+	protected AtomicReference<EventQueue> events = new AtomicReference<EventQueue>(
+			new EventQueue());
 	protected AtomicReference<List<TeamMessage>> teamMessages = new AtomicReference<List<TeamMessage>>(
 			new ArrayList<TeamMessage>());
 	protected AtomicReference<List<BulletStatus>> bulletUpdates = new AtomicReference<List<BulletStatus>>(
@@ -205,7 +199,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	protected AtomicReference<List<LandmineStatus>> landmineUpdates = new AtomicReference<List<LandmineStatus>>(
 			new ArrayList<LandmineStatus>());
-	
+
 	// thread is running
 	protected final AtomicBoolean isRunning = new AtomicBoolean(false);
 
@@ -228,10 +222,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected double x;
 	protected double y;
 	protected int skippedTurns;
-	
-	//Radius in which Dispenser will give energy
-	protected double dispenseRadius = WIDTH*3;
-	//Rate at which Dispenser will give energy
+
+	// Radius in which Dispenser will give energy
+	protected double dispenseRadius = WIDTH * 3;
+	// Rate at which Dispenser will give energy
 	protected double maxDispenseRate = 1;
 
 	protected boolean scan;
@@ -260,46 +254,45 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// The number of turns the robot is frozen for, 0 if not frozen
 	protected int frozen = 0;
 
-
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
-	
 
 	// killstreak booleans
 	private boolean isScannable = true;
 	private boolean isKsFrozen = false;
 	private boolean isSuperTank = false;
-	
-	//blackhole
+
+	// blackhole
 	private boolean collidedWithBlackHole = false;
 
 	// killstreak timers
 	private int radarJammerTimeout;
 	private int superTankTimeout;
 	private int frozenTimeout;
-	
-	// killstreak image manager^M
-    HashMap<String, RenderObject> ksImages = new HashMap<String, RenderObject>();
 
-	//For calculation of team's total energy (Team energy sharing mode)
+	// killstreak image manager^M
+	HashMap<String, RenderObject> ksImages = new HashMap<String, RenderObject>();
+
+	// For calculation of team's total energy (Team energy sharing mode)
 	private TeamPeer teamList;
-	
-	//Minion specific variables.
-	//Store parent's minions in an array for parent->minion communication.
+
+	// Minion specific variables.
+	// Store parent's minions in an array for parent->minion communication.
 	private List<RobotPeer> minionList = new ArrayList<RobotPeer>();
-	//Store minion proxies for communication between parent/minion.
+	// Store minion proxies for communication between parent/minion.
 	private List<MinionProxy> minionProxyList = new ArrayList<MinionProxy>();
-	//Need to store host manager for minion creation.
+	// Need to store host manager for minion creation.
 	private IHostManager hostManager;
-	//Store parent proxy for minions.
+	// Store parent proxy for minions.
 	private MinionProxy minionParent;
+
 	/**
 	 * An association of values to every RobotAttribute, such that game
 	 * mechanics can be uniquely determined for each robot based on a variety
 	 * of factors (such as, e.g., equipment).
 	 *
 	 * Attribute values are defined as 1=100%. Thus, in RobotPeer's
-	 * constructor, all attribute values are initialised to 1.
+	 * constructor, all attribute values are initialized to 1.
 	 *
 	 * @see RobotAttribute
 	 */
@@ -320,7 +313,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					new HashMap<EquipmentSlot, EquipmentPart>()
 			);
 
-	
 	double fullEnergy;
 
 	public RobotPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, int duplicate, TeamPeer team, int robotIndex, IHostingRobotProxy parentProxy) {
@@ -2479,11 +2471,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			bulletUpdates.get().add(bulletStatus);
 		}
 	}
-	
+
 	public void addLandmineStatus(LandmineStatus landmineStatus) {
 		if (isAlive()) {
 			landmineUpdates.get().add(landmineStatus);
 		}
+	}
+
+	/**
+	 * @param name the name of the part
+	 * @return the part associated with the given name, or null if none
+	 */
+	private EquipmentPart getEquipmentPart(String name) {
+		return Equipment.getPart(name);
 	}
 
 	/**
@@ -2494,18 +2494,21 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * {@link robocode.AdvancedRobot#setMaxVelocity()}
 	 * {@link robocode.AdvancedRobot#setMaxTurnRate()}
 	 *
-	 * @param partName the name of the part to equip
+	 * @param name the name of the part to equip
 	 * @see Equipment
 	 * @see robocode.AdvancedRobot#setMaxVelocity()
 	 * @see robocode.AdvancedRobot#setMaxTurnRate()
 	 */
-	public void equip(String partName) {
-		EquipmentPart part = Equipment.getPart(partName);
+	public void equip(String name) {
+		EquipmentPart part = getEquipmentPart(name);
 
-		// Unequip whatever's currently occupying this slot (if anything)
+		// If no part was found with the given name, don't do anything.
+		if (part == null) {
+			return;
+		}
+
+		// Replace whatever's currently occupying this slot with the new part
 		unequip(part.getSlot());
-
-		// Add the part to the map of equipped items
 		equipment.get().put(part.getSlot(), part);
 
 		/* Add all the attribute modifiers of the part to the current
@@ -3007,7 +3010,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (ksImages.containsKey(image)) {
 			return true;
 		}
-		
 		return false;
 	}
 }
