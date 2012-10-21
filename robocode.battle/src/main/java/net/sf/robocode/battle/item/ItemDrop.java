@@ -13,11 +13,8 @@ import net.sf.robocode.battle.RenderObject;
 /**
  * ItemDrop is an abstract class made for the creation of item/powerup objects.
  * 
- * Original:
  * @author s4238358 (Dream Team)
- * 
- * Contributors:
- * @author Brandon Warwick (Team-Telos)
+ * @author Brandon Warwick (Team-Telos) (contributor)
  * @author Ameer Sabri (Dream Team) (commenting only)
  */
 

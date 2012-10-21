@@ -11,39 +11,34 @@ import robocode.robotinterfaces.IItemEvents;
 import robocode.robotinterfaces.IItemRobot;
 
 /**
- * ScannedItemEvent:
- *  Received when a robot scans the item, whether it is captured or not
- *  Returns a ScannedRobotEvent directly after this IF a robot has the item
- *  Tells the robot the location of the item, and the name of robot
- *  that is holding it
- *  
- *  TODO: Needs to be serializable and comparable (all events do apparently).
+ * A ScannedItemEvent is sent to {@link Robot#onScannedItem(ScannedItemEvent) onScannedItem()}
+ * when your robot scans an item.
+ * You can use the information contained in this event to determine what to do.
  *
- * @author team-Telos
- *
+ * @author Ameer Sabri (Dream Team)
  */
 public class ScannedItemEvent extends Event {
 	
 	private static final long serialVersionUID = 2L;
 	private final static int DEFAULT_PRIORITY = 20;
 	private final String itemName;
-	private final String robotName;
 	private final double distance;
+	private final double bearing;
 	private final double x;
 	private final double y;
 	
 	/**
 	 * New ScannedItemEvent
-	 * @param itemName String representation of the item
-	 * @param robotName Robot's name carrying the item
-	 * @param distance - the distance the robot is from the item
-	 * @param x x-location of the item
-	 * @param y y-location of the item
+	 * @param itemName the name of the item scanned
+	 * @param distance the distance the robot is from the item scanned
+	 * @param bearing the bearing of the item scanned
+	 * @param x the x-coordinate of the item scanned
+	 * @param y the y-coordinate of the item scanned
 	 */
-	public ScannedItemEvent(String itemName, String robotName, double distance, double x, double y) {
+	public ScannedItemEvent(String itemName, double distance, double bearing, double x, double y) {
 		this.itemName = itemName;
-		this.robotName = robotName;
 		this.distance = distance;
+		this.bearing = bearing;
 		this.x = x;
 		this.y = y;
 	}
@@ -57,19 +52,19 @@ public class ScannedItemEvent extends Event {
 	}
 	
 	/**
-	 * Get the Robot's name holding the item
-	 * @return The Robot's name holding the item OR null if none
-	 */
-	public String getRobotName() {
-		return this.robotName;
-	}
-	
-	/**
 	 * Get the distance to the scanned item
 	 * @return the distance the item is from the robot
 	 */
 	public double getDistance() {
 		return this.distance;
+	}
+	
+	/**
+	 * Get the bearing of the scanned item.
+	 * @return the bearing of the scanned item
+	 */
+	public double getBearing() {
+		return this.bearing;
 	}
 	
 	/**
@@ -97,32 +92,20 @@ public class ScannedItemEvent extends Event {
 	}
 	
 	/**
-	 * set the priority for the event. Each item may have a different
-	 * priority so this method will be used to change each items priority.
-	 * TODO: Maybe change this bit, cos i don't know exactly how right it is.
-	 * Event has a setPriority method that is final, so it can't be overriden,
-	 * but we should be able to set the priority for each item.
-	 * @param priority
+	 * {@inheritDoc}
 	 */
-	public void priority(int priority) {
-		super.setPriority(priority);
-	}
-	
-	/**
-	 * 
-	 * @param event
-	 * @return
-	 */
+	@Override
 	public final int compareTo(Event event) {
         final int res = super.compareTo(event);
 
         if (res != 0) {
             return res;
         }
-        // Compare the distance, if the events are ScannedRobotEvents
-        // The shorter distance to the robot, the higher priority
-        if (event instanceof ScannedRobotEvent) {
-            return (int) (this.getDistance() - ((ScannedRobotEvent) event).getDistance());
+        /* Compare the distance, if the events are ScannedItemEvents. 
+         * The shorter the distance to the robot, the higher the priority.
+         */
+        if (event instanceof ScannedItemEvent) {
+            return (int) (this.getDistance() - ((ScannedItemEvent) event).getDistance());
         }
         // No difference found
         return 0;
@@ -158,7 +141,7 @@ public class ScannedItemEvent extends Event {
 			ScannedItemEvent obj = (ScannedItemEvent) object;
 
 			return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.itemName) +
-					serializer.sizeOf(obj.robotName) + 3 * RbSerializer.SIZEOF_DOUBLE;
+					+ 4 * RbSerializer.SIZEOF_DOUBLE;
 		}
 
         @Override
@@ -166,8 +149,8 @@ public class ScannedItemEvent extends Event {
 			ScannedItemEvent obj = (ScannedItemEvent) object;
 
 			serializer.serialize(buffer, obj.itemName);
-			serializer.serialize(buffer, obj.robotName);
 			serializer.serialize(buffer, obj.distance);
+			serializer.serialize(buffer, obj.bearing);
 			serializer.serialize(buffer, obj.x);
 			serializer.serialize(buffer, obj.y);
 		}
@@ -175,12 +158,12 @@ public class ScannedItemEvent extends Event {
         @Override
 		public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
 			String itemName = serializer.deserializeString(buffer);
-			String robotName = serializer.deserializeString(buffer);
 			double distance = buffer.getDouble();
+			double bearing = buffer.getDouble();
 			double x = buffer.getDouble();
 			double y = buffer.getDouble();
 
-			return new ScannedItemEvent(itemName, robotName, distance, x, y);
+			return new ScannedItemEvent(itemName, distance, bearing, x, y);
 		}
 	}
 }

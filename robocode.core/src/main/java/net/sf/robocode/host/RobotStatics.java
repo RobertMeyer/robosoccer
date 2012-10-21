@@ -218,6 +218,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		return isDroid;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isHouseRobot() {
 		return isHouseRobot;
 	}

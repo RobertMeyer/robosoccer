@@ -1,18 +1,20 @@
 Division 9 Plasmaprojector : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/plasma.png
 SOUND_PATH = /net/sf/robocode/sound/sounds/boom.wav
 GUN_HEAT_RATE = 110
-BULLET_DAMAGE = 1500
+BULLET_DAMAGE = 150
 ENERGY = -10
-BULLET_SPEED = 20000
+BULLET_SPEED = 200
 
 Guardian Heavy Tank Armor : BODY
+IMAGE_PATH = /net/sf/robocode/ui/images/guardian.png
 ARMOR = 150
 ACCELERATION = -10
 RAM_ATTACK = 10
 RAM_DEFENSE = 10
 
 Scout armour : BODY
-ARMOR = -100
+ARMOR = -10
 ACCELERATION = 60
 RAM_ATTACK = -10
 ENERGY = -30
@@ -59,7 +61,7 @@ IMAGE_PATH = /net/sf/robocode/ui/images/twinturret.png
 SOUND_PATH = /net/sf/robocode/sound/sounds/burst.wav
 ACCELERATION = 10
 GUN_HEAT_RATE = -80
-BULLET_SPEED = 500
+BULLET_SPEED = 50
 BULLET_DAMAGE = -50
 ENERGY = -30
 
@@ -67,9 +69,10 @@ Pistol : GUN
 ACCELERATION = 20
 BULLET_DAMAGE = -50
 BULLET_SPEED = 20
+SOUND_PATH = /net/sf/robocode/sound/sounds/pewpew.wav
 GUN_HEAT_RATE = 10
 GUN_TURN_ANGLE = 40
-ENERGY_REGEN = 30
+ENERGY_REGEN = 3
 
 Sword : GUN
 IMAGE_PATH = /net/sf/robocode/ui/images/Sword.png

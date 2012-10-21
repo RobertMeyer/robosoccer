@@ -10,7 +10,8 @@ import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 
 /** 
- * Generates a maze for the given battlefield using obstacles.
+ * Generates a maze for the given battlefield using obstaclePeer for walls.
+ * Maze generation is via a randomised depth first search.
  * 
  * @author Jack Toohey
  *
@@ -28,6 +29,15 @@ public class Maze {
 	private Cell nextCell;
 	private Stack<Cell> cellStack = new Stack<Cell>();
 	
+	/**
+	 * Create a maze for the given battle and settings.
+	 * 
+	 * @param bp			Properties for the battle.
+	 * @param cellWidth		Minimum width of maze passages.
+	 * @param cellHeight	Minimum height of maze passages.
+	 * @param wallWidth		Minimum width of maze walls.
+	 * @param wallHeight	Minimum height of maze walls.
+	 */
 	public Maze(BattleProperties bp, int cellWidth, int cellHeight, int wallWidth, int wallHeight) {
 		this.cellHeight = cellHeight;
 		this.cellWidth = cellWidth;
@@ -47,7 +57,11 @@ public class Maze {
 		this.recurseCell();
 	}
 	
-	private void initMaze(BattleProperties bp) {
+	/* Iterate through battlefield, creating cells so they are in a grid pattern.
+	 * Start at (cellWidth / 2, cellHeight / 2) because robocode's coordinates
+	 * are taken from the centre of the object.
+	 */
+	private void initMaze(BattleProperties bp) {		
 		for (int y = cellHeight / 2; y < bp.getBattlefieldHeight();) {
 			for (int x = cellWidth / 2; x < bp.getBattlefieldWidth();) {
 				this.cellMatrix.add(new Cell(x, y));
@@ -70,6 +84,10 @@ public class Maze {
 		}
 	}
 	
+	/* Recurse through the list of cells, 
+	 * performing a depth first search on them to create the maze structure.
+	 * Return when all cells have been processed.
+	 */
 	private void recurseCell() {	
 		while (!this.cellStack.isEmpty()) {
 			 if (this.curCell.isDeadEnd() || this.curCell.isEnd() || this.curCell.isStart()) {
@@ -86,7 +104,7 @@ public class Maze {
 			return;
 	}
 	
-	
+	/* Iterate through list of cells, setting each cell's neighbour. */
 	private void initNeighbours(BattleProperties bp) {
 		for (int y = cellHeight / 2; y < bp.getBattlefieldHeight();) {
 			for (int x = cellWidth / 2; x < bp.getBattlefieldWidth();) {
@@ -126,7 +144,8 @@ public class Maze {
 		}
 	}
 	
-	public Cell getCell(int x, int y) {
+	/* Return the cell located at (x, y) in the list of cells for this maze. */
+	private Cell getCell(int x, int y) {
 		for (Cell c : cellMatrix) {
 			if ((c.getX() == x) && (c.getY() == y)) {
 				return c;
@@ -135,6 +154,12 @@ public class Maze {
 		return null;
 	}
 	
+	/**
+	 * Return a list of obstacles describing the walls of the maze.
+	 * 
+	 * @param battleRules BattleRules of the battle the maze was generated for.
+	 * @param battle Battle the maze was generated for.
+	 */
 	public List<ObstaclePeer> wallList(BattleRules battleRules, Battle battle) {
 		List<ObstaclePeer> walls = new ArrayList<ObstaclePeer>();
 		int id = 0;

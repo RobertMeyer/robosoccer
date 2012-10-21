@@ -211,6 +211,7 @@ public class BattlePeers {
 	public void removeRobots(ArrayList<RobotPeer> robotsToRemove){
 		for(RobotPeer peer : robotsToRemove){
 			robots.remove(peer);
+			contestants.remove(peer.getTeamPeer());
 		}
 	}
 	
