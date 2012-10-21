@@ -1,7 +1,6 @@
 package sample;
 
 import robocode.Minion;
-import robocode.MinionProxy;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
@@ -19,8 +18,6 @@ public class TurretMinion extends Minion {
 	}
 	
 	public void run( ) {
-		MinionProxy parent = getParent();
-		
 		while (true) {
 			// Scan entire battlefield for enemy robots
 			turnRadarRight(360);

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package net.sf.robocode.peer;
 
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -26,7 +27,7 @@ public interface IRobotPeer {
     void setRunning(boolean value);
 
     boolean isRunning();
-
+    
     ExecResults waitForBattleEndImpl(ExecCommands newCommands);
 
     ExecResults executeImpl(ExecCommands newCommands);
@@ -40,4 +41,8 @@ public interface IRobotPeer {
     void setupThread();
 
     void equip(String partName);
+    
+    Rectangle2D.Float getOwnGoal();
+    
+    Rectangle2D.Float getEnemyGoal();
 }

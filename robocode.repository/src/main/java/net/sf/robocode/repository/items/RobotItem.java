@@ -493,6 +493,11 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     public boolean isBall() {
 		return robotType.isBall();
 	}
+    
+    @Override
+    public boolean isSoccerRobot() {
+		return robotType.isSoccerRobot();
+	}
 
     @Override
 	public boolean isHouseRobot() {
@@ -521,6 +526,10 @@ public class RobotItem extends NamedItem implements IRobotRepositoryItem {
     @Override
     public boolean isZombie() {
     	return robotType.isZombie();
+    }
+    
+    public boolean isHeatRobot() {
+    	return robotType.isHeatRobot();
     }
 
     @Override

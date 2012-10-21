@@ -8,7 +8,9 @@
 package robocode;
 
 import robocode.Robot;
-import robocode.robotinterfaces.IBasicRobot;
+import robocode.robotinterfaces.ISoldierEvents;
+import robocode.robotinterfaces.ISoldierRobot;
+import java.awt.Color;
 
 /**
  * An extension of the basic robot class, containing methods for behaviours
@@ -19,46 +21,53 @@ import robocode.robotinterfaces.IBasicRobot;
  * @author The Fightin' Mongooses (contributor)
  * @see Robot
  */
-public class SoldierRobot extends Robot implements IBasicRobot {
+public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents {
 	
-    public final int NO_TACTIC = 0;
-	public final int PAUSE = 1;
-	public final int ADVANCE = 2;
-	public final int RETREAT = 3;
-	public final int ATTACK = 4;
-	public final int INCREASE_POWER = 5;
-	public final int DECREASE_POWER = 6;
-	public final int TAUNT = 7;
+    protected static final int NO_TACTIC = 0;
+	protected static final int PAUSE = 1;
+	protected static final int ADVANCE = 2;
+	protected static final int RETREAT = 3;
+	protected static final int ATTACK = 4;
+	protected static final int INCREASE_POWER = 5;
+	protected static final int DECREASE_POWER = 6;
+	protected static final int TAUNT = 7;
 	
-	private int tactic = 0;
 	protected double power = 1.5;
+	private int tactic = 0;
 	
 	public void receiveCommand(CommanderEvent e) {
-		tactic = e.getTactic();
-		switch (tactic) {
-			case PAUSE:
-				pause();
-				break;
-				
-			case ADVANCE:
-			case RETREAT:
-			case ATTACK:
-				turnRadarRight(360);
-				break;
-				
-			case INCREASE_POWER:
-				increasePower();
-				break;
-				
-			case DECREASE_POWER:
-				decreasePower();
-				break;
-				
-			case TAUNT:
-				taunt();
-				break;
+		switch(e.getTactic()) {
+		case PAUSE:
+			pause();
+			break;
+		case ADVANCE:
+			advance();
+			break;
+		case RETREAT:
+			retreat();
+			break;
+		case ATTACK:
+			attack();
+			break;
+		case INCREASE_POWER:
+			increasePower();
+			break;
+		case DECREASE_POWER:
+			decreasePower();
+			break;
+		case TAUNT:
+			taunt();
+			break;
+		default:
+			//do nothing
+			break;
 		}
 	}
+		
+	public void onCommandRecieved(CommanderEvent e) {
+		tactic = e.getTactic();
+	}
+	
 	
 	/**
 	 * Passes information to the tactic methods on scan.
@@ -66,20 +75,12 @@ public class SoldierRobot extends Robot implements IBasicRobot {
 	 * you should put super.onScannedRobot early in the method, so that
 	 * ScannedRobotEvents can still be passed.
 	 */
-	public void onScannedRobot(ScannedRobotEvent e) {
-		switch (tactic) {
-			case ADVANCE:
-				advance(e);
-				break;
-				
-			case RETREAT:
-				retreat(e);
-				break;
-				
-			case ATTACK:
-				attack(e);
-				break;
-		}
+	
+	/**
+	 * Default code for the default behaviour (No tactic given).
+	 */
+	public void defaultBehaviour() {
+		turnRight(360);
 	}
 	
 	/**
@@ -90,60 +91,67 @@ public class SoldierRobot extends Robot implements IBasicRobot {
 	}
 	
 	/**
-	 * Find an enemy and approach them.
+	 * Default code for the advance behaviour
 	 */
-	public void advance(ScannedRobotEvent e) {
-		turnRight(e.getBearing());
-		while(true) ahead(1);
+	public void advance() {
+		ahead(100);
 	}
 	
 	/**
-	 * Back away.
+	 * Default code for the retreating behaviour
 	 */
-	public void retreat(ScannedRobotEvent e) {
-		turnRight(e.getBearing());
-		while(true) back(1);
+	public void retreat() {
+		back(100);
 	}
 	
 	/**
-	 * Find an enemy and fire at them!
+	 * Default attacking behavious
 	 */
-	public void attack(ScannedRobotEvent e) {
-		turnGunRight(getHeading() - getGunHeading() + e.getBearing());
+	public void attack() {
+		turnRight(45);
 		fire(power);
 	}
 	
 	/**
-	 * Increase the power of the robot's shots.
+	 * Increase the power of the robot's shots.  Returns the 
+	 * tactic to continue with after increase.
+	 * 
+	 * @return the tactic to be used immediately after the increase
 	 */
-	public void increasePower() {
+	public int increasePower() {
 		if (power < 2.5) {
 			power += 0.5;
 		} else {
 			power = 3.0;
 		}
+		return ADVANCE;
 	}
 	
 	/**
-	 * Decrease the power of your shots to save power.
+	 * Decrease the power of your shots to save power.  Returns the
+	 * tactic to continue with after decrease.
+	 * 
+	 * @return The tactic to be used immediately after the decrease
 	 */
-	public void decreasePower() {
+	public int decreasePower() {
 		if (power > 1.0) {
 			power -= 0.5;
 		} else {
 			power = 0.5;
 		}
+		return RETREAT;
 	}
 	
 	/**
-	 * Degrade your enemies by taunting them.
+	 * The default taunt behaviour to provoke your enemy
 	 */
 	public void taunt() {
-    	for (int i = 0; i < 360; i++) {
-    		turnRadarRight(1);
-    		turnGunRight(1);
-    		turnLeft(1);
-    	}
+    	turnRadarRight(360);
+    	turnGunRight(-360);
 	}
+	
+	public final ISoldierEvents getSoldierEventListener() {
+        return this; // this robot is listening
+    }
 	
 }

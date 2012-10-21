@@ -1,6 +1,7 @@
 package sample;
 
 import robocode.Minion;
+import robocode.MinionProxy;
 import robocode.ScannedRobotEvent;
 
 /**
@@ -10,6 +11,7 @@ import robocode.ScannedRobotEvent;
  */
 public class SucideMinion extends Minion {
 	String targetName = null;
+	String parentName = null;
 	
 	@Override
 	public int getMinionType() {
@@ -25,13 +27,12 @@ public class SucideMinion extends Minion {
 	}
 	
 	public void onScannedRobot(ScannedRobotEvent e) {
-		//If we have a target and this isn't it then keep scan again
+		//If we have a target and this isn't it then scan again
 		if (targetName != e.getName( ) && targetName != null) {
 			return;
-		}
+		} 
 		
-		//If no robot is being targeted, then target this robot 
-		// and latch onto it
+		//If no robot is being targeted, then target this robot and latch onto it
 		if (targetName == null) {
 			targetName = e.getName( );
 		}

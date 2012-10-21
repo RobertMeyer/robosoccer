@@ -3,9 +3,10 @@ package net.sf.robocode.battle;
 import robocode._RobotBase;
 
 public class MinionData {
-	private static Boolean minionsEnabled = new Boolean(false);
-	private static Boolean isGui = new Boolean(false);
+	private static Boolean minionsEnabled = false;
+	private static Boolean isGui = false;
 	private static String[] minionList = new String[]{"","",""};
+	private static Integer powerConsumption = 0;
 	//TODO: Get default minions from james.
 	private static String[] defaultMinions = new String[]{"sample.MinionBot","sample.MinionBot","sample.MinionBot"};
 
@@ -28,17 +29,27 @@ public class MinionData {
 		return minions;
 	}
 	
-	public static Boolean getMinionsEnabled() {
+	public static boolean getMinionsEnabled() {
 		return minionsEnabled;
 	}
 	
 	public static void setMinionsEnabled(boolean flag) {
 		minionsEnabled = flag;
 	}
-	public static Boolean getIsGui() {
+	
+	public static boolean getIsGui() {
 		return isGui;
 	}
+	
 	public static void setIsGui(boolean flag) {
 		isGui = flag;
+	}
+	
+	public static void setEnergyConsumption(Integer power) {
+		powerConsumption = power;
+	}
+	
+	public static Integer getEnergyConsumption() {
+		return powerConsumption;
 	}
 }

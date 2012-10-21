@@ -173,6 +173,8 @@ public class FlagMode extends ClassicMode {
     @Override
 	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
+    	//PATCH: flag.getXLocation(), flag.getYLocation() are invalid until the flag is spawned (-50,-50).
+    	flag.updateToRandomLocation();
     	objects.add(new RenderObject("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
     	return objects;
     }
@@ -229,9 +231,9 @@ public class FlagMode extends ClassicMode {
 			resultsTable = new BattleResultsTableModel();
 		}
     	
-    	resultsTable.showOverallRank(true);
-    	resultsTable.showRobotName(true);
-    	resultsTable.showTotalScore(true, "Flag Score");
+    	resultsTable.showOverallRank()
+    				.showRobotName()
+    				.showTotalScore("Flag Score");
     	
     	resultsTable.setTitle("Flag Results");
     }

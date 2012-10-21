@@ -26,6 +26,7 @@ public class RenderAnim implements IRenderable {
 	private int height;
 	private int rows;
 	private int cols;
+	private int loops;
 	
 	/**
 	 * Constructs a new RenderObject with given parameters.
@@ -36,8 +37,9 @@ public class RenderAnim implements IRenderable {
 	 * @param height - height of each individual sprite
 	 * @param rows - rows of the spritesheet
 	 * @param cols - columns of the spritesheet
+	 * @param loops - number of loops the anim should make
 	 */
-	public RenderAnim(String name, String filename, int width, int height, int rows, int cols) {
+	public RenderAnim(String name, String filename, int width, int height, int rows, int cols, int loops) {
 		this.at = new AffineTransform();
 		this.name = name;
 		this.filename = filename;
@@ -50,6 +52,7 @@ public class RenderAnim implements IRenderable {
 		this.height = height;
 		this.rows = rows;
 		this.cols = cols;
+		this.loops = loops;
 	}
 
 	/**
@@ -63,8 +66,9 @@ public class RenderAnim implements IRenderable {
 	 * @param height - height of each individual sprite
 	 * @param rows - rows of the spritesheet
 	 * @param cols - columns of the spritesheet
+	 * @param loops - number of loops the anim should make
 	 */
-	public RenderAnim(String name, String filename, double x, double y, int width, int height, int rows, int cols) {
+	public RenderAnim(String name, String filename, double x, double y, int width, int height, int rows, int cols, int loops) {
 		this.name = name;
 		this.filename = filename;
 		this.at = new AffineTransform();
@@ -78,6 +82,7 @@ public class RenderAnim implements IRenderable {
 		this.height = height;
 		this.rows = rows;
 		this.cols = cols;
+		this.loops = loops;
 	}
 
 	/**
@@ -90,8 +95,9 @@ public class RenderAnim implements IRenderable {
 	 * @param height - height of each individual sprite
 	 * @param rows - rows of the spritesheet
 	 * @param cols - columns of the spritesheet
+	 * @param loops - number of loops the anim should make
 	 */
-	public RenderAnim(String name, String filename, AffineTransform at, int width, int height, int rows, int cols) {
+	public RenderAnim(String name, String filename, AffineTransform at, int width, int height, int rows, int cols, int loops) {
 		this.name = name;
 		this.filename = filename;
 		this.at = at;
@@ -104,6 +110,7 @@ public class RenderAnim implements IRenderable {
 		this.height = height;
 		this.rows = rows;
 		this.cols = cols;
+		this.loops = loops;
 	}
 
 	public int getSpriteWidth() {
@@ -120,6 +127,10 @@ public class RenderAnim implements IRenderable {
 	
 	public int getCols() {
 		return cols;
+	}
+	
+	public int getLoops() {
+		return loops;
 	}
 	
 	/**
@@ -313,7 +324,7 @@ public class RenderAnim implements IRenderable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Color getColor() {
+	public Color getColour() {
 		return this.colour;
 	}
 }

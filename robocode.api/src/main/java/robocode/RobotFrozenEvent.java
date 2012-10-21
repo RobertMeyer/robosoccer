@@ -15,13 +15,20 @@ public class RobotFrozenEvent extends Event {
 	private static final long serialVersionUID = 1L;
 	private static final int DEFAULT_PRIORITY = 80;
 	
+	private int turnsFrozenFor;
+	
 	/** 
 	 * Called by game to create new RobotFrozenEvent
-	 * 
+	 * @param turnsFrozenFor: the number of turn the robot is frozen for
 	 */
 	
-	public RobotFrozenEvent() {
+	public RobotFrozenEvent(int turnsFrozenFor) {
 		super();
+		this.turnsFrozenFor = turnsFrozenFor;
+	}
+	
+	public int getTurnFrozenFor() {
+		return turnsFrozenFor;
 	}
 	
 	/**
@@ -74,7 +81,7 @@ public class RobotFrozenEvent extends Event {
 
         @Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
-            return new RobotFrozenEvent();
+            return new RobotFrozenEvent(0);
         }
     }
 }
