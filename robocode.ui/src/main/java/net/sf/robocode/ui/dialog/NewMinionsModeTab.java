@@ -53,7 +53,11 @@ public class NewMinionsModeTab extends JPanel{
 	private String currentSelection = "";
 	private JCheckBox enableMinion;
 	private JCheckBox insaneMode;
-
+	public static Object[] minionRobots = null;
+	private IRepositoryManager repository;
+	private List<String> minionsList = new CopyOnWriteArrayList<String>();
+	
+	//A function to set the selected mode.
 	private class changeHandler implements ChangeListener {
 		@Override
 		public void stateChanged(ChangeEvent ev) {
@@ -61,11 +65,8 @@ public class NewMinionsModeTab extends JPanel{
 			MinionData.setInsaneMode(insaneMode.isSelected());
 		}
 	}
-
-	public static Object[] minionRobots = null;
-	private IRepositoryManager repository;
-	private List<String> minionsList = new CopyOnWriteArrayList<String>();
 	
+	//A function to create the list of available minions on the repository.
 	public void minionRobots(int minionType) {		
 		minionsList = new CopyOnWriteArrayList<String>();
 
@@ -84,6 +85,7 @@ public class NewMinionsModeTab extends JPanel{
 		
 	}
 	
+	//A class for action listener to create the event when the button is pushed.
 	private class buttonHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ev) {
@@ -134,6 +136,7 @@ public class NewMinionsModeTab extends JPanel{
 		}
 	}
 	
+	//A function to create a new Popup dialog to display the available minion robots
 	public class CustomDialog extends JDialog{
 		private class buttonHandler implements ActionListener {
 			@Override
@@ -175,25 +178,24 @@ public class NewMinionsModeTab extends JPanel{
 		}
 	}
 	
-	public void minionList(){
-		
-
-	}
 	
+	//initialize the tab.
 	public NewMinionsModeTab(IWindowManager window) {
 		super();
 		this.window = window;
 		runTab();
 	}
 	
+	
+	//Set the border layout of the tab,set to visible.
 	public void runTab(){
-		
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		setLayout(new BorderLayout());
 		add(mainPanel());
 		setVisible(true);		
 	}
 	
+	//using a main panel to store all the different sections.
 	private JPanel mainPanel(){
 		if(mainPanel == null){
 			
@@ -217,6 +219,7 @@ public class NewMinionsModeTab extends JPanel{
 		return mainPanel;
 	}
 
+	//A function to create the the panel for global setting.
 	private void createGlobalSettings() {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
@@ -245,6 +248,7 @@ public class NewMinionsModeTab extends JPanel{
 		globalSetting.add(insaneMode);
 	}
 
+	//A function to create a minion panel.
 	private void createMinionPanel(int gridx, int gridy, String panelStr, JTextField field, JButton btn) {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
@@ -254,10 +258,12 @@ public class NewMinionsModeTab extends JPanel{
 		mainPanel.add(minionSelectionPanel(panelStr, field, btn), constraints);
 	}
 	
+	//A function to create the title for the border.
 	private Border getTitledBorder(String title) {
 		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title);
 	}
 	
+	//A function to create the textbox to display the selected minion robot.
 	private JPanel minionSelectionPanel(String panelStr, JTextField field, JButton btn) {
 		JPanel minionSelect = new JPanel();
 		field.setText("<Default>");
@@ -270,22 +276,4 @@ public class NewMinionsModeTab extends JPanel{
 		return minionSelect;
 	}
 	
-	public static class ItemWrapper {
-
-        private final IRepositoryItem item;
-
-        public ItemWrapper(IRepositoryItem item) {
-            this.item = item;
-        }
-
-        public IRepositoryItem getItem() {
-            return item;
-        }
-
-        // Used writing the robot name in JList. Is used for keyboard typing in JList to find robot. Bugfix for [2658090]
-        @Override
-        public String toString() {
-            return item.getUniqueShortClassNameWithVersion();
-        }
-    }
 }
