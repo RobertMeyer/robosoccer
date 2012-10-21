@@ -19,7 +19,7 @@ public class TestDeathEffect {
 		List<RobotPeer> surrounding = new ArrayList<RobotPeer>();
 		BattleProperties bp = Mockito.mock(BattleProperties.class);
 		Mockito.when(bp.getBattlefieldHeight()).thenReturn(800);
-		de.setup(bp);
+		de.setup(bp, null);
 		
 		Mockito.when(deadRobot.getX()).thenReturn(100.0);
 		Mockito.when(deadRobot.getY()).thenReturn(100.0);
