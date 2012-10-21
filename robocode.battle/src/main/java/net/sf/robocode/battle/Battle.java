@@ -713,6 +713,7 @@ public class Battle extends BaseBattle {
 
 	@Override
 	protected void shutdownTurn() {
+		customObject.clear();
 		if (getEndTimer() == 0) {
 			if (isAborted()) {
 				for (RobotPeer robotPeer : getRobotsAtRandom()) {

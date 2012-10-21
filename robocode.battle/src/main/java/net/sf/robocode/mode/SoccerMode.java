@@ -283,6 +283,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 */
 	@Override
 	public List<IRenderable> createRenderables() {
+		System.out.println("test");
 		List<IRenderable> objs = new ArrayList<IRenderable>();
 		scoreTeam1 = new RenderString("score2", "Blue Team: "
 				+ (int) team1.getStatistics().getTotalScore());
