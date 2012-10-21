@@ -4,11 +4,11 @@ import java.awt.*;
 import java.nio.ByteBuffer;
 
 import net.sf.robocode.peer.IRobotStatics;
+import net.sf.robocode.serialization.ISerializableHelper;
 import net.sf.robocode.serialization.RbSerializer;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.IItemEvents;
 import robocode.robotinterfaces.IItemRobot;
-import net.sf.robocode.serialization.ISerializableHelper;
 
 /**
  * A HitItemEvent is sent to {@link Robot#onHitItem(HitItemEvent) onHitItem()}
@@ -25,9 +25,9 @@ public class HitItemEvent extends Event {
 	private final static int DEFAULT_PRIORITY = 20;
 
 	private final String itemName;
+	private final double energy;
 	private final boolean isEquippable;
 	private final boolean isDestroyable;
-	private final double energy;
 
 	/**
 	 * Called by the game to create a new HitItemEvent.
@@ -137,7 +137,7 @@ public class HitItemEvent extends Event {
 		@Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String itemName = serializer.deserializeString(buffer);
-            double energy = serializer.deserializeDouble(buffer);
+            double energy = buffer.getDouble();
             boolean isEquippable = serializer.deserializeBoolean(buffer);
             boolean isDestroyable = serializer.deserializeBoolean(buffer);
 
