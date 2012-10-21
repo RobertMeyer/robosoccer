@@ -105,11 +105,8 @@ public class ZombieMode extends ClassicMode {
 		}
 	}
 
-    /**
-     * Setup for FlagMode to just display the rank, the name, the total score
-     * and the flag points
-     */
-    public void setCustomResultsTable() {
+	@Override
+	public void setCustomResultsTable() {
     	if (resultsTable == null) {
 			resultsTable = new BattleResultsTableModel();
 		}
@@ -123,6 +120,7 @@ public class ZombieMode extends ClassicMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public BattleResultsTableModel getCustomResultsTable() {
     	return resultsTable;
     }
@@ -134,4 +132,14 @@ public class ZombieMode extends ClassicMode {
     public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
     	return startingEnergy / 3;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public boolean shouldDoRamDamage(RobotPeer robot, RobotPeer otherRobot) {
+    	if(otherRobot.isZombie())
+    		return false;
+    	return true;
+	}
 }

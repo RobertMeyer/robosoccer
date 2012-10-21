@@ -89,7 +89,7 @@ public class chaseHeatRobot extends AdvancedRobot {
 			scan();
 			return;
 		}
-		
+/*		
 		scanDirection = -scanDirection;
 		setTurnRadarRight(360*scanDirection);
 		
@@ -107,6 +107,7 @@ public class chaseHeatRobot extends AdvancedRobot {
 		// Move the gun to the predicted direction of the robot
 		aimAndFire(e);
 		scan();
+		*/
 	}
 	
 
