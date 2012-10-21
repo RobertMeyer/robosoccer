@@ -479,6 +479,13 @@ public class ClassicMode implements IMode {
 
 	public void scoreRoundPoints() {
 	}
+
+	/**
+	 * Modify the starting energy.
+	 */
+	public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
+		return startingEnergy;
+	}
 	
 	/**
 	 * Whether or not two robots should get hurt when they bump into each other.

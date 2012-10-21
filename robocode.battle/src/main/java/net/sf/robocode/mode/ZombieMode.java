@@ -129,6 +129,14 @@ public class ZombieMode extends ClassicMode {
      * {@inheritDoc}
      */
     @Override
+    public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
+    	return startingEnergy / 3;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
 	public boolean shouldDoRamDamage(RobotPeer robot, RobotPeer otherRobot) {
     	if(robot.isZombie() && otherRobot.isZombie())
     		return false;
