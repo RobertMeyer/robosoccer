@@ -360,12 +360,10 @@ public class Battle extends BaseBattle {
 		bullets.add(bullet);
 	}
 
-	public void addMinion(RobotPeer minion) {
+	public void addMinion(RobotPeer minion, double startingEnergy) {
 		robotsCount++;
 		peers.addRobot(minion);
-		minion.initializeRound(peers.getRobots(), null);
-		// TODO:Move the following calculations into a function. It's used a few
-		// times.
+		minion.initializeRound(peers.getRobots(), null, startingEnergy);
 		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
 		final long waitMillis = waitTime / 1000000;
 		final int waitNanos = (int) (waitTime % 1000000);

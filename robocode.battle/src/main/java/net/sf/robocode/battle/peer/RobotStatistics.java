@@ -346,7 +346,9 @@ public class RobotStatistics implements ContestantStatistics {
 
     public void scoreRammingDamage(String robot) {
         if (isActive) {
-            incrementRobotDamage(robot, robocode.Rules.ROBOT_HIT_DAMAGE);
+        	if(Math.abs(robotPeer.getRamDamage() - 1.0) < 0.00001)
+        		incrementRobotDamage(robot, robocode.Rules.ROBOT_HIT_DAMAGE);
+        	else incrementRobotDamage(robot, robotPeer.getRamDamage());
             rammingDamageScore += robotPeer.getRamAttack();
         }
     }

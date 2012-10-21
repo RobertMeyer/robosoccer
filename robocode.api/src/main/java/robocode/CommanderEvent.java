@@ -38,8 +38,9 @@ public class CommanderEvent extends Event {
 	public final int INCREASE_POWER = 5;
 	public final int DECREASE_POWER = 6;
 	public final int TAUNT = 7;
-    
-    private final String name;
+
+    @SuppressWarnings("unused")
+	private final String name;
     protected final int tactic;
 
     /**

@@ -192,7 +192,8 @@ public class BulletPeer {
 				double damage = Rules.getBulletDamage(power);
 				double score;
 
-				if (otherRobot.attributes.get().get(RobotAttribute.ARMOR) - 1.0 < 0.00001) {
+				if (Math.abs(otherRobot.attributes.get().get(RobotAttribute.ARMOR) 
+						- 1.0) < 0.00001) {
 					score = damage;
 				} else {
 					// Use inverse relationship --> more armor less damage
@@ -211,7 +212,12 @@ public class BulletPeer {
 					if (owner.isDispenser()) {
 						otherRobot.updateEnergy(damage);
 					} else {
-						otherRobot.updateEnergy(-damage);
+						if(!(otherRobot.isParent(owner))) {
+							otherRobot.updateEnergy(-damage);
+						}
+						else {
+							owner.updateEnergy(-(damage*2)-5);
+						}
 					}
 				}
 				
@@ -234,7 +240,7 @@ public class BulletPeer {
 					owner.getRobotStatistics().scoreBulletDamage(
 							otherRobot.getName(), score);
 				}
-
+				
 				if (otherRobot.getEnergy() <= 0) {
 					owner.battle.getBattleMode().robotKill(owner, otherRobot);
 					if (otherRobot.isAlive()) {

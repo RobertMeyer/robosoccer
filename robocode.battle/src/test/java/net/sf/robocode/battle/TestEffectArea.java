@@ -71,7 +71,7 @@ public class TestEffectArea {
 		x.handleEffect(r);
 		Mockito.verifyZeroInteractions(r);
 		
-		//effect 1, reduce energy by 1
+		//effect 1, reduce energy by 0.3
 		x.setActiveEffect(1);
 		Mockito.when(r.getEnergy()).thenReturn(20.0);
 		x.handleEffect(r);
