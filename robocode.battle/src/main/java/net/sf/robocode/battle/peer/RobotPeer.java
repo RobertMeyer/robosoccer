@@ -1797,8 +1797,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	                    				otherRobot.getRobotArmor()));
 	                    	}
 	                    }
-<<<<<<< HEAD
-=======
 	                    
 	                    // Other Robot
 	                    if (otherRobot.isBotzilla()) {
@@ -1810,7 +1808,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	                    	this.updateEnergy(-(this.getRamDamage()));
 	                    	otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
 	                    }
->>>>>>> Add further checking to ensure that normal robots ram attacks and defense isn't affected
                     }                    
 					
 					
