@@ -31,30 +31,14 @@ import robocode.util.Utils;
  */
 public class BallTest {
 	IHostManager hostManager;
-	IRobotRepositoryItem robotItem;
-	ISettingsManager properties;
 	SoccerTeamPeer team;
-
-	RobotSpecification robotSpecification;
 	Battle battle;
-
-	BattleProperties battleProperties;
-
-	@BeforeClass
-	public static void setUpClass() {
-		HiddenAccess.init();
-		Container.init();
-	}
 
 	@Before
 	public void setUp() {
 		hostManager = Mockito.mock(IHostManager.class);
 		team = Mockito.mock(SoccerTeamPeer.class);
 		battle = Mockito.mock(Battle.class);
-
-		robotItem = Mockito.mock(IRobotRepositoryItem.class);
-		robotSpecification = HiddenAccess.createSpecification(robotItem, "",
-				"", "", "", "", "", "", "");
 	}
 
 	/**
