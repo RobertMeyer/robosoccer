@@ -166,10 +166,6 @@ public class ObstacleModeTest {
 		
 		for (int i = 0; i < robots.size(); i++) {
 			for (ObstaclePeer oPeer : obstacles) {
-				System.out.println(robots.get(i).getX() + " " + robots.get(i).getY() + " : " + oPeer.getX()
-						+ " " + oPeer.getY());
-				System.out.println(
-						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
 				assertFalse("Robot intersecting with obstacles", 
 						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
 			}
