@@ -2422,9 +2422,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			if (!(item == null) && intersects(scanArc, item.getBoundingBox())) {
 				double dx = item.getXLocation() - x;
 				double dy = item.getYLocation() - y;
+				double angle = atan2(dx, dy);
 				double dist = Math.hypot(dx, dy);
 				
-				final ScannedItemEvent event = new ScannedItemEvent(item.getName(), "", dist, item.getXLocation(), item.getYLocation());
+				final ScannedItemEvent event = new ScannedItemEvent(item.getName(), "", dist, normalRelativeAngle(angle - getBodyHeading()), item.getXLocation(), item.getYLocation());
+				
 				addEvent(event);
 			}
 		}
