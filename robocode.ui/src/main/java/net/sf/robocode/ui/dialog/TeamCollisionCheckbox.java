@@ -1,5 +1,6 @@
 /**
  * @author Team MCJJ
+ *
  */
 package net.sf.robocode.ui.dialog;
 

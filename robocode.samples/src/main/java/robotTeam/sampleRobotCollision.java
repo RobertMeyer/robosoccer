@@ -1,6 +1,8 @@
 /**
  * CSSE2003 Team MCJJ
+ * For testing of collision
  */
+
 package robotTeam;
 
 import java.awt.Color;
@@ -11,7 +13,7 @@ import robocode.Robot;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
 
-public class sampleRobot extends Robot{
+public class sampleRobotCollision extends Robot{
 	
 	double lastknownEnemyPos;
 	double lastknownEnemyDist;
@@ -22,6 +24,7 @@ public class sampleRobot extends Robot{
 		System.out.println("Robot Ready!\n");
 		setAllColors(Color.black);
 		setAdjustRadarForRobotTurn(true);
+		fire(1);
 		
 		while(true){
 			turnRadarLeft(Double.POSITIVE_INFINITY);
@@ -35,7 +38,8 @@ public class sampleRobot extends Robot{
 		turnRight(lastknownEnemyPos-getGunHeading()+getHeading());
 		
 		bulletPower(lastknownEnemyDist);
-		fire(firePower);
+		ahead(lastknownEnemyDist);
+	//	fire(firePower);
 	}
 	
 	public void bulletPower(double distance){
@@ -47,8 +51,7 @@ public class sampleRobot extends Robot{
 	
 	public void onBulletHit(BulletHitEvent e){
 		for(int i=0; i<5; i++){
-			bulletPower(lastknownEnemyDist);
-			fire(firePower);
+			ahead(200);
 		}
 	}
 	

@@ -222,7 +222,7 @@ public class BulletPeer {
 				}
 				
 				/**
-				 * @author Jonathan W
+				 * @author CSSE2003 Team MCJJ
 				 *The checkbox will be checked, this will be activated only when it is played in team battles.
 				 *If a friendly fires at a team member with the checkbox checked, damage will be ignored.
 				 */
@@ -231,8 +231,9 @@ public class BulletPeer {
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
 				if(FriendlyFireTracker.enableFriendlyfire == true){
-					if(teamFire){
+					if(!teamFire){
 						otherRobot.updateEnergy(damage);
+						owner.updateEnergy(-damage);
 					}
 				}
 				

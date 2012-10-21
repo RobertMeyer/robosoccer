@@ -1776,10 +1776,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					y -= movedy;
 
 					boolean teamFire = (teamPeer != null && teamPeer == otherRobot.teamPeer);
-
-					if(TeamCollisionTracker.enableteamCollision = true){
-						if(!teamFire){
-							otherRobot.updateEnergy(otherRobot.getRobotArmor()-otherRobot.getRamAttack());
+					
+					/**
+					 * CSSE2003 Team MCJJ 
+					 * TeamCollision - if checkbox is true, owner(this) will receive damage per normal but negate the damage to 
+					 * other robot
+					 */
+					if(TeamCollisionTracker.enableteamCollision == true){
+						if(teamFire){
+							otherRobot.updateEnergy(+(otherRobot.getRamDamage()));
+							this.updateEnergy(-(this.getRamAttack()));
 						}
 					}
 					

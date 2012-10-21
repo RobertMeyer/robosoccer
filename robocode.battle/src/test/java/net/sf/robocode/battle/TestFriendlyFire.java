@@ -1,3 +1,7 @@
+/**
+ * CSSE2003 Team MCJJ
+ */
+
 package net.sf.robocode.battle;
 
 import net.sf.robocode.battle.peer.BulletPeer;
