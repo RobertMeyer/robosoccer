@@ -138,6 +138,7 @@ class SoundCache {
             return;
         }
 
+       
         SoundData data = createSoundData(resourceName);
 
         if (data == null) {
@@ -156,6 +157,23 @@ class SoundCache {
                     "The audio mixer " + mixer.getMixerInfo().getName()
                     + " does not support the audio format of the sound clip: " + resourceName);
         }
+    }
+    
+    /**
+     * Creates if a the specified recourse exists
+     *
+     * @param resourceName the name of the resource being checked
+     * @return true if the resource exists, false is not
+     */
+    public boolean fileExists(String resourceName){
+    	 URL url = SoundCache.class.getResource(resourceName);
+
+         if (url == null) {
+             return false;
+         }
+         else{
+        	 return true;
+         }
     }
 
     /**

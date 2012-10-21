@@ -1,17 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2001-2012 Mathew A. Nelson and Robocode contributors
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://robocode.sourceforge.net/license/epl-v10.html
+ * Copyright (c) 2012 Team The Fightin' Mongooses
  *
  * Contributors:
- *     Mathew A. Nelson
- *     - Initial API and implementation
- *     Flemming N. Larsen
- *     - Code cleanup
- *     Pavel Savara
- *     - number of rows limited
+ *  Paul Wade
+ *  Chris Irving
+ *  Jesse Claven
  *******************************************************************************/
 package net.sf.robocode.ui.dialog;
 
@@ -31,6 +24,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
 /**
  * Pane for Commander controls.
  * Check ConsoleScrollPane if you need to see what this is based off of.
+ *
  * @author The Fightin' Mongooses
  */
 @SuppressWarnings("serial")
@@ -63,10 +57,11 @@ public class CommanderScrollPane extends JPanel {
     private final static int DECREASE = 6;
     private final static int TAUNT = 7;
     
-    // Selected robot details
+    // Index number of the robot that was selected by the user.
     int robotIndex;
     
-    // Battle
+    // Current battle is passed in in order to be able to manipulate the
+    // selected robot.
     Battle battle;
 	
     public CommanderScrollPane(IBattleManager battleManager, int selectedRobot) {

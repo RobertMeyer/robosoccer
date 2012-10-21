@@ -81,7 +81,6 @@ import static robocode.util.Utils.normalAbsoluteAngle;
 import static robocode.util.Utils.normalNearAbsoluteAngle;
 import static robocode.util.Utils.normalRelativeAngle;
 
-
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -91,7 +90,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -137,7 +135,6 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
 import robocode.WinEvent;
-import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
 import robocode.control.snapshot.LandmineState;
@@ -146,7 +143,6 @@ import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
-
 import robocode.exception.WinException;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 
@@ -396,18 +392,21 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				return;
 			}
 			//Validate the robot has enough power to spawn a minion.
-			double energyConsumption = MinionData.getEnergyConsumption();
-			if(energy <= energyConsumption)
-				//If minion spawns, parent will have no energy.
-				return;
-			else
-				energy -= energyConsumption;
+			double energyConsumption = currentCommands.getMinionEnergyCost();
+			if(!MinionData.getInsaneMode()) {
+				if(energy <= energyConsumption)
+					//If minion spawns, parent will have no energy.
+					return;
+				else
+					energy -= energyConsumption;
+			}
 			
 			//Spawn the minion.
 			RobotSpecification minion = minionSpecs[minionType];
 			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
-			battle.addMinion(minionPeer);
+
+			battle.addMinion(minionPeer, energyConsumption);
 
 			//Provide a proxy for the parent. (Parent=>Minion)
 			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
@@ -415,7 +414,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			minionList.add(minionPeer);
 			minionProxyList.add(minionProxy);
 		}
-		currentCommands.setSpawnMinion(false, 0);
+		currentCommands.setSpawnMinion(false, 0, 0);
 		//Update the minions proxy list in commands.
 		currentCommands.setMinions(minionProxyList);
 	}
@@ -463,6 +462,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else {
 			return false;
 		}
+	}
+		
+	public MinionProxy getMinionParent(){
+		return this.minionParent;
 	}
 
 	public void print(Throwable ex) {
@@ -1020,6 +1023,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+    public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions, double startingEnergy) {
+    	initializeRound(robots, initialRobotPositions);
+    	energy = startingEnergy;
+    }
+    
     @Override
 
 	public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions) {
@@ -1038,7 +1046,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
             }
         }
         if (!valid) {
-            final Random random = RandomFactory.getRandom();
 
             for (int j = 0; j < 1000; j++) {
                 double[] sl = battle.getSpawnController().getSpawnLocation(this, battle);
@@ -1082,7 +1089,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isHouseRobot()){
 			energy = 500;
 
-		//Botzilla gets extra energy, for the unlikely case of energy drain
+		// Botzilla gets extra energy, for the unlikely case of energy drain.
 		} else if (statics.isBotzilla()){
 			energy = 999;
 		//Dispensers get extra energy, for they are purely defensive
@@ -1100,7 +1107,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		fullEnergy = getEnergy();
 		gunHeat = 3;
-
 		setHalt(false);
 		isExecFinishedAndDisabled = false;
 		isEnergyDrained = false;
@@ -1706,35 +1712,86 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						statistics.scoreRammingDamage(otherRobot.getName());
 					}
 					
+					//If minion is ramming into parent, do nothing.
+					if(isParent(otherRobot))
+						continue;
                     // Check if one of the robots is a FreezeRobot, if so, freeze the other robot.
                     if (!checkForFreezeBot(otherRobot) || !checkForHeatBot(otherRobot)) {
                     	
                    
 	                    //Use a factor of the armor if it has been changed
 	                    //This Robot
+                    	
 	                    if (isBotzilla()) {
+	                    	//If this robot is botzilla the other robot dies instantly
 	                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
-	                    } else if (getRobotArmor() - 1.0 < 0.00001) {
-	                        this.updateEnergy(-(this.getRamDamage()));
+	                    // Neither Robot has armor
+	                    } else if (abs(getRobotArmor() - 1.0) < 0.00001 &&
+	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
+	                    	if(atFault) {
+	                    		this.updateEnergy(-(getRamDamage() - 
+	                    				getRamAttack()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()));
+	                    	}
+	                    // Other Robot has armor
+	                    } else if(abs(getRobotArmor() - 1.0) < 0.00001 &&
+	                    		abs(otherRobot.getRobotArmor()-1.0) > 0.00001){
+	                    	if(atFault) {
+	                    		this.updateEnergy(-(getRamDamage() - 
+	                    				getRamAttack()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage()));
+	                    		otherRobot.updateEnergy(-((otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()) / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
+	                    // This robot has armor
+	                    } else if(abs(getRobotArmor() - 1.0) > 0.00001 &&
+	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
+	                    	if(atFault) {
+	                    		this.updateEnergy(-((getRamDamage() - 
+	                    				getRamAttack()) / getRobotArmor()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage() / 
+	                    				getRobotArmor()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()));
+	                    	}
+	                    // Both robots must have armor
 	                    } else {
-	                        this.updateEnergy(-(this.getRamDamage()
-	                                            * 1 / this.getRobotArmor()));
+	                    	if(atFault) {
+	                    		this.updateEnergy(-((getRamDamage() - 
+	                    				getRamAttack()) / getRobotArmor()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage() / 
+	                    				getRobotArmor()));
+	                    		otherRobot.updateEnergy(-((otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()) / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
 	                    }
-	                    
-	                    
-	                    // Other Robot
-	                    if (otherRobot.isBotzilla()) {
-	                    	updateEnergy(-(energy + 1));
-	                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
-							otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
-	                    } else {
-	                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()
-	                                                  / 1 / otherRobot.getRobotArmor()));
-	                    }
-                    }
-
-
-                    
+                    }                    
 					
 					
                     if (otherRobot.energy == 0) {
@@ -1921,7 +1978,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					: ((getBattleFieldHeight() - HALF_HEIGHT_OFFSET < y) ? getBattleFieldHeight() - HALF_HEIGHT_OFFSET : y);
 
 			// Update energy, but do not reset inactiveTurnCount
-			if (isBotzilla() || isHouseRobot()) { // The house robot will not get damage from walls.
+			if (isBotzilla() || isHouseRobot()) { // The house robot and botzilla will not get damage from walls.
 				// Do nothing
 			} else if (statics.isAdvancedRobot()) {
 				setEnergy(energy - Rules.getWallHitDamage(velocity), false);
@@ -1973,7 +2030,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			queue.add(event);
 		}
 	}
-
+	
 	protected void updateGunHeading() {
 		if (currentCommands.getGunTurnRemaining() > 0) {
 			if (currentCommands.getGunTurnRemaining() < getGunTurnRateRadians()) {
@@ -2275,7 +2332,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						obstructed = true;
 					}
 				}
-				if (obstructed == false) {
+			 	if (obstructed == false) {
 					double dx = otherRobot.x - x;
 					double dy = otherRobot.y - y;
 					double angle = atan2(dx, dy);
@@ -2287,7 +2344,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						return;
 					}
 					
-					if(minionList.contains(otherRobot) || (this.isMinion() && otherRobot.isParent(this))) {
+					//Prevent minions from scanning parents, parents from scanning minions,
+					//and minions from scanning other minions.
+					if(isParent(otherRobot) || otherRobot.isParent(this)
+							|| (this.isMinion() && otherRobot.isMinion() && 
+									this.getMinionParent().equals(otherRobot.getMinionParent()))) {
 						return;
 					}
 

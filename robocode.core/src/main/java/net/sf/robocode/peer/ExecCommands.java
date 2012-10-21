@@ -59,6 +59,7 @@ public final class ExecCommands implements Serializable {
     private boolean isIORobot;
     private boolean isTryingToPaint;
     private boolean spawnMinion;
+    private int minionEnergy;
     private int minionType;
     private String outputText;
     private List<BulletCommand> bullets = new ArrayList<BulletCommand>();
@@ -103,6 +104,7 @@ public final class ExecCommands implements Serializable {
             isTryingToPaint = origin.isTryingToPaint;
             spawnMinion = origin.spawnMinion;
             minionType = origin.minionType;
+            minionEnergy = origin.minionEnergy;
             melt = origin.melt;
         }
     }
@@ -163,13 +165,18 @@ public final class ExecCommands implements Serializable {
     	return spawnMinion;
     }
     
+    public int getMinionEnergyCost() {
+    	return minionEnergy;
+    }
+    
     public int getMinionType() {
     	return minionType;
     }
     
-    public void setSpawnMinion(boolean spawnMinion, int minionType) {
+    public void setSpawnMinion(boolean spawnMinion, int minionType, int minionEnergy) {
     	this.minionType = minionType;
     	this.spawnMinion = spawnMinion;
+    	this.minionEnergy = minionEnergy;
     }
         
     public int getDeathEffect() {

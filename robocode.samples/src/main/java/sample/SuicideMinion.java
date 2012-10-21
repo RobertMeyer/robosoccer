@@ -9,7 +9,7 @@ import robocode.ScannedRobotEvent;
  * @author James Pettigrew
  *
  */
-public class SucideMinion extends Minion {
+public class SuicideMinion extends Minion {
 	String targetName = null;
 	String parentName = null;
 	
@@ -27,15 +27,12 @@ public class SucideMinion extends Minion {
 	}
 	
 	public void onScannedRobot(ScannedRobotEvent e) {
-		//If we have a target and this isn't it then keep scan again
+		//If we have a target and this isn't it then scan again
 		if (targetName != e.getName( ) && targetName != null) {
 			return;
-		} else if (e.getName( ) == parentName) { // If this is the parent then scan again
-			return;
-		}
+		} 
 		
-		//If no robot is being targeted, then target this robot 
-		// and latch onto it
+		//If no robot is being targeted, then target this robot and latch onto it
 		if (targetName == null) {
 			targetName = e.getName( );
 		}

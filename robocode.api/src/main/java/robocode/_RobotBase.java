@@ -40,6 +40,7 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
 	public static final int MINION_TYPE_DEF = 1;
 	public static final int MINION_TYPE_UTL = 2;
 	public static final int MINION_TYPE_RND = 3;
+	public static final int DEFAULT_MINION_POWER = 5;
     // Internal for this package
     _RobotBase() {
     }
@@ -101,8 +102,15 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
     /**
      * {@inheritDoc}
      */ 
+    public final void spawnMinion(int minionType, int minionPower) {
+    	this.peer.spawnMinion(minionType, minionPower);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public final void spawnMinion(int minionType) {
-    	this.peer.spawnMinion(minionType);
+    	this.peer.spawnMinion(minionType, DEFAULT_MINION_POWER);
     }
     
     /**

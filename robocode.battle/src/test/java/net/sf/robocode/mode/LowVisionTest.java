@@ -30,6 +30,7 @@ public class LowVisionTest {
 	
 	/**
 	 * Testing Unit of ToString method
+	 * Checks the string shown is similar with the expected output
 	 */
 	@Test
 	public void testToString() {
@@ -37,7 +38,8 @@ public class LowVisionTest {
 	}
 
 	/**
-	 * Testing Unit of Discription method
+	 * Testing Unit of Description method
+	 * Checks the string shown is similar with the expected output
 	 */
 	@Test
 	public void testDiscription() {
@@ -46,6 +48,8 @@ public class LowVisionTest {
 	
 	/**
 	 * Testing unit of RulesPanel method
+	 * 1st test that the rules panel has values
+	 * 2nd test that the values are correct type
 	 */
 	@Test
 	public void testRulesPanel() {
@@ -56,6 +60,9 @@ public class LowVisionTest {
 	
 	/**
 	 * Testing unit of ModifyVision method
+	 * uses standard value of radar scan radius
+	 * with a sample modifier of 80%
+	 * test the outcome matches the expected results
 	 */
 	@Test
 	public void testModifyVision() {

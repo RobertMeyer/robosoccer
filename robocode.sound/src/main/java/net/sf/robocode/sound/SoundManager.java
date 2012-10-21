@@ -33,6 +33,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Mixer;
 
 import net.sf.robocode.battle.IBattleManager;
+import net.sf.robocode.io.Logger;
 import net.sf.robocode.settings.ISettingsListener;
 import net.sf.robocode.settings.ISettingsManager;
 import robocode.control.events.BattleAdaptor;
@@ -132,14 +133,20 @@ public class SoundManager implements ISoundManager {
             sounds.addSound("endOfBattle", properties.getFileEndOfBattleMusic(), 1);
     	}
     	
-    	//If the sound table does not already contain the custom path, adds it
+    	//If the sound table does not already contain the custom path,
+    	//and the recourse exists, adds it.
     	
     	//The try catch is to deal with a null pointer exception that gets
-    	//thrown when you close robotcode and there are still sounds in the 
+    	//thrown when you close robocode and there are still sounds in the 
     	//cache
     	try{
-	    	if(!sounds.contains(path) && !path.equals("") && !path.equals(null)){
-	    		sounds.addSound(path, path, 5);
+	    	if(!sounds.contains(path)  && !path.equals("") && !path.equals(null) ){
+	    		if(sounds.fileExists(path)){
+	    			sounds.addSound(path, path, 5);
+	    		}
+	    		else{
+	    			sounds.addSound(path, properties.getFileGunshotSfx(), 5);
+	    		}
 	    	}
     	}
     	catch(NullPointerException e){
