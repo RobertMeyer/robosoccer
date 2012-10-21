@@ -36,7 +36,7 @@ public class BotzillaMode extends ClassicMode {
 	
 	@Override
 	public String getDescription() {
-		return "A mode that brings in an undefeatable enemy to speed up the finish";
+		return "A mode that brings in an undefeatable enemy to speed up the finish.";
 	}
 
   /**
