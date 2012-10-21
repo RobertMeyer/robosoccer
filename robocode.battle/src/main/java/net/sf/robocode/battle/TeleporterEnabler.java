@@ -15,7 +15,6 @@ public class TeleporterEnabler {
 	 */
 	public static void enableTeleporters(boolean enable) {
 		teleportersEnabled = enable;
-		System.out.println("t enabled");
 	}
 	
 	/**
@@ -24,7 +23,6 @@ public class TeleporterEnabler {
 	 */
 	public static void enableBlackholes(boolean enable) {
 		blackholesEnabled = enable;
-		System.out.println("b enabled");
 	}
 	
 	/**
