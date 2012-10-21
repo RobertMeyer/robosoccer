@@ -45,7 +45,7 @@ public class RaceMode extends ClassicMode{
 	
 	private JTextField description;
 	private Canvas preview;
-	private JList<TrackField> trackList;
+	private JList trackList;
 	
 	final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
 	
@@ -100,7 +100,7 @@ public class RaceMode extends ClassicMode{
 		private void initialise() {
 			description = new JTextField();
 			preview = new Canvas();
-			trackList = new JList<TrackField>();
+			trackList = new JList();
 			
 			preview.setSize(200, 150);
 			
@@ -168,6 +168,11 @@ public class RaceMode extends ClassicMode{
     public BattleResultsTableModel getCustomResultsTable() {
       	return resultsTable;
     }
+    
+    @Override
+    public boolean isRoundOver(int endTimer, int time) {
+		return (endTimer > 5 * time);
+	}
 	
 	@Override
 	public String toString(){

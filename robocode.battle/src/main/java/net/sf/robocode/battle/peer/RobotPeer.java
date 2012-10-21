@@ -215,7 +215,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected int frozen = 0;
 	
 	//raceMode int
-	protected int currentWaypointIndex;
+	protected int currentWaypointIndex = 0;
+	protected int currentLap = 0;
 	//TODO Remove below
 	Waypoint way = new Waypoint(2.1,44.3);
 	
@@ -1298,10 +1299,20 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
 
     			}else{
-    				//TODO Add checking for new lap and reset index
-    				statistics.scoreRace();
-    				//if(statistics.getCurrrentRaceScore())
-    				System.out.println("All waypoints Passed");
+    				currentLap++;
+    				if(currentLap == 1){//change to totalNOLAps
+    					statistics.scoreRace();
+    					addEvent(new robocode.RoundEndedEvent(battle.getRoundNum(), battle.getTime(),
+                                battle.getTotalTurns()));
+    					addEvent(new BattleEndedEvent(false, statistics.getFinalResults()));
+    					battle.killRound();
+    					System.out.println("All waypoints Passed");
+    				}else{
+    					//next lap reset robots wayPoints
+    					statistics.scoreRace();
+    					currentWaypointIndex = 0;
+    				}
+    				//TODO Add checking for new lap and reset index    				
     			}
     		}
     	}

@@ -1215,5 +1215,9 @@ public final class Battle extends BaseBattle {
 	 public boolean isRaceMode(){
 		 return raceModeOn;
 	 }
-
+	 
+	 public BattleProperties getBattleProperties(){
+		 return bp;
+	 }
+	
 }
