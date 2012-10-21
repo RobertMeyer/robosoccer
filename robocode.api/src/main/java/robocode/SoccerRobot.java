@@ -35,6 +35,7 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 	public Rectangle2D.Float getOwnGoal() {
 		Rectangle2D.Float ownGoal = null;
 		if (peer != null) {
+			setBodyColor(Color.BLACK);
 			ownGoal = ((ISoccerRobotPeer) peer).getOwnGoal();
 		} else {
 			uninitializedException();
