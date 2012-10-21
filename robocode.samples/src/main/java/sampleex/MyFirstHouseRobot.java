@@ -14,7 +14,7 @@ import robocode.TurnCompleteCondition;
  * 
  * @author House Robot Team
  * @author Jack Reichelt (42338271)
- * @author David Wei
+ * @author David Wei (4231523)
  * @author Laurence McLean (42373414 - javadoc)
  *
  * The House Robot that will appear in House Robot Mode.
@@ -28,9 +28,19 @@ public class MyFirstHouseRobot extends HouseRobot {
 	/**
 	 * Behaviour types of the House Robot.
 	 */
-	private final static int PASSIVE = 0; //Robot will be green
-	private final static int AGGRESSIVE = 1; //Robot will be red
-	private final static int VENDETTA = 2; //Robot will be black
+	// A passive state indicates that the house robot will only attack if 
+	// another enters within a certain proximity of the house robot. 
+	// Robot is green.
+	private final static int PASSIVE = 0; 
+	
+	// An aggressive state occurs when the house robot is on low energy. 
+	// Will shoot at any robot it scans. Robot is red.
+	private final static int AGGRESSIVE = 1; 
+	
+	// A vendetta state occurs when the house robot has been hit by the same
+	// robot 5 or more times in a row. The house robot will only shoot at that
+	// certain robot. Robot is black.
+	private final static int VENDETTA = 2;
 	
 	/**
 	 * Current behaviour of the House Robot
@@ -95,17 +105,23 @@ public class MyFirstHouseRobot extends HouseRobot {
 	 * {@inheritDoc}
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {	
+		
+		
 		switch (behaviour) {
+			
+			// If passive, only shoot if scanned robot is within a 200 units
 			case PASSIVE:
 				if (e.getDistance() < 200) {	
 					setFire(Rules.MAX_BULLET_POWER);
 				}
 				break;
-	
+			
+			// If aggressive, shoot at any scanned robot
 			case AGGRESSIVE:
 				setFire(Rules.MAX_BULLET_POWER);
 				break;
-	
+			
+			// If in vendetta, only shoot at the targeted robot
 			case VENDETTA:
 				if (e.getName() == lastRobot) {
 					setFire(Rules.MAX_BULLET_POWER);
@@ -120,6 +136,7 @@ public class MyFirstHouseRobot extends HouseRobot {
 	 */
 	public void onHitRobot(HitRobotEvent e) {
 		lastRobot = e.getName();
+		
 		if (behaviour != AGGRESSIVE) {
 			//We'll attack you with a friendly green warning bullet.
 			if (lastRobot == e.getName()) {
@@ -138,6 +155,7 @@ public class MyFirstHouseRobot extends HouseRobot {
 				setBulletColor(Color.BLACK);
 			}
 		}
+		
 		switch (behaviour) {
 			case PASSIVE:
 				turnRight(e.getBearing());
@@ -163,6 +181,7 @@ public class MyFirstHouseRobot extends HouseRobot {
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		lastRobot = e.getName();
+		
 		if (behaviour != AGGRESSIVE) {
 			//We'll attack you with a friendly green warning bullet.
 			if (lastRobot == e.getName()) {
@@ -199,5 +218,85 @@ public class MyFirstHouseRobot extends HouseRobot {
 				}
 				break;
 		}
+	}
+	
+	/**
+	 * A private helper method to calculate the smallest possible turn to
+	 * achieve a required angle.
+	 * 
+	 * 
+	 * @param angle
+	 *            The angle that is being reduced to a more efficient angle
+	 * 
+	 * @return Returns the smallest angle to achieve the required turn
+	 */
+	private double smallestTurn(double angle) {
+
+		// If the angle is greater than 180 degrees, subtract 360 to obtain
+		// the shortest angle, which will be in the opposite direction
+		if (angle > 180)
+			angle -= 360;
+
+		// If the angle is less than -180 degrees, add 360 to obtain the
+		// shortest angle, which will be in the opposite direction
+		if (angle < -180)
+			angle += 360;
+
+		return angle;
+	}
+	
+	/**
+	 * Moves to a given point (x,y)
+	 * 
+	 * 
+	 * @param x
+	 * 			The x co-ordinate of the point
+	 * @param y
+	 * 			The y co-ordinate of the point
+	 * 
+	 */
+	private void moveTo(double x, double y){
+		getX();
+		getY();
+		
+		double angle = Math.toDegrees(Math.atan((y - getY())/(x - getX())));
+		
+		if (angle > 0){
+			if (x > getX() && y > getY()){
+				turnLeft(smallestTurn(getHeading() - 90 + angle));			
+			} else{
+				turnLeft(smallestTurn(getHeading() - 270 + angle));
+			}
+			ahead(Math.hypot(y - getY(),x - getX()));
+		}
+		
+		if (angle < 0){
+			if (x < getX() && y > getY()){
+				turnLeft(smallestTurn(getHeading() + 90 - angle));
+			} else {
+				turnRight(smallestTurn(getHeading() + 90 + angle));
+			}
+			ahead(Math.hypot(y - getY(),x - getX()));
+		}
+		
+		if (angle == 0){
+			if (x > getX())
+				ahead(x - getX());
+			else
+				ahead(getX() - x);
+		}
+		
+		if (x == getX()){
+			if (y == getY())
+				return;
+		
+			if (y > getY())
+				ahead(y - getY());
+			
+			if (getY() > y)
+				ahead(getY() - y);
+		}
+		
+		
 	}
 }
