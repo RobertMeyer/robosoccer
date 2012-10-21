@@ -4,6 +4,15 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+/**
+ * Background Music Tracker function
+ * This function will use Audio Input Stream to run the sound file
+ * while the boolean variable equals to true.
+ * 
+ * @author Eric
+ *
+ */
+
 public class BackgroundMusicTracker {
 	
 	public static boolean music = false;
