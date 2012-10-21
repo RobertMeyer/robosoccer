@@ -12,7 +12,7 @@ package net.sf.robocode.battle;
 
 import java.util.*;
 
-public class Waypoint {
+public class Waypoint implements IWaypoint{
 	ArrayList<SingleWaypoint> wayPoints = new ArrayList<SingleWaypoint>();
 	
 	/**

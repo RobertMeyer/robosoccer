@@ -190,13 +190,13 @@ public class BattleRecordInfo implements Serializable, IXmlSerializable {
         private static final long serialVersionUID = BattleResults.serialVersionUID;
 
         public BattleResultsWrapper() {
-            super(null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            super(null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         public BattleResultsWrapper(BattleResults results) {
             super(results.getTeamLeaderName(), results.getRank(), results.getScore(), results.getSurvival(),
                   results.getLastSurvivorBonus(), results.getBulletDamage(), results.getBulletDamageBonus(),
-                  results.getRamDamage(), results.getRamDamageBonus(), results.getFlagScore(),
+                  results.getRamDamage(), results.getRamDamageBonus(), results.getFlagScore(), results.getRaceScore(),
                   results.getFirsts(), results.getSeconds(), results.getThirds());
         }
 

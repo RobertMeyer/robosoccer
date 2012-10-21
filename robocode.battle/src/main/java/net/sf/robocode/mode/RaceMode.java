@@ -1,8 +1,7 @@
 package net.sf.robocode.mode;
 
 import net.sf.robocode.battle.BattlePeers;
-//import net.sf.robocode.battle.RaceBattlePeers;
-//import net.sf.robocode.battle.peer.RacePeer;
+import net.sf.robocode.battle.BattleResultsTableModel;
 import net.sf.robocode.core.ContainerBase;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRepositoryManager;
@@ -21,6 +20,7 @@ public class RaceMode extends ClassicMode{
 
 	//private class variables
 	private int noLaps;
+	private BattleResultsTableModel resultsTable;
 	//private List<RacePeer> robots;
 	
 	final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
@@ -62,7 +62,19 @@ public class RaceMode extends ClassicMode{
      */
     @Override
     public void scoreTurnPoints() {
-    	
+    		
+    }
+    
+	/**
+     * Set Results Table at the end of the round for RaceMode.
+     * 
+     */
+    public void setCustomResultsTable() {
+    	if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+    	resultsTable.showOverallRank(true);
+    	resultsTable.showTotalScore(true);
     }
 	
 	@Override

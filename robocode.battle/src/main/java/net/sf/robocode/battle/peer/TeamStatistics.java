@@ -122,6 +122,15 @@ public class TeamStatistics implements ContestantStatistics {
         }
         return d;
     }
+    
+    public double getTotalRaceScore() {
+        double d = 0;
+
+        for (RobotPeer teammate : teamPeer) {
+            d += teammate.getRobotStatistics().getTotalRaceScore();
+        }
+        return d;
+    }
 
     @Override
     public int getTotalFirsts() {
@@ -235,7 +244,7 @@ public class TeamStatistics implements ContestantStatistics {
     public BattleResults getFinalResults() {
         return new BattleResults(teamPeer.getName(), rank, getTotalScore(), getTotalSurvivalScore(),
                                  getTotalLastSurvivorBonus(), getTotalBulletDamageScore(), getTotalBulletKillBonus(),
-                                 getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFlagScore(), getTotalFirsts(), getTotalSeconds(),
+                                 getTotalRammingDamageScore(), getTotalRammingKillBonus(), getTotalFlagScore(), getTotalRaceScore(), getTotalFirsts(), getTotalSeconds(),
                                  getTotalThirds());
     }
 

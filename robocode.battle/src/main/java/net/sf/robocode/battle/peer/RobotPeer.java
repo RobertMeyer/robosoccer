@@ -1300,6 +1300,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
 
     			}else{
+    				statistics.scoreRace();
     				System.out.println("All waypoints Passed");
     			}
     		}
