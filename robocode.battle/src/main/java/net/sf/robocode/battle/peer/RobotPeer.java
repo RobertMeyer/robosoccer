@@ -1716,12 +1716,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						statistics.scoreRammingDamage(otherRobot.getName());
 					}
 					
+					//If minion is ramming into parent, do nothing.
+					if(isParent(otherRobot))
+						continue;
                     // Check if one of the robots is a FreezeRobot, if so, freeze the other robot.
                     if (!checkForFreezeBot(otherRobot) || !checkForHeatBot(otherRobot)) {
                     	
                    
 	                    //Use a factor of the armor if it has been changed
 	                    //This Robot
+                    	
 	                    if (isBotzilla()) {
 	                    	//If this robot is botzilla the other robot dies instantly
 	                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
@@ -1790,12 +1794,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	                    				getRamAttack()) / otherRobot.
 	                    				getRobotArmor()));
 	                    	}
-	                    }
-	                    
-	                    // Other Robot
-	                    if (otherRobot.isBotzilla()) {
-	                    	//If the other robot is botzilla then this robot dies instantly
-	                    	updateEnergy(-(energy + 1));
 	                    }
                     }                    
 					
@@ -2338,7 +2336,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						obstructed = true;
 					}
 				}
-				if (obstructed == false) {
+			 	if (obstructed == false) {
 					double dx = otherRobot.x - x;
 					double dy = otherRobot.y - y;
 					double angle = atan2(dx, dy);
@@ -2350,7 +2348,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						return;
 					}
 					
-					if(minionList.contains(otherRobot) || (otherRobot.isParent(this)) 
+					//Prevent minions from scanning parents, parents from scanning minions,
+					//and minions from scanning other minions.
+					if(isParent(otherRobot) || otherRobot.isParent(this)
 							|| (this.isMinion() && otherRobot.isMinion() && 
 									this.getMinionParent().equals(otherRobot.getMinionParent()))) {
 						return;
