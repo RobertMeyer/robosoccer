@@ -37,7 +37,7 @@ public class SpinBot extends AdvancedRobot {
     	equip("All terrain tracks");
         // Set colors
         setBodyColor(Color.blue);
-        setGunColor(Color.blue);
+        setGunColor(Color.ORANGE);
         setRadarColor(Color.black);
         setScanColor(Color.yellow);
         

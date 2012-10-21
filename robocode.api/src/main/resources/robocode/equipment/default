@@ -45,12 +45,14 @@ BULLET_SPEED = 90
 ENERGY = 20
 
 Small Radar : RADAR
+IMAGE_PATH = /net/sf/robocode/ui/images/smallradar.png
 ACCELERATION = 20
 RADAR_ANGLE = -10
 SCAN_RADIUS = 90
 ACCELERATION = 30
 
 Broad Radar : RADAR
+IMAGE_PATH = /net/sf/robocode/ui/images/broadradar.png
 ACCELERATION = -10
 RADAR_ANGLE = 45
 SCAN_RADIUS = 50
