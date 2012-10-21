@@ -124,7 +124,6 @@ public class RobotStatistics implements ContestantStatistics {
         bulletKillBonus = 0;
         rammingDamageScore = 0;
         rammingKillBonus = 0;
-        //FIXME - team-Telos
         flagScore = 0;
         kills = 0;
     }
@@ -140,13 +139,10 @@ public class RobotStatistics implements ContestantStatistics {
         totalFlagScore += flagScore;
         totalKills += kills;
 
-        /*TODO Edit this Andrew */
         /* Set battle Properties */
         bp = battleProp;
         ClassicMode mode = (ClassicMode) bp.getBattleMode();
         totalScore = mode.getCustomOverallScore(this);
-//        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
-//                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
         isInRound = false;
     }
     
