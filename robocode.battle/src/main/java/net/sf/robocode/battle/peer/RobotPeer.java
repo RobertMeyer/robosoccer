@@ -73,6 +73,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import static java.lang.Math.*;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +85,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -212,7 +214,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// The number of turns the robot is frozen for, 0 if not frozen
 	protected int frozen = 0;
 	
-
+	//raceMode int
+	protected int currentWaypointIndex;
+	//TODO Remove below
+	Waypoint way = new Waypoint(2.1,44.3);
 	
 	// item inventory
 	protected List<ItemDrop> itemsList = new ArrayList<ItemDrop>();
@@ -272,6 +277,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.state = RobotState.ACTIVE;
 		this.battleRules = battle.getBattleRules();
 
+		//TODO Delete below
+		way.addSingleWaypoint(2.3, 130);
+		
 		if (team != null) {
 			team.add(this);
 		}
@@ -1131,7 +1139,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		checkWallCollision();
 
 		// Now check for robot collision
-        checkObstacleCollision(obstacles);
+        checkObstacleCollision(obstacles);        
 
 		// Now check for robot collision
 		checkRobotCollision(robots);
@@ -1170,6 +1178,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isFrozen()) {
 			return;
 		}
+		
+		//TODO waypoint
+        if(battle.isRaceMode()){
+        	checkWaypointPass(way, 1000.0);//WIDTH*2.0); 
+        }
 
 		turnedRadarWithGun = false;
 		// scan
@@ -1250,6 +1263,51 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 
+	/**
+     * 
+     * @param waypoint The Maps Waypoint Object.
+     * @param waypointDistance The maximum perpendicular distance from the robot that a waypoint
+     * can be, and still be scanned.
+     */
+    private void checkWaypointPass(Waypoint waypoint, Double waypointDistance){
+    	
+    	
+    	//calculate the bearing to the waypoint relative to the robots Heading.
+    	double dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
+		double dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
+
+    	double relativeBearingtoWaypoint = (Math.PI/2)-atan2(dy, dx) - bodyHeading;
+    	
+    	relativeBearingtoWaypoint = normalNearAbsoluteAngle(relativeBearingtoWaypoint);
+
+    	if((Math.abs(relativeBearingtoWaypoint - (Math.PI/2)) < .03) || (Math.abs(relativeBearingtoWaypoint - 
+    			(3 * Math.PI / 2)) < .03)){
+    		double  distToWay = Math.hypot(dx, dy);
+
+    		//Check if the waypoint is at the maximum distance from the robot or closer.
+    		if(distToWay < waypointDistance){
+    			System.out.println("currentWaypointIndex = " + currentWaypointIndex);
+    			System.out.println("NoWaypoints = " + waypoint.getNoWaypoints());
+    			if(currentWaypointIndex != waypoint.getNoWaypoints() -1){
+    				currentWaypointIndex++;
+    				dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
+    				dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
+    				relativeBearingtoWaypoint = normalNearAbsoluteAngle((Math.PI/2)-atan2(dy, dx) - bodyHeading);
+    				
+    				//create the new WaypointPassedEvent	
+    				addEvent(new WaypointPassedEvent(currentWaypointIndex, waypoint.getSingleWaypointX(
+    					 currentWaypointIndex), waypoint.getSingleWaypointY(currentWaypointIndex), 
+    					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
+
+    			}else{
+    				statistics.scoreRace();
+    				System.out.println("All waypoints Passed");
+    			}
+    		}
+    	}
+    	
+    }
+    
 	private void checkItemCollision(List<ItemDrop> items){
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();

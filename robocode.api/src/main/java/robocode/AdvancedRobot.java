@@ -910,6 +910,14 @@ public class AdvancedRobot extends _AdvancedRadiansRobot implements
         uninitializedException();
         return null; // never called
     }
+    
+    public ArrayList<WaypointPassedEvent> getWaypointPassedEvents() {
+        if (peer != null) {
+            return new ArrayList<WaypointPassedEvent>(((IAdvancedRobotPeer) peer).getWaypointPassedEvents());
+        }
+        uninitializedException();
+        return null; // never called
+    }
 
     /**
      * Returns a vector containing all StatusEvents currently in the robot's

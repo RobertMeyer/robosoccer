@@ -16,6 +16,13 @@ import javax.swing.ListModel;
 
 import net.sf.robocode.battle.TrackField;
 import net.sf.robocode.io.FileUtil;
+import net.sf.robocode.battle.BattlePeers;
+import net.sf.robocode.battle.BattleResultsTableModel;
+import net.sf.robocode.core.ContainerBase;
+import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.repository.IRepositoryManager;
+import net.sf.robocode.repository.IRepositoryManagerBase;
+import robocode.control.RobotSpecification;
 
 /**
  * Mode class used to implement Racing Mode functional enhancement. See ticket #32
@@ -29,7 +36,9 @@ public class RaceMode extends ClassicMode{
 
 	//private class variables
 	private int noLaps;
-	
+	private BattleResultsTableModel resultsTable;
+	//private List<RacePeer> robots;
+
 	private RacePanel racePanel;
 	
 	private ArrayList<TrackField> tracks;
@@ -38,7 +47,7 @@ public class RaceMode extends ClassicMode{
 	private Canvas preview;
 	private JList<TrackField> trackList;
 	
-	
+	final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
 	
 	/**
 	 * Called from the GUI to set the number of laps in the race.
@@ -67,22 +76,19 @@ public class RaceMode extends ClassicMode{
 		System.out.println("Race Mode.");
 	}
 	
-	
-	@Override
-	public String toString(){
-		//overwriting toString() method so our "mode" name is now returned
-		return new String("Race Mode");
+	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
+			IRepositoryManager repositoryManager) {
+		peers.createPeers(battlingRobotsList);
 	}
 	
-	/**
-	 * Returns the description of RaceMODE.
-	 * 
-	 * @return Returns the description of RaceMODE.
-	 */
-	public String getDescription(){
-		return new String("Race mode allows you to race your robot to be first across the finish line.");
-	}
-	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void scoreTurnPoints() {
+    		
+    }
+
 	@SuppressWarnings("serial")
 	private class RacePanel extends JPanel {
 		
@@ -138,5 +144,37 @@ public class RaceMode extends ClassicMode{
     		this.racePanel = new RacePanel();
     	}
     	return this.racePanel;
+	}
+    
+	/**
+     * Set Results Table at the end of the round for RaceMode.
+     * 
+     */
+    public void setCustomResultsTable() {
+    	if (resultsTable == null) {
+			resultsTable = new BattleResultsTableModel();
+		}
+    	resultsTable.showOverallRank(true);
+    	resultsTable.showTotalScore(true);
+    }
+	
+	@Override
+	public String toString(){
+		//overwriting toString() method so our "mode" name is now returned
+		return "Race Mode";
+	}
+	
+	/**
+	 * Returns the description of RaceMODE.
+	 * 
+	 * @return Returns the description of RaceMODE.
+	 */
+	public String getDescription(){
+		return new String("Race mode allows you to race your robot to be first across the finish line.");
+	}
+	
+	@Override
+	public boolean allowsOneRobot() {//disable annoying message box
+		return true;
 	}
 }

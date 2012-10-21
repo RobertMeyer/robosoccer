@@ -27,7 +27,7 @@ import robocode.robotinterfaces.IBasicRobot;
 public class WaypointPassedEvent extends Event {
 	
 	private static final long serialVersionUID = 1L;
-    private final static int DEFAULT_PRIORITY = 10;
+    private final static int DEFAULT_PRIORITY = 80;
 	private final int nextWaypointIndex;
 	private final double wayPointX;
 	private final double wayPointY;

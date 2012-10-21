@@ -174,6 +174,9 @@ public final class Battle extends BaseBattle {
 
     // kill streak tracker
     private KillstreakTracker killstreakTracker;
+    
+    //GoGoGadget Race Mode Activated?
+    private boolean raceModeOn = false;
 
 	// Turn skip related items
 	private boolean parallelOn;
@@ -235,6 +238,10 @@ public final class Battle extends BaseBattle {
 
         peers = new BattlePeers(this, battlingRobotsList, hostManager, repositoryManager);
 
+        if (battleMode.toString() == "Race Mode"){
+        	raceModeOn = true;
+        }
+        
 		if (battleMode.toString() == "Botzilla Mode") {
         	setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
 			if (Integer.parseInt((String)setTimeHashTable.get("botzillaSpawn")) != 0) {
@@ -1204,5 +1211,9 @@ public final class Battle extends BaseBattle {
 	        }
 	    }
 	}
+	 
+	 public boolean isRaceMode(){
+		 return raceModeOn;
+	 }
 
 }
