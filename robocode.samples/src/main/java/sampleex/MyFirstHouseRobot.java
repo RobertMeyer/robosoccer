@@ -56,17 +56,17 @@ public class MyFirstHouseRobot extends HouseRobot {
 		
 		switch (behaviour) {
 
-		case '0':
+		case PASSIVE:
 			if (e.getDistance() < 200) {	
 				setFire(Rules.MAX_BULLET_POWER);
 			}
 			break;
 
-		case '1':
+		case AGGRESSIVE:
 			setFire(Rules.MAX_BULLET_POWER);
 			break;
 
-		case '2':
+		case VENDETTA:
 			if (e.getName() == lastRobot) {
 				setFire(Rules.MAX_BULLET_POWER);
 			}
@@ -100,17 +100,17 @@ public class MyFirstHouseRobot extends HouseRobot {
 		
 		switch (behaviour) {
 
-		case '0':
+		case PASSIVE:
 			turnRight(e.getBearing());
 			setFire(Rules.MAX_BULLET_POWER);
 			break;
 
-		case '1':
+		case AGGRESSIVE:
 			turnRight(e.getBearing());
 			setFire(Rules.MAX_BULLET_POWER);
 			break;
 
-		case '2':
+		case VENDETTA:
 			if (e.getName() == lastRobot) {
 				turnRight(e.getBearing());
 				setFire(Rules.MAX_BULLET_POWER);
@@ -146,17 +146,17 @@ public class MyFirstHouseRobot extends HouseRobot {
 			
 		switch (behaviour) {
 
-		case '0':
+		case PASSIVE:
 			turnRight(e.getBearing());
 			setFire(Rules.MAX_BULLET_POWER);
 			break;
 
-		case '1':
+		case AGGRESSIVE:
 			turnRight(e.getBearing());
 			setFire(Rules.MAX_BULLET_POWER);
 			break;
 
-		case '2':
+		case VENDETTA:
 			if (e.getName() == lastRobot) {
 				turnRight(e.getBearing());
 				setFire(Rules.MAX_BULLET_POWER);
