@@ -1409,19 +1409,43 @@ public class Battle extends BaseBattle {
 	}
 
 	
-	
+	/**
+	 * Adds a Spawn Controller to the battle
+	 * @param e SpawnController to add to the DefaultSpawnController
+	 * @return true if e was added, false otherwise
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public static boolean addController(ISpawnController e) {
 		return spawnController.addController(e);
 	}
 	
+	/**
+	 * Removes a Spawn Controller from the battle
+	 * @param e SpawnController to remove from the DefaultSpawnController
+	 * @return true if e was added, false otherwise
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public static boolean removeController(ISpawnController e) {
 		return spawnController.removeController(e);
 	}
 	
+	/**
+	 * Removes all Spawn Controllers from the battle
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public static void clearControllers() {
 		spawnController.clearControllers();
 	}
 	
+	/**
+	 * Get the default spawn controller
+	 * @return the Default spawn controller
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public ISpawnController getSpawnController() {
 		return spawnController;
 	}

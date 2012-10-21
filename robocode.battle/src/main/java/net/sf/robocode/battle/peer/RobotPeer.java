@@ -533,6 +533,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return statics.isDroid();
 	}
 
+	/**
+	 * Is the robot a house robot
+	 * @return true if a house robot, false otherwise
+	 */
 	public boolean isHouseRobot() {
 		return statics.isHouseRobot();
 	}

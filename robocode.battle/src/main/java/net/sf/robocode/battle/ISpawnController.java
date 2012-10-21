@@ -20,7 +20,7 @@ import net.sf.robocode.battle.peer.RobotPeer;
 
 /**
  *
- * @author lee
+ * @author Lee Symes 42636267
  */
 public interface ISpawnController {
 

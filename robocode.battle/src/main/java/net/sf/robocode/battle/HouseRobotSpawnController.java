@@ -30,7 +30,7 @@ import robocode.control.RandomFactory;
 
 /**
  *
- * @author lee
+ * @author Lee Symes 42636267
  * @author Laurence McLean 42373414 (fixed parts)
  */
 public class HouseRobotSpawnController implements ISpawnController {
