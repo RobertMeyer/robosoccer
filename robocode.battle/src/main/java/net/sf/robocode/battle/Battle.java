@@ -729,6 +729,15 @@ public class Battle extends BaseBattle {
 		// Robot time!
 		wakeupRobots();
 	}
+	
+	/**
+	 * Get the current turn number
+	 * 
+	 * @return currentTurn	Turn number.
+	 */
+	public int getCurrentTurnNumber() {
+		return currentTurn;
+	}
 
 	@Override
 	protected void shutdownTurn() {
@@ -997,7 +1006,7 @@ public class Battle extends BaseBattle {
 	/**
 	 * Is called when botzilla needs to be added to a battle.
 	 */
-	private void addBotzilla() {
+	public void addBotzilla() {
 		System.out.println("BOTZILLA JUST APPEARED");
 		botzillaActive = true;
 		
@@ -1020,7 +1029,15 @@ public class Battle extends BaseBattle {
         final long waitMillis = waitTime / 1000000;
         final int waitNanos = (int) (waitTime % 1000000);
 		botzillaPeer.startRound(waitMillis, waitNanos);
-
+	}
+	
+	/**
+	 * Indicate whether Botzilla is active or not.
+	 * 
+	 * @return botzillaActive	The status of Botzilla.
+	 */
+	public boolean checkBotzillaActive() {
+		return botzillaActive;
 	}
 
 	/**
