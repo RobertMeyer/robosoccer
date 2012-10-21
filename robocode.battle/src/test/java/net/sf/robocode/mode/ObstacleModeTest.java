@@ -8,6 +8,7 @@ import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.DefaultSpawnController;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
+import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.core.Container;
@@ -57,11 +58,12 @@ public class ObstacleModeTest {
 		sm = new SettingsManager();
 		rm = new RepositoryManager(sm);
 		cm = new CpuManager(sm);
-		bd = new BattleEventDispatcher();
 		rem = new RecordManager(sm);
 		bm = new BattleManager(sm, rm, hm, cm, bd, rem);*/
 		HiddenAccess.init();
 		Container.init();
+		
+		bd = new BattleEventDispatcher();
 		
 		hm = Mockito.mock(IHostManager.class);
 		br = HiddenAccess.createRules(800, 600, 1, 0.1, 450, false, null);
@@ -117,7 +119,11 @@ public class ObstacleModeTest {
 	 */
 	@Test
 	public void testObstacleBoundingBoxIntersect() {
+		//genreate random obstacles
 		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		
+		//loop through each obstacle to make sure they're not on top of another by checking if
+		//their bounding boxes intersect
 		for (int i = 0; i < obstacles.size() - 1; i++) {
 			for (int j = i; j < obstacles.size(); j++) {
 				if (i != j) {
@@ -134,7 +140,11 @@ public class ObstacleModeTest {
 	 */
 	@Test
 	public void testObstacleAbsCoord() {
+		//generate random obstacles
 		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		
+		//loop through each obstacle to make sure they're not on top of each other by checking their
+		//absolute coordinates on the battlefield
 		for (int i = 0; i < obstacles.size() - 1; i++) {
 			for (int j = i + 1; j < obstacles.size(); j++) {
 				assertFalse("The obstacles are intersecting with each other",
@@ -166,14 +176,54 @@ public class ObstacleModeTest {
 		
 		for (int i = 0; i < robots.size(); i++) {
 			for (ObstaclePeer oPeer : obstacles) {
-				System.out.println(robots.get(i).getX() + " " + robots.get(i).getY() + " : " + oPeer.getX()
-						+ " " + oPeer.getY());
-				System.out.println(
-						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
 				assertFalse("Robot intersecting with obstacles", 
 						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
 			}
 		}
+	}
+	
+	/**
+	 * Tests if a robot correctly responds when it hits an obstacle
+	 */
+	@Test
+	public void testObstacleCollision() {
+		IRobotRepositoryItem rItem = Mockito.mock(IRobotRepositoryItem.class);
+		spec = HiddenAccess.createSpecification(rItem, "",
+				"", "", "", "", "", "", "");
+		
+		//set up the initial position of a single obstacle
+		obstacles = new ArrayList<ObstaclePeer>();
+		obstacles.add(new ObstaclePeer(battle, br, 0));
+		obstacles.get(0).setHeight(32);
+		obstacles.get(0).setWidth(800);
+		obstacles.get(0).setX(400);
+		obstacles.get(0).setY(16);
+		//System.out.println("ob: " + obstacles.get(0).getX() + " " + obstacles.get(0).getY());
+		
+		robots = new ArrayList<RobotPeer>();
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		
+		//set up inital location of the robot facing north (heading of 0)
+		double[][] init = {{0, 0, 0}};
+		init[0][0] = 400;
+		init[0][1] = 50;
+		init[0][2] = 0;
+		robots.get(0).initializeRound(robots, init);
+			
+		assertEquals("Robot was not set up in the correct state", robots.get(0).getState().toString(),
+				"ACTIVE");
+		
+		//Move obstacle into the robot (pretty much same as moving robot into obstacle), the point is
+		//that they collide.
+		obstacles.get(0).setY(30);
+		
+		//Update the state of the robot to see if collision occurred
+		robots.get(0).performLoadCommands();
+		robots.get(0).performMove(robots, new ArrayList<ItemDrop>(), obstacles, 0);
+		
+		assertEquals("Robot did not detect an obstacle collision", robots.get(0).getState().toString(),
+				"HIT_WALL");
+		
 	}
 	
 	/*@Test
