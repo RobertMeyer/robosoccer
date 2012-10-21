@@ -29,8 +29,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * This stores the width and height of the playing field, plus the current x
 	 * coordinate of the ball bot.
 	 */
-	private final int GOALX = 100;
-	private final int GOALY = 236;
+	public static final int GOALX = 100;
+	public static final int GOALY = 236;
 	private double fieldWidth;
 	private double fieldHeight;
 	private Goal scoreTeam;

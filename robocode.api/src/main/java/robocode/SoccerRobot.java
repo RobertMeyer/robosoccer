@@ -33,15 +33,11 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 	 * @return Rectangle2D.Float - own goal bounding rectangle.
 	 */
 	public Rectangle2D.Float getOwnGoal() {
-		Rectangle2D.Float ownGoal = ((ISoccerRobotPeer) peer).getOwnGoal();
-		/* 
-		 * ownGoal will be null if we are not in soccerMode, so we create 
-		 * imaginary goals so this robot can play soccer by himself. This 
-		 * allows SoccerRobots to be added to regular games without Exceptions. 
-		 */
-		if (ownGoal == null) {
-			ownGoal = new Rectangle2D.Float(0, (int) (getBattleFieldWidth() / 2) 
-					- (GOALY / 2), GOALX, GOALY);
+		Rectangle2D.Float ownGoal = null;
+		if (peer != null) {
+			ownGoal = ((ISoccerRobotPeer) peer).getOwnGoal();
+		} else {
+			uninitializedException();
 		}
 		return ownGoal;
 	}
@@ -53,16 +49,11 @@ public class SoccerRobot extends TeamRobot implements ISoccerRobot {
 	 * @return Rectangle2D.Float - enemy goal bounding rectangle.
 	 */
 	public Rectangle2D.Float getEnemyGoal() {
-		Rectangle2D.Float enemyGoal = ((ISoccerRobotPeer) peer).getEnemyGoal();
-		/* 
-		 * ownGoal will be null if we are not in soccerMode, so we create 
-		 * imaginary goals so this robot can play soccer by himself. This 
-		 * allows SoccerRobots to be added to regular games without Exceptions. 
-		 */
-		if (enemyGoal == null) {
-			enemyGoal = new Rectangle2D.Float((int) getBattleFieldWidth()
-					- GOALX, (int) (getBattleFieldHeight() / 2) - (GOALY / 2),
-					GOALX, GOALY);
+		Rectangle2D.Float enemyGoal = null;
+		if (peer != null) {
+			enemyGoal = ((ISoccerRobotPeer) peer).getEnemyGoal();
+		} else {
+			uninitializedException();
 		}
 		return enemyGoal;
 	}

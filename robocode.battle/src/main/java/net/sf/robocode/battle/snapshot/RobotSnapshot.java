@@ -14,6 +14,7 @@
 package net.sf.robocode.battle.snapshot;
 
 import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -116,9 +117,16 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
     
+    /** Own and enemy goals for soccermode and soccer robots */
+    private Rectangle2D.Float ownGoal;
+    private Rectangle2D.Float enemyGoal;
+    private boolean isSoccerRobot;
+	private boolean isBall;
+    
     private double fullEnergy;
     
     private double scanRadius;
+	
 
 	/**
 	 * Creates a snapshot of a robot that must be filled out with data later.
@@ -144,7 +152,6 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		teamIndex = robot.getTeamIndex();
 
 		state = robot.getState();
-
 
         energy = robot.getEnergy();
         acceleration = robot.getRobotAcceleration();
@@ -174,7 +181,16 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		isSGPaintEnabled = robot.isSGPaintEnabled();
 		isFreezeRobot = robot.isFreezeRobot();
 		isHeatRobot = robot.isHeatRobot();
+		isSoccerRobot = robot.isSoccerRobot();
+		isBall = robot.isBall();
 		isMinion = robot.isMinion();
+		
+		if(isSoccerRobot) {
+			ownGoal = robot.getOwnGoal();
+			enemyGoal = robot.getEnemyGoal();
+		}
+		
+		
 		//Create snapshots of minions.
 		for(RobotPeer peer: robot.getMinionPeers()) {
 			minions.add(new RobotSnapshot(peer, readoutText));
@@ -314,6 +330,22 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		return velocity;
 	}
 
+    /**
+	 * {@inheritDoc}
+	 */
+    @Override
+	public Rectangle2D.Float getOwnGoal() {
+		return ownGoal;
+	}
+    
+    /**
+	 * {@inheritDoc}
+	 */
+    @Override
+	public Rectangle2D.Float getEnemyGoal() {
+		return enemyGoal;
+	}
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -428,6 +460,18 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	 */
 	public boolean isHeatRobot(){
 		return isHeatRobot;
+	}
+
+	public boolean isBall() {
+		return isBall;
+	}
+
+	/**
+	 * @return the isSoccerRobot
+	 */
+	@Override
+	public boolean isSoccerRobot() {
+		return isSoccerRobot;
 	}
 
 	/**
