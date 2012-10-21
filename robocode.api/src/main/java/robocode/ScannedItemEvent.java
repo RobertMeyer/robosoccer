@@ -20,6 +20,7 @@ import robocode.robotinterfaces.IItemRobot;
  *  TODO: Needs to be serializable and comparable (all events do apparently).
  *
  * @author team-Telos
+ * @author Ameer Sabri (Dream Team)
  *
  */
 public class ScannedItemEvent extends Event {
@@ -121,8 +122,8 @@ public class ScannedItemEvent extends Event {
         }
         // Compare the distance, if the events are ScannedRobotEvents
         // The shorter distance to the robot, the higher priority
-        if (event instanceof ScannedRobotEvent) {
-            return (int) (this.getDistance() - ((ScannedRobotEvent) event).getDistance());
+        if (event instanceof ScannedItemEvent) {
+            return (int) (this.getDistance() - ((ScannedItemEvent) event).getDistance());
         }
         // No difference found
         return 0;
