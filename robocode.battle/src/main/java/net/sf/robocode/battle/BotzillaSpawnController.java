@@ -24,17 +24,23 @@ import robocode.control.RandomFactory;
 
 /**
  *
- * @author lee
+ * @author Lee Symes 42636267
  */
 public class BotzillaSpawnController extends IModeSpawnController {
 
     private final Random random = RandomFactory.getRandom();
 
+    /**
+     * {@inheritDoc}
+     */
     public BotzillaSpawnController(Class<? extends IMode> mode) {
         super(mode);
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double[] getSpawnLocation(RobotPeer r, Battle b) {
         BattleRules br = b.getBattleRules();
@@ -48,6 +54,9 @@ public class BotzillaSpawnController extends IModeSpawnController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void resetSpawnLocation(RobotPeer r, Battle b) {
         // NO OP
