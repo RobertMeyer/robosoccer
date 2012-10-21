@@ -271,7 +271,7 @@ public class Battle extends BaseBattle {
 			}
 		}
 
-		deController.setup(bp);
+		deController.setup(bp, this);
 		botzillaActive = false;
 
 		if (battleMode.toString() == "Obstacle Mode") {
@@ -348,6 +348,10 @@ public class Battle extends BaseBattle {
 
 	public ItemController getItemControl() {
 		return itemControl;
+	}
+
+	public void addItem(ItemDrop item) {
+		items.add(item);
 	}
 
 	public List<ObstaclePeer> getObstacleList() {
