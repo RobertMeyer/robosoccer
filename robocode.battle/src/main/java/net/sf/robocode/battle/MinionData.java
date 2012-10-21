@@ -1,7 +1,14 @@
 package net.sf.robocode.battle;
 
+import robocode.HitByBulletEvent;
+import robocode.Robot;
 import robocode._RobotBase;
 
+/**
+ * MinionData passes information between the minion UI and RobotPeer etc.
+ *
+ * @author Jordan Henderson
+ */
 public class MinionData {
 	private static Boolean minionsEnabled = false;
 	private static Boolean isGui = false;
