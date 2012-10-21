@@ -21,7 +21,6 @@ import robocode.BattleResults;
 import robocode.control.RobotSpecification;
 
 public class SoccerMode extends ClassicMode implements IMode {
-	private static final String RenderString = null;
 	// This stores the ball(s) in a list for use in updateRobotScans
 	private List<RobotPeer> ball;
 	private List<RobotPeer> robots;
@@ -252,9 +251,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 		if (scoreTeam == Goal.TEAM1) {
 			team1.getStatistics().incrementScore();
 			scoreTeam = null;
+			scoreTeam1.setText("Blue Team: " + 
+			(int) team1.getStatistics().getTotalScore());
 		} else if (scoreTeam == Goal.TEAM2) {
 			team2.getStatistics().incrementScore();
 			scoreTeam = null;
+			scoreTeam2.setText("Red Team: " + 
+			(int) team2.getStatistics().getTotalScore());
 		}
 	}
 
@@ -274,20 +277,23 @@ public class SoccerMode extends ClassicMode implements IMode {
 		}
 		return endTimer > 5 * time;
 	}
-
+	/**
+	 * {@inheritDoc}
+	 * 
+	 */
 	@Override
 	public List<IRenderable> createRenderables() {
 		List<IRenderable> objs = new ArrayList<IRenderable>();
-		scoreTeam1 = new RenderString("score2", "Blue Team\n"
+		scoreTeam1 = new RenderString("score2", "Blue Team: "
 				+ (int) team1.getStatistics().getTotalScore());
 		scoreTeam1.setTranslate(25, 50);
 		scoreTeam1.setColour(Color.WHITE);
 		objs.add(scoreTeam1);
 
 		scoreTeam2 = new RenderString("score1",
-				("Red Team\n         " + (int) team2.getStatistics()
+				("Red Team: " + (int) team2.getStatistics()
 						.getTotalScore()));
-		scoreTeam2.setTranslate(fieldWidth - 75, 50);
+		scoreTeam2.setTranslate(fieldWidth - 85, 50);
 		scoreTeam2.setColour(Color.WHITE);
 		objs.add(scoreTeam2);
 		return objs;
@@ -334,9 +340,9 @@ public class SoccerMode extends ClassicMode implements IMode {
 		if (resultsTable == null) {
 			resultsTable = new BattleResultsTableModel();
 		}
-		resultsTable.showOverallRank(true);
-		resultsTable.showTeam(true, "Team Name");
-		resultsTable.showTotalScore(true);
+		resultsTable.showOverallRank()
+					.showTeam("Team Name")
+					.showTotalScore();
 	}
 
 	/**

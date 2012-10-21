@@ -19,7 +19,6 @@ package robocode.robotinterfaces.peer;
 
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import robocode.*;
 import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;
@@ -59,6 +58,14 @@ public interface IBasicRobotPeer {
      * @param power
      */
     Landmine setLandmine(double power);
+
+    /**
+     * Returns the tactic for the soldierBot to implement
+     * 
+     * @return the tactic the soldierBot should be implementing
+     */
+    int getTactic();
+
 
     /**
      * Returns the game time of the current round, where the time is equal to
@@ -910,8 +917,9 @@ public interface IBasicRobotPeer {
      * <p/>
      * This call executes immediately.
      * @param minionType the minion type to be spawned.
+     * @param minionPower the power provided from a parent robot for the minion.
      */
-	void spawnMinion(int minionType);
+	void spawnMinion(int minionType, int minionPower);
 	
     /**
      * Retrieves a list of MinionProxy that can be iterated through by a parent robot.

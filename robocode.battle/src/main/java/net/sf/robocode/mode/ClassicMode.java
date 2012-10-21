@@ -426,18 +426,18 @@ public class ClassicMode implements IMode {
         }
 
         /* Set it to show the default scores */
-        resultsTable.showOverallRank(true);
-        resultsTable.showRobotName(true);
-        resultsTable.showTotalScore(true);
-        resultsTable.showSurvival(true);
-        resultsTable.showSurvivalBonus(true);
-        resultsTable.showBulletDamage(true);
-        resultsTable.showBulletBonus(true);
-        resultsTable.showRamDamage(true);
-        resultsTable.showRamBonus(true);
-        resultsTable.showFirsts(true);
-        resultsTable.showSeconds(true);
-        resultsTable.showThirds(true);
+        resultsTable.showOverallRank()
+        			.showRobotName()
+        			.showTotalScore()
+        			.showSurvival()
+        			.showSurvivalBonus()
+        			.showBulletDamage()
+        			.showBulletBonus()
+        			.showRamDamage()
+        			.showRamBonus()
+        			.showFirsts()
+        			.showSeconds()
+        			.showThirds();
     }
 
     /**
@@ -479,5 +479,37 @@ public class ClassicMode implements IMode {
 	}
 
 	public void scoreRoundPoints() {
+	}
+
+	/**
+	 * Modify the starting energy.
+	 */
+	public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
+		return startingEnergy;
+	}
+	
+	/**
+	 * Whether or not two robots should get hurt when they bump into each other.
+	 * @param robotPeer
+	 * @param otherRobot 
+	 * @return boolean
+	 */
+	public boolean shouldDoRamDamage(RobotPeer robotPeer, RobotPeer otherRobot) {
+		return true;
+	}
+	
+	/**
+	 * Method to be run after finalizeTurn
+	 */
+	public void finalizeTurn() {
+		// do nothing
+	}
+	
+	/**
+	 * Conditionally increment endTimer (prevents round ending)
+	 * @return
+	 */
+	public boolean shouldIncrementEndTimer() {
+		return true;
 	}
 }
