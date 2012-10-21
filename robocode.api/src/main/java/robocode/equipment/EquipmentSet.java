@@ -1,10 +1,17 @@
 package robocode.equipment;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
+import net.sf.robocode.io.Logger;
 
 import robocode.RobotAttribute;
+import robocode.equipment.EquipmentPart.Builder;
 
 /**
  * Represents a set of equipment parts, allowing battles to have different sets
@@ -20,6 +27,13 @@ public class EquipmentSet {
 	}
 
 	/**
+	 * @return the definition input stream to be used by default
+	 */
+	public static InputStream defaultFile() {
+		return EquipmentSet.class.getResourceAsStream("default");
+	}
+
+	/**
 	 * TODO: document the file format
 	 * 
 	 * @param file
@@ -28,152 +42,101 @@ public class EquipmentSet {
 	 *         otherwise.
 	 */
 	public static EquipmentSet fromFile(File file) {
+		Scanner scanner;
+		if (file == null) {
+			scanner = new Scanner(defaultFile());
+		} else {
+			FileReader fileReader = null;
+			try {
+				fileReader = new FileReader(file);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			scanner = new Scanner(fileReader);
+		}
+
 		Map<String, EquipmentPart> parts = new HashMap<String, EquipmentPart>();
-		parts.put(
-				"Division 9 Plasmaprojector",
-				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav")
-						.set(RobotAttribute.VELOCITY, -20)
-						.set(RobotAttribute.GUN_HEAT_RATE, 70)
-						.set(RobotAttribute.BULLET_DAMAGE, 90).build());
 
-		parts.put(
-				"Guardian Tank Armor",
-				new EquipmentPart.Builder(EquipmentSlot.BODY)
-						.set(RobotAttribute.ARMOR, 40)
-						.set(RobotAttribute.VELOCITY, -20)
-						.set(RobotAttribute.RAM_ATTACK, 10)
-						.set(RobotAttribute.RAM_DEFENSE, 10).build());
+		String name = null;
+		EquipmentPart.Builder builder = null;
 
-		parts.put(
-				"Thorium Power Cell",
-				new EquipmentPart.Builder(EquipmentSlot.POWER)
-						.set(RobotAttribute.ENERGY, 30)
-						.set(RobotAttribute.ENERGY_REGEN, 50)
-						.set(RobotAttribute.VELOCITY, -5).build());
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine().trim();
+			if (line.isEmpty()) {
+				continue;
+			}
 
-		parts.put(
-				"Stealth Tracks",
-				new EquipmentPart.Builder(EquipmentSlot.TRACKS)
-						.set(RobotAttribute.VELOCITY, 40)
-						.set(RobotAttribute.GUN_HEAT_RATE, 50)
-						.set(RobotAttribute.BULLET_SPEED, 90)
-						.set(RobotAttribute.ENERGY, -60).build());
+			if (line.contains(":")) {
+				// A new part definition, so throw the part we were parsing
+				// into the parts map (except if this is the first part).
+				if (builder != null) {
+					parts.put(name, builder.build());
+				}
+				String[] tokens = line.split(":");
+				name = tokens[0].trim();
+				try {
+					EquipmentSlot slot = EquipmentSlot
+							.valueOf(tokens[1].trim().toUpperCase());
+					builder = new EquipmentPart.Builder(slot);
+				} catch (IllegalArgumentException e) {
+					logParsingError(line, "Invalid equipment slot");
+					break;
+				}
 
-		parts.put(
-				"Small Radar",
-				new EquipmentPart.Builder(EquipmentSlot.RADAR)
-						.set(RobotAttribute.ACCELERATION, 20)
-						.set(RobotAttribute.RADAR_ANGLE, -25)
-						.set(RobotAttribute.SCAN_RADIUS, 50)
-						.set(RobotAttribute.VELOCITY, 30).build());
+			} else if (line.contains("=")) {
+				String error = parseAttribute(builder, line);
+				if (error != null) {
+					logParsingError(line, error);
+					break;
+				}
 
-		parts.put(
-				"Twin Turret",
-				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.set(RobotAttribute.VELOCITY, -10)
-						.set(RobotAttribute.GUN_HEAT_RATE, -50)
-						.set(RobotAttribute.BULLET_SPEED, 100)
-						.set(RobotAttribute.ENERGY, -60)
-						.imagePath("/net/sf/robocode/ui/images/twinturret.png")
-						.build());
-
-		// add an new weapon option for robot and the RobotAttribute
-		// will be set for the system to run properly
-		parts.put(
-				"Sword",
-				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.set(RobotAttribute.ACCELERATION, 20)
-						.set(RobotAttribute.RADAR_ANGLE, -25)
-						.set(RobotAttribute.SCAN_RADIUS, 50)
-						.set(RobotAttribute.VELOCITY, 30)
-						.imagePath("/net/sf/robocode/ui/images/Sword.png")
-						.build());
-
-		parts.put("Test", new EquipmentPart.Builder(EquipmentSlot.GUN)
-				.soundPath("/net/sf/robocode/sound/sounds/pewpew.wav").build());
-
-		/*
-		 * Do not remove the following items or change them, as doing so would
-		 * likely cause tests to fail.
-		 */
-		// Do not Remove, this will cause tests to fail.
-		parts.put(
-				"Plasma Test",
-				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.set(RobotAttribute.VELOCITY, -20)
-						.set(RobotAttribute.GUN_HEAT_RATE, 70)
-						.set(RobotAttribute.BULLET_DAMAGE, 90).build());
-
-		// Do not remove, this will cause the tests to fail.
-		parts.put(
-				"Pistol Test",
-				new EquipmentPart.Builder(EquipmentSlot.GUN)
-						.set(RobotAttribute.ACCELERATION, 30)
-						.set(RobotAttribute.BULLET_DAMAGE, -30)
-						.set(RobotAttribute.BULLET_SPEED, 20)
-						.set(RobotAttribute.GUN_HEAT_RATE, -20)
-						.set(RobotAttribute.GUN_TURN_ANGLE, 40)
-						.set(RobotAttribute.VELOCITY, 40)
-						.set(RobotAttribute.ENERGY_REGEN, 30).build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put("Energy Test Large", new EquipmentPart.Builder(
-				EquipmentSlot.BODY).set(RobotAttribute.ENERGY, 20).build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put("Energy Test Small", new EquipmentPart.Builder(
-				EquipmentSlot.BODY).set(RobotAttribute.ENERGY, -20).build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put(
-				"Gun Test Large",
-				new EquipmentPart.Builder(EquipmentSlot.RADAR)
-						.set(RobotAttribute.GUN_HEAT_RATE, 40)
-						.set(RobotAttribute.GUN_TURN_ANGLE, 40).build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put("Gun Test Small", new EquipmentPart.Builder(
-				EquipmentSlot.RADAR).set(RobotAttribute.GUN_HEAT_RATE, -40)
-				.set(RobotAttribute.GUN_TURN_ANGLE, -40).build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put("Body Test Small", new EquipmentPart.Builder(
-				EquipmentSlot.TRACKS).set(RobotAttribute.ROBOT_TURN_ANGLE, -40)
-				.build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put("Body Test Large", new EquipmentPart.Builder(
-				EquipmentSlot.TRACKS).set(RobotAttribute.ROBOT_TURN_ANGLE, 40)
-				.build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put(
-				"Radar Test Small",
-				new EquipmentPart.Builder(EquipmentSlot.POWER)
-						.set(RobotAttribute.RADAR_ANGLE, -40)
-						.set(RobotAttribute.SCAN_RADIUS, -40).build());
-
-		// Do not remove, this will cause the tests to fail
-		parts.put(
-				"Radar Test Large",
-				new EquipmentPart.Builder(EquipmentSlot.POWER)
-						.set(RobotAttribute.RADAR_ANGLE, 40)
-						.set(RobotAttribute.SCAN_RADIUS, 40).build());
-
-		// Do not remove, this will cause the tests to fail.
-		parts.put("Test1", new EquipmentPart.Builder(EquipmentSlot.GUN)
-				.soundPath("Test1").build());
-
-		// Do not remove, this will cause the tests to fail.
-		parts.put("Test2", new EquipmentPart.Builder(EquipmentSlot.GUN)
-				.soundPath("Test2").build());
-
-		/*
-		 * End of Test equipment
-		 */
+			} else {
+				logParsingError(line, "Invalid line");
+				break;
+			}
+		}
+		scanner.close();
 
 		return new EquipmentSet(parts);
+	}
+
+	/**
+	 * Parses the given string for an attribute assignment and sets that
+	 * attribute on the builder accordingly.
+	 * 
+	 * @param builder
+	 *            the builder to set according to the string
+	 * @param string
+	 *            the string containing the attribute assignment
+	 * @return an error string if an error occurred, null otherwise
+	 */
+	static String parseAttribute(Builder builder, String string) {
+		String[] tokens = string.split("=");
+		if (tokens.length != 2) {
+			return "Invalid line";
+		}
+
+		String attr = tokens[0].trim().toUpperCase();
+		String val = tokens[1].trim();
+
+		try {
+			if (attr.equals("IMAGE_PATH")) {
+				builder.imagePath(val);
+			} else if (attr.equals("SOUND_PATH")) {
+				builder.soundPath(val);
+			} else {
+				builder.set(RobotAttribute.valueOf(attr), Double.valueOf(val));
+			}
+		} catch (NumberFormatException e) {
+			return "Invalid attribute value";
+		} catch (IllegalArgumentException e) {
+			return "Invalid robot attribute";
+		}
+		return null;
+	}
+
+	static void logParsingError(String line, String error) {
+		Logger.logError("Equipment parsing error: " + error + " => " + line);
 	}
 
 	/**

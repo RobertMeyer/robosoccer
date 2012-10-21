@@ -44,6 +44,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
     private final boolean isDispenser;
     private final boolean isMinion;
     private final boolean isZombie;
+    private final boolean isHeatRobot;
     private final String name;
     private final String shortName;
     private final String veryShortName;
@@ -93,6 +94,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 		this.isZombie = specification.isZombie();
         this.isTeamLeader = isLeader;
         this.battleRules = rules;
+        this.isHeatRobot = specification.isHeatRobot();
        
         
         if (teamMembers != null) {
@@ -116,7 +118,8 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 
                  boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isSoccerRobot, boolean isZombie, boolean isMinion,
 				 String name, String shortName, String veryShortName, String fullClassName, String shortClassName, 
-				 BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex) {		this.isJuniorRobot = isJuniorRobot;
+				 BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex) {		
+		this.isJuniorRobot = isJuniorRobot;
 		this.isInteractiveRobot = isInteractiveRobot;
 		this.isPaintRobot = isPaintRobot;
 		this.isAdvancedRobot = isAdvancedRobot;
@@ -141,6 +144,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isDispenser = false;
         this.isMinion = isMinion;
         this.isZombie = isZombie;
+        this.isHeatRobot = false;
     }
 
     RobotStatics(boolean isJuniorRobot, boolean isInteractiveRobot, boolean isPaintRobot, boolean isAdvancedRobot,
@@ -148,7 +152,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
                  boolean isTeamRobot, boolean isTeamLeader, boolean isDroid, boolean isBall, boolean isSoccerRobot, boolean isZombie, boolean isMinion, 
                  String name, String shortName, String veryShortName, String fullClassName, String shortClassName, 
                  BattleRules battleRules, String[] teammates, String teamName, int robotIndex, int teamIndex, boolean isHouseRobot,
-                 boolean isBotzilla, boolean isDispenser, boolean isFreezeRobot) {
+                 boolean isBotzilla, boolean isDispenser, boolean isFreezeRobot, boolean isHeatRobot) {
 
 		this.isJuniorRobot = isJuniorRobot;
 		this.isInteractiveRobot = isInteractiveRobot;
@@ -175,6 +179,7 @@ public final class RobotStatics implements IRobotStatics, Serializable {
         this.isDispenser = isDispenser;
         this.isMinion = isMinion;
         this.isZombie = isZombie;
+        this.isHeatRobot = isHeatRobot;
     }
 
 	public String getAnnonymousName() {
@@ -243,6 +248,10 @@ public final class RobotStatics implements IRobotStatics, Serializable {
 
 	public boolean isZombie() {
 		return isZombie;
+	}
+	
+	public boolean isHeatRobot(){
+		return isHeatRobot;
 	}
 
 	public String getName() {

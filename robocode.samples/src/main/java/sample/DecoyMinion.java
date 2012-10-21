@@ -1,6 +1,5 @@
 package sample;
 
-import robocode.HitByBulletEvent;
 import robocode.Minion;
 import robocode.MinionProxy;
 import robocode.util.Utils;
@@ -11,7 +10,7 @@ import robocode.util.Utils;
  *
  */
 public class DecoyMinion extends Minion {
-	double distanceToParent = 0;
+	
 	
 	@Override
 	public int getMinionType() {
@@ -20,30 +19,30 @@ public class DecoyMinion extends Minion {
 	
 	public void run( ) {		
 		MinionProxy parent = getParent();
+		double distanceToParent = 0;
+		double parentX;
+		double parentY;
+		
 		while (true) {
-    		// parentX = parent.getX( );
-    		// parentY = parent.getY( );
+			// Get x & y coordinates of parent
+    		parentX = parent.getX( );
+    		parentY = parent.getY( );
 			
-			// double parentDisplacementX = parentX - getX( );
-			// double parentDisplacementY = parentY - getY( );
-			// double bearingToParent = Utils.normalAbsoluteAngle(Math.atan2(parentDisplacementX, parentDisplacementY));
+    		// Calculate x & y displacement between parent and minion
+			double parentDisplacementX = parentX - getX( );
+			double parentDisplacementY = parentY - getY( );
 			
-	    	// double sqrParentDistX = Math.pow((parentDisplacementX - getX( )), 2);
-	    	// double sqrParentDistY = Math.pow((parentDisplacementY - getY( )), 2);
-	    	// distanceToParent = Math.sqrt(sqrParentDistX + sqrParentDistY);
+			double bearingToParent = Utils.normalAbsoluteAngle(Math.atan2(parentDisplacementX, parentDisplacementY));
+			
+			// Calculate distance to parent using pythagoras
+	    	double sqrParentDistX = Math.pow((parentDisplacementX), 2);
+	    	double sqrParentDistY = Math.pow((parentDisplacementY), 2);
+	    	distanceToParent = Math.sqrt(sqrParentDistX + sqrParentDistY);
 	    	
-	    	// setTurnRight(bearingToParent);
-	    	setAhead(distanceToParent - 10);	    	
+	    	// Rotate and move towards parent, maintaining 200 range at all times
+	    	turnRightRadians(bearingToParent - getHeadingRadians());
+	    	setAhead(distanceToParent - 200);	    	
 		}
 	}
 	
-    public void onHitByBullet(HitByBulletEvent e) {
-		// If trailing parent and parent is hit, move towards bullet's origin
-    	if (distanceToParent < 20) {
-    		turnRight(e.getBearing( ));
-    		setAhead(300);
-    	}
-    	// Return to trailing parent
-    }
-
 }

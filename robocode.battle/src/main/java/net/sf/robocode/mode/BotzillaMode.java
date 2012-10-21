@@ -1,3 +1,12 @@
+/******************************************************************************
+ * Copyright (c) 2012 Team The Fightin' Mongooses
+ *
+ * Contributors:
+ *  Paul Wade
+ *  Chris Irving
+ *  Jesse Claven
+ *****************************************************************************/
+
 package net.sf.robocode.mode;
 
 import java.awt.GridLayout;
@@ -11,6 +20,7 @@ import javax.swing.JTextField;
 
 /**
  * Implementation of a mode with conditions for spawning Botzilla.
+ *
  * @author The Fightin' Mongooses
  */
 public class BotzillaMode extends ClassicMode {
@@ -29,6 +39,13 @@ public class BotzillaMode extends ClassicMode {
 		return "A mode that brings in an undefeatable enemy to speed up the finish";
 	}
 
+  /**
+   * A selection pane for the user to decide after how many turns Botzilla
+   * spawn whether an exact round number or a multiplier of how many robots
+   * are in the battle.
+   *
+   * @author  The Fightin' Mongooses
+   */
 	private class setBotzillaPanel extends JPanel {
 		
 		public setBotzillaPanel() {

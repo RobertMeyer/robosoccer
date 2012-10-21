@@ -1071,7 +1071,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     @Override
     public void onScannedRobot(ScannedRobotEvent event) {
     }
-
+    
     /**
      * {@inheritDoc}
      */
