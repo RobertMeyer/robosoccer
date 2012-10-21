@@ -99,6 +99,7 @@ import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.KillFreezeHeatRobots;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
+import net.sf.robocode.battle.TeamCollisionTracker;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -166,7 +167,6 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author CSSE2003 Team HoneyBadgers (contributor)
  * @author CSSE2003 Team Forkbomb (attributes, equipment)
  * @author CSSE2003 Team Mysterious-Incontinence (minion functionality)
- * @author CSSE2003 Team a-MAZE-ing (obstacles)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
@@ -1741,6 +1741,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 					boolean teamFire = (teamPeer != null && teamPeer == otherRobot.teamPeer);
 
+					if(TeamCollisionTracker.enableteamCollision = true){
+						if(!teamFire){
+							otherRobot.updateEnergy(otherRobot.getRobotArmor()-otherRobot.getRamAttack());
+						}
+					}
+					
 					if (!teamFire) {
 						statistics.scoreRammingDamage(otherRobot.getName());
 					}
