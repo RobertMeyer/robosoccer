@@ -10,9 +10,7 @@ import robocode.ScannedItemEvent;
  * A demonstration robot, designed to showcase the implementation of {@link ScannedItemEvent}
  * and {@link HitItemEvent}.
  * 
- * TODO implement onScannedItem fully, flesh out functionality
- * 
- * @author Ameer Sabri (Dream Team)
+ * @author Dream Team
  *
  */
 public class ItemDemoBot extends ItemRobot {

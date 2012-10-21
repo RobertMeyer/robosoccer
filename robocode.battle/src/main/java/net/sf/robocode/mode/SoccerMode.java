@@ -29,8 +29,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 	 * This stores the width and height of the playing field, plus the current x
 	 * coordinate of the ball bot.
 	 */
-	private final int GOALX = 100;
-	private final int GOALY = 236;
+	public static final int GOALX = 100;
+	public static final int GOALY = 236;
 	private double fieldWidth;
 	private double fieldHeight;
 	private Goal scoreTeam;
@@ -185,12 +185,12 @@ public class SoccerMode extends ClassicMode implements IMode {
 		for (int j = 0; j < peers.getBattle().getRobotsCount(); j++) {
 			RobotSpecification spec = battlingRobotsList[j];
 			RobotPeer robot = null;
-			
-			if(j < teamSize) {
-				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
+
+			if (j < teamSize) {
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec,
 						team1Duplicates.get(spec.getName()), team1, j, null);
 			} else {
-				robot = new RobotPeer(peers.getBattle(), hostManager, spec, 
+				robot = new RobotPeer(peers.getBattle(), hostManager, spec,
 						team2Duplicates.get(spec.getName()), team2, j, null);
 			}
 
@@ -240,10 +240,10 @@ public class SoccerMode extends ClassicMode implements IMode {
 			}
 		}
 	}
-	
+
 	/**
-	 * Increments the score for one of either team depending on which
-	 * team scored.
+	 * Increments the score for one of either team depending on which team
+	 * scored.
 	 */
 	@Override
 	public void scoreRoundPoints() {
@@ -251,13 +251,13 @@ public class SoccerMode extends ClassicMode implements IMode {
 		if (scoreTeam == Goal.TEAM1) {
 			team1.getStatistics().incrementScore();
 			scoreTeam = null;
-			scoreTeam1.setText("Blue Team: " + 
-			(int) team1.getStatistics().getTotalScore());
+			scoreTeam1.setText("Blue Team: "
+					+ (int) team1.getStatistics().getTotalScore());
 		} else if (scoreTeam == Goal.TEAM2) {
 			team2.getStatistics().incrementScore();
 			scoreTeam = null;
-			scoreTeam2.setText("Red Team: " + 
-			(int) team2.getStatistics().getTotalScore());
+			scoreTeam2.setText("Red Team: "
+					+ (int) team2.getStatistics().getTotalScore());
 		}
 	}
 
@@ -277,12 +277,14 @@ public class SoccerMode extends ClassicMode implements IMode {
 		}
 		return endTimer > 5 * time;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
 	 */
 	@Override
 	public List<IRenderable> createRenderables() {
+		System.out.println("test");
 		List<IRenderable> objs = new ArrayList<IRenderable>();
 		scoreTeam1 = new RenderString("score2", "Blue Team: "
 				+ (int) team1.getStatistics().getTotalScore());
@@ -290,9 +292,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 		scoreTeam1.setColour(Color.WHITE);
 		objs.add(scoreTeam1);
 
-		scoreTeam2 = new RenderString("score1",
-				("Red Team: " + (int) team2.getStatistics()
-						.getTotalScore()));
+		scoreTeam2 = new RenderString("score1", ("Red Team: " + (int) team2
+				.getStatistics().getTotalScore()));
 		scoreTeam2.setTranslate(fieldWidth - 85, 50);
 		scoreTeam2.setColour(Color.WHITE);
 		objs.add(scoreTeam2);
@@ -307,8 +308,8 @@ public class SoccerMode extends ClassicMode implements IMode {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @return an array of BattleResults containing the final score of each
-	 * team sorted according to rank.
+	 * @return an array of BattleResults containing the final score of each team
+	 *         sorted according to rank.
 	 */
 	@Override
 	public BattleResults[] getFinalResults() {
@@ -340,9 +341,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 		if (resultsTable == null) {
 			resultsTable = new BattleResultsTableModel();
 		}
-		resultsTable.showOverallRank()
-					.showTeam("Team Name")
-					.showTotalScore();
+		resultsTable.showOverallRank().showTeam("Team Name").showTotalScore();
 	}
 
 	/**
@@ -355,5 +354,14 @@ public class SoccerMode extends ClassicMode implements IMode {
 	@Override
 	public boolean allowsOneRobot() {
 		return true;
+	}
+
+	public void setScoreTeam(String team) {
+		if (team.equals("team1")) {
+			scoreTeam = Goal.TEAM1;
+		}
+		if (team.equals("team2")) {
+			scoreTeam = Goal.TEAM2;
+		}
 	}
 }

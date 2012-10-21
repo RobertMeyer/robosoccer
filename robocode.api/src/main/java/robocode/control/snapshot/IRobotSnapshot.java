@@ -13,6 +13,7 @@
  *******************************************************************************/
 package robocode.control.snapshot;
 
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -291,4 +292,18 @@ public interface IRobotSnapshot {
 	boolean isFreezeRobot();
 
 	boolean isHeatRobot();
+	
+	public boolean isBall();
+
+	public boolean isSoccerRobot();
+	
+	/**
+	 * Returns the bounding rectangle of the own goal position for soccer robots
+	 */
+	Rectangle2D.Float getOwnGoal();
+	
+	/**
+	 * Returns the bounding rectangle of the own goal position for soccer robots
+	 */
+	Rectangle2D.Float getEnemyGoal();
 }

@@ -1,7 +1,20 @@
 package net.sf.robocode.mode;
 
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.robocode.battle.BallBot;
+import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.peer.SoccerTeamPeer;
+import net.sf.robocode.host.IHostManager;
+
 import org.junit.*;
+import org.mockito.Mockito;
+
+import robocode.BattleResults;
 
 /**
  * Basic Test for Soccer Mode.
@@ -9,11 +22,11 @@ import org.junit.*;
  * @author kirstypurcell
  */
 public class SoccerModeTest {
-
+	
 	SoccerMode s;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		s = new SoccerMode();
 	}
 

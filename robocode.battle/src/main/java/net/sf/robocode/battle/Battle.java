@@ -185,6 +185,7 @@ public class Battle extends BaseBattle {
 	private int activeRobots;
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
+	private DeathEffectController deController = new DeathEffectController();
 	// For retrieval of robot in timer mode
 	private List<RobotPeer> robotList;
 	// Flag specifying if debugging is enabled thru the debug command line
@@ -270,6 +271,7 @@ public class Battle extends BaseBattle {
 			}
 		}
 
+		deController.setup(bp);
 		botzillaActive = false;
 
 		if (battleMode.toString() == "Obstacle Mode") {
@@ -508,7 +510,6 @@ public class Battle extends BaseBattle {
 
 		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null) {
-			System.out.println("hello");
 			for (IRenderable obj : objs)
 				customObject.add(obj);
 		}
@@ -724,6 +725,7 @@ public class Battle extends BaseBattle {
 
 	@Override
 	protected void shutdownTurn() {
+		customObject.clear();
 		if (getEndTimer() == 0) {
 			if (isAborted()) {
 				for (RobotPeer robotPeer : getRobotsAtRandom()) {
@@ -1042,7 +1044,7 @@ public class Battle extends BaseBattle {
 
 			// Death effect
 			if (battleManager.getBattleProperties().getEffectArea()) {
-				deathEffect(deadRobot);
+				deController.deathEffect(deadRobot, getRobotsAtRandom(), eaManager);
 			}
 			// Compute scores for dead robots
 			if (deadRobot.getTeamPeer() == null) {
@@ -1410,19 +1412,43 @@ public class Battle extends BaseBattle {
 	}
 
 	
-	
+	/**
+	 * Adds a Spawn Controller to the battle
+	 * @param e SpawnController to add to the DefaultSpawnController
+	 * @return true if e was added, false otherwise
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public static boolean addController(ISpawnController e) {
 		return spawnController.addController(e);
 	}
 	
+	/**
+	 * Removes a Spawn Controller from the battle
+	 * @param e SpawnController to remove from the DefaultSpawnController
+	 * @return true if e was added, false otherwise
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public static boolean removeController(ISpawnController e) {
 		return spawnController.removeController(e);
 	}
 	
+	/**
+	 * Removes all Spawn Controllers from the battle
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public static void clearControllers() {
 		spawnController.clearControllers();
 	}
 	
+	/**
+	 * Get the default spawn controller
+	 * @return the Default spawn controller
+	 * @see DefaultSpawnController
+	 * @author Lee Symes 42636267
+	 */
 	public ISpawnController getSpawnController() {
 		return spawnController;
 	}

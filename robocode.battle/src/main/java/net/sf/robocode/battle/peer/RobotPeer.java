@@ -107,6 +107,7 @@ import net.sf.robocode.host.events.EventManager;
 import net.sf.robocode.host.events.EventQueue;
 import net.sf.robocode.host.proxies.IHostingRobotProxy;
 import net.sf.robocode.io.Logger;
+import net.sf.robocode.mode.SoccerMode;
 import net.sf.robocode.peer.BadBehavior;
 import net.sf.robocode.peer.BulletCommand;
 import net.sf.robocode.peer.BulletStatus;
@@ -533,6 +534,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return statics.isDroid();
 	}
 
+	/**
+	 * Is the robot a house robot
+	 * @return true if a house robot, false otherwise
+	 */
 	public boolean isHouseRobot() {
 		return statics.isHouseRobot();
 	}
@@ -1618,6 +1623,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return otherRobot.getName();
 	}
 
+	/**
+	 * Checks for collisions between the robots and the items, and sends a
+	 * HitItemEvent to the robots that hit an item.
+	 * 
+	 * @param items the list of items on the battlefield
+	 */
 	private void checkItemCollision(List<ItemDrop> items){
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
@@ -3254,10 +3265,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * in SoccerMode. Returns null in other modes.
 	 * @return BoundingRectangle[] - goal boxes
 	 */
-	public BoundingRectangle getEnemyGoal() {
+	public Rectangle2D.Float getEnemyGoal() {
 		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
 		int index = (getTeamIndex() + 1) % 2;
-		return (goals == null) ? null : goals[index];
+		if (goals == null) {
+			return new Rectangle2D.Float((int) getBattleFieldWidth()
+					- SoccerMode.GOALX, (int) (getBattleFieldHeight() / 2) 
+					- (SoccerMode.GOALY / 2), SoccerMode.GOALX, 
+					SoccerMode.GOALY);
+		}
+		return goals[index];
 	}
 	
 	/**
@@ -3265,9 +3282,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * in SoccerMode. Returns null in other modes.
 	 * @return BoundingRectangle[] - goal boxes
 	 */
-	public BoundingRectangle getOwnGoal() {
+	public Rectangle2D.Float getOwnGoal() {
 		BoundingRectangle[] goals = battle.getBattleMode().getGoals();
 		int index = getTeamIndex() % 2;
-		return (goals == null) ? null : goals[index];
+		if (goals == null) {
+			return new Rectangle2D.Float(0, (int) (getBattleFieldWidth() / 2) 
+					- (SoccerMode.GOALY / 2), SoccerMode.GOALX, 
+					SoccerMode.GOALY);
+		}
+		return goals[index];
 	}
 }
