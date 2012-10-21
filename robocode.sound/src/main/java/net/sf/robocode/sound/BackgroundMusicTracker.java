@@ -8,7 +8,7 @@ public class BackgroundMusicTracker {
 	
 	public static boolean music = false;
 	public static Clip clip;
-	//public static BackgroundMusicTracker object = new BackgroundMusicTracker();
+	public static BackgroundMusicTracker object = new BackgroundMusicTracker();
 	
 	public static void enableMusic(boolean b) {
 		 music = b;
@@ -19,7 +19,7 @@ public class BackgroundMusicTracker {
 		
 		 if(music){
 			 try{ 
-				AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BackgroundMusicTracker().getClass().getClassLoader().getResourceAsStream("net/sf/robocode/sound/sounds/testing.wav"));
+				AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BackgroundMusicTracker().getClass().getClassLoader().getResourceAsStream("net/sf/robocode/sound/sounds/theme1.wav"));
          		clip = AudioSystem.getClip(); 
          		clip.open(audioIn); 
          		clip.start();

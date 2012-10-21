@@ -15,6 +15,7 @@
  *******************************************************************************/
 package net.sf.robocode.battle;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import robocode.control.RobotSpecification;
 /**
  * @author Mathew A. Nelson (original)
  * @author Flemming N. Larsen (contributor)
+ * @author CSSE2003 Team Forkbomb (equipment)
  */
 public class BattleProperties implements Serializable {
 
@@ -42,6 +44,7 @@ public class BattleProperties implements Serializable {
 			BATTLE_RULES_INACTIVITYTIME = "robocode.battle.rules.inactivityTime",
 			BATTLE_HIDE_ENEMY_NAMES = "robocode.battle.hideEnemyNames",
 			BATTLE_SELECTEDROBOTS = "robocode.battle.selectedRobots",
+			BATTLE_EQUIPMENT_FILE = "robots.battle.equipmentFile",
 			BATTLE_INITIAL_POSITIONS = "robocode.battle.initialPositions";
 
 	private int battlefieldWidth = 800;
@@ -52,10 +55,12 @@ public class BattleProperties implements Serializable {
 	private boolean hideEnemyNames;
 	private String selectedRobots;
 	private String initialPositions;
+	private final Properties props = new Properties();
+
+	private File equipmentFile;
 	private IMode battleMode;
 	private Hashtable<String, Object> modeRules;
 	private Boolean effectAreaOn = false;
-	private final Properties props = new Properties();
 
 	/**
 	 * Gets the battlefieldWidth.
@@ -267,6 +272,24 @@ public class BattleProperties implements Serializable {
 
 	}
 	
+	/**
+	 * @return the file containing the equipment definitions for the battle.
+	 */
+	public File getEquipmentFile() {
+		return equipmentFile;
+	}
+
+	/**
+	 * Sets the equipment definition file for the battle.
+	 * 
+	 * @param file
+	 *            the file containing the equipment definitions for the battle.
+	 */
+	public void setEquipmentFile(File file) {
+		equipmentFile = file;
+		props.setProperty(BATTLE_EQUIPMENT_FILE, String.valueOf(file));
+	}
+
 	/**
 	 * Gets the current battle mode.
 	 * @return mode as a ModeContext object

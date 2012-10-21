@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.geom.AffineTransform;
 
 /**
- * This interface defines a snapshot of an CustomObject.
+ * This interface defines a snapshot of an Renderable.
  * 
  * @author Benjamin Evenson @ Team-G1
  */

@@ -1,8 +1,20 @@
+/******************************************************************************
+ * Copyright (c) 2012 The Fightin' Mongooses team.
+ *
+ * Contributors:
+ *    Paul Wade
+ *    Chris Irving
+ *    Jesse Claven
+******************************************************************************/
+
 package au.edu.uq.itee.csse2003.weapons;
 
 /**
  * Represents a singular projectile fired from a weapon. Many projectiles can be
  * fired and tracked.
+ *
+ * @author The Fightin' Moongooses
+ * @deprecated This feature has temporarily been postponed.
  */
 public class Projectile {
 

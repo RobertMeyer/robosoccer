@@ -1,7 +1,19 @@
+/******************************************************************************
+ * Copyright (c) 2012 The Fightin' Mongooses team.
+ *
+ * Contributors:
+ *    Paul Wade
+ *    Chris Irving
+ *    Jesse Claven
+******************************************************************************/
+
 package au.edu.uq.itee.csse2003.weapons;
 
 /**
  * Represents a type of weapon that a robot can use.
+ *
+ * @author The Fightin' Moongooses
+ * @deprecated This feature has temporarily been postponed.
  */
 public abstract class WeaponType {
 

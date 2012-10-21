@@ -25,15 +25,13 @@
 package robocode;
 
 
-import robocode.robotinterfaces.IAdvancedEvents;
-import robocode.robotinterfaces.IAdvancedRobot;
-import robocode.robotinterfaces.IFreezeRobot;
-import robocode.robotinterfaces.IHeatRobot;
-import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
-
-import java.awt.Color;
 import java.io.File;
 import java.util.Vector;
+
+import robocode.robotinterfaces.IAdvancedEvents;
+import robocode.robotinterfaces.IAdvancedRobot;
+import robocode.robotinterfaces.IHeatRobot;
+import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
 
 
 /**

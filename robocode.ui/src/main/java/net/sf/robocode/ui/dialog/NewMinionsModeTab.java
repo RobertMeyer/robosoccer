@@ -52,13 +52,13 @@ public class NewMinionsModeTab extends JPanel{
 	private int currentIndex = -1;
 	private String currentSelection = "";
 	private JCheckBox enableMinion;
-	private JSpinner energyConsumption;
+	private JCheckBox insaneMode;
 
 	private class changeHandler implements ChangeListener {
 		@Override
 		public void stateChanged(ChangeEvent ev) {
 			MinionData.setMinionsEnabled(enableMinion.isSelected());
-			MinionData.setEnergyConsumption((Integer)energyConsumption.getValue());
+			MinionData.setInsaneMode(insaneMode.isSelected());
 		}
 	}
 
@@ -227,23 +227,22 @@ public class NewMinionsModeTab extends JPanel{
 		enableMinion = new JCheckBox("Enable Minions");
 		enableMinion.setBounds(12, 24, 117, 20);
 		enableMinion.setHorizontalAlignment(SwingConstants.LEFT);
+		enableMinion.setSelected(MinionData.getMinionsEnabled());
 		enableMinion.addChangeListener(new changeHandler());
 		enableMinion.setRolloverEnabled(true);
+		
 		globalSetting.setBorder(getTitledBorder("Global Settings"));
 		globalSetting.setLayout(null);
 		globalSetting.add(enableMinion);
 		mainPanel.add(globalSetting,constraints);
 		
-		energyConsumption = new JSpinner();
-		energyConsumption.setModel(new SpinnerNumberModel(0, 0, 50, 5));
-		energyConsumption.setBounds(131, 49, 48, 20);
-		globalSetting.add(energyConsumption);
+		insaneMode = new JCheckBox("Insane Mode");
+		insaneMode.setToolTipText("Minions cost no power to spawn.");
+		insaneMode.setBounds(12, 48, 87, 23);
+		insaneMode.setSelected(MinionData.getInsaneMode());
+		insaneMode.addChangeListener(new changeHandler());
 		
-		JLabel lblPowerConsumption = new JLabel("Energy Consumption:");
-		lblPowerConsumption.setBounds(12, 49, 117, 20);
-		lblPowerConsumption.setHorizontalAlignment(SwingConstants.LEFT);
-		globalSetting.add(lblPowerConsumption);
-		lblPowerConsumption.setLabelFor(energyConsumption);
+		globalSetting.add(insaneMode);
 	}
 
 	private void createMinionPanel(int gridx, int gridy, String panelStr, JTextField field, JButton btn) {
@@ -289,5 +288,4 @@ public class NewMinionsModeTab extends JPanel{
             return item.getUniqueShortClassNameWithVersion();
         }
     }
-
 }

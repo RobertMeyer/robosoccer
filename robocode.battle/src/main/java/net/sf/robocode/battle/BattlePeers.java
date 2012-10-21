@@ -35,15 +35,15 @@ public class BattlePeers {
 	private RobotPeer botzillaRobot;
 	private ContestantPeer botzillaContestant;
 
-	public BattlePeers(Battle battle, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			IRepositoryManager repositoryManager) {
+	public BattlePeers(Battle battle, RobotSpecification[] battlingRobotsList,
+			IHostManager hostManager, IRepositoryManager repositoryManager) {
 		this.hostManager = hostManager;
 		this.repositoryManager = repositoryManager;
 		this.battle = battle;
-        
-        battle.getBattleMode().createPeers(this, battlingRobotsList, hostManager, repositoryManager);
+
+		battle.getBattleMode().createPeers(this, battlingRobotsList,
+				hostManager, repositoryManager);
 	}
-	
 
 	/**
 	 * The initial setup for robot and contestant lists based on the given
@@ -200,10 +200,12 @@ public class BattlePeers {
 		contestants.add(peer);
 	}
 	
+  /**
+   * Remove Botzilla from the list of robots and contestants.
+   */
 	public void removeBotzilla() {
 		robots.remove(botzillaRobot);
 		contestants.remove(botzillaContestant);
-		System.out.println("botzilla is totally removed?");
 	}
 	
 	public void removeRobots(ArrayList<RobotPeer> robotsToRemove){
