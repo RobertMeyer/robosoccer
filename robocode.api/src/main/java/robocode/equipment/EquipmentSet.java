@@ -3,6 +3,7 @@ package robocode.equipment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -26,12 +27,10 @@ public class EquipmentSet {
 	}
 
 	/**
-	 * @return the definition file to be used by default
+	 * @return the definition input stream to be used by default
 	 */
-	public static File defaultFile() {
-		String path = EquipmentSet.class.getResource("default").getPath();
-		System.out.println("Equipment path: " + path);
-		return new File(path);
+	public static InputStream defaultFile() {
+		return EquipmentSet.class.getResourceAsStream("default");
 	}
 
 	/**
@@ -43,26 +42,26 @@ public class EquipmentSet {
 	 *         otherwise.
 	 */
 	public static EquipmentSet fromFile(File file) {
+		Scanner scanner;
 		if (file == null) {
-			file = defaultFile();
+			scanner = new Scanner(defaultFile());
+		} else {
+			FileReader fileReader = null;
+			try {
+				fileReader = new FileReader(file);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			scanner = new Scanner(fileReader);
 		}
-		System.out.println("EquipmentSet got file: " + file.getAbsolutePath());
-
-		FileReader fileReader = null;
-		try {
-			fileReader = new FileReader(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		Scanner fileScanner = new Scanner(fileReader);
 
 		Map<String, EquipmentPart> parts = new HashMap<String, EquipmentPart>();
 
 		String name = null;
 		EquipmentPart.Builder builder = null;
 
-		while (fileScanner.hasNextLine()) {
-			String line = fileScanner.nextLine().trim();
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine().trim();
 			if (line.isEmpty()) {
 				continue;
 			}
@@ -96,7 +95,7 @@ public class EquipmentSet {
 				break;
 			}
 		}
-		fileScanner.close();
+		scanner.close();
 
 		return new EquipmentSet(parts);
 	}
