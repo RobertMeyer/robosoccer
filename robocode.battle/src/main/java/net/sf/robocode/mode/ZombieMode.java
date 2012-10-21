@@ -138,7 +138,7 @@ public class ZombieMode extends ClassicMode {
      */
     @Override
 	public boolean shouldDoRamDamage(RobotPeer robot, RobotPeer otherRobot) {
-    	if(robot.isZombie() && otherRobot.isZombie())
+    	if(otherRobot.isZombie())
     		return false;
     	return true;
 	}
