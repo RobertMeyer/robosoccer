@@ -2425,15 +2425,35 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		for (ItemDrop item : items) {
 			if (!(item == null) && intersects(scanArc, item.getBoundingBox())) {
-				double dx = item.getXLocation() - x;
-				double dy = item.getYLocation() - y;
-				double angle = atan2(dx, dy);
-				double dist = Math.hypot(dx, dy);
+				if(checkItemLocation(item)) {
+					double dx = item.getXLocation() - x;
+					double dy = item.getYLocation() - y;
+					double angle = atan2(dx, dy);
+					double dist = Math.hypot(dx, dy);
 				
-				final ScannedItemEvent event = new ScannedItemEvent(item.getName(), "", dist, normalRelativeAngle(angle - getBodyHeading()), item.getXLocation(), item.getYLocation());
+					final ScannedItemEvent event = new ScannedItemEvent(item.getName(), "", dist, normalRelativeAngle(angle - getBodyHeading()), item.getXLocation(), item.getYLocation());
 				
-				addEvent(event);
+					addEvent(event);
+				}
 			}
+		}
+	}
+	
+	/**
+	 * Ensures item checked is actually on the battlefield.
+	 * @param item the item to be checked
+	 * @return {@code true} if the item is on the field; {@code false} otherwise
+	 */
+	private boolean checkItemLocation(ItemDrop item) {
+		double x = item.getXLocation();
+		double y = item.getYLocation();
+		double fieldHeight = this.getBattleFieldHeight();
+		double fieldWidth = this.getBattleFieldWidth();
+		
+		if ((x < fieldWidth) && (y < fieldHeight) && !(x < 0) && !(y < 0)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

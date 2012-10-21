@@ -112,8 +112,9 @@ public class ScannedItemEvent extends Event {
         if (res != 0) {
             return res;
         }
-        // Compare the distance, if the events are ScannedItemEvents
-        // The shorter distance to the robot, the higher priority
+        /* Compare the distance, if the events are ScannedItemEvents. 
+         * The shorter the distance to the robot, the higher the priority.
+         */
         if (event instanceof ScannedItemEvent) {
             return (int) (this.getDistance() - ((ScannedItemEvent) event).getDistance());
         }
