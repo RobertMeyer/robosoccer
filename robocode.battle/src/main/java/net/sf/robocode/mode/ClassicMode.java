@@ -376,6 +376,7 @@ public class ClassicMode implements IMode {
     }
 	
 	/** What to do at the end of a mode's specific round.
+	 * @author House Robot Team
 	 * @author Laurence McLean 42373414
 	 * @param peers See BattlePeers.class
 	 */
@@ -494,6 +495,21 @@ public class ClassicMode implements IMode {
 	 * @return boolean
 	 */
 	public boolean shouldDoRamDamage(RobotPeer robotPeer, RobotPeer otherRobot) {
+		return true;
+	}
+	
+	/**
+	 * Method to be run after finalizeTurn
+	 */
+	public void finalizeTurn() {
+		// do nothing
+	}
+	
+	/**
+	 * Conditionally increment endTimer (prevents round ending)
+	 * @return
+	 */
+	public boolean shouldIncrementEndTimer() {
 		return true;
 	}
 }

@@ -2401,6 +2401,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 	
+	/**
+	 * Scans the items on the field and returns a ScannedItemEvent to the robot
+	 * if an item is scanned.
+	 * 
+	 * @param lastRadarHeading the heading of the robot's radar
+	 * @param items the list of items on the battlefield
+	 */
 	protected void scanItems(double lastRadarHeading, List<ItemDrop> items) {
 		double startAngle = lastRadarHeading;
 		double scanRadians = getRadarHeading() - startAngle;
@@ -2425,15 +2432,37 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		for (ItemDrop item : items) {
 			if (!(item == null) && intersects(scanArc, item.getBoundingBox())) {
-				double dx = item.getXLocation() - x;
-				double dy = item.getYLocation() - y;
-				double angle = atan2(dx, dy);
-				double dist = Math.hypot(dx, dy);
+				if(checkItemLocation(item)) {
+					double dx = item.getXLocation() - x;
+					double dy = item.getYLocation() - y;
+					double angle = atan2(dx, dy);
+					double dist = Math.hypot(dx, dy);
 				
-				final ScannedItemEvent event = new ScannedItemEvent(item.getName(), "", dist, normalRelativeAngle(angle - getBodyHeading()), item.getXLocation(), item.getYLocation());
+					final ScannedItemEvent event = new ScannedItemEvent(item.getName(), dist, 
+							normalRelativeAngle(angle - getBodyHeading()), item.getXLocation(), item.getYLocation());
 				
-				addEvent(event);
+					addEvent(event);
+				}
 			}
+		}
+	}
+	
+	/**
+	 * Ensures item checked is actually on the battlefield.
+	 * 
+	 * @param item the item to be checked
+	 * @return {@code true} if the item is on the field; {@code false} otherwise
+	 */
+	private boolean checkItemLocation(ItemDrop item) {
+		double x = item.getXLocation();
+		double y = item.getYLocation();
+		double fieldHeight = this.getBattleFieldHeight();
+		double fieldWidth = this.getBattleFieldWidth();
+		
+		if ((x < fieldWidth) && (y < fieldHeight) && !(x < 0) && !(y < 0)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -2535,18 +2564,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * Calculate the team total energy level with the given team index and size.
+	 * Calculate the team total energy level with the given teampeer, team index and size.
 	 * 
+	 * @param teamPeerList list of robot in the team (TeamPeer) 
 	 * @param teamIndex index of the team
 	 * @param teamSize size of the team
 	 * @return team's total energy level
 	 */
-	public int getTotalTeamEnergy(int teamIndex, int teamSize){
+	public int getTotalTeamEnergy(TeamPeer teamPeerList, int teamIndex, int teamSize){
 		int totalTeamEnergy = 0;
 		
 		for (int i=0; i < teamSize; i++){
-			if (teamList.getTeamIndex() == teamIndex){
-				totalTeamEnergy += teamList.get(i).getEnergy();
+			if (teamPeerList.getTeamIndex() == teamIndex){
+				totalTeamEnergy += teamPeerList.get(i).getEnergy();
 			}
 		}
 		return totalTeamEnergy;
@@ -2561,7 +2591,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		//Distribute energy only if there is more than one robot in the team
 		if (statics.getTeamSize() > 1) {
-			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
+			totalTeamEnergy = getTotalTeamEnergy(teamList, statics.getTeamIndex(), statics.getTeamSize());
 			distribute = totalTeamEnergy / statics.getTeamSize();
 		} else {
 			distribute = energy;

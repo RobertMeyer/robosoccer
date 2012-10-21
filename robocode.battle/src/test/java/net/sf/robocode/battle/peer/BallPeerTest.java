@@ -67,7 +67,12 @@ public class BallPeerTest {
 		
 		assertEquals("Starting energy should be 200", 200.00, peer.getEnergy(), 0.1);
 		peer.drainEnergy();
-		assertEquals("Energy should never drop below 200", 200.00, peer.getEnergy(), 0.1);
+		assertEquals("Energy should never change from 200", 200.00, peer.getEnergy(), 0.1);
+		peer.updateEnergy(80);
+		assertEquals("Energy should never change from 200", 200.00, peer.getEnergy(), 0.1);
+		
 	}
+	
+	
 	
 }
