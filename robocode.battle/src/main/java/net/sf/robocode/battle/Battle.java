@@ -113,6 +113,7 @@ import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.peer.TeleporterPeer;
+import net.sf.robocode.battle.peer.ZLevelPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
@@ -232,6 +233,8 @@ public class Battle extends BaseBattle {
 
 	private int numObstacles;
 	private static DefaultSpawnController spawnController = new DefaultSpawnController();
+	
+	private List<ZLevelPeer> zLevels;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager,
 			IHostManager hostManager, IRepositoryManager repositoryManager,
@@ -589,11 +592,14 @@ public class Battle extends BaseBattle {
 		}
 
 		createTeleporters();
+		if(ZLevelsEnabler.getZRand()) {
+			setZLevels();
+		}
 		Logger.logMessage(""); // puts in a new-line in the log message
 
 		final ITurnSnapshot snapshot = new TurnSnapshot(this,
 				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
-				itemControl.getItems(), obstacles, teleporters, false);
+				itemControl.getItems(), obstacles, teleporters, zLevels, false);
 		// final ITurnSnapshot snapshot = new TurnSnapshot(this,
 		// peers.getRobots(), bullets, landmines,effArea, customObject,
 		// itemControl.getItems(), false);
@@ -627,7 +633,9 @@ public class Battle extends BaseBattle {
 		bullets.clear();
 		items.clear();
 		teleporters.clear();
-
+		if (zLevels != null) {
+			zLevels.clear();
+		}
 		landmines.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(),
@@ -815,7 +823,7 @@ public class Battle extends BaseBattle {
 	protected void finalizeTurn() {
 		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
 				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
-				itemControl.getItems(), obstacles, teleporters, true)));
+				itemControl.getItems(), obstacles, teleporters, zLevels, true)));
 
 		// eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
 		// peers.getRobots(), bullets, landmines,effArea, customObject,
@@ -975,8 +983,7 @@ public class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), items, obstacles,
-					zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zLevels, zapEnergy);
 			robotPeer.spawnMinions();
 		}
 
@@ -1534,6 +1541,34 @@ public class Battle extends BaseBattle {
 
 	public IRepositoryManager getRepositoryManager() {
 		return repositoryManager;
+	}
+	
+	public void setZLevels() {
+		int vTiles;
+		int hTiles;
+		int tSize = 64;
+		int x = 0;
+		int y = 0;
+		int z = 0;
+		
+		vTiles = height / tSize + 1;
+		hTiles = width / tSize + 1;
+		
+		zLevels = new ArrayList<ZLevelPeer>();
+		
+		for(int i = 0; i < vTiles; ++i) {
+			for(int j = 0; j < hTiles; ++j) {
+				zLevels.add(new ZLevelPeer(tSize, tSize, z, x, y));
+				
+				z += Math.round(Math.random() * 2);
+				z -= Math.round(Math.random() * 2);
+				x += tSize;				
+			}
+			
+			z = 0;
+			y += tSize;
+		}
+		
 	}
 
 }
