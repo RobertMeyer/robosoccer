@@ -297,6 +297,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private IHostManager hostManager;
 	// Store parent proxy for minions.
 	private MinionProxy minionParent;
+	
+	protected int zLevel;
 
 	/**
 	 * An association of values to every RobotAttribute, such that game
@@ -1406,7 +1408,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	@Override
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, List<ZLevelPeer> zLevels, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -1556,6 +1558,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
         // Now check for item collision
         checkItemCollision(items);
+        
+        if(zLevels != null) {
+        	checkZLevelCollision(zLevels);
+        }
         
         // Scans items
         scanItems(radarHeading, items);
@@ -3340,5 +3346,36 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					SoccerMode.GOALY);
 		}
 		return goals[index];
+	}
+	
+	protected void checkZLevelCollision(List<ZLevelPeer> z) {
+		boolean tooSteep = false;
+        double angle = 0;
+        double dx = velocity * sin(bodyHeading);
+        double dy = velocity * cos(bodyHeading);
+
+        for(ZLevelPeer zP : z) {
+        	
+
+        	if (zP.getBounds().intersects(boundingBox)) {
+        		if(Math.abs(zLevel - zP.getZ()) == 1) {
+        			zLevel = zP.getZ();
+        		} else {
+        			tooSteep = true;
+        		}
+        		angle = atan2(zP.getBounds().getX() - x, zP.getBounds().getY() - y);
+        	}
+        }
+
+        if (tooSteep) {
+        	addEvent(new HitWallEvent(normalRelativeAngle(angle - bodyHeading)));
+        	velocity = 0;
+        	x -= dx;
+            y -= dy;
+
+        	updateBoundingBox();
+        	currentCommands.setDistanceRemaining(0);
+            setState(RobotState.HIT_WALL);
+        }
 	}
 }

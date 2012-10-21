@@ -120,6 +120,7 @@ public class RobocodeFrame extends JFrame {
 	private JPanel sideBooleans;
 	private TeleporterCheckbox teleporterBox;
 	private BlackholeCheckbox blackholeBox;
+	private ZLevelCheckbox zRandBox;
 
     public RobocodeFrame(ISettingsManager properties,
                          IWindowManager windowManager, IRobotDialogManager dialogManager,
@@ -140,6 +141,7 @@ public class RobocodeFrame extends JFrame {
         ksBox = new KillstreakCheckbox(battleManager.getBattleProperties());
         teleporterBox = new TeleporterCheckbox();
         blackholeBox = new BlackholeCheckbox();
+        zRandBox = new ZLevelCheckbox();
         mbox = new BackgroundMusicCheckbox(battleManager.getBattleProperties());
         fbox = new FriendlyFireCheckbox(battleManager.getBattleProperties());
         menuBar.setup(this);
@@ -329,6 +331,7 @@ public class RobocodeFrame extends JFrame {
             sideBooleans.add(teleporterBox);
             sideBooleans.add(blackholeBox);
             sideBooleans.add(fbox);
+            sideBooleans.add(zRandBox);
            
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container

@@ -76,6 +76,7 @@ import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
+import robocode.control.snapshot.IZLevelSnapshot;
 import robocode.control.snapshot.RenderableType;
 import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
@@ -1174,6 +1175,25 @@ public class BattleView extends Canvas {
         }
         g.setClip(savedClip);
     }
+    
+    private void drawZLevels(Graphics2D g, ITurnSnapshot snapShot) {
+		final Shape savedClip = g.getClip();
+
+		g.setClip(null);
+		
+		double x;
+		double y;
+		int z;
+		for (IZLevelSnapshot zSnapshot : snapShot.getZLevels()) {
+			x = zSnapshot.getX() + 32;
+			y = zSnapshot.getY() + 32;
+			z = zSnapshot.getZ();
+			g.drawString(Integer.toString(z), (int) x, (int) y);
+		}
+		
+		
+		g.setClip(savedClip);
+	}
     
     private void drawLandmines(Graphics2D g, ITurnSnapshot snapShot) {
         final Shape savedClip = g.getClip();

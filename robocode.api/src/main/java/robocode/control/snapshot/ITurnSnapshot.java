@@ -32,6 +32,8 @@ public interface ITurnSnapshot {
 
 	
 	IItemSnapshot[] getItems();
+	
+	IZLevelSnapshot[] getZLevels();
 
     /**
      * Returns a list of snapshots for the bullets that are currently on the battlefield.
