@@ -355,18 +355,21 @@ public class Battle extends BaseBattle {
 	public boolean isDebugging() {
 		return isDebugging;
 	}
-
+	
 	public void addBullet(BulletPeer bullet) {
 		bullets.add(bullet);
 	}
 
 	public void addMinion(RobotPeer minion, double startingEnergy) {
+		//Add the minion peer to the battle.
 		robotsCount++;
 		peers.addRobot(minion);
 		minion.initializeRound(peers.getRobots(), null, startingEnergy);
 		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
-		final long waitMillis = waitTime / 1000000;
-		final int waitNanos = (int) (waitTime % 1000000);
+		long waitMillis = waitTime / 1000000;
+		int waitNanos = (int) (waitTime % 1000000);
+		if(isDebugging)
+			waitMillis = 100;
 		minion.startRound(waitMillis, waitNanos);
 	}
 

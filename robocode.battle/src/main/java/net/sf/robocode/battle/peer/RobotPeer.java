@@ -414,12 +414,18 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//Spawn the minion.
 			RobotSpecification minion = minionSpecs[minionType];
 			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
-			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
+			RobotPeer minionPeer = createMinionPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
 
 			battle.addMinion(minionPeer, energyConsumption);
 
 			//Provide a proxy for the parent. (Parent=>Minion)
-			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
+			MinionProxy minionProxy = null;
+			try{
+				minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
+			}
+			catch(Exception ex) {
+				//Only possible exception that can occur here is a mockito cast error.
+			}
 			
 			minionList.add(minionPeer);
 			minionProxyList.add(minionProxy);
@@ -429,10 +435,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		currentCommands.setMinions(minionProxyList);
 	}
 	
+	/**
+	 * Method provided to allow testing (using different RobotPeer implementation).
+	 * @param battle
+	 * @param hostManager
+	 * @param robotSpecification
+	 * @param duplicate
+	 * @param team
+	 * @param robotIndex
+	 * @param parentProxy
+	 * @return new RobotPeer
+	 */
+	public RobotPeer createMinionPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, 
+			int duplicate, TeamPeer team, int robotIndex, IHostingRobotProxy parentProxy) {
+		return new RobotPeer(battle, hostManager, robotSpecification, duplicate, team, robotIndex, parentProxy);
+	}
+	
+	/**
+	 * @return a list containing this robot's minions (as RobotPeers)
+	 */
 	public List<RobotPeer> getMinionPeers() {
 		return minionList;
 	}
 	
+	/**
+	 * If the robot is a minion, update it's parent peer.
+	 * @param parent the new parent.
+	 */
 	public void setParent(IHostingRobotProxy parent) {
 		if(this.isMinion() && parent != null) {
 			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)parent);
@@ -440,12 +469,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 	
+	/**
+	 * @param child
+	 * @return true if child is owned by this robot, false otherwise.
+	 */
 	public boolean isParent(RobotPeer child) {
 		if(minionList.contains(child))
 			return true;
 		return false;
 	}
 	
+	/**
+	 * Clean up minions after a round.
+	 */
 	public void finalizeMinions() {
 		for(RobotPeer minion: minionList) {
 			minion.waitForStop();
