@@ -13,14 +13,13 @@ import robocode.ScannedRobotEvent;
 public class MyFirstHeatBot extends HeatRobot {
 	private int scanDirection = 1;
 	private int moveDirection = 1;
-	private int turnDirection = 1;
 	
 	public void run() {
 		// Allow parts to move separately
 		setAdjustRadarForGunTurn(true);
 		setAdjustGunForRobotTurn(true);
 		
-		setAllColors(Color.CYAN);
+		setAllColors(Color.RED);
 		
 		while (true) {
 			// Continually scan for robots
@@ -33,21 +32,11 @@ public class MyFirstHeatBot extends HeatRobot {
 	 * (non-Javadoc)
 	 * @see robocode.Robot#onHitRobot(robocode.HitRobotEvent)
 	 */
+	@Override
 	public void onHitRobot(HitRobotEvent e) { 
-		// Hit the target. 
+		// Hit a robot
 		// Move away
-		setStop();
 		moveDirection *= -1;
-		setAhead(200 * moveDirection);
-		execute();
-		
-		// Turn away so to hit the same robot again
-		turnDirection *= -1;
-		setTurnRight(e.getBearing() + 90 * turnDirection);
-		execute();
-		
-		// Scan for next target
-		setTurnRadarRight(270);
 	}
 	
 	
@@ -60,22 +49,27 @@ public class MyFirstHeatBot extends HeatRobot {
 			return;
 		}
 
-		// Oscillate the radar while keeping on the enemy to look for other enemies
-		scanDirection = -scanDirection;
-		setTurnRadarRight(360*scanDirection);
-		
 		// Slightly face the enemy so we can dodge but still move closer
-		turnDirection *= -1;
-		setTurnRight(e.getBearing() + 100 * turnDirection);
-		setAhead(500);
-
+		setTurnRight(e.getBearing() + 90);
+				
+		setAhead(150 * moveDirection);
+		
 		scan();
 	}
 	
-	public void onHitWallEvent(HitWallEvent e) {
-		turnDirection *= -1;
-		setTurnRight(e.getBearing() + 90 * turnDirection);
-		setAhead(100);
-		execute();
+	
+	/**
+	 * (non-Javadoc)
+	 * @see robocode.Robot#onHitWall(robocode.HitWallEvent)
+	 */
+	@Override
+	public void onHitWall(HitWallEvent e) { 
+		if (getVelocity() == 0) {
+			// We hit a wall, change direction
+			moveDirection *= -1; 
+			setTurnRight(40);
+		}
 	}
+	
+
 }

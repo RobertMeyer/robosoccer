@@ -1095,6 +1095,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
 			attributes.get().put(RobotAttribute.VELOCITY, 0.40);
+		
+		// HeatRobot gets more energy so it lasts longer
+		} else if (statics.isHeatRobot()) {
+			energy = 300;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1921,7 +1925,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					: ((getBattleFieldHeight() - HALF_HEIGHT_OFFSET < y) ? getBattleFieldHeight() - HALF_HEIGHT_OFFSET : y);
 
 			// Update energy, but do not reset inactiveTurnCount
-			if (isBotzilla() || isHouseRobot()) { // The house robot will not get damage from walls.
+			if (isBotzilla() || isHouseRobot() || isHeatRobot()) { // These robots will not get damage from walls.
 				// Do nothing
 			} else if (statics.isAdvancedRobot()) {
 				setEnergy(energy - Rules.getWallHitDamage(velocity), false);

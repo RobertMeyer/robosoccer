@@ -75,7 +75,6 @@ public class KillFreezeHeatRobotsTest {
 				"", "", "", "", "", "", "");
 	}
 	
-	@Ignore
 	@Test
 	public void killFreezeHeatRobotsTest(){
 		
