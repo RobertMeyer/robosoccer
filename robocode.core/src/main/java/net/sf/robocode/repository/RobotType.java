@@ -34,6 +34,9 @@ public class RobotType implements Serializable {
 	transient public static final RobotType DISPENSER = new RobotType(2048);
 	transient public static final RobotType FREEZE = new RobotType(4096);
 	transient public static final RobotType MINION = new RobotType(8192);
+	transient public static final RobotType HEAT = new RobotType(16384);
+	transient public static final RobotType SOCCER = new RobotType(32768);	
+
 	
 	private int code;
 
@@ -52,10 +55,12 @@ public class RobotType implements Serializable {
 			boolean isHouse,
 			boolean isFreeze,
 			boolean isBall,
+			boolean isSoccerRobot,
 			boolean isBotzilla,
 			boolean isZombie,
 			boolean isDispenser,
-			boolean isMinion
+			boolean isMinion,
+			boolean isHeat
 			) {
 		this.code = 0;
 		if (isJuniorRobot) {
@@ -88,6 +93,11 @@ public class RobotType implements Serializable {
 		if (isBall) {
 			code += BALL.getCode();
 		}
+
+		if (isSoccerRobot) {
+			code += SOCCER.getCode();
+		}
+
 		if (isBotzilla) {
 	    	code += BOTZILLA.getCode();
 	    }
@@ -99,6 +109,9 @@ public class RobotType implements Serializable {
 		}
 		if (isMinion) {
 			code += MINION.getCode();
+		}
+		if (isHeat) {
+			code += HEAT.getCode();
 		}
 	}
 
@@ -149,6 +162,10 @@ public class RobotType implements Serializable {
 	public boolean isBall() {
 		return (code & BALL.code) != 0;
 	}
+	
+	public boolean isSoccerRobot() {
+		return (code & SOCCER.code) != 0;
+	}
 
 	public boolean isBotzillaBot() {
 		return (code & BOTZILLA.code) != 0;
@@ -166,6 +183,10 @@ public class RobotType implements Serializable {
 		return (code & MINION.code) != 0; 
 	}
 
+	public boolean isHeatRobot(){
+		return (code & HEAT.code) !=0;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

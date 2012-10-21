@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
+import net.sf.robocode.battle.item.GunCoolerPack;
 import net.sf.robocode.battle.item.HaltPack;
 import net.sf.robocode.battle.item.HealthPack;
 import net.sf.robocode.battle.item.PoisonPack;
@@ -25,7 +26,7 @@ public class ItemMode extends ClassicMode {
         return "A mode with items and power-ups that robots can pickup and use.";
     }
 
-	public void setItems(Battle battle){
+	public void setItems(Battle battle){	
 		items.add(new HealthPack(battle,"health1"));
 		items.add(new HealthPack(battle,"health2"));
 		items.add(new HaltPack(battle,"halt1"));
@@ -34,6 +35,12 @@ public class ItemMode extends ClassicMode {
 		items.add(new HaltPack(battle,"halt2"));
 		items.add(new HealthPack(battle,"health4"));
 		items.add(new PoisonPack(battle,"poison2"));
+		items.add(new GunCoolerPack(battle,"cooler1"));
+		items.add(new GunCoolerPack(battle,"cooler2"));
+		items.add(new GunCoolerPack(battle,"cooler3"));
+		items.add(new GunCoolerPack(battle,"cooler4"));
+		items.add(new GunCoolerPack(battle,"cooler5"));
+		items.add(new GunCoolerPack(battle,"cooler6"));
 
 	}
 	

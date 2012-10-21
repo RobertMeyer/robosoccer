@@ -138,6 +138,7 @@ class SoundCache {
             return;
         }
 
+       
         SoundData data = createSoundData(resourceName);
 
         if (data == null) {
@@ -149,11 +150,30 @@ class SoundCache {
         try {
             clones = new ClipClones(mixer, data, numClones);
             soundTable.put(key, clones);
+         
+
         } catch (LineUnavailableException e) {
             Logger.logError(
                     "The audio mixer " + mixer.getMixerInfo().getName()
                     + " does not support the audio format of the sound clip: " + resourceName);
         }
+    }
+    
+    /**
+     * Creates if a the specified recourse exists
+     *
+     * @param resourceName the name of the resource being checked
+     * @return true if the resource exists, false is not
+     */
+    public boolean fileExists(String resourceName){
+    	 URL url = SoundCache.class.getResource(resourceName);
+
+         if (url == null) {
+             return false;
+         }
+         else{
+        	 return true;
+         }
     }
 
     /**
@@ -197,6 +217,20 @@ class SoundCache {
         return clones.next();
     }
 
+    /**
+     * Returns true if the sound table contains the key
+     *
+     * @param key the key that is being checked
+     */
+    public boolean contains(Object key) {
+        if(soundTable.containsKey(key)){
+        	return true;
+        }
+        else{
+        	return false;
+        }
+    }
+    
     /**
      * Removes all clip copies of a given sound, closing all its dependent resources
      *

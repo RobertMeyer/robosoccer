@@ -82,49 +82,49 @@ public class SoldierRobot_Example extends SoldierRobot {
     	turnRight(getHeading() - getGunHeading() + e.getBearing() + 180);
     }
     
-	
-	/**
-	 * Find an enemy and approach them.
-	 */
-	public void advance(ScannedRobotEvent e) {
-		setColors(Color.green, Color.green, Color.green);
-		super.advance(e);
-	}
-	
-	/**
-	 * Back away.
-	 */
-	public void retreat(ScannedRobotEvent e) {
-		setColors(Color.yellow, Color.yellow, Color.yellow);
-		super.retreat(e);
-	}
-	
-	/**
-	 * Find an enemy and fire at them!
-	 */
-	public void attack(ScannedRobotEvent e) {
-		setColors(Color.red, Color.red, Color.red);
-		super.attack(e);
-	}
+//	
+//	/**
+//	 * Find an enemy and approach them.
+//	 */
+//	public void advance(ScannedRobotEvent e) {
+//		setColors(Color.green, Color.green, Color.green);
+//		super.advance(e);
+//	}
+//	
+//	/**
+//	 * Back away.
+//	 */
+//	public void retreat(ScannedRobotEvent e) {
+//		setColors(Color.yellow, Color.yellow, Color.yellow);
+//		super.retreat(e);
+//	}
+//	
+//	/**
+//	 * Find an enemy and fire at them!
+//	 */
+//	public void attack(ScannedRobotEvent e) {
+//		setColors(Color.red, Color.red, Color.red);
+//		super.attack(e);
+//	}
 	
 	/**
 	 * I swapped the increasePower and decreasePower functions for funsies.
 	 */
-	public void increasePower() {
-		if (power > 1.0) {
-			power -= 0.5;
-		} else {
-			power = 0.5;
-		}
-	}
-	
-	public void decreasePower() {
-		if (power < 2.5) {
-			power += 0.5;
-		} else {
-			power = 3.0;
-		}
-	}
+//	public void increasePower() {
+//		if (power > 1.0) {
+//			power -= 0.5;
+//		} else {
+//			power = 0.5;
+//		}
+//	}
+//	
+//	public void decreasePower() {
+//		if (power < 2.5) {
+//			power += 0.5;
+//		} else {
+//			power = 3.0;
+//		}
+//	}
 	
 	/**
 	 * I reversed the direction for my new taunt.

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.io.Logger;
 import net.sf.robocode.mode.BotzillaMode;
 import robocode.BattleRules;
 import robocode.control.RandomFactory;

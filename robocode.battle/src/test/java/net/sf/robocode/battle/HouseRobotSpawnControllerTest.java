@@ -252,7 +252,7 @@ public class HouseRobotSpawnControllerTest {
     }
 
     private HouseRobotSpawnController createSpawner() {
-        HouseRobotSpawnController instance = new HouseRobotSpawnController(null);
+        HouseRobotSpawnController instance = new HouseRobotSpawnController();
         return instance;
     }
 }

@@ -16,18 +16,22 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.repository.IRepositoryItem;
 import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.ui.IWindowManager;
-import net.sf.robocode.battle.MinionData;
 import robocode._RobotBase;
 
 @SuppressWarnings("serial")
@@ -47,28 +51,22 @@ public class NewMinionsModeTab extends JPanel{
 	private int currentSelecting = -1;
 	private int currentIndex = -1;
 	private String currentSelection = "";
+	private JCheckBox enableMinion;
+	private JCheckBox insaneMode;
 
 	private class changeHandler implements ChangeListener {
 		@Override
 		public void stateChanged(ChangeEvent ev) {
-			JCheckBox enableMinion = (JCheckBox)ev.getSource();
 			MinionData.setMinionsEnabled(enableMinion.isSelected());
+			MinionData.setInsaneMode(insaneMode.isSelected());
 		}
 	}
 
 	public static Object[] minionRobots = null;
-	private RobotSelectionPanel robotSelectionPanel;
 	private IRepositoryManager repository;
-	private List<IRepositoryItem> minionsRepoList = new CopyOnWriteArrayList<IRepositoryItem>();
 	private List<String> minionsList = new CopyOnWriteArrayList<String>();
 	
-	
-	
-	public void minionRobots(int minionType) {
-		
-		Object[] s1 = null;
-		
-		minionsRepoList = new CopyOnWriteArrayList<IRepositoryItem>();
+	public void minionRobots(int minionType) {		
 		minionsList = new CopyOnWriteArrayList<String>();
 
 		repository = net.sf.robocode.core.Container.createComponent(IRepositoryManager.class);
@@ -135,6 +133,7 @@ public class NewMinionsModeTab extends JPanel{
 			}
 		}
 	}
+	
 	public class CustomDialog extends JDialog{
 		private class buttonHandler implements ActionListener {
 			@Override
@@ -173,7 +172,6 @@ public class NewMinionsModeTab extends JPanel{
 			this.setSize(width,height);
 			this.setLocationRelativeTo(parent);
 			this.setVisible(true);
-			
 		}
 	}
 	
@@ -203,8 +201,8 @@ public class NewMinionsModeTab extends JPanel{
 			GridBagLayout layout = new GridBagLayout();
 			layout.columnWidths = new int[]{0, 0};
 			layout.rowHeights = new int[]{0, 0};
-			layout.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-			layout.rowWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+			layout.columnWeights = new double[]{1.0, 1.0};
+			layout.rowWeights = new double[]{1.0, 1.0};
 
 			mainPanel.setLayout(layout);
 			
@@ -216,7 +214,6 @@ public class NewMinionsModeTab extends JPanel{
 			
 			createGlobalSettings();
 		}
-		
 		return mainPanel;
 	}
 
@@ -227,12 +224,25 @@ public class NewMinionsModeTab extends JPanel{
 		constraints.gridy = 1;
 		//Create panel
 		JPanel globalSetting = new JPanel();
-		JCheckBox enableMinion = new JCheckBox("Enable Minions");
+		enableMinion = new JCheckBox("Enable Minions");
+		enableMinion.setBounds(12, 24, 117, 20);
+		enableMinion.setHorizontalAlignment(SwingConstants.LEFT);
+		enableMinion.setSelected(MinionData.getMinionsEnabled());
 		enableMinion.addChangeListener(new changeHandler());
 		enableMinion.setRolloverEnabled(true);
+		
 		globalSetting.setBorder(getTitledBorder("Global Settings"));
+		globalSetting.setLayout(null);
 		globalSetting.add(enableMinion);
 		mainPanel.add(globalSetting,constraints);
+		
+		insaneMode = new JCheckBox("Insane Mode");
+		insaneMode.setToolTipText("Minions cost no power to spawn.");
+		insaneMode.setBounds(12, 48, 87, 23);
+		insaneMode.setSelected(MinionData.getInsaneMode());
+		insaneMode.addChangeListener(new changeHandler());
+		
+		globalSetting.add(insaneMode);
 	}
 
 	private void createMinionPanel(int gridx, int gridy, String panelStr, JTextField field, JButton btn) {
@@ -278,5 +288,4 @@ public class NewMinionsModeTab extends JPanel{
             return item.getUniqueShortClassNameWithVersion();
         }
     }
-
 }

@@ -24,4 +24,11 @@ target/
 # Robocode config
 robocode.core/config/
 
+# Netbeans
+nb-configuration.xml
+
 robocode.core/nb-configuration.xml
+
+robocode.core/config/robocode.properties
+
+robocode.core/config/window.properties

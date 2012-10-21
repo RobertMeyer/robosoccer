@@ -22,6 +22,11 @@ public class ItemRobot extends AdvancedRobot implements IItemRobot, IItemEvents 
 	public void onHitItem(HitItemEvent event) {}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	public void onScannedItem(ScannedItemEvent event) {}
+	
+	/**
 	 * Do not call this method!
 	 * <p/>
 	 * {@inheritDoc}

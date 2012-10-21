@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
+import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
@@ -191,19 +192,20 @@ public class ClassicMode implements IMode {
         return 5*30*60; // 9000 turns is the default
     }
 
-    /**
-     * Sets the starting positions for all robot objects.
-     * Original implementation taken from Battle.
-     * @param initialPositions String of initial positions. Parsed by
-     * the original implementation found in Battle. Can be ignored for
-     * custom implementations.
-     * @param battleRules Battle rules.
-     * @param robotsCount Size of battlingRobotsList
-     * @return Two dimensional array of coordinates containing
-     * the starting coordinates and heading for each robot.
-     */
-    public double[][] computeInitialPositions(String initialPositions,
-                                              BattleRules battleRules, Battle battle, int robotsCount) {
+	/**
+	 * Sets the starting positions for all robot objects.
+	 * Original implementation taken from Battle.
+	 * @param initialPositions String of initial positions. Parsed by 
+	 * the original implementation found in Battle. Can be ignored for 
+	 * custom implementations.
+	 * @param width Battlefield width.
+	 * @param height Battlefield height.
+	 * @param robotsCount Size of battlingRobotsList
+	 * @return Two dimensional array of coordinates containing
+	 * the starting coordinates and heading for each robot.
+	 */
+	public double[][] computeInitialPositions(String initialPositions,
+			double width, double height, int robotsCount) {
         double[][] initialRobotPositions = null;
         this.numRobots = robotsCount;
 
@@ -238,8 +240,8 @@ public class ClassicMode implements IMode {
 
             final Random random = RandomFactory.getRandom();
 
-            x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-            y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+            x = RobotPeer.WIDTH + random.nextDouble() * (width - 2 * RobotPeer.WIDTH);
+            y = RobotPeer.HEIGHT + random.nextDouble() * (height - 2 * RobotPeer.HEIGHT);
             heading = 2 * Math.PI * random.nextDouble();
 
             int len = coords.length;
@@ -328,7 +330,7 @@ public class ClassicMode implements IMode {
         Collections.shuffle(shuffledList, RandomFactory.getRandom());
         return shuffledList;
     }
-
+    
     @Override
     public void setItems() {
         // TODO Auto-generated method stub
@@ -372,6 +374,14 @@ public class ClassicMode implements IMode {
     public void addRobots(int currentTurn, BattlePeers peers){
         // do nothing
     }
+	
+	/** What to do at the end of a mode's specific round.
+	 * @author Laurence McLean 42373414
+	 * @param peers See BattlePeers.class
+	 */
+	public void endRound(BattlePeers peers) {
+		//Do nothing by default.
+	}
 
     /**
      *
@@ -415,18 +425,18 @@ public class ClassicMode implements IMode {
         }
 
         /* Set it to show the default scores */
-        resultsTable.showOverallRank(true);
-        resultsTable.showRobotName(true);
-        resultsTable.showTotalScore(true);
-        resultsTable.showSurvival(true);
-        resultsTable.showSurvivalBonus(true);
-        resultsTable.showBulletDamage(true);
-        resultsTable.showBulletBonus(true);
-        resultsTable.showRamDamage(true);
-        resultsTable.showRamBonus(true);
-        resultsTable.showFirsts(true);
-        resultsTable.showSeconds(true);
-        resultsTable.showThirds(true);
+        resultsTable.showOverallRank()
+        			.showRobotName()
+        			.showTotalScore()
+        			.showSurvival()
+        			.showSurvivalBonus()
+        			.showBulletDamage()
+        			.showBulletBonus()
+        			.showRamDamage()
+        			.showRamBonus()
+        			.showFirsts()
+        			.showSeconds()
+        			.showThirds();
     }
 
     /**
@@ -459,5 +469,14 @@ public class ClassicMode implements IMode {
         // do nothing
     }
 
-}
+	/**
+	 * Returns null in classic mode. See SoccerMode for details.
+	 * @return null
+	 */
+	public BoundingRectangle[] getGoals() {
+		return null;
+	}
 
+	public void scoreRoundPoints() {
+	}
+}

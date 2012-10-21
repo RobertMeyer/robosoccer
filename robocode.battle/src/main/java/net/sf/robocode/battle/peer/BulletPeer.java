@@ -41,6 +41,9 @@
  *       as the battleField variable was not intialized
  *     Pavel Savara
  *     - disconnected from Bullet, now we rather send BulletStatus to proxy side
+ *     Jonathan Wong
+ *     - Implemented Friendly Fire.
+ *     	 Added boolean flag for negation of damage when bullet is from a friendly
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
@@ -52,6 +55,7 @@ import java.util.List;
 
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.FriendlyFireTracker;
 import net.sf.robocode.battle.KillstreakTracker;
 import net.sf.robocode.peer.BulletStatus;
 import robocode.BattleRules;
@@ -188,7 +192,8 @@ public class BulletPeer {
 				double damage = Rules.getBulletDamage(power);
 				double score;
 
-				if (otherRobot.attributes.get().get(RobotAttribute.ARMOR) - 1.0 < 0.00001) {
+				if (Math.abs(otherRobot.attributes.get().get(RobotAttribute.ARMOR) 
+						- 1.0) < 0.00001) {
 					score = damage;
 				} else {
 					// Use inverse relationship --> more armor less damage
@@ -207,18 +212,35 @@ public class BulletPeer {
 					if (owner.isDispenser()) {
 						otherRobot.updateEnergy(damage);
 					} else {
-						otherRobot.updateEnergy(-damage);
+						if(!(otherRobot.isParent(owner))) {
+							otherRobot.updateEnergy(-damage);
+						}
+						else {
+							owner.updateEnergy(-(damage*2)-5);
+						}
 					}
 				}
+				
+				/**
+				 * @author Jonathan W
+				 *The checkbox will be checked, this will be activated only when it is played in team battles.
+				 *If a friendly fires at a team member with the checkbox checked, damage will be ignored.
+				 */
 				
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
-				if (!teamFire) {
+				if(FriendlyFireTracker.enableFriendlyfire == true){
+					if(teamFire){
+						otherRobot.updateEnergy(damage);
+					}
+				}
+				
+				if(!teamFire){
 					owner.getRobotStatistics().scoreBulletDamage(
 							otherRobot.getName(), score);
 				}
-
+				
 				if (otherRobot.getEnergy() <= 0) {
 					owner.battle.getBattleMode().robotKill(owner, otherRobot);
 					if (otherRobot.isAlive()) {
