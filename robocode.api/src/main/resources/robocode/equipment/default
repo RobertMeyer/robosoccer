@@ -2,9 +2,9 @@ Division 9 Plasmaprojector : GUN
 IMAGE_PATH = /net/sf/robocode/ui/images/plasma.png
 SOUND_PATH = /net/sf/robocode/sound/sounds/boom.wav
 GUN_HEAT_RATE = 110
-BULLET_DAMAGE = 1500
+BULLET_DAMAGE = 150
 ENERGY = -10
-BULLET_SPEED = 20000
+BULLET_SPEED = 200
 
 Guardian Heavy Tank Armor : BODY
 IMAGE_PATH = /net/sf/robocode/ui/images/guardian.png
@@ -14,7 +14,7 @@ RAM_ATTACK = 10
 RAM_DEFENSE = 10
 
 Scout armour : BODY
-ARMOR = -100
+ARMOR = -10
 ACCELERATION = 60
 RAM_ATTACK = -10
 ENERGY = -30
@@ -45,12 +45,14 @@ BULLET_SPEED = 90
 ENERGY = 20
 
 Small Radar : RADAR
+IMAGE_PATH = /net/sf/robocode/ui/images/smallradar.png
 ACCELERATION = 20
 RADAR_ANGLE = -10
 SCAN_RADIUS = 90
 ACCELERATION = 30
 
 Broad Radar : RADAR
+IMAGE_PATH = /net/sf/robocode/ui/images/broadradar.png
 ACCELERATION = -10
 RADAR_ANGLE = 45
 SCAN_RADIUS = 50
@@ -61,7 +63,7 @@ IMAGE_PATH = /net/sf/robocode/ui/images/twinturret.png
 SOUND_PATH = /net/sf/robocode/sound/sounds/burst.wav
 ACCELERATION = 10
 GUN_HEAT_RATE = -80
-BULLET_SPEED = 500
+BULLET_SPEED = 50
 BULLET_DAMAGE = -50
 ENERGY = -30
 
@@ -69,9 +71,10 @@ Pistol : GUN
 ACCELERATION = 20
 BULLET_DAMAGE = -50
 BULLET_SPEED = 20
+SOUND_PATH = /net/sf/robocode/sound/sounds/pewpew.wav
 GUN_HEAT_RATE = 10
 GUN_TURN_ANGLE = 40
-ENERGY_REGEN = 30
+ENERGY_REGEN = 3
 
 Sword : GUN
 IMAGE_PATH = /net/sf/robocode/ui/images/Sword.png
@@ -136,6 +139,12 @@ Ram Test Small: BODY
 RAM_ATTACK = -40
 RAM_DEFENSE = -40
 
+ImageEquipTest1 : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/turret.png
+
+ImageEquipTest2 : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/twinturret.png
+
 InvalidFileTest : GUN
 SOUND_PATH = /net/sf/robocode/sound/sounds/InvalidFileTest.jpg
 
@@ -147,4 +156,3 @@ SOUND_PATH = Test2
 
 Test : GUN
 SOUND_PATH = /net/sf/robocode/sound/sounds/pewpew.wav
-

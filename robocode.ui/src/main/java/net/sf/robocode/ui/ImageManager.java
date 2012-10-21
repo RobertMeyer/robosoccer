@@ -85,12 +85,16 @@ public class ImageManager implements IImageManager {
         robotGunImageCache = new RenderCache<Integer, RenderImage>();
         robotRadarImageCache = new RenderCache<Integer, RenderImage>();
 
-
+        //reset image paths
+        bodyPath = null;
+        gunPath = null;
+        
         // Read images into the cache
 		getBodyImage(null);
 		getGunImage(null);
 		getRadarImage(null);
 		getExplosionRenderImage(0, 0);
+		
 	}
 	
 	public Image getFieldTileImage(int index) {
@@ -280,7 +284,8 @@ public class ImageManager implements IImageManager {
             bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
         } else {
         	try{
-        	bodyImage = getImage(imagePath);
+        		bodyImage = getImage(imagePath);
+        		bodyPath = imagePath;
         	}catch(NullPointerException e) {
         		bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
         	}
@@ -302,6 +307,7 @@ public class ImageManager implements IImageManager {
         } else {
         	try{
         		gunImage = getImage(imagePath);
+        		gunPath = imagePath;
         	}catch(NullPointerException e) {
         		gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
         	}
@@ -321,7 +327,7 @@ public class ImageManager implements IImageManager {
             radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
         } else {
         	try{
-        	radarImage = getImage(imagePath);
+        		radarImage = getImage(imagePath);
         	}catch(NullPointerException e) {
         		radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
         	}

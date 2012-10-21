@@ -113,6 +113,7 @@ import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.battle.peer.TeamPeer;
 import net.sf.robocode.battle.peer.TeleporterPeer;
+import net.sf.robocode.battle.peer.ZLevelPeer;
 import net.sf.robocode.battle.snapshot.TurnSnapshot;
 import net.sf.robocode.host.ICpuManager;
 import net.sf.robocode.host.IHostManager;
@@ -232,6 +233,8 @@ public class Battle extends BaseBattle {
 
 	private int numObstacles;
 	private static DefaultSpawnController spawnController = new DefaultSpawnController();
+	
+	private List<ZLevelPeer> zLevels;
 
 	public Battle(ISettingsManager properties, IBattleManager battleManager,
 			IHostManager hostManager, IRepositoryManager repositoryManager,
@@ -271,7 +274,7 @@ public class Battle extends BaseBattle {
 			}
 		}
 
-		deController.setup(bp);
+		deController.setup(bp, this);
 		botzillaActive = false;
 
 		if (battleMode.toString() == "Obstacle Mode") {
@@ -350,6 +353,10 @@ public class Battle extends BaseBattle {
 		return itemControl;
 	}
 
+	public void addItem(ItemDrop item) {
+		items.add(item);
+	}
+
 	public List<ObstaclePeer> getObstacleList() {
 		return new ArrayList<ObstaclePeer>(obstacles);
 	}
@@ -357,18 +364,21 @@ public class Battle extends BaseBattle {
 	public boolean isDebugging() {
 		return isDebugging;
 	}
-
+	
 	public void addBullet(BulletPeer bullet) {
 		bullets.add(bullet);
 	}
 
 	public void addMinion(RobotPeer minion, double startingEnergy) {
+		//Add the minion peer to the battle.
 		robotsCount++;
 		peers.addRobot(minion);
 		minion.initializeRound(peers.getRobots(), null, startingEnergy);
 		long waitTime = Math.min(300 * cpuConstant, 10000000000L);
-		final long waitMillis = waitTime / 1000000;
-		final int waitNanos = (int) (waitTime % 1000000);
+		long waitMillis = waitTime / 1000000;
+		int waitNanos = (int) (waitTime % 1000000);
+		if(isDebugging)
+			waitMillis = 100;
 		minion.startRound(waitMillis, waitNanos);
 	}
 
@@ -582,11 +592,14 @@ public class Battle extends BaseBattle {
 		}
 
 		createTeleporters();
+		if(ZLevelsEnabler.getZRand()) {
+			setZLevels();
+		}
 		Logger.logMessage(""); // puts in a new-line in the log message
 
 		final ITurnSnapshot snapshot = new TurnSnapshot(this,
 				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
-				itemControl.getItems(), obstacles, teleporters, false);
+				itemControl.getItems(), obstacles, teleporters, zLevels, false);
 		// final ITurnSnapshot snapshot = new TurnSnapshot(this,
 		// peers.getRobots(), bullets, landmines,effArea, customObject,
 		// itemControl.getItems(), false);
@@ -620,7 +633,9 @@ public class Battle extends BaseBattle {
 		bullets.clear();
 		items.clear();
 		teleporters.clear();
-
+		if (zLevels != null) {
+			zLevels.clear();
+		}
 		landmines.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(),
@@ -722,6 +737,15 @@ public class Battle extends BaseBattle {
 		// Robot time!
 		wakeupRobots();
 	}
+	
+	/**
+	 * Get the current turn number
+	 * 
+	 * @return currentTurn	Turn number.
+	 */
+	public int getCurrentTurnNumber() {
+		return currentTurn;
+	}
 
 	@Override
 	protected void shutdownTurn() {
@@ -799,7 +823,7 @@ public class Battle extends BaseBattle {
 	protected void finalizeTurn() {
 		eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
 				peers.getRobots(), bullets, landmines, eaManager.effArea, customObject,
-				itemControl.getItems(), obstacles, teleporters, true)));
+				itemControl.getItems(), obstacles, teleporters, zLevels, true)));
 
 		// eventDispatcher.onTurnEnded(new TurnEndedEvent(new TurnSnapshot(this,
 		// peers.getRobots(), bullets, landmines,effArea, customObject,
@@ -959,8 +983,7 @@ public class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), items, obstacles,
-					zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zLevels, zapEnergy);
 			robotPeer.spawnMinions();
 		}
 
@@ -990,7 +1013,7 @@ public class Battle extends BaseBattle {
 	/**
 	 * Is called when botzilla needs to be added to a battle.
 	 */
-	private void addBotzilla() {
+	public void addBotzilla() {
 		System.out.println("BOTZILLA JUST APPEARED");
 		botzillaActive = true;
 		
@@ -1013,7 +1036,15 @@ public class Battle extends BaseBattle {
         final long waitMillis = waitTime / 1000000;
         final int waitNanos = (int) (waitTime % 1000000);
 		botzillaPeer.startRound(waitMillis, waitNanos);
-
+	}
+	
+	/**
+	 * Indicate whether Botzilla is active or not.
+	 * 
+	 * @return botzillaActive	The status of Botzilla.
+	 */
+	public boolean checkBotzillaActive() {
+		return botzillaActive;
 	}
 
 	/**
@@ -1510,6 +1541,34 @@ public class Battle extends BaseBattle {
 
 	public IRepositoryManager getRepositoryManager() {
 		return repositoryManager;
+	}
+	
+	public void setZLevels() {
+		int vTiles;
+		int hTiles;
+		int tSize = 64;
+		int x = 0;
+		int y = 0;
+		int z = 0;
+		
+		vTiles = height / tSize + 1;
+		hTiles = width / tSize + 1;
+		
+		zLevels = new ArrayList<ZLevelPeer>();
+		
+		for(int i = 0; i < vTiles; ++i) {
+			for(int j = 0; j < hTiles; ++j) {
+				zLevels.add(new ZLevelPeer(tSize, tSize, z, x, y));
+				
+				z += Math.round(Math.random() * 2);
+				z -= Math.round(Math.random() * 2);
+				x += tSize;				
+			}
+			
+			z = 0;
+			y += tSize;
+		}
+		
 	}
 
 }

@@ -229,9 +229,9 @@ public class SoccerMode extends ClassicMode implements IMode {
 			if (robotPeer.isBall()) {
 				if (goal1.intersects(robotPeer.getBoundingBox())) {
 					roundOver = true;
-					scoreTeam = Goal.TEAM1;
-				} else if (goal2.intersects(robotPeer.getBoundingBox())) {
 					scoreTeam = Goal.TEAM2;
+				} else if (goal2.intersects(robotPeer.getBoundingBox())) {
+					scoreTeam = Goal.TEAM1;
 					roundOver = true;
 				}
 				robotPeer.performScan(getRobotsAtRandom(robots));
@@ -294,7 +294,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 
 		scoreTeam2 = new RenderString("score1", ("Red Team: " + (int) team2
 				.getStatistics().getTotalScore()));
-		scoreTeam2.setTranslate(fieldWidth - 85, 50);
+		scoreTeam2.setTranslate(fieldWidth - 100, 50);
 		scoreTeam2.setColour(Color.WHITE);
 		objs.add(scoreTeam2);
 		return objs;

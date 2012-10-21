@@ -104,6 +104,7 @@ public class RobocodeFrame extends JFrame {
     private KillstreakCheckbox ksBox;
     private BackgroundMusicCheckbox mbox;
     private FriendlyFireCheckbox fbox;
+    private TeamCollisionCheckbox cbox;
     private JLabel tpsLabel;
     private boolean iconified;
     private boolean exitOnClose = true;
@@ -120,6 +121,7 @@ public class RobocodeFrame extends JFrame {
 	private JPanel sideBooleans;
 	private TeleporterCheckbox teleporterBox;
 	private BlackholeCheckbox blackholeBox;
+	private ZLevelCheckbox zBox;
 
     public RobocodeFrame(ISettingsManager properties,
                          IWindowManager windowManager, IRobotDialogManager dialogManager,
@@ -142,6 +144,8 @@ public class RobocodeFrame extends JFrame {
         blackholeBox = new BlackholeCheckbox();
         mbox = new BackgroundMusicCheckbox(battleManager.getBattleProperties());
         fbox = new FriendlyFireCheckbox(battleManager.getBattleProperties());
+        cbox = new TeamCollisionCheckbox(battleManager.getBattleProperties());
+        zBox = new ZLevelCheckbox();
         menuBar.setup(this);
         initialize();
     }
@@ -322,13 +326,15 @@ public class RobocodeFrame extends JFrame {
             sidePanel.setLayout(new BorderLayout());
             
             sideBooleans = new JPanel();
-            sideBooleans.setLayout(new GridLayout(6,1));
+            sideBooleans.setLayout(new GridLayout(7,1));
             sideBooleans.add(box);
             sideBooleans.add(ksBox);           
             sideBooleans.add(mbox);
             sideBooleans.add(teleporterBox);
             sideBooleans.add(blackholeBox);
             sideBooleans.add(fbox);
+            sideBooleans.add(cbox);
+            sideBooleans.add(zBox);
            
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container

@@ -110,6 +110,21 @@ public class ObstacleMode extends ClassicMode {
 		}
 	}
 	
+	/**
+	 * Generated random obstacles for the given battle, up to the specified number.
+	 * Ensure that when placing each obstacle, 
+	 * it is not intersecting with a previously placed obstacle.
+	 * If obstacles can no longer be placed without touch another obstacle,
+	 * stop placing any more obstacles and just return.
+	 * 
+	 * @param num			Number of obstacles to place.
+	 * @param bp			BattleProperties for the battle.
+	 * @param battleRules	BattleRules for the battle.
+	 * @param battle		Battle to create obstacles for.
+	 * @param cellWidth		Width of the obstacles.
+	 * @param cellHeight	Height of the obstacles.
+	 * @return List of obstacles for the battle.
+	 */
 	public static List<ObstaclePeer> generateRandomObstacles(int num, BattleProperties bp, BattleRules battleRules, Battle battle, int cellWidth, int cellHeight) {
 		List<ObstaclePeer> obstacles = new ArrayList<ObstaclePeer>();
 		Random randomGen = new Random();

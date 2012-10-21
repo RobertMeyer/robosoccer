@@ -99,6 +99,7 @@ import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.KillFreezeHeatRobots;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
+import net.sf.robocode.battle.TeamCollisionTracker;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.host.IHostManager;
@@ -296,6 +297,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	private IHostManager hostManager;
 	// Store parent proxy for minions.
 	private MinionProxy minionParent;
+	
+	protected int zLevel;
 
 	/**
 	 * An association of values to every RobotAttribute, such that game
@@ -416,12 +419,18 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			//Spawn the minion.
 			RobotSpecification minion = minionSpecs[minionType];
 			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
-			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
+			RobotPeer minionPeer = createMinionPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
 
 			battle.addMinion(minionPeer, energyConsumption);
 
 			//Provide a proxy for the parent. (Parent=>Minion)
-			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
+			MinionProxy minionProxy = null;
+			try{
+				minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
+			}
+			catch(Exception ex) {
+				//Only possible exception that can occur here is a mockito cast error.
+			}
 			
 			minionList.add(minionPeer);
 			minionProxyList.add(minionProxy);
@@ -431,10 +440,33 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		currentCommands.setMinions(minionProxyList);
 	}
 	
+	/**
+	 * Method provided to allow testing (using different RobotPeer implementation).
+	 * @param battle
+	 * @param hostManager
+	 * @param robotSpecification
+	 * @param duplicate
+	 * @param team
+	 * @param robotIndex
+	 * @param parentProxy
+	 * @return new RobotPeer
+	 */
+	public RobotPeer createMinionPeer(Battle battle, IHostManager hostManager, RobotSpecification robotSpecification, 
+			int duplicate, TeamPeer team, int robotIndex, IHostingRobotProxy parentProxy) {
+		return new RobotPeer(battle, hostManager, robotSpecification, duplicate, team, robotIndex, parentProxy);
+	}
+	
+	/**
+	 * @return a list containing this robot's minions (as RobotPeers)
+	 */
 	public List<RobotPeer> getMinionPeers() {
 		return minionList;
 	}
 	
+	/**
+	 * If the robot is a minion, update it's parent peer.
+	 * @param parent the new parent.
+	 */
 	public void setParent(IHostingRobotProxy parent) {
 		if(this.isMinion() && parent != null) {
 			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)parent);
@@ -442,12 +474,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 	
+	/**
+	 * @param child
+	 * @return true if child is owned by this robot, false otherwise.
+	 */
 	public boolean isParent(RobotPeer child) {
 		if(minionList.contains(child))
 			return true;
 		return false;
 	}
 	
+	/**
+	 * Clean up minions after a round.
+	 */
 	public void finalizeMinions() {
 		for(RobotPeer minion: minionList) {
 			minion.waitForStop();
@@ -1369,7 +1408,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	@Override
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, List<ZLevelPeer> zLevels, double zapEnergy) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -1519,6 +1558,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
         // Now check for item collision
         checkItemCollision(items);
+        
+        if(zLevels != null) {
+        	checkZLevelCollision(zLevels);
+        }
         
         // Scans items
         scanItems(radarHeading, items);
@@ -1739,7 +1782,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					y -= movedy;
 
 					boolean teamFire = (teamPeer != null && teamPeer == otherRobot.teamPeer);
-
+					
+					/**
+					 * CSSE2003 Team MCJJ 
+					 * TeamCollision - if checkbox is true, owner(this) will receive damage per normal but negate the damage to 
+					 * other robot
+					 */
+					if(TeamCollisionTracker.enableteamCollision == true){
+						if(teamFire){
+							otherRobot.updateEnergy(+(otherRobot.getRamDamage()));
+							this.updateEnergy(-(this.getRamAttack()));
+						}
+					}
+					
 					if (!teamFire) {
 						statistics.scoreRammingDamage(otherRobot.getName());
 					}
@@ -3291,5 +3346,36 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					SoccerMode.GOALY);
 		}
 		return goals[index];
+	}
+	
+	protected void checkZLevelCollision(List<ZLevelPeer> z) {
+		boolean tooSteep = false;
+        double angle = 0;
+        double dx = velocity * sin(bodyHeading);
+        double dy = velocity * cos(bodyHeading);
+
+        for(ZLevelPeer zP : z) {
+        	
+
+        	if (zP.getBounds().intersects(boundingBox)) {
+        		if(Math.abs(zLevel - zP.getZ()) == 1) {
+        			zLevel = zP.getZ();
+        		} else {
+        			tooSteep = true;
+        		}
+        		angle = atan2(zP.getBounds().getX() - x, zP.getBounds().getY() - y);
+        	}
+        }
+
+        if (tooSteep) {
+        	addEvent(new HitWallEvent(normalRelativeAngle(angle - bodyHeading)));
+        	velocity = 0;
+        	x -= dx;
+            y -= dy;
+
+        	updateBoundingBox();
+        	currentCommands.setDistanceRemaining(0);
+            setState(RobotState.HIT_WALL);
+        }
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * @author Jonathan W
+ * @author CSSE2003 Team MCJJ
  * contains a flag to check if the FriendlyFireCheckbox is checked. Return a true if the box is checked, false otherwise
  */
 
