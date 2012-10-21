@@ -90,7 +90,7 @@ public class HouseRobotMode extends ClassicMode {
     			// We need sampleex.MyFirstHouseRobot which is the HouseRobot
 	    		// that will operate in HouseRobot mode.
     			RobotSpecification[] specs = repository.loadSelectedRobots(
-    					"sampleex.MyFirstHouseRobot");
+    					"sampleex.House_Robot");
 	    		houseRobots[i] = new RobotPeer(peers.getBattle(),
 	    				peers.getHostManager(), specs[0], 0, null,
 	    				peers.getBattle().getRobotsCount(), null);
@@ -114,7 +114,7 @@ public class HouseRobotMode extends ClassicMode {
     		
     		//We only have HouseRobots left in the round, so we should end
     		// the round.
-	    	if(peers.getBattle().getActiveRobots()==numHouseRobotsStillAlive) {
+	    	if(peers.getBattle().getActiveRobots()==numHouseRobotsStillAlive+1) {
 	    		endRound(peers);
 	    	}
     	}
@@ -130,7 +130,6 @@ public class HouseRobotMode extends ClassicMode {
     	if(!alreadyRemoved) {
     		for(int i = 0; i<numberOfHouseRobots; i++) {
 	    		peers.removeRobot(houseRobots[i]);
-	    		//TODO Attempt at fixing bug where HouseRobots will spawn randomly after a few rounds.
 	    		peers.getBattle().getSpawnController().resetSpawnLocation(houseRobots[i], peers.getBattle());
 	    		houseRobots[i] = null;
 	    	}

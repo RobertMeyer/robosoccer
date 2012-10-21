@@ -1958,5 +1958,87 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
             uninitializedException();
         }
     }
+	
+	/**
+	 * A private helper method to calculate the smallest possible turn to
+	 * achieve a required angle.
+	 * 
+	 * @author David Wei (4231523)
+	 * 
+	 * @param angle
+	 *            The angle that is being reduced to a more efficient angle
+	 * 
+	 * @return Returns the smallest angle to achieve the required turn
+	 */
+	private double smallestTurn(double angle) {
+
+		// If the angle is greater than 180 degrees, subtract 360 to obtain
+		// the shortest angle, which will be in the opposite direction
+		if (angle > 180)
+			angle -= 360;
+
+		// If the angle is less than -180 degrees, add 360 to obtain the
+		// shortest angle, which will be in the opposite direction
+		if (angle < -180)
+			angle += 360;
+
+		return angle;
+	}
+	
+	/**
+	 * Moves to a given point (x,y)
+	 * 
+	 * @author David Wei (4231523)
+	 * 
+	 * @param x
+	 * 			The x co-ordinate of the point
+	 * @param y
+	 * 			The y co-ordinate of the point
+	 * 
+	 */
+	private void moveTo(double x, double y){
+		getX();
+		getY();
+		
+		double angle = Math.toDegrees(Math.atan((y - getY())/(x - getX())));
+		
+		if (angle > 0){
+			if (x > getX() && y > getY()){
+				turnLeft(smallestTurn(getHeading() - 90 + angle));			
+			} else{
+				turnLeft(smallestTurn(getHeading() - 270 + angle));
+			}
+			ahead(Math.hypot(y - getY(),x - getX()));
+		}
+		
+		if (angle < 0){
+			if (x < getX() && y > getY()){
+				turnLeft(smallestTurn(getHeading() + 90 - angle));
+			} else {
+				turnRight(smallestTurn(getHeading() + 90 + angle));
+			}
+			ahead(Math.hypot(y - getY(),x - getX()));
+		}
+		
+		if (angle == 0){
+			if (x > getX())
+				ahead(x - getX());
+			else
+				ahead(getX() - x);
+		}
+		
+		if (x == getX()){
+			if (y == getY())
+				return;
+		
+			if (y > getY())
+				ahead(y - getY());
+			
+			if (getY() > y)
+				ahead(getY() - y);
+		}
+		
+		
+	}
 
 }

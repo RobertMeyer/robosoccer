@@ -10,7 +10,7 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 import robocode.TurnCompleteCondition;
 
-public class MyFirstHouseRobot extends HouseRobot {
+public class House_Robot extends HouseRobot {
 	
 	HouseRobotBoundary home;
 	
