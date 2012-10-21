@@ -19,6 +19,11 @@ package net.sf.robocode.battle;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.mode.IMode;
 
+/**
+ * 
+ * @author Lee Symes 42636267
+ *
+ */
 public abstract class IModeSpawnController implements ISpawnController {
 
     /**

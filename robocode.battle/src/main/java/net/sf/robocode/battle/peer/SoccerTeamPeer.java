@@ -10,7 +10,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class SoccerTeamPeer extends TeamPeer {
 
-	private final TeamStatistics teamStatistics;
+	private final SoccerTeamStatistics teamStatistics;
 
 	/**
 	 * Creates a SoccerTeamPeer

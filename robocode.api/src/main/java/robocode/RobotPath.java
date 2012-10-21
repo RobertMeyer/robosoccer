@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 /**
  * Object for a path that a robot can take.
- * When getters are called, the pointer moves to the next point in the path so that next() and prev() can be called continuously.
+ * When getters are called, the pointer moves to the next point in the path so
+ * that next() and prev() can be called continuously.
  * Exception to pointer moving is current().
  * @author Laurence McLean 42373414
  * @see HouseRobot
@@ -27,7 +28,8 @@ public class RobotPath {
 	/**
 	 * Constructor for a Robot Path
 	 * @param path An ArrayList of {@link PathPoint}s for the robot to 
-	 * @param cycle If the path is a cycle. True will result in the first PathPoint being returned after the last,
+	 * @param cycle If the path is a cycle. True will result in the first
+	 * 		PathPoint being returned after the last,
 	 * 		false will result in null being returned after the last.
 	 * @see PathPoint
 	 */
@@ -70,7 +72,9 @@ public class RobotPath {
 	
 	/**
 	 * Get the next point in the path, and increment the pointer in the path.
-	 * @return null if the RobotPath has no PathPoints. null if this is a cyclical RobotPath and we were already at the end. Otherwise, return the PathPoint and increment the pointer.
+	 * @return null if the RobotPath has no PathPoints. null if this is a
+	 * cyclical RobotPath and we were already at the end. Otherwise, return the
+	 * PathPoint and increment the pointer.
 	 */
 	public PathPoint next() {
 		if(path.size()>0) {
@@ -86,7 +90,9 @@ public class RobotPath {
 	
 	/**
 	 * Get the previous point in the path, and decrement the pointer in the path.
-	 * @return null if the RobotPath has no PathPoints. null if this is a cyclical RobotPath and we were already at the beginning. Otherwise, return the PathPoint and decrement the pointer.
+	 * @return null if the RobotPath has no PathPoints. null if this is a 
+	 * cyclical RobotPath and we were already at the beginning. Otherwise, 
+	 * return the PathPoint and decrement the pointer.
 	 */
 	public PathPoint prev() {
 		if(path.size()>0) {

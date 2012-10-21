@@ -11,26 +11,56 @@ import net.sf.robocode.battle.BattlePeers;
 import net.sf.robocode.battle.HouseRobotSpawnController;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.core.ContainerBase;
-import net.sf.robocode.io.Logger;
 import net.sf.robocode.repository.IRepositoryManagerBase;
 import robocode.BattleRules;
 import robocode.control.RandomFactory;
 import robocode.control.RobotSpecification;
 
+/**
+ * 
+ * @author House Robot Group
+ * @author Laurence McLean (42373414)
+ * 
+ * A mode where up to 4 House Robots will spawn in the corners of the map.
+ */
 public class HouseRobotMode extends ClassicMode {
 	static {
+		/**
+		 * Need to make sure that when this mode is in operation, we add this
+		 * Controller to the Battle.
+		 * @see net.sf.robocode.battle.Battle#addController()
+		 */
 		Battle.addController(new HouseRobotSpawnController());
 	}
-	protected GuiOptions uiOptions;
 	
-	final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
+	/**
+	 * Need the repository to be able to get the HouseRobot.
+	 */
+	final IRepositoryManagerBase repository = ContainerBase.getComponent(
+			IRepositoryManagerBase.class);
+	
+	/**
+	 * Store the RobotPeers of the house robots.
+	 */
 	private RobotPeer[] houseRobots = new RobotPeer[4];
+	
+	/**
+	 * Since the number in each round is random, we need to know how many
+	 * HouseRobots we have.
+	 */
 	private int numberOfHouseRobots;
+	
+	/**
+	 * Need to know whether we've gotten rid of all of the robots manually
+	 * in this round or not, so that we don't try to access something later
+	 * that doesn't exist anymore.
+	 */
 	private boolean alreadyRemoved;
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return "House Robot Mode";
     }
@@ -38,42 +68,64 @@ public class HouseRobotMode extends ClassicMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDescription() {
-        return "Up to four house robots will appear in the corners of the game.";
+        return "Up to four house robots will appear in the corners " +
+        		"of the game.";
     }
     
     /**
-     * Adds up to four House Robots into the battle.
-     * @param currentTurn Current turn of the battle. We're only interested in currentTurn = 1
+     * Adds up to four House Robots into the battle on the first turn.
+     * @param currentTurn Current turn of the battle.
      * @param peers BattlePeers
-     * @author Laurence McLean 42373414
      */
+    @Override
     public void addRobots(int currentTurn, BattlePeers peers){
     	if(currentTurn==1) {
     		final Random random = RandomFactory.getRandom();
     		numberOfHouseRobots = random.nextInt(4) + 1;
     		alreadyRemoved = false;
     		for(int i = 0; i<numberOfHouseRobots; i++) {
-	    		//Ensure to make a new RobotPeer with peer's settings. We need sampleex.MyFirstHouseRobot which
-	    		// is the HouseRobot that will operate in HouseRobot mode.
-    			RobotSpecification[] specs = repository.loadSelectedRobots("sampleex.MyFirstHouseRobot");
-	    		houseRobots[i] = new RobotPeer(peers.getBattle(), peers.getHostManager(),
-	    				specs[0], 0, null, peers.getBattle().getRobotsCount(), null);
+	    		//Ensure to make a new RobotPeer with peer's settings.
+    			// We need sampleex.MyFirstHouseRobot which is the HouseRobot
+	    		// that will operate in HouseRobot mode.
+    			RobotSpecification[] specs = repository.loadSelectedRobots(
+    					"sampleex.MyFirstHouseRobot");
+	    		houseRobots[i] = new RobotPeer(peers.getBattle(),
+	    				peers.getHostManager(), specs[0], 0, null,
+	    				peers.getBattle().getRobotsCount(), null);
 	    		peers.addRobot(houseRobots[i]);
 	        	houseRobots[i].initializeRound(peers.getRobots(), null);
 	        	houseRobots[i].startRound(0, 0);
     		}
     	}
+    	
     	int numHouseRobotsStillAlive = 0;
+    	
+    	//We need to check to see if there's only HouseRobots left. If there
+    	// are, we'll remove them all to end the round.
     	if(!alreadyRemoved) {
-    		for(int i = 0; i<numberOfHouseRobots; i++) if(houseRobots[i].isAlive()) numHouseRobotsStillAlive++;
+    		//Count the number of HouseRobots
+    		for(int i = 0; i<numberOfHouseRobots; i++) {
+    			if(houseRobots[i].isAlive()) {
+    				numHouseRobotsStillAlive++;
+    			}
+    		}
+    		
+    		//We only have HouseRobots left in the round, so we should end
+    		// the round.
 	    	if(peers.getBattle().getActiveRobots()==numHouseRobotsStillAlive) {
-	    		Logger.logMessage("Only HouseRobots are left.");
 	    		endRound(peers);
 	    	}
     	}
     }
     
+    /**
+     * At the end of the round, we need to remove the remaining HouseRobots.
+     * So we'll do that
+     * @param peers BattlePeers
+     */
+    @Override
     public void endRound(BattlePeers peers) {
     	if(!alreadyRemoved) {
     		for(int i = 0; i<numberOfHouseRobots; i++) {
@@ -98,9 +150,9 @@ public class HouseRobotMode extends ClassicMode {
      * the starting coordinates and heading for each robot.
      */
     public double[][] computeInitialPositions(String initialPositions,
-                                              BattleRules battleRules, Battle battle, int robotsCount) {
+    		BattleRules battleRules, Battle battle, int robotsCount) {
         double[][] initialRobotPositions = null;
-
+        
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
         }
@@ -132,8 +184,10 @@ public class HouseRobotMode extends ClassicMode {
 
             final Random random = RandomFactory.getRandom();
 
-            x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-            y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+            x = RobotPeer.WIDTH + random.nextDouble() * 
+            		(battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
+            y = RobotPeer.HEIGHT + random.nextDouble() * 
+            		(battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
             heading = 2 * Math.PI * random.nextDouble();
 
             int len = coords.length;
@@ -148,14 +202,16 @@ public class HouseRobotMode extends ClassicMode {
                 if (len >= 2) {
                     // noinspection EmptyCatchBlock
                     try {
-                        y = Double.parseDouble(coords[1].replaceAll("[\\D]", ""));
+                        y = Double.parseDouble(coords[1].replaceAll(
+                        		"[\\D]", ""));
                     } catch (NumberFormatException e) {
                     }
 
                     if (len >= 3) {
                         // noinspection EmptyCatchBlock
                         try {
-                            heading = Math.toRadians(Double.parseDouble(coords[2].replaceAll("[\\D]", "")));
+                            heading = Math.toRadians(Double.parseDouble(
+                            		coords[2].replaceAll("[\\D]", "")));
                         } catch (NumberFormatException e) {
                         }
                     }
@@ -167,10 +223,6 @@ public class HouseRobotMode extends ClassicMode {
         }
 
         return initialRobotPositions;
-    }
-    
-    public boolean allowsOneRobot() {
-    	return true;
     }
 
 }

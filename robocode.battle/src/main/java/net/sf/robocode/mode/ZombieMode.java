@@ -23,6 +23,10 @@ public class ZombieMode extends ClassicMode {
     
     final IRepositoryManagerBase repository = ContainerBase.getComponent(IRepositoryManagerBase.class);
     private BattlePeers peers;
+    
+    private float spawnTick = 150f;
+    
+    private boolean roundOver;
 
     /**
      * {@inheritDoc}
@@ -44,7 +48,9 @@ public class ZombieMode extends ClassicMode {
     	if (peers != null){
     		this.peers = peers;
     	}
-    	if(currentTurn % 50 == 0) {
+    	int spawnTickInt = (int) Math.floor(spawnTick);
+    	if(currentTurn % spawnTickInt == 0) {
+    		if(spawnTick > 20) spawnTick *= 0.98; // progressively add zombies quicker
 	    	RobotSpecification[] specs = repository.loadSelectedRobots("sampleex.NormalZombie");
 
 	    	RobotPeer zombie = new RobotPeer(peers.getBattle(),
@@ -68,7 +74,7 @@ public class ZombieMode extends ClassicMode {
 
 	@Override
 	public boolean isRoundOver(int endTimer, int time) {
-		boolean roundOver = false;
+		roundOver = false;
 		if (peers != null){
 			roundOver = true;
 			for (RobotPeer robotPeer : peers.getRobots()) {
@@ -76,12 +82,15 @@ public class ZombieMode extends ClassicMode {
 					roundOver = false;
 				}
 			}
-			if(roundOver){
-				peers.removeRobots(getZombies(peers));
-
-			}
 		}
-		return endTimer > time*5;
+		return (endTimer > 5 * time);
+	}
+	
+	public void finalizeTurn() {
+		if(roundOver){
+			peers.removeRobots(getZombies(peers));
+			spawnTick = 150f;
+		}
 	}
 
 	private ArrayList<RobotPeer> getZombies(BattlePeers peers){
@@ -101,11 +110,8 @@ public class ZombieMode extends ClassicMode {
 		}
 	}
 
-    /**
-     * Setup for FlagMode to just display the rank, the name, the total score
-     * and the flag points
-     */
-    public void setCustomResultsTable() {
+	@Override
+	public void setCustomResultsTable() {
     	if (resultsTable == null) {
 			resultsTable = new BattleResultsTableModel();
 		}
@@ -119,7 +125,30 @@ public class ZombieMode extends ClassicMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public BattleResultsTableModel getCustomResultsTable() {
     	return resultsTable;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
+    	return startingEnergy / 3;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public boolean shouldDoRamDamage(RobotPeer robot, RobotPeer otherRobot) {
+    	if(otherRobot.isZombie())
+    		return false;
+    	return true;
+	}
+	
+	public boolean shouldIncrementEndTimer() {
+		return roundOver;
+	}
 }

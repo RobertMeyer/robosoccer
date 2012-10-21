@@ -7,7 +7,12 @@ import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.peer.IRobotPeer;
 import net.sf.robocode.repository.IRobotRepositoryItem;
 
-
+/**
+ * Proxy for RobotPeers used by SoccerRobots.
+ * 
+ * @author Carl Hattenfels - team-G1
+ * 
+ */
 public class SoccerRobotProxy extends TeamRobotProxy implements 
 		ISoccerRobotPeer {
 	
