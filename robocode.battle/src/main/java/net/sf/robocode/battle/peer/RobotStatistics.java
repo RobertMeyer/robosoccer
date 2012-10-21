@@ -139,8 +139,12 @@ public class RobotStatistics implements ContestantStatistics {
         totalFlagScore += flagScore;
         totalRaceScore += raceScore;
 
-        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
+        if(totalRaceScore > 0 ){
+        	totalScore = totalRaceScore;
+        }else{
+        	totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
                 + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore + totalRaceScore;
+        }
         isInRound = false;
     }
 
@@ -242,10 +246,11 @@ public class RobotStatistics implements ContestantStatistics {
     public double getCurrentFlagScore() {
     	return flagScore;
     }
-    
-    public double getCurrrentRaceScore(){
-    	return raceScore;
-    }
+
+	@Override
+	public double getCurrentRaceScore() {
+		return raceScore;
+	}
     
     public void scoreSurvival() {
         if (isActive) {
@@ -405,4 +410,6 @@ public class RobotStatistics implements ContestantStatistics {
 	@Override
 	public void incrementScore() {	
 	}
+
+
 }

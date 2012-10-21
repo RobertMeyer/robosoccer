@@ -251,4 +251,14 @@ public class TeamStatistics implements ContestantStatistics {
 	@Override
 	public void incrementScore() {	
 	}
+
+	@Override
+	public double getCurrentRaceScore() {
+		 double d = 0;
+
+	        for (RobotPeer teammate : teamPeer) {
+	            d += teammate.getRobotStatistics().getCurrentRaceScore();
+	        }
+	        return d;
+	}
 }

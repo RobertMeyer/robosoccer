@@ -71,10 +71,21 @@ public class RaceMode extends ClassicMode{
      */
     public void setCustomResultsTable() {
     	if (resultsTable == null) {
-			resultsTable = new BattleResultsTableModel();
-		}
-    	resultsTable.showOverallRank(true);
-    	resultsTable.showTotalScore(true);
+   			resultsTable = new BattleResultsTableModel();
+   		}
+       	resultsTable.showOverallRank(true);
+       	resultsTable.showRobotName(true);
+       	resultsTable.showTotalScore(true);
+       	resultsTable.showRaceScore(true);
+       	
+       	resultsTable.setTitle("Race Results");     
+    }
+        
+    /**
+    * {@inheritDoc}
+    */
+    public BattleResultsTableModel getCustomResultsTable() {
+      	return resultsTable;
     }
 	
 	@Override

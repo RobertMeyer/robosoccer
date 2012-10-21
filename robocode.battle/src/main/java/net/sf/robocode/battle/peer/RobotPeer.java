@@ -1286,8 +1286,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
     		//Check if the waypoint is at the maximum distance from the robot or closer.
     		if(distToWay < waypointDistance){
-    			System.out.println("currentWaypointIndex = " + currentWaypointIndex);
-    			System.out.println("NoWaypoints = " + waypoint.getNoWaypoints());
     			if(currentWaypointIndex != waypoint.getNoWaypoints() -1){
     				currentWaypointIndex++;
     				dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
@@ -1300,7 +1298,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
 
     			}else{
+    				//TODO Add checking for new lap and reset index
     				statistics.scoreRace();
+    				//if(statistics.getCurrrentRaceScore())
     				System.out.println("All waypoints Passed");
     			}
     		}
