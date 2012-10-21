@@ -1111,7 +1111,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 		fullEnergy = getEnergy();
 		gunHeat = 3;
-
 		setHalt(false);
 		isExecFinishedAndDisabled = false;
 		isEnergyDrained = false;
@@ -1724,30 +1723,81 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	                    //Use a factor of the armor if it has been changed
 	                    //This Robot
 	                    if (isBotzilla()) {
+	                    	//If this robot is botzilla the other robot dies instantly
 	                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
-	                    } else if (getRobotArmor() - 1.0 < 0.00001) {
-	                        this.updateEnergy(-(this.getRamDamage()));
+	                    // Neither Robot has armor
+	                    } else if (abs(getRobotArmor() - 1.0) < 0.00001 &&
+	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
+	                    	if(atFault) {
+	                    		this.updateEnergy(-(getRamDamage() - 
+	                    				getRamAttack()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()));
+	                    	}
+	                    // Other Robot has armor
+	                    } else if(abs(getRobotArmor() - 1.0) < 0.00001 &&
+	                    		abs(otherRobot.getRobotArmor()-1.0) > 0.00001){
+	                    	if(atFault) {
+	                    		this.updateEnergy(-(getRamDamage() - 
+	                    				getRamAttack()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage()));
+	                    		otherRobot.updateEnergy(-((otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()) / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
+	                    // This robot has armor
+	                    } else if(abs(getRobotArmor() - 1.0) > 0.00001 &&
+	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
+	                    	if(atFault) {
+	                    		this.updateEnergy(-((getRamDamage() - 
+	                    				getRamAttack()) / getRobotArmor()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage() / 
+	                    				getRobotArmor()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()));
+	                    	}
+	                    // Both robots must have armor
 	                    } else {
-	                        this.updateEnergy(-(this.getRamDamage()
-	                                            * 1 / this.getRobotArmor()));
+	                    	if(atFault) {
+	                    		this.updateEnergy(-((getRamDamage() - 
+	                    				getRamAttack()) / getRobotArmor()));
+	                    		otherRobot.updateEnergy(-(otherRobot.
+	                    				getRamDamage() / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
+	                    	else {
+	                    		this.updateEnergy(-(getRamDamage() / 
+	                    				getRobotArmor()));
+	                    		otherRobot.updateEnergy(-((otherRobot.
+	                    				getRamDamage() - otherRobot.
+	                    				getRamAttack()) / otherRobot.
+	                    				getRobotArmor()));
+	                    	}
 	                    }
-	                    
 	                    
 	                    // Other Robot
 	                    if (otherRobot.isBotzilla()) {
+	                    	//If the other robot is botzilla then this robot dies instantly
 	                    	updateEnergy(-(energy + 1));
-	                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
-							otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
-	                    } else {
-	                    	if(!otherRobot.isParent(this)){
-	                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()
-	                                                  / 1 / otherRobot.getRobotArmor()));
-	                    	}
 	                    }
-                    }
-
-
-                    
+                    }                    
 					
 					
                     if (otherRobot.energy == 0) {
@@ -1934,7 +1984,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					: ((getBattleFieldHeight() - HALF_HEIGHT_OFFSET < y) ? getBattleFieldHeight() - HALF_HEIGHT_OFFSET : y);
 
 			// Update energy, but do not reset inactiveTurnCount
-			if (isBotzilla() || isHouseRobot()) { // The house robot will not get damage from walls.
+			if (isBotzilla() || isHouseRobot()) { // The house robot and botzilla will not get damage from walls.
 				// Do nothing
 			} else if (statics.isAdvancedRobot()) {
 				setEnergy(energy - Rules.getWallHitDamage(velocity), false);
@@ -1986,7 +2036,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			queue.add(event);
 		}
 	}
-
+	
 	protected void updateGunHeading() {
 		if (currentCommands.getGunTurnRemaining() > 0) {
 			if (currentCommands.getGunTurnRemaining() < getGunTurnRateRadians()) {

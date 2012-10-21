@@ -346,7 +346,7 @@ public class RobotStatistics implements ContestantStatistics {
 
     public void scoreRammingDamage(String robot) {
         if (isActive) {
-            incrementRobotDamage(robot, robocode.Rules.ROBOT_HIT_DAMAGE);
+            incrementRobotDamage(robot, robotPeer.getRamDamage());
             rammingDamageScore += robotPeer.getRamAttack();
         }
     }
@@ -370,6 +370,8 @@ public class RobotStatistics implements ContestantStatistics {
     }
 
     public void scoreRobotDeath(int enemiesRemaining, Boolean botzillaActive) {
+    	//If botzilla is in the match don't count him as an enemy remaining for
+    	//the purposes of scoring
     	if (botzillaActive) {
     		enemiesRemaining--;
     	}
