@@ -21,6 +21,7 @@ public class ItemDemoBot extends ItemRobot {
 	 * Method run whenever an instance of the robot is created.
 	 */
 	boolean itemHit = false;
+	boolean itemScanned = false;
 	
 	public void run() {
 		setColors(Color.BLACK ,Color.BLACK ,Color.BLACK ,Color.BLACK ,Color.BLACK);
@@ -45,6 +46,13 @@ public class ItemDemoBot extends ItemRobot {
 			setBodyColor(Color.WHITE);
 			setRadarColor(Color.WHITE);
 			setGunColor(Color.WHITE);
+			itemHit = false;
+		}
+		if (itemScanned){
+			setBodyColor(Color.BLUE);
+			setRadarColor(Color.BLUE);
+			setGunColor(Color.BLUE);
+			itemScanned = false;
 		}
 	}
 	
@@ -67,6 +75,7 @@ public class ItemDemoBot extends ItemRobot {
 		double x = e.getX();
 		double y = e.getY();
 		double distance = e.getDistance();
+		itemScanned = true;
 	}
 	
 	/**

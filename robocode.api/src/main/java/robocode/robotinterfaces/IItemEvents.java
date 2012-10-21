@@ -26,6 +26,7 @@ public interface IItemEvents {
 	 * This method is called whenever the robot scans an item.
 	 * 
 	 * @param event the scanned item event that occurred
+	 * @see robocode.ScannedItemEvent
 	 * @see robocode.Event
 	 */
 	void onScannedItem(ScannedItemEvent event);

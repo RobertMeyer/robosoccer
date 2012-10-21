@@ -456,6 +456,8 @@ public class Battle extends BaseBattle {
 		if (nanoWait == 0) {
 			nanoWait = 1;
 		}
+		
+		itemControl = new ItemController();
 	}
 
 	@Override

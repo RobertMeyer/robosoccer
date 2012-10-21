@@ -16,8 +16,6 @@ import robocode.robotinterfaces.IItemRobot;
  * You can use the information contained in this event to determine what to do.
  *
  * @author Ameer Sabri (Dream Team)
- * @author team-Telos
- *
  */
 public class ScannedItemEvent extends Event {
 	
@@ -105,17 +103,16 @@ public class ScannedItemEvent extends Event {
 	}
 	
 	/**
-	 * 
-	 * @param event
-	 * @return
+	 * {@inheritDoc}
 	 */
+	@Override
 	public final int compareTo(Event event) {
         final int res = super.compareTo(event);
 
         if (res != 0) {
             return res;
         }
-        // Compare the distance, if the events are ScannedRobotEvents
+        // Compare the distance, if the events are ScannedItemEvents
         // The shorter distance to the robot, the higher priority
         if (event instanceof ScannedItemEvent) {
             return (int) (this.getDistance() - ((ScannedItemEvent) event).getDistance());
