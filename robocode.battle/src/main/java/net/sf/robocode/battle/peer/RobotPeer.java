@@ -81,7 +81,6 @@ import static robocode.util.Utils.normalAbsoluteAngle;
 import static robocode.util.Utils.normalNearAbsoluteAngle;
 import static robocode.util.Utils.normalRelativeAngle;
 
-
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -93,8 +92,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.junit.runners.ParentRunner;
 
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.FreezeRobotDeath;
@@ -146,7 +143,6 @@ import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
 import robocode.exception.AbortedException;
 import robocode.exception.DeathException;
-
 import robocode.exception.WinException;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
 
