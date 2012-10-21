@@ -2564,18 +2564,19 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	/**
-	 * Calculate the team total energy level with the given team index and size.
+	 * Calculate the team total energy level with the given teampeer, team index and size.
 	 * 
+	 * @param teamPeerList list of robot in the team (TeamPeer) 
 	 * @param teamIndex index of the team
 	 * @param teamSize size of the team
 	 * @return team's total energy level
 	 */
-	public int getTotalTeamEnergy(int teamIndex, int teamSize){
+	public int getTotalTeamEnergy(TeamPeer teamPeerList, int teamIndex, int teamSize){
 		int totalTeamEnergy = 0;
 		
 		for (int i=0; i < teamSize; i++){
-			if (teamList.getTeamIndex() == teamIndex){
-				totalTeamEnergy += teamList.get(i).getEnergy();
+			if (teamPeerList.getTeamIndex() == teamIndex){
+				totalTeamEnergy += teamPeerList.get(i).getEnergy();
 			}
 		}
 		return totalTeamEnergy;
@@ -2590,7 +2591,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 		//Distribute energy only if there is more than one robot in the team
 		if (statics.getTeamSize() > 1) {
-			totalTeamEnergy = getTotalTeamEnergy(statics.getTeamIndex(), statics.getTeamSize());
+			totalTeamEnergy = getTotalTeamEnergy(teamList, statics.getTeamIndex(), statics.getTeamSize());
 			distribute = totalTeamEnergy / statics.getTeamSize();
 		} else {
 			distribute = energy;
