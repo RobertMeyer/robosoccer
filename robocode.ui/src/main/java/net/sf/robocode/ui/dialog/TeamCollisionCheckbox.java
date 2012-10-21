@@ -1,6 +1,7 @@
 /**
  * @author Team MCJJ
- *
+ * TeamCollisionCheckBox deals with the 'listening' to the condition of the Team CollisionCheckbox.
+ * There is a tracker to tracker the condition and it will be send to RobotPeer to activate the function.
  */
 package net.sf.robocode.ui.dialog;
 
