@@ -122,4 +122,12 @@ public class ZombieMode extends ClassicMode {
     public BattleResultsTableModel getCustomResultsTable() {
     	return resultsTable;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
+    	return startingEnergy / 3;
+    }
 }
