@@ -110,21 +110,21 @@ public class SoldierRobot_Example extends SoldierRobot {
 	/**
 	 * I swapped the increasePower and decreasePower functions for funsies.
 	 */
-	public void increasePower() {
-		if (power > 1.0) {
-			power -= 0.5;
-		} else {
-			power = 0.5;
-		}
-	}
-	
-	public void decreasePower() {
-		if (power < 2.5) {
-			power += 0.5;
-		} else {
-			power = 3.0;
-		}
-	}
+//	public void increasePower() {
+//		if (power > 1.0) {
+//			power -= 0.5;
+//		} else {
+//			power = 0.5;
+//		}
+//	}
+//	
+//	public void decreasePower() {
+//		if (power < 2.5) {
+//			power += 0.5;
+//		} else {
+//			power = 3.0;
+//		}
+//	}
 	
 	/**
 	 * I reversed the direction for my new taunt.
