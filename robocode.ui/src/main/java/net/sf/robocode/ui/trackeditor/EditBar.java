@@ -23,6 +23,8 @@ public class EditBar extends JToolBar {
 	JButton trackButton;
 	JButton waypointButton;
 	JButton terrainButton;
+	JButton wallButton;
+	JButton spawnButton;
 
 	private int lastButtonPressed = 0;
 
@@ -38,6 +40,10 @@ public class EditBar extends JToolBar {
 				lastButtonPressed = 2;
 			} else if (source == terrainButton) {
 				lastButtonPressed = 3;
+			} else if (source == wallButton) {
+				lastButtonPressed = 4;
+			} else if (source == spawnButton) {
+				lastButtonPressed = 5;
 			}
 		}
 	}
@@ -54,6 +60,10 @@ public class EditBar extends JToolBar {
 				ImageUtil.getImage("/net/sf/robocode/ui/icons/waypoint.png"));
 		ImageIcon terrain = new ImageIcon(
 				ImageUtil.getImage("/net/sf/robocode/ui/icons/terrain.png"));
+		ImageIcon wall = new ImageIcon (
+				ImageUtil.getImage("/net/sf/robocode/ui/icons/wall.png"));
+		ImageIcon spawn = new ImageIcon (
+				ImageUtil.getImage("/net/sf/robocode/ui/icons/spawn.png"));
 
 		trackButton = new JButton(road);
 		trackButton.addActionListener(editBarEventHandler);
@@ -63,15 +73,26 @@ public class EditBar extends JToolBar {
 
 		terrainButton = new JButton(terrain);
 		terrainButton.addActionListener(editBarEventHandler);
+		
+		wallButton = new JButton(wall);
+		wallButton.addActionListener(editBarEventHandler);
+		
+		spawnButton = new JButton(spawn);
+		spawnButton.addActionListener(editBarEventHandler);
 
 		trackButton.setBorder(new EmptyBorder(3, 0, 3, 0));
 		waypointButton.setBorder(new EmptyBorder(3, 0, 3, 0));
 		terrainButton.setBorder(new EmptyBorder(3, 0, 3, 0));
+		wallButton.setBorder(new EmptyBorder(3, 0, 3, 0));
+		spawnButton.setBorder(new EmptyBorder(3, 0, 3, 0));
 
 		this.add(trackButton);
 		this.add(waypointButton);
 		this.add(terrainButton);
+		this.add(wallButton);
+		this.add(spawnButton);
 
+		
 		this.setFloatable(false);
 	}
 

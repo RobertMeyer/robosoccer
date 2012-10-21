@@ -1,11 +1,13 @@
 package net.sf.robocode.ui.trackeditor;
 
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 /**
  * Main bitmap editor for the track editor
@@ -21,11 +23,19 @@ public class TrackEditor extends JComponent {
 	Graphics2D graphics2D;
 	int xPos, yPos;
 
-	public TrackEditor() {
-		// TrackEditor constructor.
+	public TrackEditor(int trackXSize, int trackYSize) {
+		// TrackEditor constructor
+		
+		// Initialise the action listeners
 		final MouseHandler mouseHandler = new MouseHandler();
 		this.addMouseListener(mouseHandler);
 		this.addMouseMotionListener(mouseHandler);
+		
+		// Set up the size of the track
+		setPreferredSize(new Dimension(trackXSize, trackYSize));
+		setMinimumSize(new Dimension(5*64, 5*64));
+		setMaximumSize(new Dimension(30*64, 30*64));
+		
 	}
 
 	class MouseHandler implements MouseListener, MouseMotionListener {
@@ -46,8 +56,7 @@ public class TrackEditor extends JComponent {
 		public void mousePressed(MouseEvent e) {
 			xPos = e.getX();
 			yPos = e.getY();
-			setLayType();
-			graphics2D.fillRect((xPos / 50) * 50, (yPos / 50) * 50, 50, 50);
+			layField();
 			repaint();
 		}
 
@@ -59,26 +68,52 @@ public class TrackEditor extends JComponent {
 		public void mouseDragged(MouseEvent e) {
 			xPos = e.getX();
 			yPos = e.getY();
-			if (graphics2D != null)
-				setLayType();
-			graphics2D.fillRect((xPos / 64) * 64, (yPos / 64) * 64, 64, 64);
+			if (graphics2D != null) {
+				try {
+					layField();
+				} catch (ArrayIndexOutOfBoundsException e1) {
+					// Do nothing
+				}
+			}
 			repaint();
 		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			// TODO Auto-generated method stub
-
 		}
 	}
 
-	public void setLayType() {
-		if (EditorFrame.toolBar.getLastButtonPressed() == 1) {
+	public void layField() {
+		if (EditorFrame.editBar.getLastButtonPressed() == 1) {
+			// Road
 			graphics2D.setPaint(Color.BLACK);
-		} else if (EditorFrame.toolBar.getLastButtonPressed() == 2) {
+			if (checkColour() == true) {
+				graphics2D.fillRect((xPos / 64) * 64, (yPos / 64) * 64, 64, 64);
+			}
+		} else if (EditorFrame.editBar.getLastButtonPressed() == 2) {
+			// Waypoint
 			graphics2D.setPaint(Color.BLUE);
-		} else if (EditorFrame.toolBar.getLastButtonPressed() == 3) {
+			if (checkColour() == true) {
+				graphics2D.fillRect((xPos / 64) * 64 + 32, (yPos / 64) * 64 + 32, 1, 1);
+			}
+		} else if (EditorFrame.editBar.getLastButtonPressed() == 3) {
+			// Terrain
 			graphics2D.setPaint(Color.GREEN);
+			if (checkColour() == true) {
+				graphics2D.fillRect((xPos / 64) * 64, (yPos / 64) * 64, 64, 64);
+			}
+		} else if (EditorFrame.editBar.getLastButtonPressed() == 4) {
+			// Wall
+			graphics2D.setPaint(Color.WHITE);
+			if (checkColour() == true) {
+				graphics2D.fillRect((xPos / 64) * 64, (yPos / 64) * 64, 64, 64);
+			}
+		} else if (EditorFrame.editBar.getLastButtonPressed() == 5) {
+			// Spawn
+			graphics2D.setPaint(Color.RED);
+			if (checkColour() == true) {
+				graphics2D.fillRect((xPos / 64) * 64 + 32, (yPos / 64) * 64 + 32, 1, 1);
+			}
 		}
 	}
 
@@ -99,5 +134,17 @@ public class TrackEditor extends JComponent {
 		graphics2D.setPaint(Color.black);
 		repaint();
 	}
-
+	
+	public boolean checkColour() {
+		BufferedImage bi = (BufferedImage) image;
+		int pixelColour = bi.getRGB(xPos, yPos);
+		if (pixelColour == Color.WHITE.getRGB() && graphics2D.getPaint() == Color.BLUE) {
+			JOptionPane.showMessageDialog(this, "You can't put a waypoint on a wall. Why not lay some road or terrain first?");
+			return false;
+		} else if (pixelColour == Color.WHITE.getRGB() && graphics2D.getPaint() == Color.RED) {
+			JOptionPane.showMessageDialog(this, "You can't put a spawn point on a wall. Why not lay some road or terrain first?");
+			return false;
+		}
+		return true;
+	}
 }
