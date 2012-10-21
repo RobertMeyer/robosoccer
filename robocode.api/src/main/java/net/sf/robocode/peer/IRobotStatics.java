@@ -23,4 +23,13 @@ public interface IRobotStatics {
     boolean isAdvancedRobot();
 
     boolean isTeamRobot();
+    
+    /**
+     * @author House Robot Team
+     * @author Laurence McLean 42373414
+     * @author Jack Reichelt 42338271
+     * @author Lee Symes 42636267
+	 * @return true if this is a house robot, false otherwise.
+	 */
+    boolean isHouseRobot();
 }
