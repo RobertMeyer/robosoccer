@@ -633,7 +633,9 @@ public class Battle extends BaseBattle {
 		bullets.clear();
 		items.clear();
 		teleporters.clear();
-		zLevels.clear();
+		if (zLevels != null) {
+			zLevels.clear();
+		}
 		landmines.clear();
 
 		eventDispatcher.onRoundEnded(new RoundEndedEvent(getRoundNum(),

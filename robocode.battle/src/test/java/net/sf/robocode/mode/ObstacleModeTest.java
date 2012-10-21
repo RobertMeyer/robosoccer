@@ -201,7 +201,7 @@ public class ObstacleModeTest {
 		
 		//Update the state of the robot to see if collision occurred
 		robots.get(0).performLoadCommands();
-		robots.get(0).performMove(robots, new ArrayList<ItemDrop>(), obstacles, 0);
+		robots.get(0).performMove(robots, new ArrayList<ItemDrop>(), obstacles, null, 0);
 		
 		assertEquals("Robot did not detect an obstacle collision", robots.get(0).getState().toString(),
 				"HIT_WALL");

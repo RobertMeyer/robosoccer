@@ -111,9 +111,11 @@ public final class TurnSnapshot implements java.io.Serializable, IXmlSerializabl
 		for (TeleporterPeer teleporterPeer : battleTeleporters) {
 			teleports.add(new TeleporterSnapshot(teleporterPeer));
 		}
-		
-		for(ZLevelPeer zP : zLevels) {
-			zSnaps.add(new ZLevelSnapshot(zP));
+
+		if (zLevels != null) {
+			for (ZLevelPeer zP : zLevels) {
+				zSnaps.add(new ZLevelSnapshot(zP));
+			}
 		}
 
 		/*--ItemController--*/
