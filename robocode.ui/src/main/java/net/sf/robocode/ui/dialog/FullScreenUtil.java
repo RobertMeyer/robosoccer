@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import javax.swing.JFrame;
 import net.sf.robocode.ui.IFullScreenListener;
 
@@ -36,7 +37,7 @@ import net.sf.robocode.ui.IFullScreenListener;
 public class FullScreenUtil {
 // TODO: Implement this as a weak reference to allow for Garbage Collection
 
-    private static final Map<JFrame, WindowInformation> frameInformation = new HashMap<JFrame, WindowInformation>();
+    private static final Map<JFrame, WindowInformation> frameInformation = new WeakHashMap<JFrame, WindowInformation>();
     private static final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
     /**
