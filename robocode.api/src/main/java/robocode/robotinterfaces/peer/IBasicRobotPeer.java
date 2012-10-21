@@ -19,7 +19,6 @@ package robocode.robotinterfaces.peer;
 
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import robocode.*;
 import robocode.Robot;
 import robocode.robotinterfaces.IBasicEvents;

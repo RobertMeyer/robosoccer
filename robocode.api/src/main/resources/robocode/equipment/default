@@ -120,6 +120,20 @@ Radar Test Large : POWER
 RADAR_ANGLE = 40
 SCAN_RADIUS = 40
 
+Armor Test Large: BODY
+ARMOR = 40
+
+Armor Test Small: BODY
+ARMOR = -40
+
+Ram Test Large: BODY
+RAM_ATTACK = 40
+RAM_DEFENSE = 40
+
+Ram Test Small: BODY
+RAM_ATTACK = -40
+RAM_DEFENSE = -40
+
 InvalidFileTest : GUN
 SOUND_PATH = /net/sf/robocode/sound/sounds/InvalidFileTest.jpg
 

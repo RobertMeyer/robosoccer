@@ -1,13 +1,6 @@
 package robocode;
 
 
-import java.awt.Graphics2D;
-import java.nio.ByteBuffer;
-
-import net.sf.robocode.peer.IRobotStatics;
-import net.sf.robocode.serialization.ISerializableHelper;
-import net.sf.robocode.serialization.RbSerializer;
-import robocode.robotinterfaces.IBasicRobot;
 
 /**
  * ScannedItemEvent:
