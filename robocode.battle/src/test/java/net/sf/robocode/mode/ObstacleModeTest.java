@@ -6,6 +6,7 @@ import java.util.List;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.BattleProperties;
+import net.sf.robocode.battle.DefaultSpawnController;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
@@ -76,8 +77,9 @@ public class ObstacleModeTest {
 		Mockito.when(bp.getBattleMode()).thenReturn(new ObstacleMode());
 		
 		battle = Mockito.mock(Battle.class);
-		Mockito.when(battle.getBattleMode()).thenReturn(new ObstacleMode());		
+		Mockito.when(battle.getBattleMode()).thenReturn(new ObstacleMode());
 		Mockito.when(battle.getBattleRules()).thenReturn(br);
+		Mockito.when(battle.getSpawnController()).thenReturn(new DefaultSpawnController());
 	}
 	
 	/**
@@ -153,7 +155,8 @@ public class ObstacleModeTest {
 		spec = HiddenAccess.createSpecification(rItem, "",
 				"", "", "", "", "", "", "");
 		
-		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		obstacles = ObstacleMode.generateRandomObstacles(100, bp, br, battle, 32, 32);
+		Mockito.when(battle.getObstacleList()).thenReturn(obstacles);	
 		robots = new ArrayList<RobotPeer>();
 		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
 		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
@@ -161,8 +164,12 @@ public class ObstacleModeTest {
 			bot.initializeRound(robots, null);
 		}
 		
-		for (ObstaclePeer oPeer : obstacles) {
-			for (int i = 0; i < robots.size(); i++) {
+		for (int i = 0; i < robots.size(); i++) {
+			for (ObstaclePeer oPeer : obstacles) {
+				System.out.println(robots.get(i).getX() + " " + robots.get(i).getY() + " : " + oPeer.getX()
+						+ " " + oPeer.getY());
+				System.out.println(
+						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
 				assertFalse("Robot intersecting with obstacles", 
 						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
 			}
