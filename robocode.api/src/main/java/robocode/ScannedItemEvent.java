@@ -1,7 +1,6 @@
 package robocode;
 
-
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.nio.ByteBuffer;
 
 import net.sf.robocode.peer.IRobotStatics;
