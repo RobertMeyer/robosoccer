@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import net.sf.robocode.io.Logger;
 import robocode.RobotAttribute;
-import robocode.equipment.EquipmentPart.Builder;
 
 public class EquipmentParser {
 
@@ -28,7 +27,7 @@ public class EquipmentParser {
 		}
 
 		String name = null;
-		Builder builder = null;
+		EquipmentPartBuilder builder = null;
 
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine().trim();
@@ -90,14 +89,14 @@ public class EquipmentParser {
 	 * @return a new equipment part builder corresponding to the given line, or
 	 *         null if a parsing error occurred.
 	 */
-	private static Builder parseDefinitionBuilder(String line) {
+	private static EquipmentPartBuilder parseDefinitionBuilder(String line) {
 		String[] tokens = parseDefinitionTokens(line);
 		if (tokens == null) {
 			return null;
 		}
 		try {
 			EquipmentSlot slot = EquipmentSlot.valueOf(tokens[1].trim());
-			return new Builder(slot);
+			return new EquipmentPartBuilder(slot);
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
@@ -141,7 +140,7 @@ public class EquipmentParser {
 	 *            the string containing the attribute assignment
 	 * @return an error string if an error occurred, null otherwise
 	 */
-	private static String parseAttribute(Builder builder, String string) {
+	private static String parseAttribute(EquipmentPartBuilder builder, String string) {
 		if (builder == null) {
 			return "No builder defined";
 		}
