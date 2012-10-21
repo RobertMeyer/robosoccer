@@ -1,5 +1,6 @@
 package net.sf.robocode.mode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
@@ -7,11 +8,15 @@ import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.peer.ObstaclePeer;
+import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.core.Container;
 import net.sf.robocode.host.CpuManager;
-import net.sf.robocode.host.HostManager;
+import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.security.ThreadManager;
 import net.sf.robocode.recording.RecordManager;
+import net.sf.robocode.repository.IRobotRepositoryItem;
 import net.sf.robocode.repository.RepositoryManager;
+import net.sf.robocode.security.HiddenAccess;
 import net.sf.robocode.settings.SettingsManager;
 
 import org.junit.Test;
@@ -29,7 +34,7 @@ public class ObstacleModeTest {
 	protected static String robotsPath;
 	private BattleProperties bp;
 	private BattleManager bm;
-	private HostManager hm;
+	private IHostManager hm;
 	private SettingsManager sm;
 	private RepositoryManager rm;
 	private CpuManager cm;
@@ -38,6 +43,9 @@ public class ObstacleModeTest {
 	private RecordManager rem;
 	private Battle battle;
 	private BattleRules br;
+	private List<ObstaclePeer> obstacles;
+	private List<RobotPeer> robots;
+	private RobotSpecification spec;
 	
 	/**
 	 * Sets up the required variables for testing
@@ -46,12 +54,16 @@ public class ObstacleModeTest {
 	public void setup() {
 		/*tm = new ThreadManager();
 		sm = new SettingsManager();
-		hm = new HostManager(sm, tm);
 		rm = new RepositoryManager(sm);
 		cm = new CpuManager(sm);
 		bd = new BattleEventDispatcher();
 		rem = new RecordManager(sm);
 		bm = new BattleManager(sm, rm, hm, cm, bd, rem);*/
+		HiddenAccess.init();
+		Container.init();
+		
+		hm = Mockito.mock(IHostManager.class);
+		br = HiddenAccess.createRules(800, 600, 1, 0.1, 450, false, null);
 		
 		bp = Mockito.mock(BattleProperties.class);
 		Mockito.when(bp.getBattlefieldWidth()).thenReturn(800);
@@ -65,7 +77,7 @@ public class ObstacleModeTest {
 		
 		battle = Mockito.mock(Battle.class);
 		Mockito.when(battle.getBattleMode()).thenReturn(new ObstacleMode());		
-		
+		Mockito.when(battle.getBattleRules()).thenReturn(br);
 	}
 	
 	/**
@@ -92,9 +104,69 @@ public class ObstacleModeTest {
 	 */
 	@Test
 	public void testNumObstacles() {
-		List<ObstaclePeer> obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
 		//battle.setup(rm.getSelectedRobots(bp.getSelectedRobots()), bp, false, rm);
 		assertEquals("Incorrect number of obstacles generated", obstacles.size(), 10);
+	}
+	
+	/**
+	 * Tests if newly generated obstacles intersect with each other on the battlefield using
+	 * their set bounding boxes
+	 */
+	@Test
+	public void testObstacleBoundingBoxIntersect() {
+		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		for (int i = 0; i < obstacles.size() - 1; i++) {
+			for (int j = i; j < obstacles.size(); j++) {
+				if (i != j) {
+					assertFalse("The bounding boxes of obstacles are intersecting with each other",
+							obstacles.get(i).getBoundingBox().intersects(obstacles.get(j).getBoundingBox()));
+				}
+			}	
+		}
+	}
+	
+	/**
+	 * Tests if newly generated obstacles intersect with each other on the battlefield using absolute
+	 * coordinates
+	 */
+	@Test
+	public void testObstacleAbsCoord() {
+		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		for (int i = 0; i < obstacles.size() - 1; i++) {
+			for (int j = i + 1; j < obstacles.size(); j++) {
+				assertFalse("The obstacles are intersecting with each other",
+						(obstacles.get(j).getX() < obstacles.get(i).getX() + obstacles.get(i).getWidth() &&
+						obstacles.get(j).getX() > obstacles.get(i).getX() - obstacles.get(i).getWidth()) &&
+						(obstacles.get(j).getY() < obstacles.get(i).getY() + obstacles.get(i).getHeight() &&
+						obstacles.get(j).getY() > obstacles.get(i).getY() - obstacles.get(i).getHeight()));
+			}
+		}
+	}
+	
+	/**
+	 * Tests if robots will spawn on top of obstacles at the beginning of a round
+	 */
+	@Test
+	public void testObstacleRobotIntersect() {
+		IRobotRepositoryItem rItem = Mockito.mock(IRobotRepositoryItem.class);
+		spec = HiddenAccess.createSpecification(rItem, "",
+				"", "", "", "", "", "", "");
+		
+		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		robots = new ArrayList<RobotPeer>();
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		for (RobotPeer bot : robots) {
+			bot.initializeRound(robots, null);
+		}
+		
+		for (ObstaclePeer oPeer : obstacles) {
+			for (int i = 0; i < robots.size(); i++) {
+				assertFalse("Robot intersecting with obstacles", 
+						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
+			}
+		}
 	}
 	
 	/*@Test
