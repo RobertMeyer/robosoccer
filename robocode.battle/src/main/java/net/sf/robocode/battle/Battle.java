@@ -508,7 +508,6 @@ public class Battle extends BaseBattle {
 
 		List<IRenderable> objs = this.getBattleMode().createRenderables();
 		if (objs != null) {
-			System.out.println("hello");
 			for (IRenderable obj : objs)
 				customObject.add(obj);
 		}

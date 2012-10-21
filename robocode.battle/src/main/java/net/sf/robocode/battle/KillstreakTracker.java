@@ -33,7 +33,7 @@ public class KillstreakTracker {
 	public KillstreakTracker(Battle b) {
 		battle = b;
 		killstreakAbilities = new HashMap<Integer, IKillstreakAbility>();
-
+		
 		//System.out.println("Enabled: ");
 		//System.out.println(enableKillstreaks);
 
