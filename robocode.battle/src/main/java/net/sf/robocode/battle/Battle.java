@@ -1188,7 +1188,7 @@ public class Battle extends BaseBattle {
 
 		// Compute active robots
 		for (RobotPeer robotPeer : peers.getRobots()) {
-			if (robotPeer.isAlive()) {
+			if (robotPeer.isAlive() && !robotPeer.isMinion()) {
 				ar++;
 			}
 		}
@@ -1276,7 +1276,7 @@ public class Battle extends BaseBattle {
 
 		boolean found = false;
 		TeamPeer currentTeam = null;
-
+		
 		for (RobotPeer currentRobot : peers.getRobots()) {
 			if (currentRobot.isAlive()) {
 				if (!found) {

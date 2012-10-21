@@ -34,30 +34,34 @@ public class SoldierRobot extends Robot implements IBasicRobot {
 	protected double power = 1.5;
 	
 	public void receiveCommand(CommanderEvent e) {
-		tactic = e.getTactic();
-		switch (tactic) {
-			case PAUSE:
-				pause();
-				break;
-				
-			case ADVANCE:
-			case RETREAT:
-			case ATTACK:
-				turnRadarRight(360);
-				break;
-				
-			case INCREASE_POWER:
-				increasePower();
-				break;
-				
-			case DECREASE_POWER:
-				decreasePower();
-				break;
-				
-			case TAUNT:
-				taunt();
-				break;
-		}
+		switch(e.getTactic()) {
+		case PAUSE:
+			pause();
+			break;
+		case ADVANCE:
+			advance();
+			break;
+		case RETREAT:
+			retreat();
+			break;
+		case ATTACK:
+			attack();
+			break;
+		case INCREASE_POWER:
+			increasePower();
+			break;
+		case DECREASE_POWER:
+			decreasePower();
+			break;
+		case TAUNT:
+			taunt();
+			break;
+		default:
+			//do nothing
+			break;
+			
+	}
+		
 	}
 	
 	/**
@@ -67,19 +71,6 @@ public class SoldierRobot extends Robot implements IBasicRobot {
 	 * ScannedRobotEvents can still be passed.
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		switch (tactic) {
-			case ADVANCE:
-				advance(e);
-				break;
-				
-			case RETREAT:
-				retreat(e);
-				break;
-				
-			case ATTACK:
-				attack(e);
-				break;
-		}
 	}
 	
 	/**
@@ -92,24 +83,21 @@ public class SoldierRobot extends Robot implements IBasicRobot {
 	/**
 	 * Find an enemy and approach them.
 	 */
-	public void advance(ScannedRobotEvent e) {
-		turnRight(e.getBearing());
+	public void advance() {
 		while(true) ahead(1);
 	}
 	
 	/**
 	 * Back away.
 	 */
-	public void retreat(ScannedRobotEvent e) {
-		turnRight(e.getBearing());
+	public void retreat() {
 		while(true) back(1);
 	}
 	
 	/**
 	 * Find an enemy and fire at them!
 	 */
-	public void attack(ScannedRobotEvent e) {
-		turnGunRight(getHeading() - getGunHeading() + e.getBearing());
+	public void attack() {
 		fire(power);
 	}
 	

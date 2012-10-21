@@ -43,7 +43,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import static java.lang.Math.*;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -77,8 +76,6 @@ import robocode.control.snapshot.IRenderableSnapshot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.ITurnSnapshot;
-import robocode.control.snapshot.IEffectAreaSnapshot;
-import robocode.control.snapshot.ITeleporterSnapshot;
 import robocode.control.snapshot.RenderableType;
 import robocode.equipment.EquipmentPart;
 import robocode.equipment.EquipmentSlot;
@@ -112,7 +109,6 @@ public class BattleView extends Canvas {
     private boolean drawExplosions;
     private boolean drawGround;
     private boolean drawExplosionDebris;
-    private boolean drawObstacles;
     private int numBuffers = 2; // defaults to double buffering
     private RenderingHints renderingHints;
     // Fonts and the like
@@ -311,23 +307,26 @@ public class BattleView extends Canvas {
         initialized = true;
     }
 
-
+	/**
+	 * This method sets up the background to a soccer theme. The size of
+	 * the soccer field is determined by the size of the battlefield
+	 */
 	private void createSoccerField() {
+		// work out of titles to render
 		final int NUM_HORZ_TILES = battleField.getWidth() / groundTileWidth + 1;
 		final int NUM_VERT_TILES = battleField.getHeight() / groundTileHeight + 1;
 		
 		int groundWidth = (int) (battleField.getWidth() * scale);
 		int groundHeight = (int) (battleField.getHeight() * scale);
 
+		// Setup image for rendering
 		groundImage = new BufferedImage(groundWidth, groundHeight, BufferedImage.TYPE_INT_RGB);
-
 		Graphics2D groundGfx = (Graphics2D) groundImage.getGraphics();
-
 		groundGfx.setRenderingHints(renderingHints);
-
 		groundGfx.setTransform(AffineTransform.getScaleInstance(scale, scale));
 
 
+		// Draw the grass first
 		for (int y = NUM_VERT_TILES-1; y >= 0; y--) {
 			for (int x = NUM_HORZ_TILES-1; x >= 0; x--) {
 				Image img = imageManager.getFieldTileImage(0);
@@ -337,12 +336,14 @@ public class BattleView extends Canvas {
 			}
 		}
 
+		// Get the line image
 		RenderImage img = imageManager.addCustomImage("line", "/net/sf/robocode/ui/images/ground/soccer_field/line.png");
 
 		// No Z-Buffer so have to render in order??
 		for (int y = NUM_VERT_TILES-1; y >= 0; y--) {
 			for (int x = NUM_HORZ_TILES-1; x >= 0; x--) {
 
+				// Render left line
 				if (x == 0) {
 					AffineTransform newAt = AffineTransform.getTranslateInstance(32, y * groundTileHeight);
 					newAt.rotate(Math.toRadians(270));
@@ -350,6 +351,7 @@ public class BattleView extends Canvas {
 					img.paint(groundGfx);
 				}
 
+				// Render right line
 				if (x == NUM_HORZ_TILES-1) {
 					AffineTransform newAt = AffineTransform.getTranslateInstance(battleField.getWidth() - 32, y * groundTileHeight);
 					newAt.rotate(Math.toRadians(90));
@@ -357,6 +359,7 @@ public class BattleView extends Canvas {
 					img.paint(groundGfx);
 				}
 
+				// Render top line
 				if (y == 0) {
 					AffineTransform newAt = AffineTransform
 							.getTranslateInstance(x * groundTileWidth,
@@ -365,6 +368,7 @@ public class BattleView extends Canvas {
 					img.paint(groundGfx);
 				}
 
+				// Render bottom line
 				if (y == NUM_VERT_TILES - 1) {
 					AffineTransform newAt = AffineTransform
 							.getTranslateInstance(x * groundTileWidth,
@@ -634,13 +638,6 @@ public class BattleView extends Canvas {
         }
     }
 
-	//TODO Update graphic display of item
-    private void drawItems(Graphics2D g, ITurnSnapshot snapShot) {
-        double x, y;
-        AffineTransform at;
-        int battleFieldHeight = battleField.getHeight();
-    }
-
     /**
      * Draws all active images in the scene.
      *
@@ -687,8 +684,7 @@ public class BattleView extends Canvas {
 				g.setColor(oldColour);
 				g.setComposite(oldState);
 			} else if (snap.getType() == RenderableType.SPRITE_STRING) {
-				AffineTransform at = AffineTransform.getTranslateInstance(
-						snap.getX(), battleField.getHeight() - snap.getY());
+				AffineTransform at = g.getTransform();
 				at.rotate(snap.getRotation());
 				at.scale(snap.getScaleX(), snap.getScaleY());
 				at.shear(snap.getShearX(), snap.getShearY());
@@ -706,6 +702,7 @@ public class BattleView extends Canvas {
 				g.setColor(snap.getColour());
 
 				if (!snap.getHide()) {
+					// Render String to screen check if new line used
 					int y = (int)(battleField.getHeight() - snap.getY());
 					for (String line : snap.getFilename().split("\n")) {
 					g.drawString(line, (int)snap.getX(), 
@@ -1012,13 +1009,12 @@ public class BattleView extends Canvas {
 	}
 
 	private void drawEffectAreas(Graphics2D g, ITurnSnapshot snapShot) {
-		double x, y;
+		double x;
 		int tileIndex = 0;
 		int battleFieldHeight = battleField.getHeight();
 
 		for(IEffectAreaSnapshot effectAreaSnapshot : snapShot.getEffectAreas()) {
 			x = effectAreaSnapshot.getXCoord();
-			y = battleFieldHeight - effectAreaSnapshot.getYCoord();
 
 			int x1 = (int)(x);
 			int y1 = (int)((battleFieldHeight - effectAreaSnapshot.getYCoord()));
@@ -1171,16 +1167,7 @@ public class BattleView extends Canvas {
 
 				RenderImage explosionRenderImage = imageManager.getExplosionRenderImage(
 						bulletSnapshot.getExplosionImageIndex(), bulletSnapshot.getFrame());
-/**
-<<<<<<< HEAD
-				explosionRenderImage.setTransform(at);
-				explosionRenderImage.paint(g);
-			}
-		}
-		g.setClip(savedClip);
-	}
-=======
-*/
+
                 explosionRenderImage.setTransform(at);
                 explosionRenderImage.paint(g);
             }
