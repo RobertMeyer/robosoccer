@@ -46,11 +46,26 @@ public class SharingModeTest {
 		assertEquals("Robot Four energy level is incorrect", 25,  (int) robotFour.getEnergy());
 	}
 	
-	/*@Test
-	public void testTeamOneEnergy() {
-		Mockito.when(teamOne.get(0).getEnergy()).thenReturn((double) 100);
-		Mockito.when(teamOne.get(1).getEnergy()).thenReturn((double) 50);
-		Mockito.when(robotOne.getTotalTeamEnergy(0, 2)).thenCallRealMethod();
-		assertEquals("getTotalTeamEnergy() does not work as expected.", 75 , robotOne.getTotalTeamEnergy(0, 2));
-	}*/
+	@Test
+	public void testTeamOneRobotOneEnergy() {
+		Mockito.when(teamOne.get(0)).thenReturn(robotOne);
+		assertEquals("Retrieval of Robot One energy level in Team One is incorrect", 100, (int) teamOne.get(0).getEnergy());
+	}
+	
+	@Test
+	public void testTeamOneTotalEnergy() {
+		Mockito.when(teamOne.get(0)).thenReturn(robotOne);
+		Mockito.when(teamOne.get(1)).thenReturn(robotTwo);
+		Mockito.when(robotOne.getTotalTeamEnergy(teamOne, 0, 2)).thenCallRealMethod();
+		assertEquals("getTotalTeamEnergy() does not work as expected.", 150 , robotOne.getTotalTeamEnergy(teamOne, 0, 2));
+	}
+	
+	@Test
+	public void testTeamTwoTotalEnergy() {
+		Mockito.when(teamTwo.get(0)).thenReturn(robotThree);
+		Mockito.when(teamTwo.get(1)).thenReturn(robotFour);
+		Mockito.when(robotFour.getTotalTeamEnergy(teamTwo, 1, 2)).thenCallRealMethod();
+		assertEquals("getTotalTeamEnergy() does not work as expected.", 75 , robotFour.getTotalTeamEnergy(teamTwo, 1, 2));
+	}
+
 }
