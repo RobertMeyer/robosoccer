@@ -85,6 +85,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.EffectArea;
 import net.sf.robocode.battle.IRenderable;
+import net.sf.robocode.battle.TrackField;
 import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
@@ -1654,7 +1655,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			boundingBox.setRect(x - BZ_WIDTH / 2 + 2, y - BZ_HEIGHT / 2 + 2, BZ_WIDTH - 4, BZ_HEIGHT - 4);
 		}
 	}
-
+	
+	//TODO
+	protected void checkTerrainCollision() {
+		
+	}
+	
+	protected void checkBoundryCollision() {
+		if (this.getBattleFieldHeight() != null) {
+		}
+	}
+	
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?
 	public void addEvent(Event event) {
 		if (isRunning()) {
