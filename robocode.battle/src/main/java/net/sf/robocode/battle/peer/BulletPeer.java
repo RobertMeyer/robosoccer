@@ -216,7 +216,7 @@ public class BulletPeer {
 							otherRobot.updateEnergy(-damage);
 						}
 						else {
-							owner.updateEnergy(-(damage*2));
+							owner.updateEnergy(-(damage*2)-5);
 						}
 					}
 				}

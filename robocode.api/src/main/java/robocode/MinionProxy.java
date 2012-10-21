@@ -89,8 +89,8 @@ public class MinionProxy {
      *
      * @return the parent's gun cooling rate
      * @see #getGunHeat()
-     * @see #fire(double)
-     * @see #fireBullet(double)
+     * @see IBasicRobotPeer#fire(double)
+     * @see IBasicRobotPeer#fireBullet(double)
      */
     public double getGunCoolingRate() {
         if (peer != null) {
@@ -131,8 +131,8 @@ public class MinionProxy {
      *
      * @return the current gun heat
      * @see #getGunCoolingRate()
-     * @see #fire(double)
-     * @see #fireBullet(double)
+     * @see IBasicRobotPeer#fire(double)
+     * @see IBasicRobotPeer#fireBullet(double)
      */
     public double getGunHeat() {
         if (peer != null) {
@@ -149,8 +149,8 @@ public class MinionProxy {
      * 90 means East, 180 means South, and 270 means West.
      *
      * @return the direction that the parent robot's radar is facing, in degrees.
-     * @see #getHeading()
-     * @see #getGunHeading()
+     * @see IBasicRobotPeer#getHeading()
+     * @see IBasicRobotPeer#getGunHeading()
      */
     public double getRadarHeading() {
         if (peer != null) {
@@ -175,6 +175,10 @@ public class MinionProxy {
         return 0; // never called
     }
     
+    /**
+     * @param other
+     * @return true if other uses the same peer as (this) instance.
+     */
     public boolean equals(MinionProxy other) {
     	if(other.peer == this.peer)
     		return true;

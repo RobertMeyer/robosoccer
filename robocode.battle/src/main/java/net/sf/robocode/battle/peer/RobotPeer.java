@@ -161,7 +161,6 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author Julian Kent (contributor)
  * @author "Positive" (contributor)
  * @author Malcolm Inglis (CSSE2003) (contributor - attributes, equipment)
- * @author CSSE2003 Team Mysterious-Incontinence - Minion Functionality.
  * @author CSSE2003 Team HoneyBadgers (contributor)
  * @author CSSE2003 Team Forkbomb (attributes, equipment)
  * @author CSSE2003 Team Mysterious-Incontinence (minion functionality)
@@ -379,6 +378,17 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.hostManager = hostManager;
 	}
 	
+	/**
+	 * Spawns minions, if minions are enabled and the robot has
+	 * requested a minion to be spawned.
+	 * 
+	 * This function sets up communication between the parent robot
+	 * and the minion/s.
+	 * 
+	 * Minions are added to the battle using battle.addMinion().
+	 * @see MinionProxy
+	 * @author Jordan Henderson
+	 */
 	public void spawnMinions() {
 		if(currentCommands.getSpawnMinion() && !isMinion() && 
 		(MinionData.getMinionsEnabled() || !MinionData.getIsGui())) {
@@ -463,7 +473,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return false;
 		}
 	}
-		
+	
+	/**
+	 * @return the parent's MinionProxy.
+	 */
 	public MinionProxy getMinionParent(){
 		return this.minionParent;
 	}

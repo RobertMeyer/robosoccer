@@ -100,28 +100,34 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
     }
     
     /**
-     * {@inheritDoc}
+     * Spawn a minion, given the minion type and power used.
+     * @param minionType - the minion type.
+     * @param minionPower - power used to spawn the minion.
      */ 
     public final void spawnMinion(int minionType, int minionPower) {
     	this.peer.spawnMinion(minionType, minionPower);
     }
     
     /**
-     * {@inheritDoc}
+     * Spawn a minion using default power.
+     * @param minionType - the minion type.
      */
     public final void spawnMinion(int minionType) {
     	this.peer.spawnMinion(minionType, DEFAULT_MINION_POWER);
     }
     
     /**
-     * {@inheritDoc}
+     * Returns a list of parent's minions.
+     * This will be empty for robots with no minions.
+     * @return List<MinionProxy> - a list containing the MinionProxy of each minion.  
      */
     public final List<MinionProxy> getMinions() {
     	return this.peer.getMinions();
     }
     
     /**
-     * {@inheritDoc}
+     * Returns the parent MinionProxy of a minion.
+     * @return MinionProxy - a MinionProxy of the parent robot.
      */
     public final MinionProxy getParent() {
     	return this.peer.getParent();
