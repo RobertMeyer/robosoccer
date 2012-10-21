@@ -25,6 +25,8 @@ public class ZombieMode extends ClassicMode {
     private BattlePeers peers;
     
     private float spawnTick = 150f;
+    
+    private boolean roundOver;
 
     /**
      * {@inheritDoc}
@@ -72,7 +74,7 @@ public class ZombieMode extends ClassicMode {
 
 	@Override
 	public boolean isRoundOver(int endTimer, int time) {
-		boolean roundOver = false;
+		roundOver = false;
 		if (peers != null){
 			roundOver = true;
 			for (RobotPeer robotPeer : peers.getRobots()) {
@@ -80,12 +82,15 @@ public class ZombieMode extends ClassicMode {
 					roundOver = false;
 				}
 			}
-			if(roundOver){
-				peers.removeRobots(getZombies(peers));
-				spawnTick = 150f;
-			}
 		}
-		return endTimer > time*5;
+		return (endTimer > 5 * time);
+	}
+	
+	public void finalizeTurn() {
+		if(roundOver){
+			peers.removeRobots(getZombies(peers));
+			spawnTick = 150f;
+		}
 	}
 
 	private ArrayList<RobotPeer> getZombies(BattlePeers peers){
@@ -141,5 +146,9 @@ public class ZombieMode extends ClassicMode {
     	if(otherRobot.isZombie())
     		return false;
     	return true;
+	}
+	
+	public boolean shouldIncrementEndTimer() {
+		return roundOver;
 	}
 }

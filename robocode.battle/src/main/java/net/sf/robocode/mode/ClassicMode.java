@@ -496,4 +496,19 @@ public class ClassicMode implements IMode {
 	public boolean shouldDoRamDamage(RobotPeer robotPeer, RobotPeer otherRobot) {
 		return true;
 	}
+	
+	/**
+	 * Method to be run after finalizeTurn
+	 */
+	public void finalizeTurn() {
+		// do nothing
+	}
+	
+	/**
+	 * Conditionally increment endTimer (prevents round ending)
+	 * @return
+	 */
+	public boolean shouldIncrementEndTimer() {
+		return true;
+	}
 }
