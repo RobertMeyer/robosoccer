@@ -479,4 +479,14 @@ public class ClassicMode implements IMode {
 
 	public void scoreRoundPoints() {
 	}
+	
+	/**
+	 * Whether or not two robots should get hurt when they bump into each other.
+	 * @param robotPeer
+	 * @param otherRobot 
+	 * @return boolean
+	 */
+	public boolean shouldDoRamDamage(RobotPeer robotPeer, RobotPeer otherRobot) {
+		return true;
+	}
 }

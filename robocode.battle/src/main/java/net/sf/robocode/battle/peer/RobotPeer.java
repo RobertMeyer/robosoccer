@@ -1758,73 +1758,74 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
                     		
 	                    //Use a factor of the armor if it has been changed
 	                    //This Robot
-                    	
-	                    if (isBotzilla()) {
-	                    	//If this robot is botzilla the other robot dies instantly
-	                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
-	                    // Neither Robot has armor
-	                    } else if (abs(getRobotArmor() - 1.0) < 0.00001 &&
-	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001 &&
-	                    		normalRobot == false){
-	                    	if(atFault) {
-	                    		this.updateEnergy(-(thisRobotFault));
-	                    		otherRobot.updateEnergy(-(otherRobotNotFault));
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-(thisRobotNotFault));
-	                    		otherRobot.updateEnergy(-(otherRobotFault));
-	                    	}
-	                    // Other Robot has armor
-	                    } else if(abs(getRobotArmor() - 1.0) < 0.00001 &&
-	                    		abs(otherRobot.getRobotArmor()-1.0) > 0.00001){
-	                    	if(atFault) {
-	                    		this.updateEnergy(-thisRobotFault);
-	                    		otherRobot.updateEnergy(-(otherRobotNotFault / 
-	                    				otherRobot.getRobotArmor()));
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-thisRobotNotFault);
-	                    		otherRobot.updateEnergy(-(otherRobotFault / 
-	                    				otherRobot.getRobotArmor()));
-	                    	}
-	                    // This robot has armor
-	                    } else if(abs(getRobotArmor() - 1.0) > 0.00001 &&
-	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
-	                    	if(atFault) {
-	                    		this.updateEnergy(-(thisRobotFault / 
-	                    				getRobotArmor()));
-	                    		otherRobot.updateEnergy(-otherRobotNotFault);
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-(thisRobotNotFault / 
-	                    				getRobotArmor()));
-	                    		otherRobot.updateEnergy(-otherRobotFault);
-	                    	}
-	                    // Both robots must have armor
-	                    } else {
-	                    	if(atFault) {
-	                    		this.updateEnergy(-(thisRobotFault / getRobotArmor()));
-	                    		otherRobot.updateEnergy(-(otherRobotNotFault / 
-	                    				otherRobot.getRobotArmor()));
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-(thisRobotNotFault / 
-	                    				getRobotArmor()));
-	                    		otherRobot.updateEnergy(-(otherRobotFault / 
-	                    				otherRobot.getRobotArmor()));
-	                    	}
-	                    }
-	                    
-	                    // Other Robot
-	                    if (otherRobot.isBotzilla()) {
-	                    	//If the other robot is botzilla then this robot dies instantly
-	                    	updateEnergy(-(energy + 1));
-	                    }
-	                    
-	                    if(normalRobot){
-	                    	this.updateEnergy(-(this.getRamDamage()));
-	                    	otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
-	                    }
+                    	if(battle.getBattleMode().shouldDoRamDamage(this, otherRobot)){
+		                    if (isBotzilla()) {
+		                    	//If this robot is botzilla the other robot dies instantly
+		                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
+		                    // Neither Robot has armor
+		                    } else if (abs(getRobotArmor() - 1.0) < 0.00001 &&
+		                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001 &&
+		                    		normalRobot == false){
+		                    	if(atFault) {
+		                    		this.updateEnergy(-(thisRobotFault));
+		                    		otherRobot.updateEnergy(-(otherRobotNotFault));
+		                    	}
+		                    	else {
+		                    		this.updateEnergy(-(thisRobotNotFault));
+		                    		otherRobot.updateEnergy(-(otherRobotFault));
+		                    	}
+		                    // Other Robot has armor
+		                    } else if(abs(getRobotArmor() - 1.0) < 0.00001 &&
+		                    		abs(otherRobot.getRobotArmor()-1.0) > 0.00001){
+		                    	if(atFault) {
+		                    		this.updateEnergy(-thisRobotFault);
+		                    		otherRobot.updateEnergy(-(otherRobotNotFault / 
+		                    				otherRobot.getRobotArmor()));
+		                    	}
+		                    	else {
+		                    		this.updateEnergy(-thisRobotNotFault);
+		                    		otherRobot.updateEnergy(-(otherRobotFault / 
+		                    				otherRobot.getRobotArmor()));
+		                    	}
+		                    // This robot has armor
+		                    } else if(abs(getRobotArmor() - 1.0) > 0.00001 &&
+		                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
+		                    	if(atFault) {
+		                    		this.updateEnergy(-(thisRobotFault / 
+		                    				getRobotArmor()));
+		                    		otherRobot.updateEnergy(-otherRobotNotFault);
+		                    	}
+		                    	else {
+		                    		this.updateEnergy(-(thisRobotNotFault / 
+		                    				getRobotArmor()));
+		                    		otherRobot.updateEnergy(-otherRobotFault);
+		                    	}
+		                    // Both robots must have armor
+		                    } else {
+		                    	if(atFault) {
+		                    		this.updateEnergy(-(thisRobotFault / getRobotArmor()));
+		                    		otherRobot.updateEnergy(-(otherRobotNotFault / 
+		                    				otherRobot.getRobotArmor()));
+		                    	}
+		                    	else {
+		                    		this.updateEnergy(-(thisRobotNotFault / 
+		                    				getRobotArmor()));
+		                    		otherRobot.updateEnergy(-(otherRobotFault / 
+		                    				otherRobot.getRobotArmor()));
+		                    	}
+		                    }
+		                    
+		                    // Other Robot
+		                    if (otherRobot.isBotzilla()) {
+		                    	//If the other robot is botzilla then this robot dies instantly
+		                    	updateEnergy(-(energy + 1));
+		                    }
+		                    
+		                    if(normalRobot){
+		                    	this.updateEnergy(-(this.getRamDamage()));
+		                    	otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
+		                    }
+                    	}
                     }                    
 					
 					
