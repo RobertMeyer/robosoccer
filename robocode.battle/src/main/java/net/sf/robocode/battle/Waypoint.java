@@ -42,6 +42,10 @@ public class Waypoint {
 		wayPoints.remove(SingleWaypointIndex);
 	}
 	
+	public int getNoWaypoints(){
+		return wayPoints.size();
+	}
+	
 	//class used to store x & y co-ordinates of each waypoint.
 	public class SingleWaypoint{
 		private double xLocation;

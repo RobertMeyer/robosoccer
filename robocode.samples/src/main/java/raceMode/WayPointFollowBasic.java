@@ -17,9 +17,7 @@ import static java.lang.Math.atan2;
 public class WayPointFollowBasic extends Robot {
 
     int others; // Number of other robots in the game
-    static int corner = 0; // Which corner we are currently using
-    // static so that it keeps it between rounds.
-    boolean stopWhenSeeRobot = false; // See goCorner()
+
 
     /**
      * run:  Corners' main run function.
@@ -27,7 +25,7 @@ public class WayPointFollowBasic extends Robot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor(Color.red);
+        setBodyColor(Color.yellow);
         setGunColor(Color.black);
         setRadarColor(Color.yellow);
         setBulletColor(Color.green);
@@ -37,23 +35,26 @@ public class WayPointFollowBasic extends Robot {
         others = getOthers();
 
         // Spin gun back and forth
-        turnRight(initialWaypoint(2.1, 44.3));
+        turnRight(waypointDirection(2.1, 44.3));
         while (true) {
-            /*
+            
             ahead(10);
             turnRight(360);
-            */
+            
         }
     }
     
-    public double initialWaypoint(double iX, double iY){
+    public double waypointDirection(double iX, double iY){
     	//calculate the bearing to the waypoint relative to the robots Heading.
    	 return  (180/Math.PI) * ((Math.PI/2)-atan2(iY-getY(), iX-getX())) - getHeading();
     }
     
+    @Override
     public void onWaypointPassed(WaypointPassedEvent e){
-    	stop();
-    	System.out.println("Waypoint Found @" + e.getWaypointX() + e.getWaypointY());
+    	turnRight(waypointDirection(e.getWaypointX(), e.getWaypointY()));
+    	//System.out.println("########################################");
+
+    	
     }
 
     /**
@@ -61,7 +62,7 @@ public class WayPointFollowBasic extends Robot {
      */
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
-    	//TODO 
+  
     }
 
     /**

@@ -57,6 +57,14 @@ public class RaceMode extends ClassicMode{
 		peers.createPeers(battlingRobotsList);
 	}
 	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void scoreTurnPoints() {
+    	
+    }
+	
 	@Override
 	public String toString(){
 		//overwriting toString() method so our "mode" name is now returned
@@ -70,5 +78,10 @@ public class RaceMode extends ClassicMode{
 	 */
 	public String getDescription(){
 		return new String("Race mode allows you to race your robot to be first across the finish line.");
+	}
+	
+	@Override
+	public boolean allowsOneRobot() {//disable annoying message box
+		return true;
 	}
 }

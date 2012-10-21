@@ -46,6 +46,8 @@ public interface IEventManager {
     List<RobotDeathEvent> getRobotDeathEvents();
 
     List<ScannedRobotEvent> getScannedRobotEvents();
+    
+    List<WaypointPassedEvent> getWaypointPasedEvents();
 
     // team
     List<MessageEvent> getMessageEvents();

@@ -407,6 +407,20 @@ public class EventManager implements IEventManager {
 		}
 		return events;
 	}
+    
+    @Override
+	public List<WaypointPassedEvent> getWaypointPasedEvents() {
+    	List<WaypointPassedEvent> events = Collections.synchronizedList(new ArrayList<WaypointPassedEvent>());
+
+		synchronized (eventQueue) {
+			for (Event e : eventQueue) {
+				if (e instanceof WaypointPassedEvent) {
+					events.add((WaypointPassedEvent) e);
+				}
+			}
+		}
+		return events;
+	}
 
 	public long getTime() {
 		return robotProxy.getTimeImpl();
@@ -664,4 +678,5 @@ public class EventManager implements IEventManager {
 			super(null);
 		}
 	}
+
 }

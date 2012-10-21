@@ -277,6 +277,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.state = RobotState.ACTIVE;
 		this.battleRules = battle.getBattleRules();
 
+		//TODO Delete below
+		way.addSingleWaypoint(2.3, 130);
+		
 		if (team != null) {
 			team.add(this);
 		}
@@ -1267,68 +1270,38 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
      * can be, and still be scanned.
      */
     private void checkWaypointPass(Waypoint waypoint, Double waypointDistance){
-   
+    	
+    	
     	//calculate the bearing to the waypoint relative to the robots Heading.
     	double dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
 		double dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
-		//dx = -2;
-		//dy = -3;
-    	double relativeBearingtoWaypoint = (Math.PI/2)-atan2(dy, dx); //- bodyHeading);
-    	/*
-    	double perpHeadingRight = bodyHeading + (Math.PI/2);
-    	double perpHeadingLeft = bodyHeading - (Math.PI/2);*/
-    	double perpHeading1;
-    	double perpHeading2;
+
+    	double relativeBearingtoWaypoint = (Math.PI/2)-atan2(dy, dx) - bodyHeading;
     	
-    	if(relativeBearingtoWaypoint > bodyHeading){
-    		relativeBearingtoWaypoint = relativeBearingtoWaypoint - bodyHeading;
-    	}else{
-    		relativeBearingtoWaypoint = ((Math.PI * 2) - bodyHeading) + relativeBearingtoWaypoint;
-    	}
-    	
-    	if((bodyHeading + (Math.PI / 2)) > (Math.PI * 2)){
-    		perpHeading1 = (bodyHeading + (Math.PI / 2)) - (Math.PI * 2);
-    	}else {
-    		perpHeading1 = bodyHeading + (Math.PI / 2);
-    	}
-    		
-    	if((bodyHeading - (Math.PI / 2)) < 0){
-    		perpHeading2 = (Math.PI * 2) + (bodyHeading - (Math.PI / 2));
-    	}else{
-    		perpHeading2 = bodyHeading - (Math.PI / 2);
-    	}
-    	
-    	
-    	/*
-    	relativeBearingtoWaypoint = normalAbsoluteAngle(relativeBearingtoWaypoint);
-    	perpHeadingRight = normalAbsoluteAngle(perpHeadingRight);
-    	perpHeadingLeft = normalAbsoluteAngle(perpHeadingLeft);
-    	*/
-    			
-    	System.out.println(relativeBearingtoWaypoint);
-    	System.out.println("PerpHeading 1 = " + perpHeading1);
-    	System.out.println("PerpHeading 2 = " + perpHeading2);
-    	//System.out.println("bodyheading = " + bodyHeading);
-    	//System.out.println("relative = " + relativeBearingtoWaypoint);
-    	//System.out.println("PerpHeading = " + perpHeading);
-    	/*
-    	if(robocode.util.Utils.isNear(relativeBearingtoWaypoint, perpHeadingLeft) || 
-    			robocode.util.Utils.isNear(relativeBearingtoWaypoint, perpHeadingRight)){*/
-    	if(robocode.util.Utils.isNear(relativeBearingtoWaypoint, perpHeading1)){
+    	relativeBearingtoWaypoint = normalNearAbsoluteAngle(relativeBearingtoWaypoint);
+
+    	if((Math.abs(relativeBearingtoWaypoint - (Math.PI/2)) < .03) || (Math.abs(relativeBearingtoWaypoint - 
+    			(3 * Math.PI / 2)) < .03)){
     		double  distToWay = Math.hypot(dx, dy);
-    		
-    		System.out.println("########################################");
+
     		//Check if the waypoint is at the maximum distance from the robot or closer.
-    		if(robocode.util.Utils.isNear(distToWay, waypointDistance) || distToWay < waypointDistance){
-    			currentWaypointIndex += 1;
-    			relativeBearingtoWaypoint = bodyHeading + ((Math.PI/2)-atan2( waypoint.getSingleWaypointY(
-    					currentWaypointIndex)-y, waypoint.getSingleWaypointX(currentWaypointIndex)-x));
-    			dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
-        		dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
-        		//create the new WaypointPassedEvent
-    			addEvent(new WaypointPassedEvent(currentWaypointIndex, waypoint.getSingleWaypointX(
+    		if(distToWay < waypointDistance){
+    			System.out.println("currentWaypointIndex = " + currentWaypointIndex);
+    			System.out.println("NoWaypoints = " + waypoint.getNoWaypoints());
+    			if(currentWaypointIndex != waypoint.getNoWaypoints() -1){
+    				currentWaypointIndex++;
+    				dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
+    				dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
+    				relativeBearingtoWaypoint = normalNearAbsoluteAngle((Math.PI/2)-atan2(dy, dx) - bodyHeading);
+    				
+    				//create the new WaypointPassedEvent	
+    				addEvent(new WaypointPassedEvent(currentWaypointIndex, waypoint.getSingleWaypointX(
     					 currentWaypointIndex), waypoint.getSingleWaypointY(currentWaypointIndex), 
     					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
+
+    			}else{
+    				System.out.println("All waypoints Passed");
+    			}
     		}
     	}
     	
