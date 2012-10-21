@@ -288,7 +288,7 @@ public abstract class BaseBattle implements IBattle, Runnable {
             
             finalizeTurn();
             
-            
+            battleMode.finalizeTurn();
         }
     }
 
@@ -323,7 +323,8 @@ public abstract class BaseBattle implements IBattle, Runnable {
     }
 
     protected void shutdownTurn() {
-        endTimer++;
+    	if(battleMode.shouldIncrementEndTimer())
+    		endTimer++;
     }
 
     protected void finalizeTurn() {
