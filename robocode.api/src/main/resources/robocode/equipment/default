@@ -1,4 +1,5 @@
 Division 9 Plasmaprojector : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/plasma.png
 SOUND_PATH = /net/sf/robocode/sound/sounds/boom.wav
 GUN_HEAT_RATE = 110
 BULLET_DAMAGE = 1500
@@ -6,6 +7,7 @@ ENERGY = -10
 BULLET_SPEED = 20000
 
 Guardian Heavy Tank Armor : BODY
+IMAGE_PATH = /net/sf/robocode/ui/images/guardian.png
 ARMOR = 150
 ACCELERATION = -10
 RAM_ATTACK = 10
@@ -119,6 +121,20 @@ SCAN_RADIUS = -40
 Radar Test Large : POWER
 RADAR_ANGLE = 40
 SCAN_RADIUS = 40
+
+Armor Test Large: BODY
+ARMOR = 40
+
+Armor Test Small: BODY
+ARMOR = -40
+
+Ram Test Large: BODY
+RAM_ATTACK = 40
+RAM_DEFENSE = 40
+
+Ram Test Small: BODY
+RAM_ATTACK = -40
+RAM_DEFENSE = -40
 
 InvalidFileTest : GUN
 SOUND_PATH = /net/sf/robocode/sound/sounds/InvalidFileTest.jpg

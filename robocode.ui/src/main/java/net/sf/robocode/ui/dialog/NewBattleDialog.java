@@ -439,7 +439,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
 		EquipmentPanel() {
 			super();
-			setFile(EquipmentSet.defaultFile());
+//			setFile(EquipmentSet.defaultFile());
 			textArea.setEditable(false);
 			setLayout(new BorderLayout());
 			add(openButton, BorderLayout.NORTH);
@@ -466,7 +466,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 			}
 			try {
 				textArea.setText(FileUtil.readFileToString(file));
-				this.file = file;
+				this.file = null;
 			} catch (FileNotFoundException e1) {
 			}
 		}

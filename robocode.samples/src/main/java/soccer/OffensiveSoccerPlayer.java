@@ -14,9 +14,12 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
+ * This is an example SoccerRobot for use in SoccerMode. This particular robot
+ * demonstrates an offensive style of play, where the robot constantly attempts
+ * to position itself such that the ball lies directly between this robot and
+ * the enemy goal.
  * 
- * Author: Carl Hattenfels
- * Student No: s4275050
+ * Author: Carl Hattenfels - team-G1
  * 
  */
 public class OffensiveSoccerPlayer extends SoccerRobot {
@@ -285,11 +288,19 @@ public class OffensiveSoccerPlayer extends SoccerRobot {
 		return ((Math.atan2(deltaY, deltaX) * -1) + (5 * pi / 2)) % (2 * pi);
 	}
 	
+	/**
+	 * Returns the absolute bearing from this robot to it's own goal, using
+	 * robocode coordinate system.
+	 */
 	public double getAbsoluteBearingToOwnGoal() {
 		return getAbsoluteBearing(getX(), getY(), ownGoal.getCenterX(), 
 				ownGoal.getCenterY());
 	}
 	
+	/**
+	 * Returns the absolute bearing from this robot to it's enemies goal, using
+	 * robocode coordinate system.
+	 */
 	public double getAbsoluteBearingToEnemyGoal() {
 		return getAbsoluteBearing(getX(), getY(), enemyGoal.getCenterX(), 
 				enemyGoal.getCenterY());

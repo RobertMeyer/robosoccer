@@ -9,7 +9,7 @@ import robocode.ScannedRobotEvent;
  * @author James Pettigrew
  *
  */
-public class SucideMinion extends Minion {
+public class SuicideMinion extends Minion {
 	String targetName = null;
 	String parentName = null;
 	

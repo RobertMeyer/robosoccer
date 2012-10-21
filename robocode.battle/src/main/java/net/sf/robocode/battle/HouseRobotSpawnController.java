@@ -44,6 +44,20 @@ public class HouseRobotSpawnController implements ISpawnController {
             WeakReference<Battle> pr = it.next();
             if (pr.get() == null) {
                 it.remove();
+            } else {
+                List<RobotPeer> get = pr.get().getRobotList();
+                HouseRobotBattlePositions bp = battlePositions.get(pr);
+                if (get == null) {
+                    continue;
+                }
+                for (RobotPeer robotPeer : bp.corners) {
+                    // If the battlePositions contains a robot that is not in 
+                    // the current round, then it is invalid. Hence remove it.
+                    if (robotPeer != null && !get.contains(robotPeer)) {
+                        it.remove();
+                        continue;
+                    }
+                }
             }
         }
     }
@@ -83,8 +97,7 @@ public class HouseRobotSpawnController implements ISpawnController {
     private static class HouseRobotBattlePositions {
 
         /**
-         * Corner order:
-         * Top Left, Top Right, Bottom Left, Bottom Right.
+         * Corner order: Top Left, Top Right, Bottom Left, Bottom Right.
          */
         private List<RobotPeer> corners = new ArrayList<RobotPeer>(Arrays.asList(new RobotPeer[4]));
         private List<Integer> unallocatedCorners = new ArrayList<Integer>(corners.size());
@@ -98,6 +111,7 @@ public class HouseRobotSpawnController implements ISpawnController {
 
         /**
          * Provides an X with max(5% of width, 50 units) buffer.
+         *
          * @param corner
          * @param width
          * @return
@@ -115,6 +129,7 @@ public class HouseRobotSpawnController implements ISpawnController {
 
         /**
          * Provides an Y with max(5% of width, 50 units) buffer.
+         *
          * @param corner
          * @param height
          * @return
