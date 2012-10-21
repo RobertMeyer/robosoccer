@@ -1618,6 +1618,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		return otherRobot.getName();
 	}
 
+	/**
+	 * Checks for collisions between the robots and the items, and sends a
+	 * HitItemEvent to the robots that hit an item.
+	 * 
+	 * @param items the list of items on the battlefield
+	 */
 	private void checkItemCollision(List<ItemDrop> items){
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
