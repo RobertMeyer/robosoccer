@@ -2886,7 +2886,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * @return the starting energy of the robot associated with this peer.
 	 */
 	public double getStartingEnergy() {
-		return attributes.get().get(RobotAttribute.ENERGY) * 100;
+		double e = attributes.get().get(RobotAttribute.ENERGY) * 100;
+		if(this.isZombie()) {
+			return battle.getBattleMode().modifyStartingEnergy(this, e);
+		} else {
+			return e;
+		}
 	}
 
 	/**

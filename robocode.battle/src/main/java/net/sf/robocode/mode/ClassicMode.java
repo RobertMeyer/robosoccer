@@ -479,4 +479,11 @@ public class ClassicMode implements IMode {
 
 	public void scoreRoundPoints() {
 	}
+
+	/**
+	 * Modify the starting energy.
+	 */
+	public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
+		return startingEnergy;
+	}
 }
