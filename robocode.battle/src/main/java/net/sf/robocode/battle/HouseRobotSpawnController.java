@@ -47,6 +47,9 @@ public class HouseRobotSpawnController implements ISpawnController {
             } else {
                 List<RobotPeer> get = pr.get().getRobotList();
                 HouseRobotBattlePositions bp = battlePositions.get(pr);
+                if (get == null) {
+                    continue;
+                }
                 for (RobotPeer robotPeer : bp.corners) {
                     // If the battlePositions contains a robot that is not in 
                     // the current round, then it is invalid. Hence remove it.
