@@ -1,10 +1,10 @@
 package net.sf.robocode.mode;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.BattleProperties;
 import net.sf.robocode.battle.DefaultSpawnController;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
@@ -12,22 +12,15 @@ import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
 import net.sf.robocode.core.Container;
-import net.sf.robocode.host.CpuManager;
 import net.sf.robocode.host.IHostManager;
-import net.sf.robocode.host.security.ThreadManager;
-import net.sf.robocode.recording.RecordManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
-import net.sf.robocode.repository.RepositoryManager;
 import net.sf.robocode.security.HiddenAccess;
-import net.sf.robocode.settings.SettingsManager;
 
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.Mockito;
 
 import robocode.BattleRules;
-import robocode.control.BattleSpecification;
-import robocode.control.BattlefieldSpecification;
 import robocode.control.RobotSpecification;
 
 import static org.junit.Assert.*;
@@ -35,31 +28,20 @@ import static org.junit.Assert.*;
 public class ObstacleModeTest {
 	protected static String robotsPath;
 	private BattleProperties bp;
-	private BattleManager bm;
 	private IHostManager hm;
-	private SettingsManager sm;
-	private RepositoryManager rm;
-	private CpuManager cm;
 	private BattleEventDispatcher bd;
-	private ThreadManager tm;
-	private RecordManager rem;
 	private Battle battle;
 	private BattleRules br;
 	private List<ObstaclePeer> obstacles;
 	private List<RobotPeer> robots;
 	private RobotSpecification spec;
+	private RobotSpecification ospec;
 	
 	/**
 	 * Sets up the required variables for testing
 	 */
 	@Before
 	public void setup() {
-		/*tm = new ThreadManager();
-		sm = new SettingsManager();
-		rm = new RepositoryManager(sm);
-		cm = new CpuManager(sm);
-		rem = new RecordManager(sm);
-		bm = new BattleManager(sm, rm, hm, cm, bd, rem);*/
 		HiddenAccess.init();
 		Container.init();
 		
@@ -226,16 +208,54 @@ public class ObstacleModeTest {
 		
 	}
 	
-	/*@Test
-	public void testObstacles() {
-		BattleProperties bp = Mockito.mock(BattleProperties.class);
-		// more mocking...
-		 
-		Mockito.when(bp.getBattlefieldWidth()).thenReturn(200);
-		Mockito.when(bp.getBattlefieldHeight()).thenReturn(200);
-		// etc...
-		 
-		//List<ObstaclePeer> obstacles = ObstaclePeer.generateRandomObstacles(10, bp, ...);
-		//assert things;
-	}*/
+	/**
+	 * Tests if the obstacle can correctly obstruct the scanning of the robots
+	 */
+	@Test
+	public void testScanObstruction() {
+		IRobotRepositoryItem rItem = Mockito.mock(IRobotRepositoryItem.class);
+		spec = HiddenAccess.createSpecification(rItem, "",
+				"", "", "", "", "", "", "");
+		
+		//set up obstacle to not be in between the two robots
+		obstacles = new ArrayList<ObstaclePeer>();
+		obstacles.add(new ObstaclePeer(battle, br, 0));
+		obstacles.get(0).setHeight(10);
+		obstacles.get(0).setWidth(800);
+		obstacles.get(0).setX(400);
+		obstacles.get(0).setY(500);
+		
+		//set up inital location of the robot facing north (heading of 0)
+		robots = new ArrayList<RobotPeer>();
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		
+		//set up initial position of first robot
+		double[][] init = {{0, 0, 0}, {0, 0, 0}};
+		init[0][0] = 400;
+		init[0][1] = 10;
+		init[0][2] = 180;
+		robots.get(0).initializeRound(robots, init);
+		
+		//set up initial position for second robot
+		init[0][0] = 400;
+		init[0][1] = 100;
+		init[0][2] = 0;
+		robots.get(1).initializeRound(robots, init);
+		
+		//draw line between the two robots
+		Line2D scan = new Line2D.Double(robots.get(0).getX(), robots.get(0).getY(), 
+				robots.get(1).getX(), robots.get(1).getY());
+		
+		//obstacle should not be intersecting with the scan line
+		assertFalse("Obstacle should not be obstructing the scan.", 
+				scan.intersects(obstacles.get(0).getBoundingBox()));
+		
+		//move the obstacle to be in between the two robots
+		obstacles.get(0).setY(50);
+		
+		//obstacle should now be obstructing the line of sight of robot
+		assertTrue("Obstacle should be obstructing the scan.", 
+				scan.intersects(obstacles.get(0).getBoundingBox()));
+	}
 }
