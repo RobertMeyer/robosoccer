@@ -185,6 +185,7 @@ public class Battle extends BaseBattle {
 	private int activeRobots;
 	// Death events
 	private final List<RobotPeer> deathRobots = new CopyOnWriteArrayList<RobotPeer>();
+	private DeathEffectController deController = new DeathEffectController();
 	// For retrieval of robot in timer mode
 	private List<RobotPeer> robotList;
 	// Flag specifying if debugging is enabled thru the debug command line
@@ -270,6 +271,7 @@ public class Battle extends BaseBattle {
 			}
 		}
 
+		deController.setup(bp);
 		botzillaActive = false;
 
 		if (battleMode.toString() == "Obstacle Mode") {
@@ -1042,7 +1044,7 @@ public class Battle extends BaseBattle {
 
 			// Death effect
 			if (battleManager.getBattleProperties().getEffectArea()) {
-				deathEffect(deadRobot);
+				deController.deathEffect(deadRobot, getRobotsAtRandom(), eaManager);
 			}
 			// Compute scores for dead robots
 			if (deadRobot.getTeamPeer() == null) {
