@@ -38,9 +38,11 @@ public class Obstacle implements Serializable {
 	/**
 	 * Called by the game to create a new {@code Obstacle} object
 	 *
-	 * @param x		 the starting X position of the bullet.
-	 * @param y		 the starting Y position of the bullet.
-	 * @param obstacleId unique id of bullet for owner robot.
+	 * @param x		 the X position of the obstacle
+	 * @param y		 the Y position of the obstacle
+	 * @param width the width of the obstacle
+	 * @param height the height of the obstacle
+	 * @param obstacleId unique id of obstacle on the battlefield
 	 */
 	public Obstacle(double x, double y, double width, double height, int obstacleId) {
 		this.x = x;
@@ -109,8 +111,6 @@ public class Obstacle implements Serializable {
 	 * @param y the new Y position of the obstacle.
 	 * @param width the new width of the obstacle.
 	 * @param height the new height of the obstacle.
-	 * @param victimName the name if the victim that has been hit by this bullet.
-	 * @param isActive {@code true} if the bullet still moves; {@code false} otherwise.
 	 */
 	// this method is invisible on RobotAPI
 	private void update(double x, double y, double width, double height) {
@@ -122,6 +122,8 @@ public class Obstacle implements Serializable {
 
 	// this method is invisible on RobotAPI
 	/**
+	 * Returns the unique id of the obstacle
+	 * 
 	 * @return unique id of obstacle
 	 */
 	int getObstacleId() {

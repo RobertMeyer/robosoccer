@@ -33,7 +33,7 @@ import java.io.IOException;
  * @author Joel Addison
  * 
  */
-public final class ObstacleSnapshot implements java.io.Serializable, IXmlSerializable, IObstacleSnapshot {
+public final class ObstacleSnapshot implements java.io.Serializable, IObstacleSnapshot {
 
 	private static final long serialVersionUID = 2L;
 
@@ -54,15 +54,6 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 
 	private int obstacleId;
 
-	private int victimIndex = -1;
-
-	/**
-	 * Creates a snapshot of a bullet that must be filled out with data later.
-	 */
-	public ObstacleSnapshot() {
-		victimIndex = -1;
-	}
-
 	/**
 	 * Creates a snapshot of an obstacle.
 	 *
@@ -73,12 +64,6 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 		y = obstacle.getY();
 		height = obstacle.getHeight();
 		width = obstacle.getWidth();
-
-		//color = obstacle.getColor();
-
-		//obstacleId = bullet.getBulletId();
-
-		//final RobotPeer victim = bullet.getVictim();
 	}
 
 	@Override
@@ -105,148 +90,6 @@ public final class ObstacleSnapshot implements java.io.Serializable, IXmlSeriali
 	 */
 	public int getColor() {
 		return color;
-	}
-
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getVictimIndex() {
-		return victimIndex;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void writeXml(XmlWriter writer, SerializableOptions options) throws IOException {
-		/*writer.startElement(options.shortAttributes ? "b" : "bullet"); {
-			writer.writeAttribute("id", ownerIndex + "-" + bulletId);
-			if (!options.skipExploded || state != BulletState.MOVING) {
-				writer.writeAttribute(options.shortAttributes ? "s" : "state", state.toString());
-				writer.writeAttribute(options.shortAttributes ? "p" : "power", power, options.trimPrecision);
-			}
-			if (state == BulletState.HIT_VICTIM) {
-				writer.writeAttribute(options.shortAttributes ? "v" : "victim", victimIndex);
-			}
-			if (state == BulletState.FIRED) {
-				writer.writeAttribute(options.shortAttributes ? "o" : "owner", ownerIndex);
-				writer.writeAttribute(options.shortAttributes ? "h" : "heading", heading, options.trimPrecision);
-			}
-			writer.writeAttribute("x", paintX, options.trimPrecision);
-			writer.writeAttribute("y", paintY, options.trimPrecision);
-			if (!options.skipNames) {
-				if (color != ExecCommands.defaultBulletColor) {
-					writer.writeAttribute(options.shortAttributes ? "c" : "color",
-							Integer.toHexString(color).toUpperCase());
-				}
-			}
-			if (!options.skipExploded) {
-				if (frame != 0) {
-					writer.writeAttribute("frame", frame);
-				}
-				if (isExplosion) {
-					writer.writeAttribute("isExplosion", true);
-					writer.writeAttribute("explosion", explosionImageIndex);
-				}
-			}
-			if (!options.skipVersion) {
-				writer.writeAttribute("ver", serialVersionUID);
-			}
-		}
-		writer.endElement();*/
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public XmlReader.Element readXml(XmlReader reader) {
-		return null;
-		/*return reader.expect("bullet", "b", new XmlReader.Element() {
-			public IXmlSerializable read(XmlReader reader) {
-				final ObstacleSnapshot snapshot = new ObstacleSnapshot();
-
-				reader.expect("id", new XmlReader.Attribute() {
-					public void read(String value) {
-						String[] parts = value.split("-");
-
-						snapshot.ownerIndex = Integer.parseInt(parts[0]);
-						snapshot.bulletId = Integer.parseInt(parts[1]);
-					}
-				});
-
-				reader.expect("state", "s", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.state = BulletState.valueOf(value);
-					}
-				});
-
-				reader.expect("power", "p", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.power = Double.parseDouble(value);
-					}
-				});
-
-				reader.expect("heading", "h", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.heading = Double.parseDouble(value);
-					}
-				});
-
-				reader.expect("victim", "v", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.victimIndex = Integer.parseInt(value);
-					}
-				});
-
-				reader.expect("owner", "o", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.ownerIndex = Integer.parseInt(value);
-					}
-				});
-
-				reader.expect("x", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.x = Double.parseDouble(value);
-						snapshot.paintX = snapshot.x;
-					}
-				});
-
-				reader.expect("y", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.y = Double.parseDouble(value);
-						snapshot.paintY = snapshot.y;
-					}
-				});
-
-				reader.expect("color", "c", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.color = Long.valueOf(value.toUpperCase(), 16).intValue();
-					}
-				});
-
-				reader.expect("isExplosion", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.isExplosion = Boolean.parseBoolean(value);
-						if (snapshot.isExplosion && snapshot.state == null) {
-							snapshot.state = BulletState.EXPLODED;
-						}
-					}
-				});
-
-				reader.expect("explosion", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.explosionImageIndex = Integer.parseInt(value);
-					}
-				});
-
-				reader.expect("frame", new XmlReader.Attribute() {
-					public void read(String value) {
-						snapshot.frame = Integer.parseInt(value);
-					}
-				});
-				return snapshot;
-			}
-		});*/
 	}
 
 	@Override

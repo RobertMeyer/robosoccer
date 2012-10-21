@@ -166,6 +166,7 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @author CSSE2003 Team HoneyBadgers (contributor)
  * @author CSSE2003 Team Forkbomb (attributes, equipment)
  * @author CSSE2003 Team Mysterious-Incontinence (minion functionality)
+ * @author CSSE2003 Team a-MAZE-ing (obstacles)
  */
 public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
