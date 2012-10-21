@@ -6,9 +6,9 @@ public class MinionData {
 	private static Boolean minionsEnabled = false;
 	private static Boolean isGui = false;
 	private static String[] minionList = new String[]{"","",""};
-	private static Integer powerConsumption = 0;
+	private static boolean insaneMode = false;
 	//TODO: Get default minions from james.
-	private static String[] defaultMinions = new String[]{"sample.MinionBot","sample.MinionBot","sample.MinionBot"};
+	private static String[] defaultMinions = new String[]{"sample.TurretMinion","sample.DecoyMinion","sample.SuicideMinion"};
 
 	public static void setMinion(String minionStr, int minionType) {
 		if(!(minionType >= _RobotBase.MINION_TYPE_ATK && minionType < _RobotBase.MINION_TYPE_RND))
@@ -45,11 +45,11 @@ public class MinionData {
 		isGui = flag;
 	}
 	
-	public static void setEnergyConsumption(Integer power) {
-		powerConsumption = power;
+	public static void setInsaneMode(boolean flag) {
+		insaneMode = flag;
 	}
 	
-	public static Integer getEnergyConsumption() {
-		return powerConsumption;
+	public static boolean getInsaneMode() {
+		return insaneMode;
 	}
 }

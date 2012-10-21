@@ -910,8 +910,9 @@ public interface IBasicRobotPeer {
      * <p/>
      * This call executes immediately.
      * @param minionType the minion type to be spawned.
+     * @param minionPower the power provided from a parent robot for the minion.
      */
-	void spawnMinion(int minionType);
+	void spawnMinion(int minionType, int minionPower);
 	
     /**
      * Retrieves a list of MinionProxy that can be iterated through by a parent robot.

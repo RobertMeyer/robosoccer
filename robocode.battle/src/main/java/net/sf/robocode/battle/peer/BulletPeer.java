@@ -211,7 +211,12 @@ public class BulletPeer {
 					if (owner.isDispenser()) {
 						otherRobot.updateEnergy(damage);
 					} else {
-						otherRobot.updateEnergy(-damage);
+						if(!(otherRobot.isParent(owner))) {
+							otherRobot.updateEnergy(-damage);
+						}
+						else {
+							owner.updateEnergy(-(damage*2));
+						}
 					}
 				}
 				
@@ -234,7 +239,7 @@ public class BulletPeer {
 					owner.getRobotStatistics().scoreBulletDamage(
 							otherRobot.getName(), score);
 				}
-
+				
 				if (otherRobot.getEnergy() <= 0) {
 					owner.battle.getBattleMode().robotKill(owner, otherRobot);
 					if (otherRobot.isAlive()) {

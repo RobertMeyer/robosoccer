@@ -94,6 +94,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.runners.ParentRunner;
+
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
@@ -394,18 +396,21 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 				return;
 			}
 			//Validate the robot has enough power to spawn a minion.
-			double energyConsumption = MinionData.getEnergyConsumption();
-			if(energy <= energyConsumption)
-				//If minion spawns, parent will have no energy.
-				return;
-			else
-				energy -= energyConsumption;
+			double energyConsumption = currentCommands.getMinionEnergyCost();
+			if(!MinionData.getInsaneMode()) {
+				if(energy <= energyConsumption)
+					//If minion spawns, parent will have no energy.
+					return;
+				else
+					energy -= energyConsumption;
+			}
 			
 			//Spawn the minion.
 			RobotSpecification minion = minionSpecs[minionType];
 			//Pass robotProxy to provide a proxy for the minion (Minion => Parent)
 			RobotPeer minionPeer = new RobotPeer(battle, hostManager, minion, 0, null, 0, robotProxy);
-			battle.addMinion(minionPeer);
+
+			battle.addMinion(minionPeer, energyConsumption);
 
 			//Provide a proxy for the parent. (Parent=>Minion)
 			MinionProxy minionProxy = new MinionProxy((IBasicRobotPeer)minionPeer.robotProxy);
@@ -413,7 +418,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			minionList.add(minionPeer);
 			minionProxyList.add(minionProxy);
 		}
-		currentCommands.setSpawnMinion(false, 0);
+		currentCommands.setSpawnMinion(false, 0, 0);
 		//Update the minions proxy list in commands.
 		currentCommands.setMinions(minionProxyList);
 	}
@@ -1022,6 +1027,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+    public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions, double startingEnergy) {
+    	initializeRound(robots, initialRobotPositions);
+    	energy = startingEnergy;
+    }
+    
     @Override
 
 	public void initializeRound(List<RobotPeer> robots, double[][] initialRobotPositions) {
@@ -1096,9 +1106,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
 			attributes.get().put(RobotAttribute.VELOCITY, 0.40);
-		} else if (statics.isMinion()) {
-			//TODO: Make minions use specified start energy.
-			energy = 25;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -1732,8 +1739,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
 							otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
 	                    } else {
+	                    	if(!otherRobot.isParent(this)){
 	                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()
 	                                                  / 1 / otherRobot.getRobotArmor()));
+	                    	}
 	                    }
                     }
 
@@ -2291,7 +2300,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						return;
 					}
 					
-					if(minionList.contains(otherRobot) || (this.isMinion() && otherRobot.isParent(this)) 
+					if(minionList.contains(otherRobot) || (otherRobot.isParent(this)) 
 							|| (this.isMinion() && otherRobot.isMinion() && 
 									this.getMinionParent().equals(otherRobot.getMinionParent()))) {
 						return;
