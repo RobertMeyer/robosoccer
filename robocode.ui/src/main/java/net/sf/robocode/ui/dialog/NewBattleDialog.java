@@ -29,6 +29,7 @@ import java.awt.event.WindowAdapter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
+
 import javax.swing.*;
 
 import robocode.equipment.EquipmentSet;
@@ -439,7 +440,7 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
 		EquipmentPanel() {
 			super();
-//			setFile(EquipmentSet.defaultFile());
+			textArea.setText(EquipmentSet.defaultDefinitions());
 			textArea.setEditable(false);
 			setLayout(new BorderLayout());
 			add(openButton, BorderLayout.NORTH);
@@ -447,7 +448,8 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 			openButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if (e.getSource() == openButton) {
-						int rv = fileChooser.showOpenDialog(EquipmentPanel.this);
+						int rv = fileChooser
+								.showOpenDialog(EquipmentPanel.this);
 						if (rv == JFileChooser.APPROVE_OPTION) {
 							setFile(fileChooser.getSelectedFile());
 						}
@@ -458,7 +460,9 @@ public class NewBattleDialog extends JDialog implements WizardListener {
 
 		/**
 		 * Sets the selected file and loads its contents into the text area.
-		 * @param file the file to be selected.
+		 * 
+		 * @param file
+		 *            the file to be selected.
 		 */
 		void setFile(File file) {
 			if (file == null) {

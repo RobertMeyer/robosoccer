@@ -2,11 +2,12 @@ package robocode.equipment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import net.sf.robocode.io.FileUtil;
 
 /**
  * Represents a set of equipment parts, allowing battles to have different sets
@@ -22,10 +23,23 @@ public class EquipmentSet {
 	private Map<String, EquipmentPart> parts;
 
 	/**
-	 * @return the definition input stream to be used by default
+	 * @return the default equipment set
 	 */
-	public static InputStream defaultFile() {
-		return EquipmentSet.class.getResourceAsStream("default");
+	public static EquipmentSet defaultSet() {
+		return fromResource(DEFAULT_RESOURCE);
+	}
+
+	/**
+	 * @return the default equipment definitions
+	 */
+	public static String defaultDefinitions() {
+		try {
+			return FileUtil.readFileToString(new File(EquipmentSet.class
+					.getResource(DEFAULT_RESOURCE).getPath()));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	/**
@@ -36,7 +50,7 @@ public class EquipmentSet {
 	 *         last part definition that was successfully parsed.
 	 */
 	public static EquipmentSet fromResource(String resource) {
-		InputStream stream = EquipmentSet.class.getResourceAsStream("default");
+		InputStream stream = EquipmentSet.class.getResourceAsStream(resource);
 		if (stream == null) {
 			return new EquipmentSet();
 		}
@@ -51,11 +65,11 @@ public class EquipmentSet {
 	 */
 	public static EquipmentSet fromFile(File file) {
 		if (file == null) {
-			return fromResource(DEFAULT_RESOURCE);
+			return defaultSet();
 		}
 
 		try {
-			return EquipmentParser.parse(new Scanner(new FileReader(file)));
+			return EquipmentParser.parse(new Scanner(file));
 		} catch (FileNotFoundException e) {
 			return new EquipmentSet();
 		}
