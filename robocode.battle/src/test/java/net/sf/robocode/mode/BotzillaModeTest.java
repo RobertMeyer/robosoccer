@@ -64,4 +64,14 @@ public class BotzillaModeTest {
 	public void testDescription() {
 		assertEquals("Description is incorrect", "A mode that brings in an undefeatable enemy to speed up the finish.", bM.getDescription());
 	}
+	
+	/**
+	 * Add turn 749 check that Botzilla has not yet been spawned.
+	 */
+	
+	/**
+	 * At and after turn 750 check that Botzilla is has been spawned.
+	 */
+	
+	
 }
