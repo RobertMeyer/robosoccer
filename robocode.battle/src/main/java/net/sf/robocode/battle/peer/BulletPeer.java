@@ -192,8 +192,7 @@ public class BulletPeer {
 				double damage = Rules.getBulletDamage(power);
 				double score;
 
-				if (Math.abs(otherRobot.attributes.get().get(RobotAttribute.ARMOR) 
-						- 1.0) < 0.00001) {
+				if (otherRobot.attributes.get().get(RobotAttribute.ARMOR) - 1.0 < 0.00001) {
 					score = damage;
 				} else {
 					// Use inverse relationship --> more armor less damage

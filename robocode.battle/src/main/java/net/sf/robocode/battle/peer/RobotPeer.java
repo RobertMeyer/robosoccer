@@ -1718,77 +1718,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	                    if (isBotzilla()) {
 	                    	//If this robot is botzilla the other robot dies instantly
 	                    	otherRobot.updateEnergy(-(otherRobot.energy + 1));
-	                    // Neither Robot has armor
-	                    } else if (abs(getRobotArmor() - 1.0) < 0.00001 &&
-	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
-	                    	if(atFault) {
-	                    		this.updateEnergy(-(getRamDamage() - 
-	                    				getRamAttack()));
-	                    		otherRobot.updateEnergy(-(otherRobot.
-	                    				getRamDamage()));
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-(getRamDamage()));
-	                    		otherRobot.updateEnergy(-(otherRobot.
-	                    				getRamDamage() - otherRobot.
-	                    				getRamAttack()));
-	                    	}
-	                    // Other Robot has armor
-	                    } else if(abs(getRobotArmor() - 1.0) < 0.00001 &&
-	                    		abs(otherRobot.getRobotArmor()-1.0) > 0.00001){
-	                    	if(atFault) {
-	                    		this.updateEnergy(-(getRamDamage() - 
-	                    				getRamAttack()));
-	                    		otherRobot.updateEnergy(-(otherRobot.
-	                    				getRamDamage() / otherRobot.
-	                    				getRobotArmor()));
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-(getRamDamage()));
-	                    		otherRobot.updateEnergy(-((otherRobot.
-	                    				getRamDamage() - otherRobot.
-	                    				getRamAttack()) / otherRobot.
-	                    				getRobotArmor()));
-	                    	}
-	                    // This robot has armor
-	                    } else if(abs(getRobotArmor() - 1.0) > 0.00001 &&
-	                    		abs(otherRobot.getRobotArmor()-1.0) < 0.00001){
-	                    	if(atFault) {
-	                    		this.updateEnergy(-((getRamDamage() - 
-	                    				getRamAttack()) / getRobotArmor()));
-	                    		otherRobot.updateEnergy(-(otherRobot.
-	                    				getRamDamage()));
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-(getRamDamage() / 
-	                    				getRobotArmor()));
-	                    		otherRobot.updateEnergy(-(otherRobot.
-	                    				getRamDamage() - otherRobot.
-	                    				getRamAttack()));
-	                    	}
-	                    // Both robots must have armor
+	                    } else if (getRobotArmor() - 1.0 < 0.00001) {
+	                        this.updateEnergy(-(this.getRamDamage()));
 	                    } else {
-	                    	if(atFault) {
-	                    		this.updateEnergy(-((getRamDamage() - 
-	                    				getRamAttack()) / getRobotArmor()));
-	                    		otherRobot.updateEnergy(-(otherRobot.
-	                    				getRamDamage() / otherRobot.
-	                    				getRobotArmor()));
-	                    	}
-	                    	else {
-	                    		this.updateEnergy(-(getRamDamage() / 
-	                    				getRobotArmor()));
-	                    		otherRobot.updateEnergy(-((otherRobot.
-	                    				getRamDamage() - otherRobot.
-	                    				getRamAttack()) / otherRobot.
-	                    				getRobotArmor()));
-	                    	}
+	                        this.updateEnergy(-(this.getRamDamage()
+	                                            * 1 / this.getRobotArmor()));
 	                    }
+	                    
 	                    
 	                    // Other Robot
 	                    if (otherRobot.isBotzilla()) {
 	                    	//If the other robot is botzilla then this robot dies instantly
 	                    	updateEnergy(-(energy + 1));
+	                    } else if (otherRobot.getRobotArmor() - 1.0 < 0.00001) {
+							otherRobot.updateEnergy(-(otherRobot.getRamDamage()));
+	                    } else {
+	                        otherRobot.updateEnergy(-(otherRobot.getRamDamage()
+	                                                  / 1 / otherRobot.getRobotArmor()));
 	                    }
                     }                    
 					

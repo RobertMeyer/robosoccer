@@ -1,8 +1,10 @@
 package net.sf.robocode.test.equipment;
 
-import net.sf.robocode.test.helpers.RobocodeTestBed;
-
 import org.junit.Test;
+import net.sf.robocode.test.helpers.Assert;
+import net.sf.robocode.test.helpers.RobocodeTestBed;
+import robocode.control.events.TurnEndedEvent;
+import robocode.equipment.EquipmentSlot;
 
 /**
  *A simple test that the sound paths are getting passes though the system

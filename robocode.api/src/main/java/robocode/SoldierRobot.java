@@ -7,8 +7,10 @@
  *******************************************************************************/
 package robocode;
 
+import robocode.Robot;
 import robocode.robotinterfaces.ISoldierEvents;
 import robocode.robotinterfaces.ISoldierRobot;
+import java.awt.Color;
 
 /**
  * An extension of the basic robot class, containing methods for behaviours
@@ -31,7 +33,6 @@ public class SoldierRobot extends Robot implements ISoldierRobot, ISoldierEvents
 	protected static final int TAUNT = 7;
 	
 	protected double power = 1.5;
-	@SuppressWarnings("unused")
 	private int tactic = 0;
 	
 	public void receiveCommand(CommanderEvent e) {
