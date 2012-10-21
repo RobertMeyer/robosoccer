@@ -355,6 +355,12 @@ public class ImageManager implements IImageManager {
         }
     }
 
+    /**
+     * Gets the image to be used as the teleporter in the form
+     * of a RenderImage.
+     * @returns RenderImage - object image
+     */
+    
 	public RenderImage getTeleporterRenderImage() {
 		if (teleporterImage == null) {
 			teleporterImage = new RenderImage(getImage("/net/sf/robocode/ui/images/portal.png"));
@@ -362,6 +368,11 @@ public class ImageManager implements IImageManager {
 		return teleporterImage;
 	}
 	
+    /**
+     * Gets the image to be used as the blackhole in the form
+     * of a RenderImage.
+     * @returns RenderImage - object image
+     */
 	public RenderImage getBlackHoleRenderImage(int size){
 		if(blackHoleImages == null){
 			blackHoleImages = new RenderImage[3];

@@ -308,6 +308,10 @@ public class BulletPeer {
 		
 		}
 		*/
+		//Above code teleports bullets at random angles,
+		//abandoned due to undesired performance
+		
+		//do nothing...
 	}
 	
 	private void updateBoundingBox() {

@@ -936,6 +936,13 @@ public class BattleView extends Canvas {
 		return robotGraphics[robotIndex];
 	}
 
+	/**
+	 * draws the teleporters.
+	 * It collects the x and y variable and assigned a picture
+	 * to that location.
+	 * @param g
+	 * @param snapShot
+	 */
     private void drawTeleporters(Graphics2D g, ITurnSnapshot snapShot) {
 		final Shape savedClip = g.getClip();
 
@@ -945,40 +952,29 @@ public class BattleView extends Canvas {
 		for (ITeleporterSnapshot teleportSnapshot : snapShot.getTeleporters()) {
 			x1 = teleportSnapshot.getPortal1X();
 			y1 = teleportSnapshot.getPortal1Y();
-			//if thise teleport is a blackhole draw it, else draw the second teleport
+			//if this teleport is a blackhole draw it, else draw the second teleport
 			if (teleportSnapshot.isBlackHole()) {
-				/*g.setColor(Color.BLACK);
-			    Shape portal1 = new Ellipse2D.Double(x1-teleportSnapshot.getWidth()/2, battleField.getHeight() - y1-teleportSnapshot.getHeight()/2, 
-			    		teleportSnapshot.getWidth(), teleportSnapshot.getHeight());
-			    g.fill(portal1);
-			    */
 			    int size = (int)teleportSnapshot.getWidth()/40-1;
+			    //sets the render image for the black hole and applies it 
+			    //appropriately
 			    RenderImage blackHoleRenderImage = imageManager.getBlackHoleRenderImage(size);
 			    AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight()-y1);
 			    blackHoleRenderImage.setTransform(at);
 			    blackHoleRenderImage.paint(g);
 			} else {
-				
+				//get the x and y values for portal 2
 				x2 = teleportSnapshot.getPortal2X();
 				y2 = teleportSnapshot.getPortal2Y();
-				
+				//collect the image
 				RenderImage teleporterRenderImage = imageManager.getTeleporterRenderImage();
 				AffineTransform at = AffineTransform.getTranslateInstance(x1, battleField.getHeight() - y1);
 				AffineTransform at2 = AffineTransform.getTranslateInstance(x2, battleField.getHeight() - y2);
-				    
+				//transform the area into the picture
 				teleporterRenderImage.setTransform(at);
 				teleporterRenderImage.paint(g);
 				teleporterRenderImage.setTransform(at2);
 				teleporterRenderImage.paint(g);
-				
-				//lindon's ellipse stuff
-				/*g.setColor(Color.GREEN);
-			    Shape portal1 = new Ellipse2D.Double(x1-20, battleField.getHeight() - y1-20, 40, 40);
-			    Shape portal2 = new Ellipse2D.Double(x2-20, battleField.getHeight()- y2-20, 40, 40);
-			    
-				g.fill(portal1);
-				g.fill(portal2);
-				*/
+
 				 
 			}
 			
