@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -35,7 +34,6 @@ import net.sf.robocode.ui.IFullScreenListener;
  * @author Lee Symes 42636267
  */
 public class FullScreenUtil {
-// TODO: Implement this as a weak reference to allow for Garbage Collection
 
     private static final Map<JFrame, WindowInformation> frameInformation = new WeakHashMap<JFrame, WindowInformation>();
     private static final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
