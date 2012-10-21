@@ -573,6 +573,8 @@ public class BattleView extends Canvas {
             
             // Draw all teleporters
             drawTeleporters(g, snapShot);
+            
+            drawZLevels(g, snapShot);
         }
 
 		// Restore the graphics state

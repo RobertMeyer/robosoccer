@@ -11,6 +11,7 @@ import net.sf.robocode.battle.events.BattleEventDispatcher;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.ObstaclePeer;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.ZLevelPeer;
 import net.sf.robocode.core.Container;
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.repository.IRobotRepositoryItem;
@@ -36,6 +37,7 @@ public class ObstacleModeTest {
 	private List<RobotPeer> robots;
 	private RobotSpecification spec;
 	private RobotSpecification ospec;
+	private List<ZLevelPeer> zLev;
 	
 	/**
 	 * Sets up the required variables for testing
@@ -201,7 +203,7 @@ public class ObstacleModeTest {
 		
 		//Update the state of the robot to see if collision occurred
 		robots.get(0).performLoadCommands();
-		robots.get(0).performMove(robots, new ArrayList<ItemDrop>(), obstacles, 0);
+		robots.get(0).performMove(robots, new ArrayList<ItemDrop>(), obstacles, zLev, 0);
 		
 		assertEquals("Robot did not detect an obstacle collision", robots.get(0).getState().toString(),
 				"HIT_WALL");
