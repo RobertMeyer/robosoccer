@@ -462,6 +462,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return false;
 		}
 	}
+		
+	public MinionProxy getMinionParent(){
+		return this.minionParent;
+	}
 
 	public void print(Throwable ex) {
 		println(ex.toString());
@@ -1092,6 +1096,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		} else if (statics.isFreezeRobot()) {
 			energy = 300;
 			attributes.get().put(RobotAttribute.VELOCITY, 0.40);
+		} else if (statics.isMinion()) {
+			//TODO: Make minions use specified start energy.
+			energy = 25;
 		} else {
 			energy = getStartingEnergy();
 		}
@@ -2282,7 +2289,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 						return;
 					}
 					
-					if(minionList.contains(otherRobot) || (this.isMinion() && otherRobot.isParent(this))) {
+					if(minionList.contains(otherRobot) || (this.isMinion() && otherRobot.isParent(this)) 
+							|| (this.isMinion() && otherRobot.isMinion() && 
+									this.getMinionParent().equals(otherRobot.getMinionParent()))) {
 						return;
 					}
 
