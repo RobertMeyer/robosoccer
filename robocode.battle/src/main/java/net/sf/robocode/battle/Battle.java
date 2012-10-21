@@ -1181,22 +1181,23 @@ public class Battle extends BaseBattle {
         }
     }
 
+    /**
+     * Function breaks down the processes involved with
+     * creating teleporters at the beginning of the round
+     * 
+     */
 	private void createTeleporters(){
 		//do nothing if teleporters are not enabled
 		if (!teleporterEnabler.isTeleportersEnabled())
 			return;
-		
-		//randomise some x and y co-ordinates that are away from the walls by 5
+		//randomise some x and y co-ordinates that are away from the walls
 		double x1 = Math.random()*(width-80)+40;
 		double x2 = Math.random()*(width-80)+40;
 		double y1 = Math.random()*(height-80)+40;
 		double y2 = Math.random()*(height-80)+40;
-		
-		
 		//add a new TeleporterPeer
 		teleporters.add(new TeleporterPeer(x1,y1,x2,y2));
 	}
-	
 	
 	private void createEffectAreas(){
 		int tileWidth = 64;

@@ -2,21 +2,18 @@ package net.sf.robocode.battle.peer;
 
 import net.sf.robocode.battle.BoundingRectangle;
 import net.sf.robocode.teleporters.ITeleporter;
-import net.sf.robocode.teleporters.ITeleporter.Portal;
+
 
 public class TeleporterPeer implements ITeleporter {
 	
 	private double width;
 	private double height;
-	
-	private boolean blackHole;
-	
-	private double maxHoleSize = 120;
-	
 	private double x1;
 	private double y1;
 	private double x2;
 	private double y2;
+	private double maxHoleSize = 120;
+	private boolean blackHole;
 	
 	public TeleporterPeer(double x1, double y1, double x2, double y2) {
 		width = 40;
@@ -28,9 +25,13 @@ public class TeleporterPeer implements ITeleporter {
 			blackHole = true;
 		}
 	}
-
 	
-	
+	/**
+	 * Function sets both x and y coordinates of the specified portal
+	 * @param double x - x-coordinate of the portal
+	 * @param double y - y-coordinate of the portal
+	 * @param Portal target - select the specified portal
+	 */
 	public void setXY(double x, double y, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			x1 = x;
@@ -41,6 +42,11 @@ public class TeleporterPeer implements ITeleporter {
 		}
 	}
 
+	/**
+	 * Function sets the X-coordinate of the specified portal
+	 * @param Portal target - select the specified portal
+	 * @param double x - x-coordinate of the portal
+	 */
 	public void setX(double x, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			x1 = x;
@@ -49,6 +55,10 @@ public class TeleporterPeer implements ITeleporter {
 		}
 	}
 
+	/**
+	 * Function sets the Y-coordinate of the specified portal
+	 * @param Portal target - select the specified portal
+	 */
 	public void setY(double y, Portal target) {
 		if (target == Portal.PORTAL1) {		
 			y1 = y;
@@ -58,6 +68,10 @@ public class TeleporterPeer implements ITeleporter {
 	}
 
 	@Override
+	/**
+	 * Function returns the X-coordinate of the specified portal
+	 * @param Portal target - select the specified portal
+	 */
 	public double getX(Portal target) {
 		if (target == Portal.PORTAL1) {
 			return x1;
@@ -67,6 +81,12 @@ public class TeleporterPeer implements ITeleporter {
 		return 0;
 	}
 
+	
+	/**
+	 * Function returns the Y-coordinate of the specified portal
+	 * @param Portal target - select the specified portal
+	 * @return double y-position
+	 */
 	public double getY(Portal target) {
 		if (target == Portal.PORTAL1) {
 			return y1;
@@ -76,8 +96,14 @@ public class TeleporterPeer implements ITeleporter {
 		return 0;
 	}
 	
-
-	
+	/**
+	 * Function is called by RobotPeer to get the java geom circle
+	 * object. This object can be used to test intersections between
+	 * different geometry objects
+	 * @param target - choose whether it is the circle of the
+	 * 		first or second portal
+	 * @Return java geom Ellipse object
+	 */
 	public java.awt.geom.Ellipse2D.Float getCircle(Portal target){
 		java.awt.geom.Ellipse2D.Float circle = new java.awt.geom.Ellipse2D.Float();
 		if (target == Portal.PORTAL1) {
@@ -87,6 +113,14 @@ public class TeleporterPeer implements ITeleporter {
 		}
 		return circle;
 	}
+	
+	/**
+	 * Function getBoundingBox generates the BoundingRectangle object
+	 * for the parameter target.
+	 * @param target - choose whether it is the circle of the
+	 * 		first or second portal
+	 * @return BoundingRectangle object for the specified target
+	 */
 	
 	public BoundingRectangle getBoundingBox(Portal target) {
 		BoundingRectangle rect = new BoundingRectangle();
@@ -98,17 +132,13 @@ public class TeleporterPeer implements ITeleporter {
 		return rect;
 	}
 
-	/* Function is called by RobotPeer to test for teleporter
+	/** Function is called by RobotPeer to test for teleporter
 	 * collision on the pair of teleporters.
 	 * 
-	 * Returns (int x, int y)
-	 * 		- x,y > 0 if there is a collision,
-	 * which is the corresponding x and y position for the robot
-	 * to teleport to.
+	 * @Returns (int x, int y) the corresponding x and y position 
+	 * for the robot to teleport to.
 	 * 		- x,y = -1 if there is no collision
 	 * 		- x,y = -2 if the 
-	 * 		
-	 * 
 	 */
 	
 	public double[] getCollisionReaction(net.sf.robocode.battle.item.BoundingRectangle bound){
@@ -130,10 +160,21 @@ public class TeleporterPeer implements ITeleporter {
 		return a;
 	}
 	
+	
+	/**
+	 * Function determines whether the portal is a
+	 * black hole or not
+	 * @return boolean - true if black hole
+	 */
 	public boolean isBlackHole() {
 		return blackHole;
 	}
 	
+	/**
+	 * Function grows the black hole size up to the
+	 * maximum size to avoid getting gigantic black
+	 * holes when robots collide with them
+	 */
 	public void updateBlackHoleSize() {
 		if (!blackHole) {
 			return;
@@ -142,10 +183,18 @@ public class TeleporterPeer implements ITeleporter {
 		height = Math.min(height+40,maxHoleSize);
 	}
 	
+	/**
+	 * Function gets the height of the portal
+	 * @return double - height of portal
+	 */
 	public double getHeight() {
 		return height;
 	}
 	
+	/**
+	 * Function gets the width of the portal
+	 * @return double - width of portal
+	 */
 	public double getWidth() {
 		return width;
 	}
