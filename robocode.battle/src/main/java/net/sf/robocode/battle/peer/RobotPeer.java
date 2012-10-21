@@ -2401,6 +2401,13 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 	
+	/**
+	 * Scans the items on the field and returns a ScannedItemEvent to the robot
+	 * if an item is scanned.
+	 * 
+	 * @param lastRadarHeading the heading of the robot's radar
+	 * @param items the list of items on the battlefield
+	 */
 	protected void scanItems(double lastRadarHeading, List<ItemDrop> items) {
 		double startAngle = lastRadarHeading;
 		double scanRadians = getRadarHeading() - startAngle;
@@ -2431,7 +2438,8 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 					double angle = atan2(dx, dy);
 					double dist = Math.hypot(dx, dy);
 				
-					final ScannedItemEvent event = new ScannedItemEvent(item.getName(), "", dist, normalRelativeAngle(angle - getBodyHeading()), item.getXLocation(), item.getYLocation());
+					final ScannedItemEvent event = new ScannedItemEvent(item.getName(), dist, 
+							normalRelativeAngle(angle - getBodyHeading()), item.getXLocation(), item.getYLocation());
 				
 					addEvent(event);
 				}
@@ -2441,6 +2449,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	/**
 	 * Ensures item checked is actually on the battlefield.
+	 * 
 	 * @param item the item to be checked
 	 * @return {@code true} if the item is on the field; {@code false} otherwise
 	 */
