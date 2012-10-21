@@ -137,6 +137,12 @@ Ram Test Small: BODY
 RAM_ATTACK = -40
 RAM_DEFENSE = -40
 
+ImageEquipTest1 : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/turret.png
+
+ImageEquipTest2 : GUN
+IMAGE_PATH = /net/sf/robocode/ui/images/twinturret.png
+
 InvalidFileTest : GUN
 SOUND_PATH = /net/sf/robocode/sound/sounds/InvalidFileTest.jpg
 
@@ -148,4 +154,3 @@ SOUND_PATH = Test2
 
 Test : GUN
 SOUND_PATH = /net/sf/robocode/sound/sounds/pewpew.wav
-
