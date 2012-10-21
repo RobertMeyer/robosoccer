@@ -294,7 +294,7 @@ public class SoccerMode extends ClassicMode implements IMode {
 
 		scoreTeam2 = new RenderString("score1", ("Red Team: " + (int) team2
 				.getStatistics().getTotalScore()));
-		scoreTeam2.setTranslate(fieldWidth - 85, 50);
+		scoreTeam2.setTranslate(fieldWidth - 100, 50);
 		scoreTeam2.setColour(Color.WHITE);
 		objs.add(scoreTeam2);
 		return objs;
