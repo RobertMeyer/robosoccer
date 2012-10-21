@@ -227,8 +227,10 @@ public class NewMinionsModeTab extends JPanel{
 		enableMinion = new JCheckBox("Enable Minions");
 		enableMinion.setBounds(12, 24, 117, 20);
 		enableMinion.setHorizontalAlignment(SwingConstants.LEFT);
+		enableMinion.setSelected(MinionData.getMinionsEnabled());
 		enableMinion.addChangeListener(new changeHandler());
 		enableMinion.setRolloverEnabled(true);
+		
 		globalSetting.setBorder(getTitledBorder("Global Settings"));
 		globalSetting.setLayout(null);
 		globalSetting.add(enableMinion);
@@ -237,7 +239,9 @@ public class NewMinionsModeTab extends JPanel{
 		insaneMode = new JCheckBox("Insane Mode");
 		insaneMode.setToolTipText("Minions cost no power to spawn.");
 		insaneMode.setBounds(12, 48, 87, 23);
+		insaneMode.setSelected(MinionData.getInsaneMode());
 		insaneMode.addChangeListener(new changeHandler());
+		
 		globalSetting.add(insaneMode);
 	}
 

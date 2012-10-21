@@ -456,6 +456,8 @@ public class Battle extends BaseBattle {
 		if (nanoWait == 0) {
 			nanoWait = 1;
 		}
+		
+		itemControl = new ItemController();
 	}
 
 	@Override
@@ -489,10 +491,6 @@ public class Battle extends BaseBattle {
 
 		//reset currentTurn at start of a round
 		currentTurn = 0;
-
-		/*--ItemController--*/
-		itemControl = new ItemController();
-		itemControl.updateRobots(peers.getRobots());
 
 		// At this point the unsafe loader thread will now set itself to wait
 		// for a notify
@@ -543,6 +541,21 @@ public class Battle extends BaseBattle {
 		inactiveTurnCount = 0;
 
 		/*--ItemController--*/
+		/*--Remove any item sprites from previous rounds--*/
+		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
+		for (ItemDrop item : itemControl.getItems()){
+			
+			for (IRenderable ob : getCustomObject()){
+				if (item.getName().equals(ob.getName())){
+					imagesDestroyed.add(ob);					
+				}
+			}
+			for (IRenderable ob : imagesDestroyed){
+				getCustomObject().remove(ob);
+			}
+		}
+		/*--Reset Item Controller--*/
+		itemControl = new ItemController();
 		itemControl.updateRobots(peers.getRobots());
 
 		// Put list of robots into robotList
