@@ -1676,11 +1676,6 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 	}
 	
-	protected void checkBoundryCollision() {
-		if (this.getBattleFieldHeight() != null) {
-		}
-	}
-	
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?
 	public void addEvent(Event event) {
 		if (isRunning()) {
