@@ -147,4 +147,11 @@ public class TrackEditor extends JComponent {
 		}
 		return true;
 	}
+
+	public void fill(Color color) {
+		graphics2D.setPaint(color);
+		graphics2D.fillRect(0, 0, getSize().width, getSize().height);
+		graphics2D.setPaint(Color.black);
+		repaint();
+	}
 }
