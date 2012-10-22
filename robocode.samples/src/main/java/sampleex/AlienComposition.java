@@ -124,8 +124,6 @@ public class AlienComposition implements IBasicRobot {
         public void onWin(WinEvent e) {
         }
 
-
-
 		public void onLandmineHit(LandmineHitEvent event) {
 
 			// TODO Auto-generated method stub
@@ -139,7 +137,6 @@ public class AlienComposition implements IBasicRobot {
 		@Override
 		public void onWaypointPassed(WaypointPassedEvent event) {
 			// TODO Auto-generated method stub
-			
 		}
     }
 }

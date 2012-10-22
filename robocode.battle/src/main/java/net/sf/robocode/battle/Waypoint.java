@@ -12,7 +12,7 @@ package net.sf.robocode.battle;
 
 import java.util.*;
 
-public class Waypoint {
+public class Waypoint implements IWaypoint{
 	ArrayList<SingleWaypoint> wayPoints = new ArrayList<SingleWaypoint>();
 
 	/**
@@ -22,7 +22,7 @@ public class Waypoint {
 	 * @param x The x co-ordinate of the first SingleWaypoint.
 	 * @param y The y co-ordinate of the first SingleWaypoint.
 	 */
-	Waypoint(double x, double y){
+	public Waypoint(double x, double y){
 		wayPoints.add(new SingleWaypoint(x, y));
 	}
 
@@ -36,6 +36,14 @@ public class Waypoint {
 
 	public double getSingleWaypointY(int SingleWaypointIndex){
 		return wayPoints.get(SingleWaypointIndex).getYLocation();
+	}
+	
+	public void popSingleWaypoint(int SingleWaypointIndex){
+		wayPoints.remove(SingleWaypointIndex);
+	}
+	
+	public int getNoWaypoints(){
+		return wayPoints.size();
 	}
 
 	//class used to store x & y co-ordinates of each waypoint.

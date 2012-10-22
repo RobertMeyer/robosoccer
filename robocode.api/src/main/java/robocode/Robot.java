@@ -1071,6 +1071,11 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     @Override
     public void onScannedRobot(ScannedRobotEvent event) {
     }
+
+    @Override
+	public void onWaypointPassed(WaypointPassedEvent event) {	
+	}
+
     
     /**
      * {@inheritDoc}
@@ -1927,12 +1932,8 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      */
     @Override
     public void onStatus(StatusEvent e) {
-    }
 
-	@Override
-	public void onWaypointPassed(WaypointPassedEvent event) {
-		
-	}
+    }
 	
 	@Override
 	public void onHitByLandmine(HitByLandmineEvent event) {
@@ -2039,5 +2040,4 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
 		
 		
 	}
-
 }

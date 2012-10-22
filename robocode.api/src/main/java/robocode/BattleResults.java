@@ -40,11 +40,15 @@ public class BattleResults implements java.io.Serializable,
     protected double bulletDamageBonus;
     protected double ramDamage;
     protected double ramDamageBonus;
+
+    //Team-Telos addition
+    protected double flagScore;
+    protected double raceScore;
+
     protected int firsts;
     protected int seconds;
     protected int thirds;
-    //Team-Telos addition
-    protected double flagScore;
+
     protected int kills;
 
     /**
@@ -60,10 +64,14 @@ public class BattleResults implements java.io.Serializable,
      * @param ramDamage         the ramming damage for the robot in the battle.
      * @param ramDamageBonus    the ramming damage bonus for the robot in the battle.
      * @param flagScore			the flag score for the robot in the battle.
+     * @param totalRaceScore 
      * @param firsts            the number of rounds this robot placed first.
      * @param seconds           the number of rounds this robot placed second.
+<<<<<<< HEAD
      * @param thirds            the number of rounds this robot placed third.
      * @param kills            	the number of robots this robot killed.
+=======
+>>>>>>> Team-gogorobotracer
      */
     public BattleResults(
             String teamLeaderName,
@@ -76,6 +84,7 @@ public class BattleResults implements java.io.Serializable,
             double ramDamage,
             double ramDamageBonus,
             double flagScore,
+            double raceScore,
             int firsts,
             int seconds,
             int thirds,
@@ -90,6 +99,7 @@ public class BattleResults implements java.io.Serializable,
         this.ramDamage = ramDamage;
         this.ramDamageBonus = ramDamageBonus;
         this.flagScore = flagScore;
+        this.raceScore = raceScore;
         this.firsts = firsts;
         this.seconds = seconds;
         this.thirds = thirds;
@@ -188,9 +198,14 @@ public class BattleResults implements java.io.Serializable,
         return (int) (flagScore + 0.5);
     }
     
+
 	public int getKills() {
 		return kills;
 	}
+
+    public int getRaceScore(){
+    	return (int)(raceScore + 0.5);
+    }
 
     /**
      * Returns the number of rounds this robot placed first in the battle.
@@ -306,14 +321,16 @@ public class BattleResults implements java.io.Serializable,
             double ramDamageBonus = buffer.getDouble();
             //Team-Telos addition
             double flagScore = buffer.getDouble();
+            double raceScore = buffer.getDouble();
             int firsts = buffer.getInt();
             int seconds = buffer.getInt();
             int thirds = buffer.getInt();
             int kills = buffer.getInt();
 
             return new BattleResults(teamLeaderName, rank, score, survival, lastSurvivorBonus, bulletDamage,
-                                     bulletDamageBonus, ramDamage, ramDamageBonus, flagScore, firsts, seconds, thirds, kills);
+                 bulletDamageBonus, ramDamage, ramDamageBonus, flagScore, raceScore,firsts, seconds, thirds, kills);
             
+
         }
     }
 }

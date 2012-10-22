@@ -220,6 +220,12 @@ public class AdvancedRobotProxy extends StandardRobotProxy implements
         return eventManager.getScannedRobotEvents();
     }
 
+    @Override
+    public List<WaypointPassedEvent> getWaypointPassedEvents() {
+        getCall();
+        return eventManager.getWaypointPasedEvents();
+    }
+    
     // data
     @Override
     public File getDataDirectory() {

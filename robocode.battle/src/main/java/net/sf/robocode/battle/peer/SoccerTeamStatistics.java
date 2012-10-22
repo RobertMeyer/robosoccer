@@ -52,9 +52,9 @@ public class SoccerTeamStatistics extends TeamStatistics {
 	 * @return a BattleResults representation of the final team results.
 	 */
 	@Override
-	public BattleResults getFinalResults() {
-		return new BattleResults(teamPeer.getName(), rank, getTotalScore(), 0,
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	}
+    public BattleResults getFinalResults() {
+        return new BattleResults(teamPeer.getName(), rank, getTotalScore(), 0, 0, 0, 0, 0, 
+        		0, 0, 0, 0, 0, 0, 0);
+    }
 
 }
