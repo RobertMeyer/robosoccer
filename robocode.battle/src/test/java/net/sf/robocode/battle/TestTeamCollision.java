@@ -24,7 +24,7 @@ public class TestTeamCollision {
 		FriendlyFireTracker BulletState = Mockito.mock(FriendlyFireTracker.class);
 		
 		//mocks BulletPeer class
-		BulletPeer b = Mockito.mock(BulletPeer.class);
+		RobotPeer b = Mockito.mock(RobotPeer.class);
 		//mocks battle class
 		Battle battle = Mockito.mock(Battle.class);
 		
@@ -41,7 +41,7 @@ public class TestTeamCollision {
 		public void TestCollision(){
 			//mocks a classic battle
 			Mockito.when(battle.getBattleMode()).thenReturn(new ClassicMode());
-			Mockito.when(FriendlyFireTracker.enableFriendlyfire).thenReturn(true);
+			Mockito.when(TeamCollisionTracker.enableteamCollision).thenReturn(true);
 			assertEquals("Team Collision Failed", 100, (int)TeamRobotTwo.getEnergy());
 		}
 
