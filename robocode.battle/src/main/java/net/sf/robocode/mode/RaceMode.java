@@ -168,11 +168,6 @@ public class RaceMode extends ClassicMode{
     public BattleResultsTableModel getCustomResultsTable() {
       	return resultsTable;
     }
-    
-    @Override
-    public boolean isRoundOver(int endTimer, int time) {
-		return (endTimer > 5 * time);
-	}
 	
 	@Override
 	public String toString(){
