@@ -990,7 +990,7 @@ public class Battle extends BaseBattle {
 
 		// Move all bots
 		for (RobotPeer robotPeer : getRobotsAtRandom()) {
-			robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zLevels, zapEnergy);
+			robotPeer.performMove(getRobotsAtRandom(), items, obstacles, zLevels, zapEnergy, teleporters);
 			robotPeer.spawnMinions();
 		}
 
