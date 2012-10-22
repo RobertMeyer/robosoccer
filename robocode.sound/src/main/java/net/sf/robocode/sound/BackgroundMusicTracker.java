@@ -31,7 +31,6 @@ public class BackgroundMusicTracker {
 		
 		 if(music){
 			 try{ 
-				//AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BackgroundMusicTracker().getClass().getClassLoader().getResourceAsStream("/net/sf/robocode/sound/sounds/siren.wav"));
 				AudioInputStream audioIn = AudioSystem.getAudioInputStream(new BackgroundMusicTracker().getClass().getClassLoader().getResourceAsStream("./net/sf/robocode/sound/sounds/siren.wav"));
 				clip = AudioSystem.getClip(); 
          		clip.open(audioIn); 
