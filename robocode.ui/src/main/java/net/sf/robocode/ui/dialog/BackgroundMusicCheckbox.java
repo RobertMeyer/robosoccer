@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 
 import net.sf.robocode.battle.BattleProperties;
-import net.sf.robocode.sound.BackgroundMusicTracker; //PREVIOUSLY BROKE THE MVN INSTALL
+//import net.sf.robocode.sound.BackgroundMusicTracker; //PREVIOUSLY BROKE THE MVN INSTALL
 
 public class BackgroundMusicCheckbox extends JCheckBox{
 	private static final long serialVersionUID = 1L;
@@ -19,8 +19,8 @@ public class BackgroundMusicCheckbox extends JCheckBox{
             public void actionPerformed(ActionEvent actionEvent) {
               BackgroundMusicCheckbox mbox = (BackgroundMusicCheckbox) actionEvent.getSource();
               //BackgroundMusicTracker b = new BackgroundMusicTracker(); 
-              BackgroundMusicTracker.enableMusic(mbox.getModel().isSelected());
-              BackgroundMusicTracker.updateStatus();
+             //BackgroundMusicTracker.enableMusic(mbox.getModel().isSelected());
+              //BackgroundMusicTracker.updateStatus();
             }
           };	
         this.addActionListener(actionListener);   
