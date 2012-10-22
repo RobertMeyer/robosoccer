@@ -704,6 +704,9 @@ public interface IAdvancedRobotPeer extends IStandardRobotPeer {
      * @see #getAllEvents()
      */
     List<ScannedRobotEvent> getScannedRobotEvents();
+    
+    
+	List<WaypointPassedEvent> getWaypointPassedEvents();
 
     /**
      * Returns a file representing a data directory for the robot, which can be

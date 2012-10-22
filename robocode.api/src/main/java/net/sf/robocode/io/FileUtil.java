@@ -20,6 +20,8 @@ package net.sf.robocode.io;
 import java.io.*;
 import java.util.Scanner;
 
+import java.net.URL;
+
 import static net.sf.robocode.io.Logger.logError;
 
 /**
@@ -208,6 +210,36 @@ public class FileUtil {
         }
         return fileName.substring(0, lastdot);
     }
+    
+    
+    /**
+     * Returns a list of file ending with the specified extension
+     * @param dir The directory of the files
+     * @param ext The wanted extension.
+     * @return A list of files with specified extension
+     * 		   If none found or i/o error occurs method returns null;
+     */
+    public static File[] getFileList(URL dir, final String ext) {
+    	String path = dir.getPath();
+    	File Directory = new File(path);
+    	// Check if Directory is a directory.
+        if (Directory.isDirectory()) {
+        	// Initialise interface filenameFilter and override the method accept 
+        	// to specify wanted file extension.
+        	FilenameFilter filefilter = new FilenameFilter() {
+            	public boolean accept(File dir, String name) {
+            		return name.endsWith(ext);
+             	}
+            };
+            // return a list of file names
+            return Directory.listFiles(filefilter);
+            
+        } else {
+        	// if dir is not a directory log error.
+        	Logger.logError("Invalid Directory: " + dir);
+          return null;
+        }
+     }
 
     /**
      * Returns the directory containing the robots.

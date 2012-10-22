@@ -85,6 +85,9 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+
+import static java.lang.Math.*;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,12 +99,17 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.sf.robocode.battle.Battle;
 import net.sf.robocode.battle.FreezeRobotDeath;
 import net.sf.robocode.battle.IRenderable;
+
 import net.sf.robocode.battle.KillFreezeHeatRobots;
 import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.TeamCollisionTracker;
+import net.sf.robocode.battle.Waypoint;
 import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
+
+import net.sf.robocode.battle.TrackField;
+
 import net.sf.robocode.host.IHostManager;
 import net.sf.robocode.host.RobotStatics;
 import net.sf.robocode.host.events.EventManager;
@@ -137,6 +145,7 @@ import robocode.Rules;
 import robocode.ScannedItemEvent;
 import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
+import robocode.WaypointPassedEvent;
 import robocode.WinEvent;
 import robocode.control.RobotSpecification;
 import robocode.control.snapshot.BulletState;
@@ -258,11 +267,18 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	// The number of turns the robot is frozen for, 0 if not frozen
 	protected int robotFrozen = 0;
 	
+
 	// The same as robotFrozen. Except it doesn't get set to 0 when a robot melts itself
 	// This is so when a robots melts others still see it as frozen.
 	// Just another advantage to melting.
 	protected int seenAsFrozen = 0;
-	
+
+	//raceMode int
+	protected int currentWaypointIndex = 0;
+	protected int currentLap = 0;
+	//TODO Remove below
+	Waypoint way = new Waypoint(42.2,44.3);
+
 	// The robot can use these to melt itself without losing energy
 	protected int meltCredit = 0;
 
@@ -343,6 +359,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.state = RobotState.ACTIVE;
 		this.battleRules = battle.getBattleRules();
 
+		//TODO Delete below
+		way.addSingleWaypoint(57.7, 160);
+		way.addSingleWaypoint(65.4, 500.2);
+		way.addSingleWaypoint(800.4, 77.3);
+		way.addSingleWaypoint(45.5, 44.3);
+		
 		if (team != null) {
 			team.add(this);
 		}
@@ -1273,6 +1295,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (isKsFrozen()) {
 			battle.addCustomObject(ksImages.get("freeze"));
 		}
+
+		if(battle.isRaceMode()){
+			//calculate the bearing to the waypoint relative to the robots Heading.
+	    	double dx = way.getSingleWaypointX(currentWaypointIndex)-x;
+			double dy = way.getSingleWaypointY(currentWaypointIndex)-y;
+
+	    	double relativeBearingtoWaypoint = (Math.PI/2)-atan2(dy, dx) - bodyHeading;
+	    	
+	    	//TODO (Waypoint)(battle.getBattleProperties().getTrackField().getWaypoints())
+	    	relativeBearingtoWaypoint = normalNearAbsoluteAngle(relativeBearingtoWaypoint);
+	    	double  distToWay = Math.hypot(dx, dy);
+	    	
+	    	//create the new WaypointPassedEvent	
+	    	addEvent(new WaypointPassedEvent(currentWaypointIndex, way.getSingleWaypointX(
+	    			currentWaypointIndex), way.getSingleWaypointY(currentWaypointIndex), 
+	    			relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
+		}
 	}
 
 
@@ -1408,7 +1447,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	}
 
 	@Override
-	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, List<ZLevelPeer> zLevels, double zapEnergy) {
+	public final void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, List<ZLevelPeer> zLevels, double zapEnergy, List<TeleporterPeer> teleporters) {
 
 		// Reset robot state to active if it is not dead
 		if (isDead()) {
@@ -1546,11 +1585,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		checkWallCollision();
 
 		// Now check for robot collision
-        checkObstacleCollision(obstacles);
+        checkObstacleCollision(obstacles);        
 
 		// Now check for robot collision
 		checkRobotCollision(robots);
 
+		//
+		checkTeleporterCollision(teleporters);
+		
 		// If Dispenser, dispense
 		if (isDispenser()) {
 			dispenseHealth(robots);
@@ -1601,6 +1643,11 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			addEvent(new RobotFrozenEvent(robotFrozen));
 			return;
 		}
+		
+        if(battle.isRaceMode()){
+        	checkWaypointPass(way, WIDTH*3.0 - 20); 
+        	//checkWaypointPass((Waypoint)(battle.getBattleProperties().getTrackField().getWaypoints()), WIDTH*3.0 - 20); 
+        }
 
 		turnedRadarWithGun = false;
 		// scan
@@ -1672,6 +1719,71 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	 * 
 	 * @param items the list of items on the battlefield
 	 */
+	// check for, add, remove items
+	private boolean checkForItem(ItemDrop item){
+		return this.itemsList.contains(item);
+	}
+
+	private void addItem(ItemDrop item){
+		this.itemsList.add(item);
+	}
+
+	private void removeItem(ItemDrop item){
+		this.itemsList.remove(item);
+	}
+
+
+	/**
+     * 
+     * @param waypoint The Maps Waypoint Object.
+     * @param waypointDistance The maximum perpendicular distance from the robot that a waypoint
+     * can be, and still be scanned.
+     */
+    private void checkWaypointPass(Waypoint waypoint, Double waypointDistance){
+    	
+    	
+    	//calculate the bearing to the waypoint relative to the robots Heading.
+    	double dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
+		double dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
+
+    	double relativeBearingtoWaypoint = (Math.PI/2)-atan2(dy, dx) - bodyHeading;
+    	
+    	relativeBearingtoWaypoint = normalNearAbsoluteAngle(relativeBearingtoWaypoint);
+
+    	if((Math.abs(relativeBearingtoWaypoint - (Math.PI/2)) < .03) || (Math.abs(relativeBearingtoWaypoint - 
+    			(3 * Math.PI / 2)) < .03)){
+    		double  distToWay = Math.hypot(dx, dy);
+
+    		//Check if the waypoint is at the maximum distance from the robot or closer.
+    		if(distToWay < waypointDistance){
+    			if(currentWaypointIndex != waypoint.getNoWaypoints() -1){
+    				currentWaypointIndex++;
+    				dx = waypoint.getSingleWaypointX(currentWaypointIndex)-x;
+    				dy = waypoint.getSingleWaypointY(currentWaypointIndex)-y;
+    				relativeBearingtoWaypoint = normalNearAbsoluteAngle((Math.PI/2)-atan2(dy, dx) - bodyHeading);
+    				
+    				//create the new WaypointPassedEvent	
+    				addEvent(new WaypointPassedEvent(currentWaypointIndex, waypoint.getSingleWaypointX(
+    					 currentWaypointIndex), waypoint.getSingleWaypointY(currentWaypointIndex), 
+    					 relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
+
+    			}else{
+    				currentLap++;
+    				if(currentLap == 1){//change to totalNOLAps
+    					statistics.scoreRace();
+    					battle.killRound();
+    				}else{
+    					//next lap reset robots wayPoints
+    					statistics.scoreRace();
+    					currentWaypointIndex = 0;
+    				}   				
+    			}
+    		}
+    	}
+    	
+    }
+    
+
 	private void checkItemCollision(List<ItemDrop> items){
 		List<ItemDrop> itemsDestroyed = new ArrayList<ItemDrop>();
 		List<IRenderable> imagesDestroyed = new ArrayList<IRenderable>();
@@ -1741,6 +1853,42 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		}
 	}
 
+	/**
+	 * Checks whether a robot has collided with a teleporter
+	 * @param teleporters list of teleporters
+	 */
+	private void checkTeleporterCollision(List<TeleporterPeer> teleporters){
+		BoundingRectangle bound = getBoundingBox();
+		double newHeading = getBodyHeading()+PI;
+		double[] xy;
+		double[] fail = {-1.0, -1.0};
+		double[] death = {-2.0, -2.0};
+		while(newHeading>(2*PI)){
+			newHeading -=(2*PI);
+		}
+		for(TeleporterPeer teleporter : teleporters){
+			xy = teleporter.getCollisionReaction(bound);
+			if(xy.equals(fail)){
+				
+			}else if(xy[0] == -2 && xy[1] == -2){
+				//if there is a collision with a black hole, update size, set
+				//the collision to true and kill the robot
+				teleporter.updateBlackHoleSize();
+				collidedWithBlackHole = true;
+				kill();
+				
+			}else if(xy[0]>0 && xy[1]>0){
+				this.x = xy[0]+(Math.sin(newHeading)*50);
+				this.y = xy[1]+(Math.cos(newHeading)*50);
+				this.bodyHeading = newHeading;
+				//update bounding box to prevent neverending teleportation
+				updateBoundingBox();
+				
+			}
+		}
+		
+	}
+	
 	protected void checkRobotCollision(List<RobotPeer> robots) {
 		inCollision = false;
 
@@ -2117,7 +2265,22 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			boundingBox.setRect(x - WIDTH / 2 + 2, y - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
 		}
 	}
-
+	
+	//TODO
+	protected void checkTerrainCollision() {
+		
+	}
+	
+	/**
+	 * Checks if robot is in the bounds of the track.
+	 */
+	protected void checkBoundaryCollision() {
+		if (battle.getBattleProperties().getTrackField() != null) {
+			if (!battle.getBattleProperties().getTrackField().onBounds(x,y)) {
+				setState(RobotState.HIT_WALL);
+			}
+		}
+	}
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?
 	public void addEvent(Event event) {
 		if (isRunning()) {
@@ -3293,6 +3456,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 	public double getFullEnergy() {
 		return fullEnergy;
+	}
+	
+	public int getCurrentWaypointIndex(){
+		return currentWaypointIndex;
 	}
 
 	public void removeImage(String image) {

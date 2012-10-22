@@ -522,4 +522,13 @@ public abstract class BaseBattle implements IBattle, Runnable {
             }
         }
     }
+    
+	 /**
+	  * Used to end a round when a Robot in Race Mode finishes the required number of laps.
+	  */
+    public void killRound(){
+    	roundOver = true;
+    	finalizeRound();
+    	cleanupRound();
+    }
 }

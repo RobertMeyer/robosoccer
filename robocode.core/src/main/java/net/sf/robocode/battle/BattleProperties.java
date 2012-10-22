@@ -59,6 +59,7 @@ public class BattleProperties implements Serializable {
 
 	private File equipmentFile;
 	private IMode battleMode;
+	private ITrackField trackField;
 	private Hashtable<String, Object> modeRules;
 	private Boolean effectAreaOn = false;
 
@@ -303,6 +304,21 @@ public class BattleProperties implements Serializable {
 	 */
 	public void setBattleMode(IMode mode) {
 		this.battleMode = mode;
+	}
+	
+	/**
+	 * Sets the Track for race mode
+	 * @param trackField THe current trackField
+	 */
+	public void setTrackField(ITrackField trackField) {
+		this.trackField = trackField;
+	}
+	
+	/**
+	 * Gets the TrackField to test boundries.
+	 */
+	public ITrackField getTrackField() {
+		return trackField;
 	}
 	
 	/**

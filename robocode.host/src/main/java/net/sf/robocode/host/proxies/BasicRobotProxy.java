@@ -258,7 +258,7 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     @Override
     public void setDeathEffect(int effect) {
     	setCall();
-    	if (!(effect > 6 || effect < 1)) {
+    	if (!(effect > 9 || effect < 1)) {
     		commands.setDeathEffect(effect);
     	}
     }

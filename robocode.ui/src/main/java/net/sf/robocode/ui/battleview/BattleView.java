@@ -1082,7 +1082,14 @@ public class BattleView extends Canvas {
 		}
 		return robotGraphics[robotIndex];
 	}
-
+	
+	/**
+	 * draws the teleporters.
+	 * It collects the x and y variable and assigned a picture
+	 * to that location.
+	 * @param g
+	 * @param snapShot
+	 */
     private void drawTeleporters(Graphics2D g, ITurnSnapshot snapShot) {
 		final Shape savedClip = g.getClip();
 

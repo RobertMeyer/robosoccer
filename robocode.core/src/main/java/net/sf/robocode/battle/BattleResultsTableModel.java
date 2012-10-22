@@ -109,6 +109,7 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		scoreTitles.put(12, "Flag Score");
 		scoreTitles.put(13, "Team Leader");
 		scoreTitles.put(14, "Kills");
+		scoreTitles.put(15, "Race Score");
 	}
 	
 	/**
@@ -229,6 +230,9 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		case 14:
 			/* Kills */
 			return statistics.getKills();
+		case 15:
+			/*Race Score*/
+			return "" + (int)(statistics.getRaceScore());
 		default:
 			return "";	
 		}
@@ -592,5 +596,21 @@ public class BattleResultsTableModel extends javax.swing.table.AbstractTableMode
 		return this;
 	}
 	
+	/**
+	 * Show the Race score
+	 * @param show
+	 */
+	public void showRaceScore(boolean show) {
+		this.showRaceScore("");
+	}
+	
+	/**
+	 * Show the Race score
+	 * @param show
+	 * @param title The new title
+	 */
+	public void showRaceScore(String title) {
+		this.updateColumn(14, title);
+	}
 	/*********** END MODE SPECIFIC OPTIONS THAT CAN BE ADDED AS SCORES ***********/
 }

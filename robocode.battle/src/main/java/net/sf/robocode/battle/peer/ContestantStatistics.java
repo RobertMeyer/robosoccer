@@ -73,5 +73,6 @@ public interface ContestantStatistics {
 
 	void incrementScore();
 
+	double getCurrentRaceScore();
 
 }
