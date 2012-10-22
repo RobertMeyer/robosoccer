@@ -4,11 +4,23 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+/**
+ * Music Tracker 
+ * This will be trigger by the check box listener,
+ * when boolean value is true, the Audio Input Stream will 
+ * get the resource sound file and play it repeat
+ * until the boolean value changed to false
+ * 
+ * @author Team MCJJ
+ * @author Eric
+ *
+ */
+
 public class BackgroundMusicTracker {
 	
 	public static boolean music = false;
 	public static Clip clip;
-	//public static BackgroundMusicTracker object = new BackgroundMusicTracker();
+	public static BackgroundMusicTracker object = new BackgroundMusicTracker();
 	
 	public static void enableMusic(boolean b) {
 		 music = b;

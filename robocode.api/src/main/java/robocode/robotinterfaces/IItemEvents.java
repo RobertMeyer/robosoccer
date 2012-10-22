@@ -1,6 +1,7 @@
 package robocode.robotinterfaces;
 
 import robocode.HitItemEvent;
+import robocode.ScannedItemEvent;
 
 /**
  * An event interface for receiving item robot events with an
@@ -20,4 +21,13 @@ public interface IItemEvents {
 	 * @see robocode.Event
 	 */
 	void onHitItem(HitItemEvent event);
+	
+	/**
+	 * This method is called whenever the robot scans an item.
+	 * 
+	 * @param event the scanned item event that occurred
+	 * @see robocode.ScannedItemEvent
+	 * @see robocode.Event
+	 */
+	void onScannedItem(ScannedItemEvent event);
 }

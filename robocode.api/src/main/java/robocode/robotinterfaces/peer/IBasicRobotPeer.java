@@ -17,6 +17,7 @@
  *******************************************************************************/
 package robocode.robotinterfaces.peer;
 
+
 import java.awt.*;
 import robocode.*;
 import robocode.Robot;
@@ -57,6 +58,14 @@ public interface IBasicRobotPeer {
      * @param power
      */
     Landmine setLandmine(double power);
+
+    /**
+     * Returns the tactic for the soldierBot to implement
+     * 
+     * @return the tactic the soldierBot should be implementing
+     */
+    int getTactic();
+
 
     /**
      * Returns the game time of the current round, where the time is equal to
@@ -110,11 +119,11 @@ public interface IBasicRobotPeer {
      * Returns the maximum velocity of the robot measured in pixels/turn.
      * <p/>
      * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
-     * * {@link RobotAttribute#SPEED}
+     * * {@link RobotAttribute#VELOCITY}
      * 
      * @return the maximum velocity of the robot in pixels/turn
      * @see Rules#MAX_VELOCITY
-     * @see RobotAttribute#SPEED
+     * @see RobotAttribute#VELOCITY
      */
     double getRealMaxVelocity();
     
@@ -908,8 +917,9 @@ public interface IBasicRobotPeer {
      * <p/>
      * This call executes immediately.
      * @param minionType the minion type to be spawned.
+     * @param minionPower the power provided from a parent robot for the minion.
      */
-	void spawnMinion(int minionType);
+	void spawnMinion(int minionType, int minionPower);
 	
     /**
      * Retrieves a list of MinionProxy that can be iterated through by a parent robot.

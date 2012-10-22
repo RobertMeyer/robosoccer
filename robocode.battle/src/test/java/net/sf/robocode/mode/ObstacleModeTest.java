@@ -1,51 +1,56 @@
 package net.sf.robocode.mode;
 
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sf.robocode.battle.Battle;
-import net.sf.robocode.battle.BattleManager;
 import net.sf.robocode.battle.BattleProperties;
+import net.sf.robocode.battle.DefaultSpawnController;
 import net.sf.robocode.battle.events.BattleEventDispatcher;
-import net.sf.robocode.host.CpuManager;
-import net.sf.robocode.host.HostManager;
-import net.sf.robocode.host.security.ThreadManager;
-import net.sf.robocode.recording.RecordManager;
-import net.sf.robocode.repository.RepositoryManager;
-import net.sf.robocode.settings.SettingsManager;
+import net.sf.robocode.battle.item.ItemDrop;
+import net.sf.robocode.battle.peer.ObstaclePeer;
+import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.ZLevelPeer;
+import net.sf.robocode.core.Container;
+import net.sf.robocode.host.IHostManager;
+import net.sf.robocode.repository.IRobotRepositoryItem;
+import net.sf.robocode.security.HiddenAccess;
 
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.Mockito;
 
-import robocode.control.BattleSpecification;
-import robocode.control.BattlefieldSpecification;
-import robocode.control.RobocodeEngine;
+import robocode.BattleRules;
 import robocode.control.RobotSpecification;
 
 import static org.junit.Assert.*;
 
 public class ObstacleModeTest {
-	/*BattleProperties bp;
-	BattleManager bm;
-	HostManager hm;
-	SettingsManager sm;
-	RepositoryManager rm;
-	CpuManager cm;
-	BattleEventDispatcher bd;
-	ThreadManager tm;
-	RecordManager rem;
-	Battle battle;
+	protected static String robotsPath;
+	private BattleProperties bp;
+	private IHostManager hm;
+	private BattleEventDispatcher bd;
+	private Battle battle;
+	private BattleRules br;
+	private List<ObstaclePeer> obstacles;
+	private List<RobotPeer> robots;
+	private RobotSpecification spec;
+	private RobotSpecification ospec;
+	private List<ZLevelPeer> zLev;
 	
-	RobocodeEngine engine;
-	
+	/**
+	 * Sets up the required variables for testing
+	 */
 	@Before
 	public void setup() {
-		tm = new ThreadManager();
-		sm = new SettingsManager();
-		hm = new HostManager(sm, tm);
-		rm = new RepositoryManager(sm);
-		cm = new CpuManager(sm);
+		HiddenAccess.init();
+		Container.init();
+		
 		bd = new BattleEventDispatcher();
-		rem = new RecordManager(sm);
-		bm = new BattleManager(sm, rm, hm, cm, bd, rem);
+		
+		hm = Mockito.mock(IHostManager.class);
+		br = HiddenAccess.createRules(800, 600, 1, 0.1, 450, false, null);
 		
 		bp = Mockito.mock(BattleProperties.class);
 		Mockito.when(bp.getBattlefieldWidth()).thenReturn(800);
@@ -54,41 +59,205 @@ public class ObstacleModeTest {
 		Mockito.when(bp.getInactivityTime()).thenReturn((long) 450);
 		Mockito.when(bp.getNumRounds()).thenReturn(1);
 		Mockito.when(bp.getHideEnemyNames()).thenReturn(false);
-		Mockito.when(bp.getSelectedRobots()).thenReturn("sample.Walls, sample.Target");
 		Mockito.when(bp.getInitialPositions()).thenReturn(null);
 		Mockito.when(bp.getBattleMode()).thenReturn(new ObstacleMode());
-
-		//battle = new Battle(sm, bm, hm, rm, cm, bd);
-		//battle.setup(rm.getSelectedRobots(bp.getSelectedRobots()), bp, false, rm);
-		//assert things;
-		RobotSpecification[] rs = engine.getLocalRepository("tested.robots.Ahead, tested.robots.Ahead");
 		
-        assertNotNull("Robot were not loaded", rs);
-        assertEquals("Robot were not loaded", 2, rs.length);
-        engine.runBattle(new BattleSpecification(1, new BattlefieldSpecification(), rs), null, true);
+		battle = Mockito.mock(Battle.class);
+		Mockito.when(battle.getBattleMode()).thenReturn(new ObstacleMode());
+		Mockito.when(battle.getBattleRules()).thenReturn(br);
+		Mockito.when(battle.getSpawnController()).thenReturn(new DefaultSpawnController());
 	}
 	
+	/**
+	 * Tests if mode's toString method returns the correct string representation 
+	 */
 	@Test
 	public void testToString() {
-		assertEquals("toString method is incorrect", battle.getBattleMode().toString(), "Obstacle Mode");
+		String output = battle.getBattleMode().toString();
+		assertEquals("toString method is incorrect", output, "Obstacle Mode");
 	}
 	
+	/**
+	 * Tests if mode returns the correct description
+	 */
+	@Test
+	public void testDescription() {
+		String output = battle.getBattleMode().getDescription();
+		assertEquals("Wrong description was provided", output, 
+				"A mode with obstacles that robots have to avoid.");
+	}
+	
+	/**
+	 * Tests if the mode generates the correct number of obstacles (with a reasonable number of obstacles)
+	 */
 	@Test
 	public void testNumObstacles() {
-		//assertEquals("There are too many obstacles on the battlefield", om.setNumObstacles(null),
-		//		10);
+		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		//battle.setup(rm.getSelectedRobots(bp.getSelectedRobots()), bp, false, rm);
+		assertEquals("Incorrect number of obstacles generated", obstacles.size(), 10);
 	}
 	
+	/**
+	 * Tests if newly generated obstacles intersect with each other on the battlefield using
+	 * their set bounding boxes
+	 */
 	@Test
-	public void testObstacles() {
-		BattleProperties bp = Mockito.mock(BattleProperties.class);
-		// more mocking...
-		 
-		Mockito.when(bp.getBattlefieldWidth()).thenReturn(200);
-		Mockito.when(bp.getBattlefieldHeight()).thenReturn(200);
-		// etc...
-		 
-		//List<ObstaclePeer> obstacles = ObstaclePeer.generateRandomObstacles(10, bp, ...);
-		//assert things;
-	}*/
+	public void testObstacleBoundingBoxIntersect() {
+		//genreate random obstacles
+		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		
+		//loop through each obstacle to make sure they're not on top of another by checking if
+		//their bounding boxes intersect
+		for (int i = 0; i < obstacles.size() - 1; i++) {
+			for (int j = i; j < obstacles.size(); j++) {
+				if (i != j) {
+					assertFalse("The bounding boxes of obstacles are intersecting with each other",
+							obstacles.get(i).getBoundingBox().intersects(obstacles.get(j).getBoundingBox()));
+				}
+			}	
+		}
+	}
+	
+	/**
+	 * Tests if newly generated obstacles intersect with each other on the battlefield using absolute
+	 * coordinates
+	 */
+	@Test
+	public void testObstacleAbsCoord() {
+		//generate random obstacles
+		obstacles = ObstacleMode.generateRandomObstacles(10, bp, br, battle, 32, 32);
+		
+		//loop through each obstacle to make sure they're not on top of each other by checking their
+		//absolute coordinates on the battlefield
+		for (int i = 0; i < obstacles.size() - 1; i++) {
+			for (int j = i + 1; j < obstacles.size(); j++) {
+				assertFalse("The obstacles are intersecting with each other",
+						(obstacles.get(j).getX() < obstacles.get(i).getX() + obstacles.get(i).getWidth() &&
+						obstacles.get(j).getX() > obstacles.get(i).getX() - obstacles.get(i).getWidth()) &&
+						(obstacles.get(j).getY() < obstacles.get(i).getY() + obstacles.get(i).getHeight() &&
+						obstacles.get(j).getY() > obstacles.get(i).getY() - obstacles.get(i).getHeight()));
+			}
+		}
+	}
+	
+	/**
+	 * Tests if robots will spawn on top of obstacles at the beginning of a round
+	 */
+	@Test
+	public void testObstacleRobotIntersect() {
+		IRobotRepositoryItem rItem = Mockito.mock(IRobotRepositoryItem.class);
+		spec = HiddenAccess.createSpecification(rItem, "",
+				"", "", "", "", "", "", "");
+		
+		obstacles = ObstacleMode.generateRandomObstacles(100, bp, br, battle, 32, 32);
+		Mockito.when(battle.getObstacleList()).thenReturn(obstacles);	
+		robots = new ArrayList<RobotPeer>();
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		for (RobotPeer bot : robots) {
+			bot.initializeRound(robots, null);
+		}
+		
+		for (int i = 0; i < robots.size(); i++) {
+			for (ObstaclePeer oPeer : obstacles) {
+				assertFalse("Robot intersecting with obstacles", 
+						robots.get(i).getBoundingBox().intersects(oPeer.getBoundingBox()));
+			}
+		}
+	}
+	
+	/**
+	 * Tests if a robot correctly responds when it hits an obstacle
+	 */
+	@Test
+	public void testObstacleCollision() {
+		IRobotRepositoryItem rItem = Mockito.mock(IRobotRepositoryItem.class);
+		spec = HiddenAccess.createSpecification(rItem, "",
+				"", "", "", "", "", "", "");
+		
+		//set up the initial position of a single obstacle
+		obstacles = new ArrayList<ObstaclePeer>();
+		obstacles.add(new ObstaclePeer(battle, br, 0));
+		obstacles.get(0).setHeight(32);
+		obstacles.get(0).setWidth(800);
+		obstacles.get(0).setX(400);
+		obstacles.get(0).setY(16);
+		//System.out.println("ob: " + obstacles.get(0).getX() + " " + obstacles.get(0).getY());
+		
+		robots = new ArrayList<RobotPeer>();
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		
+		//set up inital location of the robot facing north (heading of 0)
+		double[][] init = {{0, 0, 0}};
+		init[0][0] = 400;
+		init[0][1] = 50;
+		init[0][2] = 0;
+		robots.get(0).initializeRound(robots, init);
+			
+		assertEquals("Robot was not set up in the correct state", robots.get(0).getState().toString(),
+				"ACTIVE");
+		
+		//Move obstacle into the robot (pretty much same as moving robot into obstacle), the point is
+		//that they collide.
+		obstacles.get(0).setY(30);
+		
+		//Update the state of the robot to see if collision occurred
+		robots.get(0).performLoadCommands();
+		robots.get(0).performMove(robots, new ArrayList<ItemDrop>(), obstacles, zLev, 0);
+		
+		assertEquals("Robot did not detect an obstacle collision", robots.get(0).getState().toString(),
+				"HIT_WALL");
+		
+	}
+	
+	/**
+	 * Tests if the obstacle can correctly obstruct the scanning of the robots
+	 */
+	@Test
+	public void testScanObstruction() {
+		IRobotRepositoryItem rItem = Mockito.mock(IRobotRepositoryItem.class);
+		spec = HiddenAccess.createSpecification(rItem, "",
+				"", "", "", "", "", "", "");
+		
+		//set up obstacle to not be in between the two robots
+		obstacles = new ArrayList<ObstaclePeer>();
+		obstacles.add(new ObstaclePeer(battle, br, 0));
+		obstacles.get(0).setHeight(10);
+		obstacles.get(0).setWidth(800);
+		obstacles.get(0).setX(400);
+		obstacles.get(0).setY(500);
+		
+		//set up inital location of the robot facing north (heading of 0)
+		robots = new ArrayList<RobotPeer>();
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		robots.add(new RobotPeer(battle, hm, spec, 0, null, 0, null));
+		
+		//set up initial position of first robot
+		double[][] init = {{0, 0, 0}, {0, 0, 0}};
+		init[0][0] = 400;
+		init[0][1] = 10;
+		init[0][2] = 180;
+		robots.get(0).initializeRound(robots, init);
+		
+		//set up initial position for second robot
+		init[0][0] = 400;
+		init[0][1] = 100;
+		init[0][2] = 0;
+		robots.get(1).initializeRound(robots, init);
+		
+		//draw line between the two robots
+		Line2D scan = new Line2D.Double(robots.get(0).getX(), robots.get(0).getY(), 
+				robots.get(1).getX(), robots.get(1).getY());
+		
+		//obstacle should not be intersecting with the scan line
+		assertFalse("Obstacle should not be obstructing the scan.", 
+				scan.intersects(obstacles.get(0).getBoundingBox()));
+		
+		//move the obstacle to be in between the two robots
+		obstacles.get(0).setY(50);
+		
+		//obstacle should now be obstructing the line of sight of robot
+		assertTrue("Obstacle should be obstructing the scan.", 
+				scan.intersects(obstacles.get(0).getBoundingBox()));
+	}
 }

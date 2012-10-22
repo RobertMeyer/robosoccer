@@ -36,7 +36,7 @@ public class Crazy extends AdvancedRobot {
         setRadarColor(new Color(0, 100, 100));
         setBulletColor(new Color(255, 255, 100));
         setScanColor(new Color(255, 200, 200));
-      
+        //equip("Sword");
         // Loop forever
         while (true) {
             // Tell the game we will want to move ahead 40000 -- some large number
@@ -61,7 +61,7 @@ public class Crazy extends AdvancedRobot {
             setTurnRight(180);
             // .. and wait for that turn to finish.
             waitFor(new TurnCompleteCondition(this));
-
+            fireLandmine(3);
             // then back to the top to do it all again
         }
     }

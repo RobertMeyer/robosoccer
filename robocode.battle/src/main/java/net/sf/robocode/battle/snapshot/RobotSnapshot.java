@@ -14,6 +14,7 @@
 package net.sf.robocode.battle.snapshot;
 
 import java.awt.geom.Arc2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,11 +30,11 @@ import net.sf.robocode.serialization.IXmlSerializable;
 import net.sf.robocode.serialization.SerializableOptions;
 import net.sf.robocode.serialization.XmlReader;
 import net.sf.robocode.serialization.XmlWriter;
-import robocode.EquipmentPart;
-import robocode.EquipmentSlot;
 import robocode.control.snapshot.IRobotSnapshot;
 import robocode.control.snapshot.IScoreSnapshot;
 import robocode.control.snapshot.RobotState;
+import robocode.equipment.EquipmentPart;
+import robocode.equipment.EquipmentSlot;
 
 /**
  * A snapshot of a robot at a specific time instant in a battle.
@@ -107,6 +108,8 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
     private IScoreSnapshot robotScoreSnapshot;
 	/** Flag specifying if the robot is a FreezeRobot */
 	private boolean isFreezeRobot;
+	/** Flag specifying if the robot is a HeatRobot */
+	private boolean isHeatRobot;
     /** Flag specifying if the robot is a Minion */
 	private boolean isMinion;
 	/** List holding minion snapshots */
@@ -114,9 +117,16 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	
     private AtomicReference<Map<EquipmentSlot, EquipmentPart>> equipment;
     
+    /** Own and enemy goals for soccermode and soccer robots */
+    private Rectangle2D.Float ownGoal;
+    private Rectangle2D.Float enemyGoal;
+    private boolean isSoccerRobot;
+	private boolean isBall;
+    
     private double fullEnergy;
     
     private double scanRadius;
+	
 
 	/**
 	 * Creates a snapshot of a robot that must be filled out with data later.
@@ -142,7 +152,6 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		teamIndex = robot.getTeamIndex();
 
 		state = robot.getState();
-
 
         energy = robot.getEnergy();
         acceleration = robot.getRobotAcceleration();
@@ -171,7 +180,17 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		isPaintEnabled = robot.isPaintEnabled();
 		isSGPaintEnabled = robot.isSGPaintEnabled();
 		isFreezeRobot = robot.isFreezeRobot();
+		isHeatRobot = robot.isHeatRobot();
+		isSoccerRobot = robot.isSoccerRobot();
+		isBall = robot.isBall();
 		isMinion = robot.isMinion();
+		
+		if(isSoccerRobot) {
+			ownGoal = robot.getOwnGoal();
+			enemyGoal = robot.getEnemyGoal();
+		}
+		
+		
 		//Create snapshots of minions.
 		for(RobotPeer peer: robot.getMinionPeers()) {
 			minions.add(new RobotSnapshot(peer, readoutText));
@@ -311,6 +330,22 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 		return velocity;
 	}
 
+    /**
+	 * {@inheritDoc}
+	 */
+    @Override
+	public Rectangle2D.Float getOwnGoal() {
+		return ownGoal;
+	}
+    
+    /**
+	 * {@inheritDoc}
+	 */
+    @Override
+	public Rectangle2D.Float getEnemyGoal() {
+		return enemyGoal;
+	}
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -418,6 +453,25 @@ public final class RobotSnapshot implements Serializable, IXmlSerializable,
 	 */
 	public boolean isFreezeRobot(){
 		return isFreezeRobot;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isHeatRobot(){
+		return isHeatRobot;
+	}
+
+	public boolean isBall() {
+		return isBall;
+	}
+
+	/**
+	 * @return the isSoccerRobot
+	 */
+	@Override
+	public boolean isSoccerRobot() {
+		return isSoccerRobot;
 	}
 
 	/**

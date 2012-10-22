@@ -56,6 +56,10 @@ public class ImageManager implements IImageManager {
 	
 	//For storing spike image
 	private Image spikeImage;
+	
+	// image paths for the currently rendered images
+	private String bodyPath;
+	private String gunPath;
 
     public ImageManager(ISettingsManager properties) {
         this.properties = properties;
@@ -81,12 +85,16 @@ public class ImageManager implements IImageManager {
         robotGunImageCache = new RenderCache<Integer, RenderImage>();
         robotRadarImageCache = new RenderCache<Integer, RenderImage>();
 
-
+        //reset image paths
+        bodyPath = null;
+        gunPath = null;
+        
         // Read images into the cache
 		getBodyImage(null);
 		getGunImage(null);
 		getRadarImage(null);
 		getExplosionRenderImage(0, 0);
+		
 	}
 	
 	public Image getFieldTileImage(int index) {
@@ -179,6 +187,10 @@ public class ImageManager implements IImageManager {
     }
     private Image getImage(String filename) {
         Image image = ImageUtil.getImage(filename);
+        
+        if (image == null) {
+        	return null;
+        }
 
         if (properties.getOptionsRenderingBufferImages()) {
             image = ImageUtil.getBufferedImage(image);
@@ -199,11 +211,12 @@ public class ImageManager implements IImageManager {
     	if (customImageCache.containsKey(name)) {
     		getCustomImage(name);
     	}
-    	// Load image into memory
-    	RenderImage img = new RenderImage(getImage(filename));
     	
-    	// Check to see valid image
-    	if(img != null) {
+    	Image loadImg = getImage(filename);
+    	
+    	if(loadImg != null) {
+    		// Load image into memory
+    		RenderImage img = new RenderImage(loadImg);
     		customImageCache.put(name, img);
     		return img;
     	}
@@ -271,7 +284,8 @@ public class ImageManager implements IImageManager {
             bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
         } else {
         	try{
-        	bodyImage = getImage(imagePath);
+        		bodyImage = getImage(imagePath);
+        		bodyPath = imagePath;
         	}catch(NullPointerException e) {
         		bodyImage = getImage("/net/sf/robocode/ui/images/body.png");
         	}
@@ -293,6 +307,7 @@ public class ImageManager implements IImageManager {
         } else {
         	try{
         		gunImage = getImage(imagePath);
+        		gunPath = imagePath;
         	}catch(NullPointerException e) {
         		gunImage = getImage("/net/sf/robocode/ui/images/turret.png");
         	}
@@ -312,7 +327,7 @@ public class ImageManager implements IImageManager {
             radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
         } else {
         	try{
-        	radarImage = getImage(imagePath);
+        		radarImage = getImage(imagePath);
         	}catch(NullPointerException e) {
         		radarImage = getImage("/net/sf/robocode/ui/images/radar.png");
         	}
@@ -331,7 +346,7 @@ public class ImageManager implements IImageManager {
     public RenderImage getColoredBodyRenderImage(Integer color, String imagePath) {
         RenderImage img = robotBodyImageCache.get(color);
 
-        if (img == null) {
+        if (img == null || imagePath != bodyPath) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getBodyImage(imagePath), new Color(color, true)));
             robotBodyImageCache.put(color, img);
         }
@@ -341,13 +356,8 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredGunRenderImage(Integer color, String imagePath) {
         RenderImage img = robotGunImageCache.get(color);
-        
-        // sets a custom gun image if one is provided and it is necessary.
-        if(imagePath != null || gunImage == null) {
-        	gunImage = getImage(imagePath);
-        }
 
-        if (img == null) {
+        if (img == null || imagePath != gunPath) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getGunImage(imagePath), new Color(color, true)));
             robotGunImageCache.put(color, img);
         }
@@ -357,11 +367,6 @@ public class ImageManager implements IImageManager {
     @Override
     public RenderImage getColoredRadarRenderImage(Integer color, String imagePath) {
         RenderImage img = robotRadarImageCache.get(color);
-        
-        // sets a custom radar image if one is provided and it is necessary.
-        if(imagePath != null || radarImage == null) {
-        	radarImage = getImage(imagePath);
-        }
 
         if (img == null) {
             img = new RenderImage(ImageUtil.createColouredRobotImage(getRadarImage(imagePath), new Color(color, true)));

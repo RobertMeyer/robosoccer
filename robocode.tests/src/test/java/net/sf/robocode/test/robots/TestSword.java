@@ -2,8 +2,8 @@ package net.sf.robocode.test.robots;
 
 import org.junit.Ignore;
 
-import robocode.Equipment;
-import robocode.EquipmentPart;
+
+
 import robocode.control.events.RoundStartedEvent;
 import robocode.control.snapshot.IRobotSnapshot;
 import net.sf.robocode.test.helpers.Assert;

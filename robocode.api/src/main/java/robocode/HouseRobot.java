@@ -23,7 +23,7 @@ import robocode.robotinterfaces.IHouseRobot;
  *
  * @author Mathew A. Nelson (original)
  * @author Laurence McLean 42373414
- * @author Jack Reichelt
+ * @author Jack Reichelt 42338271
  * @see JuniorRobot
  * @see Robot
  * @see TeamRobot
@@ -31,8 +31,15 @@ import robocode.robotinterfaces.IHouseRobot;
  * @see AdvancedRobot
  */
 public class HouseRobot extends AdvancedRobot implements IHouseRobot,
-                                                         IAdvancedEvents {
+		IAdvancedEvents {
+	/**
+	 * Stores the boundaries associated with this HouseRobot
+	 */
 	private HouseRobotBoundary boundaries;
+	
+	/**
+	 * Have the boundaries already been set for this HouseRobot
+	 */
 	private boolean boundariesSet;
 	
 	/**
@@ -40,16 +47,18 @@ public class HouseRobot extends AdvancedRobot implements IHouseRobot,
 	 * @see HouseRobotBoundary
 	 */
 	public HouseRobot() {
-		HouseRobotBoundary boundaries = new HouseRobotBoundary(0,0,0,100,0,100);
+		HouseRobotBoundary boundaries = new HouseRobotBoundary();
 		this.boundaries = boundaries;
 		boundariesSet = false;
 	}
 	
 	/**
 	 * Constructs a new House Robot
-	 * @param boundaries Boundaries for this House Robot, defined in {@link HouseRobotBoundary}
+	 * @param boundaries Boundaries for this House Robot, defined in
+	 * {@link HouseRobotBoundary}
 	 * @see HouseRobotBoundary
-	 * @deprecated Use {@link HouseRobot#HouseRobot()} and {@link HouseRobot#setBoundaries(HouseRobotBoundary boundaries}
+	 * @deprecated Use {@link HouseRobot#HouseRobot()} and
+	 * {@link HouseRobot#setBoundaries(HouseRobotBoundary boundaries}
 	 */
 	public HouseRobot(HouseRobotBoundary boundaries) {
 		this.boundaries = boundaries;
@@ -57,7 +66,8 @@ public class HouseRobot extends AdvancedRobot implements IHouseRobot,
 	}
 	
 	/**
-	 * Gets the {@link HouseRobotBoundary} object associated with this HouseRobot.
+	 * Gets the {@link HouseRobotBoundary} object associated with this
+	 * HouseRobot.
 	 * @return Boundaries of this House Robot.
 	 */
 	public HouseRobotBoundary getBoundaries() {
@@ -65,8 +75,10 @@ public class HouseRobot extends AdvancedRobot implements IHouseRobot,
 	}
 	
 	/**
-	 * Sets the {@link HouseRobotBoundary} object associated with this HouseRobot.
-	 * Can <b>only</b> be called once. If called a second time, will throw a BoundaryException.
+	 * Sets the {@link HouseRobotBoundary} object associated with this
+	 * HouseRobot.
+	 * Can <b>only</b> be called once. If called a second time, will throw a
+	 * BoundaryException.
 	 * @param boundaries
 	 * @throws BoundaryException
 	 */

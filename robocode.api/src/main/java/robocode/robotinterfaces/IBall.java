@@ -15,13 +15,9 @@ package robocode.robotinterfaces;
 
 
 /**
- * A robot interface for creating a more advanced type of robot like
- * {@link robocode.AdvancedRobot} that is able to handle advanced robot events.
- * An advanced robot allows non-blocking calls, custom events, get notifications
- * about skipped turns, and also allow writes to the file system.
+ * A robot interface for creating a ball type of robot.
  *
- * @author Pavel Savara (original)
- * @author Flemming N. Larsen (javadoc)
+ * @author Carl Hattenfels - team-G1
  * @see robocode.AdvancedRobot
  * @see IBasicRobot
  * @see IJuniorRobot

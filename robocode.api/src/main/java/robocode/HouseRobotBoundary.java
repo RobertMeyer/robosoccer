@@ -17,36 +17,39 @@ package robocode;
  * Object to store Home location and search boundaries for a {@link HouseRobot}.
  * 
  * @author Laurence McLean 42373414
+ * @author Jack Reichelt 42338271
  * @see HouseRobot
  */
 public class HouseRobotBoundary {
 	
 	private double xHome;
 	private double yHome;
-	
-	private double xLeft;
-	private double xRight;
-	
-	private double yBottom;
-	private double yTop;
+	private double arcRange;	
+	private double initialFacing;
 	
 	/**
-	 * Creates a Boundary object for the {@link HouseRobot} storing home location and search boundaries.
+	 * Creates a Boundary object for the {@link HouseRobot} storing home
+	 * location and search boundaries.
 	 * Should have xLeft <= xHome <= xRight and yBottom <= yHome <= yTop
 	 * @param xHome x position for Home
 	 * @param yHome y position for Home
-	 * @param xLeft x position for Left Boundary
-	 * @param xRight x position for Right Boundary
-	 * @param yBottom y position for Bottom Boundary
-	 * @param yTop y position for Top Boundary
+	 * @param arcRange arc range
+	 * @param initialFacing initial heading
 	 */
-	public HouseRobotBoundary(double xHome, double yHome, double xLeft, double xRight, double yBottom, double yTop) {
+	public HouseRobotBoundary(double xHome, double yHome, double arcRange,
+			double initialFacing) {
 		this.xHome = xHome;
 		this.yHome = yHome;
-		this.xLeft = xLeft;
-		this.xRight = xRight;
-		this.yBottom = yBottom;
-		this.yTop = yTop;
+		this.arcRange = arcRange;
+		this.initialFacing = initialFacing;
+	}
+	
+	/**
+	 * Creates a Boundary object for the {@link HouseRobot} storing home
+	 * location and search boundaries.
+	 * Values are not initialised.
+	 */
+	public HouseRobotBoundary() {
 	}
 	
 	/**
@@ -64,30 +67,48 @@ public class HouseRobotBoundary {
 	}
 	
 	/**
-	 * @return Left x boundary in this {@link HouseRobot}
+	 * @return arc range in this {@link HouseRobot}
 	 */
-	public double getXLeft() {
-		return xLeft;
+	public double getArcRange() {
+		return arcRange;
 	}
 	
 	/**
-	 * @return Right x boundary in this {@link HouseRobot}
+	 * @return initial heading in this {@link HouseRobot}
 	 */
-	public double getXRight() {
-		return xRight;
+	public double getInitialFacing() {
+		return initialFacing;
 	}
 	
 	/**
-	 * @return Bottom y boundary in this {@link HouseRobot}
+	 * Sets the x position for Home in this {@link HouseRobot}
+	 * @param xHome x coordinate
 	 */
-	public double getYBottom() {
-		return yBottom;
+	public void setxHome(double xHome) {
+		this.xHome = xHome;
+	}
+
+	/**
+	 * Sets the y position for Home in this {@link HouseRobot}
+	 * @param yHome y coordinate
+	 */
+	public void setyHome(double yHome) {
+		this.yHome = yHome;
 	}
 	
 	/**
-	 * @return Top y boundary in this {@link HouseRobot}
+	 * Sets the arc range in this {@link HouseRobot}
+	 * @param arcRange arc range
 	 */
-	public double getYTop() {
-		return yTop;
+	public void setArcRange(double arcRange) {
+		this.arcRange = arcRange;
+	}
+
+	/**
+	 * Sets the initial heading in this {@link HouseRobot}
+	 * @param initialFacing initial heading
+	 */
+	public void setInitialFacing(double initialFacing) {
+		this.initialFacing = initialFacing;
 	}
 }

@@ -2,7 +2,6 @@ package net.sf.robocode.test.robots;
 
 import java.util.List;
 
-import net.sf.robocode.battle.MinionData;
 import net.sf.robocode.test.helpers.Assert;
 import net.sf.robocode.test.helpers.RobocodeTestBed;
 
@@ -44,7 +43,6 @@ public class TestMinionSpawn extends RobocodeTestBed {
     
 	@Override
     public String getRobotNames() {
-		MinionData.setMinionsEnabled(true);
         return "sample.MinionParentBot";
     }
 

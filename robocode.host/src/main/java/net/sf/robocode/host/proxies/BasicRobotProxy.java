@@ -98,12 +98,12 @@ public class BasicRobotProxy extends HostingRobotProxy implements
     }
     
     @Override
-    public void spawnMinion(int minionType) {
+    public void spawnMinion(int minionType, int minionEnergy) {
     	if(minionType == _RobotBase.MINION_TYPE_RND) {
     		Random rnd = new Random();
     		minionType = rnd.nextInt(_RobotBase.MINION_TYPE_RND);
     	}
-    	commands.setSpawnMinion(true, minionType);
+    	commands.setSpawnMinion(true, minionType, minionEnergy);
     	execute();
     }
     
@@ -127,7 +127,12 @@ public class BasicRobotProxy extends HostingRobotProxy implements
         setSetCallCount(0);
         setGetCallCount(0);
     }
-
+    
+    @Override
+    public int getTactic() {
+    	return 0;
+    }
+    
     @Override
     public void cleanup() {
         super.cleanup();

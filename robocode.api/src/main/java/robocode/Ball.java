@@ -27,27 +27,19 @@ package robocode;
 
 import robocode.robotinterfaces.IAdvancedEvents;
 import robocode.robotinterfaces.IBall;
+import robocode.robotinterfaces.ISoccerRobot;
 
 
 /**
- * A more advanced type of robot than Robot that allows non-blocking calls,
- * custom events, and writes to the filesystem.
- * <p/>
- * If you have not already, you should create a {@link Robot} first.
+ * A ball type Robot. Does not add any extra functionality beyond SoccerRobot, 
+ * but is useful to distinguish a ball from other Soccer playing robots.
  *
- * @author Mathew A. Nelson (original)
- * @author Flemming N. Larsen (contributor)
- * @author Robert D. Maupin (contributor)
- * @author Pavel Savara (contributor)
- * @see <a target="_top" href="http://robocode.sourceforge.net">
- *      robocode.sourceforge.net</a>
- * @see <a href="http://robocode.sourceforge.net/myfirstrobot/MyFirstRobot.html">
- *      Building your first robot<a>
+ * @author Carl Hattenfels - team-G1
  * @see JuniorRobot
  * @see Robot
  * @see TeamRobot
  * @see Droid
  */
-public class Ball extends AdvancedRobot implements IBall, IAdvancedEvents {
-
+public class Ball extends SoccerRobot implements IBall, ISoccerRobot, 
+		IAdvancedEvents {
 }

@@ -826,7 +826,7 @@ public class JuniorRobot extends _RobotBase implements IJuniorRobot {
         public void onRobotDeath(RobotDeathEvent event) {
             others = peer.getOthers();
         }
-
+        
         @Override
         public void onScannedRobot(ScannedRobotEvent event) {
             scannedDistance = (int) (event.getDistance() + 0.5);

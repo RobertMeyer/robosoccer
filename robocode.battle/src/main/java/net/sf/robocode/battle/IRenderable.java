@@ -172,7 +172,7 @@ public interface IRenderable {
 	 * 
 	 * @return a Java.Color representation of renderable.
 	 */
-	public Color getColor();
+	public Color getColour();
 	
 	
 }

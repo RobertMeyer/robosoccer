@@ -124,7 +124,6 @@ public class RobotStatistics implements ContestantStatistics {
         bulletKillBonus = 0;
         rammingDamageScore = 0;
         rammingKillBonus = 0;
-        //FIXME - team-Telos
         flagScore = 0;
         kills = 0;
     }
@@ -140,13 +139,10 @@ public class RobotStatistics implements ContestantStatistics {
         totalFlagScore += flagScore;
         totalKills += kills;
 
-        /*TODO Edit this Andrew */
         /* Set battle Properties */
         bp = battleProp;
         ClassicMode mode = (ClassicMode) bp.getBattleMode();
         totalScore = mode.getCustomOverallScore(this);
-//        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
-//                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
         isInRound = false;
     }
     
@@ -346,7 +342,9 @@ public class RobotStatistics implements ContestantStatistics {
 
     public void scoreRammingDamage(String robot) {
         if (isActive) {
-            incrementRobotDamage(robot, robocode.Rules.ROBOT_HIT_DAMAGE);
+        	if(Math.abs(robotPeer.getRamDamage() - 1.0) < 0.00001)
+        		incrementRobotDamage(robot, robocode.Rules.ROBOT_HIT_DAMAGE);
+        	else incrementRobotDamage(robot, robotPeer.getRamDamage());
             rammingDamageScore += robotPeer.getRamAttack();
         }
     }
@@ -370,6 +368,8 @@ public class RobotStatistics implements ContestantStatistics {
     }
 
     public void scoreRobotDeath(int enemiesRemaining, Boolean botzillaActive) {
+    	//If botzilla is in the match don't count him as an enemy remaining for
+    	//the purposes of scoring
     	if (botzillaActive) {
     		enemiesRemaining--;
     	}

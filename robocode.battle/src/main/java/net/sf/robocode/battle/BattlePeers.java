@@ -35,15 +35,15 @@ public class BattlePeers {
 	private RobotPeer botzillaRobot;
 	private ContestantPeer botzillaContestant;
 
-	public BattlePeers(Battle battle, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			IRepositoryManager repositoryManager) {
+	public BattlePeers(Battle battle, RobotSpecification[] battlingRobotsList,
+			IHostManager hostManager, IRepositoryManager repositoryManager) {
 		this.hostManager = hostManager;
 		this.repositoryManager = repositoryManager;
 		this.battle = battle;
-        
-        battle.getBattleMode().createPeers(this, battlingRobotsList, hostManager, repositoryManager);
+
+		battle.getBattleMode().createPeers(this, battlingRobotsList,
+				hostManager, repositoryManager);
 	}
-	
 
 	/**
 	 * The initial setup for robot and contestant lists based on the given
@@ -165,6 +165,7 @@ public class BattlePeers {
             Integer duplicate = robotDuplicates.get(i);
             // TODO Follow back from here to RobotPeer etc, to
             RobotPeer robotPeer = new RobotPeer(battle, hostManager, specification, duplicate, team, robotIndex, null);
+
             robots.add(robotPeer);
             if (team == null) {
                 contestants.add(robotPeer);
@@ -193,20 +194,24 @@ public class BattlePeers {
 		robots.add(peer);
 	}
 	
+
 	public void addContestant(ContestantPeer peer) {
-		botzillaContestant = peer;
+		botzillaContestant =  peer;
 		contestants.add(peer);
 	}
 	
+  /**
+   * Remove Botzilla from the list of robots and contestants.
+   */
 	public void removeBotzilla() {
 		robots.remove(botzillaRobot);
 		contestants.remove(botzillaContestant);
-		System.out.println("botzilla is totally removed?");
 	}
 	
 	public void removeRobots(ArrayList<RobotPeer> robotsToRemove){
 		for(RobotPeer peer : robotsToRemove){
 			robots.remove(peer);
+			contestants.remove(peer.getTeamPeer());
 		}
 	}
 	
@@ -221,6 +226,15 @@ public class BattlePeers {
 			robots = null;
 		}
 
+	}
+
+	/**
+	 * @author Laurence McLean 42373414
+	 * @param houseRobot1
+	 */
+	public void removeRobot(RobotPeer r) {
+		robots.remove(r);
+		contestants.remove(r.getTeamPeer());
 	}
 	
 }

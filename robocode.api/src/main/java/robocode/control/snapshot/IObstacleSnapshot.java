@@ -51,10 +51,4 @@ public interface IObstacleSnapshot {
 	 * @return the ID of the obstacle.
 	 */
 	int getObstacleId();
-
-	/**
-	 * @return contestantIndex of the victim, or -1 if no one hit the obstacle
-	 */
-	//might need this for obstacles that deals damage (i.e. spiked walls)
-	int getVictimIndex();
 }
