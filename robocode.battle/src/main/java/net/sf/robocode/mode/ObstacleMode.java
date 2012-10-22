@@ -18,7 +18,6 @@ import robocode.BattleRules;
 /**
  * Creates a game mode with obstacles placed on the battlefield
  * 
- * 
  * @author Team a-MAZE-ing
  *
  */
