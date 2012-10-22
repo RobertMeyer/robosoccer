@@ -18,6 +18,8 @@
 package net.sf.robocode.io;
 
 import java.io.*;
+import java.net.URL;
+
 import static net.sf.robocode.io.Logger.logError;
 
 /**
@@ -215,9 +217,11 @@ public class FileUtil {
      * @return A list of files with specified extension
      * 		   If none found or i/o error occurs method returns null;
      */
-    public static File[] getFileList(File dir, final String ext) {
-    	// Check if dir is a directory.
-        if (dir.isDirectory()) {
+    public static File[] getFileList(URL dir, final String ext) {
+    	String path = dir.getPath();
+    	File Directory = new File(path);
+    	// Check if Directory is a directory.
+        if (Directory.isDirectory()) {
         	// Initialise interface filenameFilter and override the method accept 
         	// to specify wanted file extension.
         	FilenameFilter filefilter = new FilenameFilter() {
@@ -226,7 +230,7 @@ public class FileUtil {
              	}
             };
             // return a list of file names
-            return dir.listFiles(filefilter);
+            return Directory.listFiles(filefilter);
             
         } else {
         	// if dir is not a directory log error.

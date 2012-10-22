@@ -1661,8 +1661,14 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 	}
 	
-	protected void checkBoundryCollision() {
-		if (this.getBattleFieldHeight() != null) {
+	/**
+	 * Checks if robot is in the bounds of the track.
+	 */
+	protected void checkBoundaryCollision() {
+		if (battle.getBattleProperties().getTrackField() != null) {
+			if (!battle.getBattleProperties().getTrackField().onBounds(x,y)) {
+				setState(RobotState.HIT_WALL);
+			}
 		}
 	}
 	
