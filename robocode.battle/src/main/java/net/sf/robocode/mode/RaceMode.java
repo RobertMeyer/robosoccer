@@ -20,15 +20,6 @@ import net.sf.robocode.repository.IRepositoryManager;
 import net.sf.robocode.repository.IRepositoryManagerBase;
 import robocode.control.RobotSpecification;
 
-/**
- * Mode class used to implement Racing Mode functional enhancement. See ticket #32
- * 
- * @author Team - GoGoRobotRacer
- * @author s4203648
- * @author s42008024
- * @author s42318116
- */
-
 public class RaceMode extends ClassicMode{
 
 	//private class variables

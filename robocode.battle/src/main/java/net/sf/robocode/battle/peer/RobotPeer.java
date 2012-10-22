@@ -281,6 +281,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 
 		//TODO Delete below
 		way.addSingleWaypoint(2.3, 130);
+		way.addSingleWaypoint(65.4, 500.2);
+		way.addSingleWaypoint(800.4, 77.3);
+		way.addSingleWaypoint(2.3, 44.3);
 		
 		if (team != null) {
 			team.add(this);
@@ -1004,6 +1007,23 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		if (!isSleeping() && !battle.isDebugging()) {
 			logMessage("\n" + getName() + " still has not started after " + waitMillis + " ms... giving up.");
 		}
+		
+		if(battle.isRaceMode()){
+			//calculate the bearing to the waypoint relative to the robots Heading.
+	    	double dx = way.getSingleWaypointX(currentWaypointIndex)-x;
+			double dy = way.getSingleWaypointY(currentWaypointIndex)-y;
+
+	    	double relativeBearingtoWaypoint = (Math.PI/2)-atan2(dy, dx) - bodyHeading;
+	    	
+	    	//TODO (Waypoint)(battle.getBattleProperties().getTrackField().getWaypoints())
+	    	relativeBearingtoWaypoint = normalNearAbsoluteAngle(relativeBearingtoWaypoint);
+	    	double  distToWay = Math.hypot(dx, dy);
+	    	
+	    	//create the new WaypointPassedEvent	
+	    	addEvent(new WaypointPassedEvent(currentWaypointIndex, way.getSingleWaypointX(
+	    			currentWaypointIndex), way.getSingleWaypointY(currentWaypointIndex), 
+	    			relativeBearingtoWaypoint, Math.hypot(dx, dy), distToWay));
+		}
 	}
 
 
@@ -1181,9 +1201,9 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 			return;
 		}
 		
-		//TODO waypoint
         if(battle.isRaceMode()){
-        	checkWaypointPass(way, 1000.0);//WIDTH*2.0); 
+        	checkWaypointPass(way, WIDTH*3.0 - 20); 
+        	//checkWaypointPass((Waypoint)(battle.getBattleProperties().getTrackField().getWaypoints()), WIDTH*3.0 - 20); 
         }
 
 		turnedRadarWithGun = false;
@@ -1303,17 +1323,12 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
     				currentLap++;
     				if(currentLap == 1){//change to totalNOLAps
     					statistics.scoreRace();
-    					addEvent(new robocode.RoundEndedEvent(battle.getRoundNum(), battle.getTime(),
-                                battle.getTotalTurns()));
-    					addEvent(new BattleEndedEvent(false, statistics.getFinalResults()));
     					battle.killRound();
-    					System.out.println("All waypoints Passed");
     				}else{
     					//next lap reset robots wayPoints
     					statistics.scoreRace();
     					currentWaypointIndex = 0;
-    				}
-    				//TODO Add checking for new lap and reset index    				
+    				}   				
     			}
     		}
     	}
@@ -2677,6 +2692,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	
 	public double getFullEnergy() {
 		return fullEnergy;
+	}
+	
+	public int getCurrentWaypointIndex(){
+		return currentWaypointIndex;
 	}
 }
 

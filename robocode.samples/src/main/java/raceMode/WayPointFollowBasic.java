@@ -35,11 +35,12 @@ public class WayPointFollowBasic extends Robot {
         others = getOthers();
 
         // Spin gun back and forth
-        turnRight(waypointDirection(2.1, 44.3));
+        //turnRight(waypointDirection(2.1, 44.3));
         while (true) {
             
-            ahead(10);
+            ahead(30);
             turnRight(360);
+            fire(0.6);
             
         }
     }
@@ -49,12 +50,15 @@ public class WayPointFollowBasic extends Robot {
    	 return  (180/Math.PI) * ((Math.PI/2)-atan2(iY-getY(), iX-getX())) - getHeading();
     }
     
+    public double wayPointDistance(double iX, double iY){
+    	//calculate distance to waypoint
+    	return Math.hypot(iX-getX(), iY-getY());
+    }
+    
     @Override
     public void onWaypointPassed(WaypointPassedEvent e){
     	turnRight(waypointDirection(e.getWaypointX(), e.getWaypointY()));
-    	//System.out.println("########################################");
-
-    	
+    	ahead(wayPointDistance(e.getWaypointX(), e.getWaypointY()) - 70);
     }
 
     /**

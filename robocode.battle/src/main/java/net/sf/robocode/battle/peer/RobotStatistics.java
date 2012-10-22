@@ -139,7 +139,7 @@ public class RobotStatistics implements ContestantStatistics {
         totalFlagScore += flagScore;
         totalRaceScore += raceScore;
 
-        if(totalRaceScore > 0 ){
+        if(robotPeer.getCurrentWaypointIndex() > 0 ){
         	totalScore = totalRaceScore;
         }else{
         	totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
