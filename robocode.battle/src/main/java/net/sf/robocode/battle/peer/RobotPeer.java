@@ -277,7 +277,7 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 	protected int currentWaypointIndex = 0;
 	protected int currentLap = 0;
 	//TODO Remove below
-	Waypoint way = new Waypoint(2.1,44.3);
+	Waypoint way = new Waypoint(42.2,44.3);
 
 	// The robot can use these to melt itself without losing energy
 	protected int meltCredit = 0;
@@ -360,10 +360,10 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		this.battleRules = battle.getBattleRules();
 
 		//TODO Delete below
-		way.addSingleWaypoint(2.3, 130);
+		way.addSingleWaypoint(57.7, 160);
 		way.addSingleWaypoint(65.4, 500.2);
 		way.addSingleWaypoint(800.4, 77.3);
-		way.addSingleWaypoint(2.3, 44.3);
+		way.addSingleWaypoint(45.5, 44.3);
 		
 		if (team != null) {
 			team.add(this);
