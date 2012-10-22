@@ -7,6 +7,17 @@ import robocode.control.RobotSpecification;
 import static robocode.util.Utils.normalAbsoluteAngle;
 import static robocode.util.Utils.normalNearAbsoluteAngle;
 
+/**
+ * BallPeer class is used to add alter game physics for Ball type robots. Robots
+ * assigned a BallPeer will turn and change velocity instantaneously, and will
+ * not take damage for any reason. This facilitates writing a Ball type robot
+ * with physical behaviour more consistent with a ball. See 
+ * samples.soccer.BallBot for the Ball specific code related to movement.
+ * 
+ * @author Carl Hattenfels - team-G1
+ * @see RobotPeer
+ * @see BallBot
+ */
 public final class BallPeer extends RobotPeer {
 
     public BallPeer(Battle battle, IHostManager hostManager,
@@ -15,18 +26,16 @@ public final class BallPeer extends RobotPeer {
 
         super(battle, hostManager,
               robotSpecification, duplicate, team,
-              robotIndex);
+              robotIndex, null);
     }
 
     /**
      * Returns the new velocity based on the current velocity and distance to move.
-     *
+     * Note that in BallPeer, velocity is updated immediately to whatever 
+     * velocity is provided by parameter velocity.
      * @param velocity the current velocity
      * @param distance the distance to move
      * @return the new velocity based on the current velocity and distance to move
-     *
-     * This is Patrick Cupka (aka Voidious), Julian Kent (aka Skilgannon), and Positive's method described here:
-     *   http://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
      */
     @Override
     protected double getNewVelocity(double velocity, double distance) {
@@ -48,11 +57,17 @@ public final class BallPeer extends RobotPeer {
 		return goalVel;
 	}
 	
-
+    /**
+     * Robots that use a BallPeer do not take any damage. This method does 
+     * nothing.
+     */
 	public void updateEnergy(double delta) {
 		// Do nothing
 	}
 	
+	/**
+	 * Headings are updated instantaneously for BallPeer.
+	 */
 	protected void updateHeading() {
 		boolean normalizeHeading = true;
 		

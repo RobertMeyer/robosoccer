@@ -25,7 +25,7 @@ import robocode.robotinterfaces.IBasicRobot;
  * @author Daniel Bowden - S4203648
  */
 public class WaypointPassedEvent extends Event {
-	
+
 	private static final long serialVersionUID = 1L;
     private final static int DEFAULT_PRIORITY = 10;
 	private final int nextWaypointIndex;
@@ -45,9 +45,8 @@ public class WaypointPassedEvent extends Event {
 		this.bearing = bearing;
 		this.distance = distance;
 		this.distToWay = distToWay;
-				
 	}
-	
+
 	/**
 	 * Returns the x co-ordinate of the next waypoint.
 	 * 
@@ -56,7 +55,7 @@ public class WaypointPassedEvent extends Event {
 	public double getWaypointX(){
 		return wayPointX;
 	}
-	
+
 	/**
 	 * Returns the y co-ordinate of the next waypoint.
 	 * 
@@ -65,7 +64,7 @@ public class WaypointPassedEvent extends Event {
 	public double getWaypointY(){
 		return wayPointY;
 	}
-	
+
 	/**
 	 * Returns the index of the next waypoint.
 	 * 
@@ -74,7 +73,7 @@ public class WaypointPassedEvent extends Event {
 	public int getIndex(){
 		return nextWaypointIndex;
 	}
-	
+
 	/**
 	 * Returns the bearing to the next way point in radians. (Relative to your robot's heading)
 	 * 
@@ -83,7 +82,7 @@ public class WaypointPassedEvent extends Event {
 	public double getBearingRadians(){
 		return bearing;
 	}
-	
+
 	/**
 	 * Returns the bearing to the next waypoint in degrees. (Relative to your robot's heading)
 	 * 
@@ -92,7 +91,7 @@ public class WaypointPassedEvent extends Event {
 	public double getBearingDegrees(){
 		return bearing * 180.0 / Math.PI;
 	}
-	
+
 	/**
 	 * Returns the distance from the robot to the waypoint that has just been passsed. (From Robot's centre)
 	 * 
@@ -101,7 +100,7 @@ public class WaypointPassedEvent extends Event {
 	public double getDistToLastWaypoint(){
 		return distToWay;
 	}
-	
+
 	/**
 	 * Returns the distance from the robot to the next waypoint. (From Robot's centre)
 	 * 
@@ -110,7 +109,7 @@ public class WaypointPassedEvent extends Event {
 	public double getDistToNextWaypoint(){
 		return distance;
 	}
-	
+
 	  /**
      * {@inheritDoc}
      */
@@ -194,5 +193,4 @@ public class WaypointPassedEvent extends Event {
             		distToWay);
         }
     }
-    
 }

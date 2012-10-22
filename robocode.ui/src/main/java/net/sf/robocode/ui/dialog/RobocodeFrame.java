@@ -59,13 +59,21 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class RobocodeFrame extends JFrame {
 
+	//Used for counting the number of updates in RoboCode (2 updates every 1 second)
 	private int timerCount = 0;
+	//Hashtable for timer mode.
 	private Hashtable<String, Object> setTimeHashTable;
+	//Used for counting the number of seconds for timer mode
 	private int counter = 1;
+	//To store user specified time for timer mode.
 	private String userSetTime;
+	//Used for counting down for elimination mode.
 	private int eliminateCounter;
+	//To store user specified time for elimination mode.
 	private String eliminate;
+	//Hashtable for elimination mode.
 	private Hashtable<String, Object> setEliminateHashTable;
+	
     private final static int MAX_TPS = 10000;
     private final static int MAX_TPS_SLIDER_VALUE = 61;
     private final static int UPDATE_TITLE_INTERVAL = 500; // milliseconds
@@ -95,6 +103,8 @@ public class RobocodeFrame extends JFrame {
     private EffectAreaCheckbox box;
     private KillstreakCheckbox ksBox;
     private BackgroundMusicCheckbox mbox;
+    private FriendlyFireCheckbox fbox;
+    private TeamCollisionCheckbox cbox;
     private JLabel tpsLabel;
     private boolean iconified;
     private boolean exitOnClose = true;
@@ -109,6 +119,9 @@ public class RobocodeFrame extends JFrame {
     final List<RobotButton> robotButtons = new ArrayList<RobotButton>();
     final List<IFullScreenListener> fullScreenListeners = new ArrayList<IFullScreenListener>();
 	private JPanel sideBooleans;
+	private TeleporterCheckbox teleporterBox;
+	private BlackholeCheckbox blackholeBox;
+	private ZLevelCheckbox zBox;
 
     public RobocodeFrame(ISettingsManager properties,
                          IWindowManager windowManager, IRobotDialogManager dialogManager,
@@ -127,7 +140,12 @@ public class RobocodeFrame extends JFrame {
         this.menuBar = menuBar;
         box = new EffectAreaCheckbox(battleManager.getBattleProperties());
         ksBox = new KillstreakCheckbox(battleManager.getBattleProperties());
+        teleporterBox = new TeleporterCheckbox();
+        blackholeBox = new BlackholeCheckbox();
         mbox = new BackgroundMusicCheckbox(battleManager.getBattleProperties());
+        fbox = new FriendlyFireCheckbox(battleManager.getBattleProperties());
+        cbox = new TeamCollisionCheckbox(battleManager.getBattleProperties());
+        zBox = new ZLevelCheckbox();
         menuBar.setup(this);
         initialize();
     }
@@ -308,10 +326,15 @@ public class RobocodeFrame extends JFrame {
             sidePanel.setLayout(new BorderLayout());
             
             sideBooleans = new JPanel();
-            sideBooleans.setLayout(new GridLayout(3,1));
+            sideBooleans.setLayout(new GridLayout(7,1));
             sideBooleans.add(box);
             sideBooleans.add(ksBox);           
             sideBooleans.add(mbox);
+            sideBooleans.add(teleporterBox);
+            sideBooleans.add(blackholeBox);
+            sideBooleans.add(fbox);
+            sideBooleans.add(cbox);
+            sideBooleans.add(zBox);
            
             sidePanel.add(getRobotButtonsScrollPane(), BorderLayout.CENTER);
             final BattleButton btn = net.sf.robocode.core.Container
@@ -927,8 +950,7 @@ public class RobocodeFrame extends JFrame {
         	counter = 0;
         	eliminateCounter = 0;
         	
-            if (event.getRound() == 0 &&
-            		battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
+            if (battleManager.getBattleProperties().getBattleMode().getGuiOptions().getShowRobotButtons()) {
                 getRobotButtonsPanel().removeAll();
 
                 final List<IRobotSnapshot> robots = Arrays.asList(event
@@ -1040,6 +1062,8 @@ public class RobocodeFrame extends JFrame {
 	            		setTimeHashTable = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
 	            		userSetTime = (String) setTimeHashTable.get("timer");
 	            		
+	            		//If time is up, call getTopRobot() method, which kill all other robots except for the robot with
+	            		//the highest energy
 	            		if (counter == Integer.parseInt(userSetTime)) {
 	            			battleManager.getTopRobot();
 	            			counter = 0;
@@ -1050,12 +1074,15 @@ public class RobocodeFrame extends JFrame {
 	            		}
 	            	}
             	}
+            	
             	//Create counter if it is in Elimination Mode.
             	if (battleManager.getBattleProperties().getBattleMode().toString() == "Elimination Mode") {
             		timerCount = timerCount + 1;
             		//Retrieve user specified time
             		setEliminateHashTable  = battleManager.getBattleProperties().getBattleMode().getRulesPanelValues();
             		eliminate = (String) setEliminateHashTable.get("eliminate");
+            		
+            		//If elimination counter is 0, get user specified time.
             		if (eliminateCounter == 0) {
             			eliminateCounter = Integer.parseInt(eliminate);
             		}
@@ -1064,6 +1091,7 @@ public class RobocodeFrame extends JFrame {
             			timerCount = 0;
             			eliminateCounter = eliminateCounter - 1;
             			
+            			//If elimination counter is 0, call eliminateWeakestRobot() method, which eliminate the weakest robot
                 		if (eliminateCounter == 0) {
                 			battleManager.eliminateWeakestRobot();
                 		}
@@ -1072,8 +1100,9 @@ public class RobocodeFrame extends JFrame {
             		if (eliminateCounter > Integer.parseInt(eliminate)) {
             			eliminateCounter = Integer.parseInt(eliminate);
             		}
-            		
-            	}            	
+       
+            	}  
+            	
                 updateTitle();
             }
         }

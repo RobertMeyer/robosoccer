@@ -33,6 +33,8 @@ public interface IRobotRepositoryItem extends IRepositoryItem {
 	boolean isFreezeRobot();
 
 	boolean isBall();
+	
+	boolean isSoccerRobot();
 
 	boolean isTeamRobot();
 
@@ -49,4 +51,10 @@ public interface IRobotRepositoryItem extends IRepositoryItem {
 	boolean isBotzillaBot();
 	
 	boolean isDispenser();
+	
+	boolean isMinion();
+	
+	boolean isZombie();
+
+	boolean isHeatRobot();
 }

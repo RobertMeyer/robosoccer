@@ -104,10 +104,28 @@ public class Alien implements IBasicEvents, IBasicRobot, Runnable {
 
     @Override
     public void onWin(WinEvent e) {
+    	
     }
 
 	@Override
 	public void onWaypointPassed(WaypointPassedEvent event) {
+	
+	}
+
+	public void onLandmineHit(LandmineHitEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onHitByLandmine(HitByLandmineEvent event) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRobotFrozen(RobotFrozenEvent event) {
 		// TODO Auto-generated method stub
 		
 	}

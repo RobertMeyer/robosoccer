@@ -26,12 +26,14 @@ public class Module implements IModule {
         RbSerializer.register(RobotStatus.class, RbSerializer.RobotStatus_TYPE);
         RbSerializer.register(BattleResults.class, RbSerializer.BattleResults_TYPE);
         RbSerializer.register(Bullet.class, RbSerializer.Bullet_TYPE);
-
+        RbSerializer.register(Landmine.class, RbSerializer.Landmine_TYPE);
+       
         // events
         RbSerializer.register(RoundEndedEvent.class, RbSerializer.RoundEndedEvent_TYPE);
         RbSerializer.register(BattleEndedEvent.class, RbSerializer.BattleEndedEvent_TYPE);
         RbSerializer.register(BulletHitBulletEvent.class, RbSerializer.BulletHitBulletEvent_TYPE);
         RbSerializer.register(BulletHitEvent.class, RbSerializer.BulletHitEvent_TYPE);
+        RbSerializer.register(LandmineHitEvent.class, RbSerializer.LandmineHitEvent_TYPE);
         RbSerializer.register(BulletMissedEvent.class, RbSerializer.BulletMissedEvent_TYPE);
         RbSerializer.register(DeathEvent.class, RbSerializer.DeathEvent_TYPE);
 
@@ -41,6 +43,7 @@ public class Module implements IModule {
         RbSerializer.register(SkippedTurnEvent.class, RbSerializer.SkippedTurnEvent_TYPE);
         RbSerializer.register(ScannedRobotEvent.class, RbSerializer.ScannedRobotEvent_TYPE);
         RbSerializer.register(HitByBulletEvent.class, RbSerializer.HitByBulletEvent_TYPE);
+        RbSerializer.register(HitByLandmineEvent.class, RbSerializer.HitByLandmineEvent_TYPE);
         RbSerializer.register(HitRobotEvent.class, RbSerializer.HitRobotEvent_TYPE);
         RbSerializer.register(KeyPressedEvent.class, RbSerializer.KeyPressedEvent_TYPE);
         RbSerializer.register(KeyReleasedEvent.class, RbSerializer.KeyReleasedEvent_TYPE);

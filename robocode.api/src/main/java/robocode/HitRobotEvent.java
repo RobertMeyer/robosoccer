@@ -38,6 +38,7 @@ public final class HitRobotEvent extends Event {
     private final double bearing;
     private final double energy;
     private final boolean atFault;
+    private final boolean isHeatRobot;
 
     /**
      * Called by the game to create a new HitRobotEvent.
@@ -48,11 +49,12 @@ public final class HitRobotEvent extends Event {
      * @param atFault {@code true} if your robot was moving toward the other
      *                robot; {@code false} otherwise
      */
-    public HitRobotEvent(String name, double bearing, double energy, boolean atFault) {
+    public HitRobotEvent(String name, double bearing, double energy, boolean atFault, boolean isHeatRobot) {
         this.robotName = name;
         this.bearing = bearing;
         this.energy = energy;
         this.atFault = atFault;
+        this.isHeatRobot = isHeatRobot;
     }
 
     /**
@@ -127,6 +129,14 @@ public final class HitRobotEvent extends Event {
     public boolean isMyFault() {
         return atFault;
     }
+    
+    /**
+     * Checks if the robot hit is a HeatRobot.
+     * @return {@code true} if the other robot is a HeatRobot; {@code false} otherwise.
+     */
+    public boolean isHeatRobot() {
+    	return isHeatRobot;
+    }
 
     /**
      * {@inheritDoc}
@@ -163,8 +173,8 @@ public final class HitRobotEvent extends Event {
     /**
      * {@inheritDoc}
      */
-   @Override
-   final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
+    @Override
+    final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
         IBasicEvents listener = robot.getBasicEventListener();
 
         if (listener != null) {
@@ -211,7 +221,7 @@ public final class HitRobotEvent extends Event {
             double energy = buffer.getDouble();
             boolean atFault = serializer.deserializeBoolean(buffer);
 
-            return new HitRobotEvent(robotName, bearing, energy, atFault);
+            return new HitRobotEvent(robotName, bearing, energy, atFault, false);
         }
     }
 }

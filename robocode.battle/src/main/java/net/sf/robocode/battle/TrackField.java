@@ -1,3 +1,4 @@
+
 package net.sf.robocode.battle;
 
 import java.awt.Point;

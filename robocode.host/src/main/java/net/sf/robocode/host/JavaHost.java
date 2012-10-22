@@ -45,20 +45,22 @@ public class JavaHost implements IHost {
 		IHostingRobotProxy robotProxy;
 		final IRobotRepositoryItem specification = (IRobotRepositoryItem) HiddenAccess.getFileSpecification(
 				robotSpecification);
-
-		if (specification.isTeamRobot()) {
-			robotProxy = new TeamRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-		} else if (specification.isAdvancedRobot()) {
-			robotProxy = new AdvancedRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-		} else if (specification.isStandardRobot()) {
-			robotProxy = new StandardRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-		} else if (specification.isJuniorRobot()) {
-			robotProxy = new JuniorRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
-		} else {
-			throw new AccessControlException("Unknown robot type");
-		}
-		return robotProxy;
-	}
+        
+        if (specification.isSoccerRobot()) {
+        	robotProxy = new SoccerRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+        } else if (specification.isTeamRobot()) {
+            robotProxy = new TeamRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+        } else if (specification.isAdvancedRobot()) {
+            robotProxy = new AdvancedRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+        } else if (specification.isStandardRobot()) {
+            robotProxy = new StandardRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+        } else if (specification.isJuniorRobot()) {
+            robotProxy = new JuniorRobotProxy(specification, hostManager, peer, (RobotStatics) statics);
+        } else {
+            throw new AccessControlException("Unknown robot type");
+        }
+        return robotProxy;
+    }
 
     @Override
 	public String[] getReferencedClasses(IRobotRepositoryItem robotRepositoryItem) {
@@ -108,6 +110,41 @@ public class JavaHost implements IHost {
 		}
 	}
 
+    @Override
+   	public int getMinionType(IRobotRepositoryItem robotRepositoryItem, boolean message) {
+   		IRobotClassLoader loader = null;
+
+   		try {
+   			loader = createLoader(robotRepositoryItem);
+   			Class<?> robotClass = loader.loadRobotMainClass(false);
+
+   			if (robotClass == null || java.lang.reflect.Modifier.isAbstract(robotClass.getModifiers())) {
+   				// this class is not a robot
+   				return -1;
+   			}
+   			if(!IMinionRobot.class.isAssignableFrom(robotClass)) {
+   				// not a minion.
+   				return -1;
+   			}
+   			//Create an instance of the minion to get it's type.
+   			IMinionRobot robot = (IMinionRobot)loader.createRobotInstance();
+   			return robot.getMinionType();   			
+
+   		} catch (Throwable t) {
+   			if (message) {
+   				logError("Got an error with " + robotRepositoryItem.getFullClassName() + ": " + t); // just message here
+   				if (t.getMessage() != null && t.getMessage().contains("Bad version number in .class file")) {
+   					logError("Maybe you run robocode with Java 1.5 and robot was compiled for later Java version ?");
+   				}
+   			}
+   			return -1;
+   		} finally {
+   			if (loader != null) {
+   				loader.cleanup();
+   			}
+   		}
+   	}
+    
 	private RobotType checkInterfaces(Class<?> robotClass, IRobotRepositoryItem robotRepositoryItem) {
 		boolean isJuniorRobot = false;
 		boolean isStandardRobot = false;
@@ -119,9 +156,12 @@ public class JavaHost implements IHost {
 		boolean isHouseRobot = false;
 		boolean isFreezeRobot = false;
         boolean isBall = false;
+        boolean isSoccerRobot = false;
         boolean isBotzilla = false;
         boolean isZombie = false;
         boolean isDispenser = false;
+        boolean isMinion = false;
+        boolean isHeatRobot = false;
 
         if (Droid.class.isAssignableFrom(robotClass)) {
             isDroid = true;
@@ -151,6 +191,10 @@ public class JavaHost implements IHost {
 			isBall = true;
 		}
         
+        if (ISoccerRobot.class.isAssignableFrom(robotClass)) {
+			isSoccerRobot = true;
+		}
+        
         if (IBotzilla.class.isAssignableFrom(robotClass)) {
         	isBotzilla = true;
         }   
@@ -163,6 +207,14 @@ public class JavaHost implements IHost {
         	isDispenser = true;
         }
 
+        if(IMinionRobot.class.isAssignableFrom(robotClass)) {
+        	isMinion = true;
+        }
+        
+        if(IHeatRobot.class.isAssignableFrom(robotClass)) {
+        	isHeatRobot = true;
+        }
+        
         if (IInteractiveRobot.class.isAssignableFrom(robotClass)) {
             // in this case we make sure that robot don't waste time
             if (checkMethodOverride(robotClass, Robot.class, "getInteractiveEventListener")
@@ -207,7 +259,7 @@ public class JavaHost implements IHost {
             }
         }
         return new RobotType(isJuniorRobot, isStandardRobot, isInteractiveRobot, isPaintRobot, isAdvancedRobot,
-                             isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isBotzilla, isZombie, isDispenser);
+                             isTeamRobot, isDroid, isHouseRobot, isFreezeRobot, isBall, isSoccerRobot, isBotzilla, isZombie, isDispenser, isMinion, isHeatRobot);
     	}
 
     private boolean checkMethodOverride(Class<?> robotClass, Class<?> knownBase, String name, Class<?>... parameterTypes) {

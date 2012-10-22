@@ -1,0 +1,6 @@
+#Robocode robot team
+#Sun Oct 21 15:55:28 EST 2012
+team.members=robotTeam.sampleRobot*,robots.S000001_empty*
+team.author.name= Team MCJJ
+robocode.version=1.7.4.2 Alpha 3
+team.description=Testing for FriendlyFire

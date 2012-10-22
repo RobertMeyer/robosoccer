@@ -76,6 +76,11 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
     public void onBulletHit(BulletHitEvent event) {
         count(event);
     }
+    
+    @Override
+    public void onLandmineHit(LandmineHitEvent event) {
+        count(event);
+    }
 
     @Override
     public void onBulletHitBullet(BulletHitBulletEvent event) {
@@ -94,6 +99,11 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
 
     @Override
     public void onHitByBullet(HitByBulletEvent event) {
+        count(event);
+    }
+    
+    @Override
+    public void onHitByLandmine(HitByLandmineEvent event) {
         count(event);
     }
 
@@ -149,9 +159,15 @@ public class JuniorEvents implements IJuniorRobot, IBasicEvents, Runnable {
         }
         counts.put(name, curr + 1);
     }
-
+    
 	@Override
 	public void onWaypointPassed(WaypointPassedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRobotFrozen(RobotFrozenEvent event) {
 		// TODO Auto-generated method stub
 		
 	}

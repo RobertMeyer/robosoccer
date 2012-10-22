@@ -67,7 +67,7 @@ public interface IRobotPeerBattle extends ContestantPeer {
 
     void performLoadCommands();
 
-    void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, double zapEnergy);
-
+    void performMove(List<RobotPeer> robots, List<ItemDrop> items, List<ObstaclePeer> obstacles, List<ZLevelPeer> zLevels, double zapEnergy);
+    
     void performScan(List<RobotPeer> robots);
 }

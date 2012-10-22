@@ -9,6 +9,7 @@ import robocode.control.snapshot.RenderableType;
 import net.sf.robocode.battle.IRenderable;
 import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.RenderString;
+import net.sf.robocode.battle.RenderAnim;
 
 /**
  * This implements the IRenderableSnapshot interface.
@@ -27,6 +28,11 @@ public final class RenderableSnapshot implements IRenderableSnapshot {
 	private double rotation;
 	private RenderableType type;
 	private Color colour;
+	private int spritewidth = 0;
+	private int spriteheight = 0;
+	private int rows = 0;
+	private int cols = 0;
+	private int loops = 0;
 
 	/**
 	 * Default Constructor
@@ -50,9 +56,17 @@ public final class RenderableSnapshot implements IRenderableSnapshot {
 		this.alpha = co.getAlpha();
 		this.rotation = co.getRotationRadian();
 		this.type = co.getType();
-		this.colour = co.getColor();
+		this.colour = co.getColour();
 		if (this.type == RenderableType.SPRITE) {
 			this.filename = ((RenderObject)co).getFilename();
+		} else if (this.type == RenderableType.SPRITE_ANIMATION) {
+			RenderAnim c = (RenderAnim)co;
+			this.filename = c.getFilename();
+			this.spritewidth = c.getSpriteWidth();
+			this.spriteheight = c.getSpriteHeight();
+			this.rows = c.getRows();
+			this.cols = c.getCols();
+			this.loops = c.getLoops();
 		} else if (this.type == RenderableType.SPRITE_STRING) {
 			this.filename = ((RenderString)co).getText();
 		}
@@ -169,5 +183,44 @@ public final class RenderableSnapshot implements IRenderableSnapshot {
 	public double getScaleY() {
 		return this.at.getScaleY();
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getSpriteWidth() {
+		return spritewidth;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getSpriteHeight() {
+		return spriteheight;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getRows() {
+		return rows;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getCols() {
+		return cols;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getLoops() {
+		return loops;
+	}
 }

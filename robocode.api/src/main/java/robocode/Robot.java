@@ -55,6 +55,7 @@ import robocode.robotinterfaces.peer.IStandardRobotPeer;
  * @author Matthew Reeder (contributor)
  * @author Stefan Westen (contributor)
  * @author Pavel Savara (contributor)
+ * @author CSSE2003 Team forkbomb (contributor)
  * @see <a target="_top" href="http://robocode.sourceforge.net">
  *      robocode.sourceforge.net</a>
  * @see <a href="http://robocode.sourceforge.net/myfirstrobot/MyFirstRobot.html">
@@ -456,20 +457,23 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      */
     public void fire(double power) {
         if (peer != null) {
-        	if(peer.checkSword()==false)
-        	{
-        		 peer.setFire(power);
-                 peer.execute();
-        	}
-        	else
-        	{
-        		peer.execute();
-        	}
-           
+            peer.setFire(power);
+            peer.execute();
         } else {
             uninitializedException();
         }
     }
+    
+    public void fireLandmine(double power)
+    {
+        if (peer != null) {
+            peer.setLandmine(power);
+            peer.execute();
+        } else {
+            uninitializedException();
+        }
+    }
+    
 
     /**
      * Immediately fires a bullet. The bullet will travel in the direction the
@@ -693,11 +697,11 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
      * Returns the maximum velocity of the robot measured in pixels/turn.
      * <p/>
      * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
-     * * {@link RobotAttribute#SPEED}
+     * * {@link RobotAttribute#VELOCITY}
      * 
      * @return the maximum velocity of the robot in pixels/turn
      * @see Rules#MAX_VELOCITY
-     * @see RobotAttribute#SPEED
+     * @see RobotAttribute#VELOCITY
      */
     public double getMaxVelocity(){
     	if(peer != null){
@@ -1007,6 +1011,10 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     @Override
     public void onBulletHit(BulletHitEvent event) {
     }
+    
+    @Override
+    public void onLandmineHit(LandmineHitEvent event) {
+    }
 
     /**
      * {@inheritDoc}
@@ -1063,7 +1071,7 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     @Override
     public void onScannedRobot(ScannedRobotEvent event) {
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -1922,6 +1930,114 @@ public class Robot extends _Robot implements IInteractiveRobot, IPaintRobot,
     }
 
 	@Override
-	public void onWaypointPassed(WaypointPassedEvent event) {	
+	public void onWaypointPassed(WaypointPassedEvent event) {
+		
 	}
+	
+	@Override
+	public void onHitByLandmine(HitByLandmineEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onRobotFrozen(RobotFrozenEvent event){
+	}
+	
+	/**
+	 * melt robot if frozen at the cost of 30% of robots health
+	 */
+	public void melt() {
+    	if (peer != null){
+    		peer.melt();
+    	} else {
+            uninitializedException();
+        }
+    }
+	
+	/**
+	 * A private helper method to calculate the smallest possible turn to
+	 * achieve a required angle.
+	 * 
+	 * @author David Wei (4231523)
+	 * 
+	 * @param angle
+	 *            The angle that is being reduced to a more efficient angle
+	 * 
+	 * @return Returns the smallest angle to achieve the required turn
+	 */
+	private double smallestTurn(double angle) {
+
+		// If the angle is greater than 180 degrees, subtract 360 to obtain
+		// the shortest angle, which will be in the opposite direction
+		if (angle > 180)
+			angle -= 360;
+
+		// If the angle is less than -180 degrees, add 360 to obtain the
+		// shortest angle, which will be in the opposite direction
+		if (angle < -180)
+			angle += 360;
+
+		return angle;
+	}
+	
+	/**
+	 * Moves to a given point (x,y)
+	 * 
+	 * @author David Wei (4231523)
+	 * 
+	 * @param x
+	 * 			The x co-ordinate of the point
+	 * @param y
+	 * 			The y co-ordinate of the point
+	 * 
+	 */
+	private void moveTo(double x, double y){
+		getX();
+		getY();
+		
+		double angle = Math.toDegrees(Math.atan((y - getY())/(x - getX())));
+		
+		if (angle > 0){
+			if (x > getX() && y > getY()){
+				turnLeft(smallestTurn(getHeading() - 90 + angle));			
+			} else{
+				turnLeft(smallestTurn(getHeading() - 270 + angle));
+			}
+			ahead(Math.hypot(y - getY(),x - getX()));
+		}
+		
+		if (angle < 0){
+			if (x < getX() && y > getY()){
+				turnLeft(smallestTurn(getHeading() + 90 - angle));
+			} else {
+				turnRight(smallestTurn(getHeading() + 90 + angle));
+			}
+			ahead(Math.hypot(y - getY(),x - getX()));
+		}
+		
+		if (angle == 0){
+			if (x > getX())
+				ahead(x - getX());
+			else
+				ahead(getX() - x);
+		}
+		
+		if (x == getX()){
+			if (y == getY())
+				return;
+		
+			if (y > getY())
+				ahead(y - getY());
+			
+			if (getY() > y)
+				ahead(getY() - y);
+		}
+		
+		
+	}
+
 }

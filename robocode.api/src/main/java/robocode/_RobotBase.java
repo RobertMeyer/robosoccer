@@ -13,6 +13,8 @@
  *******************************************************************************/
 package robocode;
 
+import java.util.List;
+
 import robocode.exception.RobotException;
 import robocode.robotinterfaces.IBasicRobot;
 import robocode.robotinterfaces.peer.IBasicRobotPeer;
@@ -34,7 +36,11 @@ import robocode.robotinterfaces.peer.IBasicRobotPeer;
  * @since 1.4
  */
 public abstract class _RobotBase implements IBasicRobot, Runnable {
-
+	public static final int MINION_TYPE_ATK = 0;
+	public static final int MINION_TYPE_DEF = 1;
+	public static final int MINION_TYPE_UTL = 2;
+	public static final int MINION_TYPE_RND = 3;
+	public static final int DEFAULT_MINION_POWER = 5;
     // Internal for this package
     _RobotBase() {
     }
@@ -91,5 +97,39 @@ public abstract class _RobotBase implements IBasicRobot, Runnable {
         throw new RobotException(
                 "You cannot call the " + methodName
                 + "() method before your run() method is called, or you are using a Robot object that the game doesn't know about.");
+    }
+    
+    /**
+     * Spawn a minion, given the minion type and power used.
+     * @param minionType - the minion type.
+     * @param minionPower - power used to spawn the minion.
+     */ 
+    public final void spawnMinion(int minionType, int minionPower) {
+    	this.peer.spawnMinion(minionType, minionPower);
+    }
+    
+    /**
+     * Spawn a minion using default power.
+     * @param minionType - the minion type.
+     */
+    public final void spawnMinion(int minionType) {
+    	this.peer.spawnMinion(minionType, DEFAULT_MINION_POWER);
+    }
+    
+    /**
+     * Returns a list of parent's minions.
+     * This will be empty for robots with no minions.
+     * @return List<MinionProxy> - a list containing the MinionProxy of each minion.  
+     */
+    public final List<MinionProxy> getMinions() {
+    	return this.peer.getMinions();
+    }
+    
+    /**
+     * Returns the parent MinionProxy of a minion.
+     * @return MinionProxy - a MinionProxy of the parent robot.
+     */
+    public final MinionProxy getParent() {
+    	return this.peer.getParent();
     }
 }

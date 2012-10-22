@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 
+import net.sf.robocode.battle.item.BoundingRectangle;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.*;
 import net.sf.robocode.host.IHostManager;
@@ -32,154 +33,181 @@ import robocode.control.RobotSpecification;
  */
 public class ClassicMode implements IMode {
 
-	protected GuiOptions uiOptions;
-	/* Results table */
-	protected BattleResultsTableModel resultsTable;
+    protected GuiOptions uiOptions;
+    /* Results table */
+    protected BattleResultsTableModel resultsTable;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String toString() {
-		return "Classic Mode";
-	}
+    /* Overall Score variables */
+    protected RobotPeer rPeer;
+    protected int numRobots;
+    protected RobotStatistics robotStatistics;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDescription() {
-		return "Original robocode mode.";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "Classic Mode";
+    }
 
-	public JPanel getRulesPanel() {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
+        return "Original robocode mode.";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Hashtable<String, Object> getRulesPanelValues() {
-		return null;
-	}
+    public JPanel getRulesPanel() {
+        return null;
+    }
 
-	// ----- Mode-specific methods below this line ------
+    /**
+     * {@inheritDoc}
+     */
+    public Hashtable<String, Object> getRulesPanelValues() {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public double modifyVelocity(double velocityIncrement, BattleRules rules) {
-		return modifyVelocity(velocityIncrement);
-	}
+    // ----- Mode-specific methods below this line ------
 
-	public double modifyVelocity(double velocityIncrement) {
-		return velocityIncrement;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public double modifyVelocity(double velocityIncrement, BattleRules rules) {
+        return modifyVelocity(velocityIncrement);
+    }
+
+    public double modifyVelocity(double velocityIncrement) {
+        return velocityIncrement;
+    }
 
     public int setNumObstacles(BattleRules rules) {
         return 0;
     }
 
-	/**
-	 * Returns a list of ItemDrop's to
-	 * spawn in the beginning of the round
-	 * @return List of items
-	 */
-	public List<? extends ItemDrop> getItems() {
-		return new ArrayList<ItemDrop>();
-	}
+    public int setCellWidth(BattleRules rules) {
+        return 0;
+    }
 
-	/**
-	 * Create a list of ItemDrop's to
-	 * spawn in the beginning of the round
-	 * @param battle The Battle to add the items to
-	 */
-	public void setItems(Battle battle) {
-		/* No items needed for Classic Mode */
-	}
+    public int setCellHeight(BattleRules rules) {
+        return 0;
+    }
 
-	/**
-	 * Increments the score for the mode per turn
-	 */
-	public void scoreTurnPoints() {
-		/* ClassicMode does not need a score method, optional for overriding */
-	}
+    public int setWallWidth(BattleRules rules) {
+        return 0;
+    }
 
-	/**
-	 * Override me if you wish to use the CustomObjectAPI.
-	 *
-	 * This function will get called once a frame, you can perform
-	 * functions like moving the image around the battle, changing
-	 * scale, changing alpha level, so on.
-	 *
-	 * Loop over the given ArrayList of objects and perform logic
-	 * on them. To find an object your after look at getName() function.
-	 *
-	 * @param customObject - an ArrayList of all customObjects
-	 */
-	public void updateRenderables(List<IRenderable> renderables) {
+    public int setWallHeight(BattleRules rules) {
+        return 0;
+    }
 
-	}
+    public boolean dWallSetting(BattleRules battleRules) {
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean respawnsOn() {
-		return false;
-	}
+    /**
+     * Returns a list of ItemDrop's to
+     * spawn in the beginning of the round
+     * @return List of items
+     */
+    public List<? extends ItemDrop> getItems() {
+        return new ArrayList<ItemDrop>();
+    }
 
-	/**
-	 * Override me if you wish to use the CustomObjectAPI.
-	 *
-	 * This function should create new CustomObjects which should
-	 * be stored in a ArrayList<CustomObject> and returned.
-	 *
-	 * The returned list will represent all the custom objects in
-	 * the scene to be rendered.
-	 *
-	 * example:-
-	 * 		// Create ArrayList
-	 * 		List<CustomObject> objs = new ArrayList<CustomObject>();
-	 * 		// Create a new object at (100,100) which will render a flag
-	 *		CustomObject obj = new CustomObject("flag",
-	 *		"/net/sf/robocode/ui/images/flag.png", 100, 100);
-	 *		// Set Alpha blending to fade 50%
-	 *		obj.setAlpha(0.5f);
-	 *		// Add object to ArrayList
-	 *		objs.add(obj);
-	 *		return objs;
-	 *
-	 * @return a ArrayList<CustomObjects> which are added to the scene.
-	 */
-	public List<IRenderable> createRenderables() {
-		return null;
-	}
+    /**
+     * Create a list of ItemDrop's to
+     * spawn in the beginning of the round
+     * @param battle The Battle to add the items to
+     */
+    public void setItems(Battle battle) {
+        /* No items needed for Classic Mode */
+    }
 
-	@Override
-	public String addModeRobots(String selectedRobots) {
-		// Don't need to add any extra robots for classic mode
-		return selectedRobots;
-	}
+    /**
+     * Increments the score for the mode per turn
+     */
+    public void scoreTurnPoints() {
+        /* ClassicMode does not need a score method, optional for overriding */
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int turnLimit() {
-		return 5*30*60; // 9000 turns is the default
-	}
+    /**
+     * Override me if you wish to use the CustomObjectAPI.
+     *
+     * This function will get called once a frame, you can perform
+     * functions like moving the image around the battle, changing
+     * scale, changing alpha level, so on.
+     *
+     * Loop over the given ArrayList of objects and perform logic
+     * on them. To find an object your after look at getName() function.
+     *
+     * @param customObject - an ArrayList of all customObjects
+     */
+    public void updateRenderables(List<IRenderable> renderables) {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean respawnsOn() {
+        return false;
+    }
+
+    /**
+     * Override me if you wish to use the CustomObjectAPI.
+     *
+     * This function should create new CustomObjects which should
+     * be stored in a ArrayList<CustomObject> and returned.
+     *
+     * The returned list will represent all the custom objects in
+     * the scene to be rendered.
+     *
+     * example:-
+     *      // Create ArrayList
+     *      List<CustomObject> objs = new ArrayList<CustomObject>();
+     *      // Create a new object at (100,100) which will render a flag
+     *      CustomObject obj = new CustomObject("flag",
+     *      "/net/sf/robocode/ui/images/flag.png", 100, 100);
+     *      // Set Alpha blending to fade 50%
+     *      obj.setAlpha(0.5f);
+     *      // Add object to ArrayList
+     *      objs.add(obj);
+     *      return objs;
+     *
+     * @return a ArrayList<CustomObjects> which are added to the scene.
+     */
+    public List<IRenderable> createRenderables() {
+        return null;
+    }
+
+    @Override
+    public String addModeRobots(String selectedRobots) {
+        // Don't need to add any extra robots for classic mode
+        return selectedRobots;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int turnLimit() {
+        return 5*30*60; // 9000 turns is the default
+    }
 
 	/**
 	 * Sets the starting positions for all robot objects.
 	 * Original implementation taken from Battle.
-	 * @param initialPositions String of initial positions. Parsed by
-	 * the original implementation found in Battle. Can be ignored for
+	 * @param initialPositions String of initial positions. Parsed by 
+	 * the original implementation found in Battle. Can be ignored for 
 	 * custom implementations.
-	 * @param battleRules Battle rules.
+	 * @param width Battlefield width.
+	 * @param height Battlefield height.
 	 * @param robotsCount Size of battlingRobotsList
 	 * @return Two dimensional array of coordinates containing
 	 * the starting coordinates and heading for each robot.
 	 */
 	public double[][] computeInitialPositions(String initialPositions,
-			BattleRules battleRules, Battle battle, int robotsCount) {
-		double[][] initialRobotPositions = null;
+			double width, double height, int robotsCount) {
+        double[][] initialRobotPositions = null;
+        this.numRobots = robotsCount;
 
         if (initialPositions == null || initialPositions.trim().length() == 0) {
             return null;
@@ -212,8 +240,8 @@ public class ClassicMode implements IMode {
 
             final Random random = RandomFactory.getRandom();
 
-            x = RobotPeer.WIDTH + random.nextDouble() * (battleRules.getBattlefieldWidth() - 2 * RobotPeer.WIDTH);
-            y = RobotPeer.HEIGHT + random.nextDouble() * (battleRules.getBattlefieldHeight() - 2 * RobotPeer.HEIGHT);
+            x = RobotPeer.WIDTH + random.nextDouble() * (width - 2 * RobotPeer.WIDTH);
+            y = RobotPeer.HEIGHT + random.nextDouble() * (height - 2 * RobotPeer.HEIGHT);
             heading = 2 * Math.PI * random.nextDouble();
 
             int len = coords.length;
@@ -247,47 +275,47 @@ public class ClassicMode implements IMode {
         }
 
         return initialRobotPositions;
-	}
+    }
 
-	/**
-	 * Perform scan dictates the scanning behaviour of robots. One parameter
-	 * List<RobotPeer> is iterated over an performScan called on each robot.
-	 * Useful for making some robots invisible to radar.
-	 */
-	public void updateRobotScans(List<RobotPeer> robots) {
-		// Scan after moved all
+    /**
+     * Perform scan dictates the scanning behaviour of robots. One parameter
+     * List<RobotPeer> is iterated over an performScan called on each robot.
+     * Useful for making some robots invisible to radar.
+     */
+    public void updateRobotScans(List<RobotPeer> robots) {
+        // Scan after moved all
         for (RobotPeer robotPeer : getRobotsAtRandom(robots)) {
             robotPeer.performScan(getRobotsAtRandom(robots));
         }
-	}
+    }
 
-	public boolean isRoundOver(int endTimer, int time) {
-		return (endTimer > 5 * time);
-	}
+    public boolean isRoundOver(int endTimer, int time) {
+        return (endTimer > 5 * time);
+    }
 
-	/**
-	 * Determines if the bullet being dealt with should ricochet
-	 * @param power Power of current bullet being dealt with
-	 * @param minBulletPower Minimum bullet power from the battle rules
-	 * @param ricochetValue User provided variable that power is divided by
-	 * each ricochet
-	 * @return true/false if a ricochet should occur
-	 */
-	public boolean shouldRicochet(double power, double minBulletPower,
-			double ricochetValue) {
-		return false;
-	}
+    /**
+     * Determines if the bullet being dealt with should ricochet
+     * @param power Power of current bullet being dealt with
+     * @param minBulletPower Minimum bullet power from the battle rules
+     * @param ricochetValue User provided variable that power is divided by
+     * each ricochet
+     * @return true/false if a ricochet should occur
+     */
+    public boolean shouldRicochet(double power, double minBulletPower,
+                                  double ricochetValue) {
+        return false;
+    }
 
-	/**
-	 * Checks user input for Ricochet is acceptable
-	 * @param rules Current battle rules
-	 * @return ricochet value as provided by user or 1 if value provided < 1
-	 */
-	public double modifyRicochet(BattleRules rules) {
-			return 1;
-		}
+    /**
+     * Checks user input for Ricochet is acceptable
+     * @param rules Current battle rules
+     * @return ricochet value as provided by user or 1 if value provided < 1
+     */
+    public double modifyRicochet(BattleRules rules) {
+        return 1;
+    }
 
-	 /**
+    /**
      * Returns a list of all robots in random order. This method is used to gain fair play in Robocode,
      * so that a robot placed before another robot in the list will not gain any benefit when the game
      * checks if a robot has won, is dead, etc.
@@ -302,98 +330,186 @@ public class ClassicMode implements IMode {
         Collections.shuffle(shuffledList, RandomFactory.getRandom());
         return shuffledList;
     }
+    
+    @Override
+    public void setItems() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setItems() {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
+                            IRepositoryManager repositoryManager) {
+        peers.createPeers(battlingRobotsList);
+    }
+
+    /**
+     * Initialises the GuiOptions object with the visibility options
+     * applicable to this mode.
+     */
+    public void setGuiOptions() {
+        uiOptions = new GuiOptions(true, true);
+    }
+
+    /**
+     * Getter method for the GuiOptions object associated with this
+     * mode.
+     * @return GuiOptions object associated with this mode.
+     */
+    public GuiOptions getGuiOptions() {
+        return uiOptions;
+    }
+
+    /**
+     * Called after the death of a robot that is about to respawn
+     */
+    public void onRespawnDeath(RobotPeer robot) {
+
+    }
+
+    @Override
+    public BattleResults[] getFinalResults() {
+        return null;
+    }
+
+    public void addRobots(int currentTurn, BattlePeers peers){
+        // do nothing
+    }
 	
-	public void createPeers(BattlePeers peers, RobotSpecification[] battlingRobotsList, IHostManager hostManager,
-			IRepositoryManager repositoryManager) {
-		peers.createPeers(battlingRobotsList);
+	/** What to do at the end of a mode's specific round.
+	 * @author House Robot Team
+	 * @author Laurence McLean 42373414
+	 * @param peers See BattlePeers.class
+	 */
+	public void endRound(BattlePeers peers) {
+		//Do nothing by default.
 	}
 
-	/**
-	 * Initialises the GuiOptions object with the visibility options
-	 * applicable to this mode.
-	 */
-	public void setGuiOptions() {
-		uiOptions = new GuiOptions(true, true);
-	}
+    /**
+     *
+     * @param standard the original radar scan values
+     * @return the original radar scan values
+     */
+    public double modifyVision(double standard) {
+        return standard;
+    }
+
+    /**
+     *
+     * @param standard the original radar scan values
+     * @param rules the type of rules to command the robot
+     * @return the standard original radar scan values
+     */
+    public double modifyVision(double standard, BattleRules rules)
+    {
+        return modifyVision(standard);
+    }
+
+    /**
+     * Get the customised BattleResultsTableModel
+     * @return Customised BattleResultsTableModel
+     */
+    @Override
+    public BattleResultsTableModel getCustomResultsTable() {
+        if (resultsTable == null) {
+            this.setCustomResultsTable();
+        }
+
+        return resultsTable;
+    }
+
+    /**
+     * Setup a default BattleResultsTableModel
+     */
+    public void setCustomResultsTable() {
+        if (resultsTable == null) {
+            resultsTable = new BattleResultsTableModel();
+        }
+
+        /* Set it to show the default scores */
+        resultsTable.showOverallRank()
+        			.showRobotName()
+        			.showTotalScore()
+        			.showSurvival()
+        			.showSurvivalBonus()
+        			.showBulletDamage()
+        			.showBulletBonus()
+        			.showRamDamage()
+        			.showRamBonus()
+        			.showFirsts()
+        			.showSeconds()
+        			.showThirds();
+    }
+
+    /**
+     * Setup so the default overall score is affected by all scores
+     * @param robotStatistics
+     * @return Double representing the scores
+     */
+    public Double getCustomOverallScore(RobotStatistics score) {
+            /*
+        Double scores = 0.0;
+        scores += scores.showBulletDamageScore();
+        scores += scores.showBulletKillBonus();
+        scores += scores.showRammingDamageScore();
+        scores += scores.showRammingKillBonus();
+        scores += scores.showBulletKillBonus();
+                scores += scores.showSurvivalScore();
+        scores += scores.showLastSurvivorBonus(); */
+          return   score.getTotalSurvivalScore() + score.getTotalLastSurvivorBonus()
+                    + score.getTotalBulletDamageScore() + score.getTotalBulletKillBonus() + score.getTotalRammingDamageScore()
+                    + score.getTotalRammingKillBonus();
+        //return score;
+    }
+
+    @Override
+    public boolean allowsOneRobot() {
+        return false;
+    }
+
+    public void robotKill(RobotPeer owner, RobotPeer otherRobot) {
+        // do nothing
+    }
 
 	/**
-	 * Getter method for the GuiOptions object associated with this
-	 * mode.
-	 * @return GuiOptions object associated with this mode.
+	 * Returns null in classic mode. See SoccerMode for details.
+	 * @return null
 	 */
-	public GuiOptions getGuiOptions() {
-		return uiOptions;
-	}
-	
-	/**
-	 * Called after the death of a robot that is about to respawn
-	 */
-	public void onRespawnDeath(RobotPeer robot) {
-		
-	}
-
-	@Override
-	public BattleResults[] getFinalResults() {
+	public BoundingRectangle[] getGoals() {
 		return null;
 	}
+
+	public void scoreRoundPoints() {
+	}
+
+	/**
+	 * Modify the starting energy.
+	 */
+	public double modifyStartingEnergy(RobotPeer robotPeer, double startingEnergy) {
+		return startingEnergy;
+	}
 	
-	public void addRobots(int currentTurn, BattlePeers peers){
+	/**
+	 * Whether or not two robots should get hurt when they bump into each other.
+	 * @param robotPeer
+	 * @param otherRobot 
+	 * @return boolean
+	 */
+	public boolean shouldDoRamDamage(RobotPeer robotPeer, RobotPeer otherRobot) {
+		return true;
+	}
+	
+	/**
+	 * Method to be run after finalizeTurn
+	 */
+	public void finalizeTurn() {
 		// do nothing
 	}
 	
-	public double modifyVision(double standard) {
-		return standard;
-	}
-	
-	public double modifyVision(double standard, BattleRules rules)
-	{
-		return modifyVision(standard);
-	}
-
 	/**
-	 * Get the customised BattleResultsTableModel
-	 * @return Customised BattleResultsTableModel
+	 * Conditionally increment endTimer (prevents round ending)
+	 * @return
 	 */
-	@Override
-	public BattleResultsTableModel getCustomResultsTable() {
-		if (resultsTable == null) {
-			this.setCustomResultsTable();
-		}
-		
-		return resultsTable;
-	}
-	
-	/**
-	 * Setup a default BattleResultsTableModel
-	 */
-	public void setCustomResultsTable() {
-		if (resultsTable == null) {
-			resultsTable = new BattleResultsTableModel();
-		}
-		
-		/* Set it to show the default scores */
-		resultsTable.showOverallRank(true);
-		resultsTable.showRobotName(true);
-		resultsTable.showTotalScore(true);
-		resultsTable.showSurvival(true);
-		resultsTable.showSurvivalBonus(true);
-		resultsTable.showBulletDamage(true);
-		resultsTable.showBulletBonus(true);
-		resultsTable.showRamDamage(true);
-		resultsTable.showRamBonus(true);
-		resultsTable.showFirsts(true);
-		resultsTable.showSeconds(true);
-		resultsTable.showThirds(true);
-	}
-
-	@Override
-	public boolean allowsOneRobot() {
-		return false;
+	public boolean shouldIncrementEndTimer() {
+		return true;
 	}
 }

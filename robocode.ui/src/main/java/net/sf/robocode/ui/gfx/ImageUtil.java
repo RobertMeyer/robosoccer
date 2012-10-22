@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
 import net.sf.robocode.io.Logger;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Class used for utilizing images.
@@ -74,7 +76,26 @@ public class ImageUtil {
 
         return bufferedImage;
     }
-
+    
+    /**
+     * Creates and returns a sprite array for spritesheet based animations. 
+     * @param filename
+     * @param width
+     * @param height
+     * @param rows
+     * @param cols
+     * @return a buffered image array containing each separate frame.
+     */
+    public static List<RenderImage> getSprites(String filename, int width, int height, int rows, int cols) {
+    	BufferedImage image = (BufferedImage) getImage(filename);
+    	List<RenderImage> spriteArr = new ArrayList<RenderImage>();
+    	//Iterate through each sprite in the spritesheet, adding them into the array.
+    	for(int i = 0; i < rows; i++) 
+    		for(int j = 0; j < cols; j++)
+    			spriteArr.add((i * cols) + j, new RenderImage(image.getSubimage(j * width, i * height, width, height)));
+    	return spriteArr;
+    } 
+    
     /**
      * Create a copy of an robot image into a coloured robot image. The colors of the
      * input image are changed into the input color, but with the same lumination.

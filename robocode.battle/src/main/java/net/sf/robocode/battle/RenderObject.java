@@ -268,7 +268,7 @@ public class RenderObject implements IRenderable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Color getColor() {
+	public Color getColour() {
 		return this.colour;
 	}
 }

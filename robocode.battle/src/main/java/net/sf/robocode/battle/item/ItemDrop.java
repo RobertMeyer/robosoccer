@@ -11,23 +11,23 @@ import robocode.*;
 import net.sf.robocode.battle.RenderObject;
 
 /**
- * Abstract class for item/powerup drops
+ * ItemDrop is an abstract class made for the creation of item/powerup objects.
  * 
- * Original:
  * @author s4238358 (Dream Team)
- * 
- * Contributors:
- * @author Brandon Warwick (Team-Telos)
- * @author Ameer Sabri (Dream Team) (documentation only)
+ * @author Brandon Warwick (Team-Telos) (contributor)
+ * @author Ameer Sabri (Dream Team) (commenting only)
  */
 
 public abstract	class ItemDrop {
 	
-	//Set the location of the item outside the battlefield so it is not apart of the battle until it is spawned
+	/*
+	 * Sets the location of the item outside the battlefield so it is not a
+	 * part of the battle until it is spawned.
+	 */
 	private double xLocation = -50;
 	private double yLocation = -50;
 
-	//Same width and height as robots
+	//Same width and height as the robots
 	private final static double width = 40; 
 	private final static double height = 40;
 
@@ -42,13 +42,13 @@ public abstract	class ItemDrop {
 	protected String imageName;
 	
 	/**
-	 * Constructor for the ItemDrop class.
+	 * Constructor.
 	 * 
-	 * @param isDestroyable the destroyability of the item
+	 * @param isDestroyable the destroyability status of the item
 	 * @param lifespan the lifespan of the item
-	 * @param health the health of the item
-	 * @param isEquippable the equippability of the item
-	 * @param battle the Battle that the item is being added to
+	 * @param health the health/energy of the item
+	 * @param isEquippable the equippability status of the item
+	 * @param battle the battlefield that the item is being added to
 	 */
 	public ItemDrop(boolean isDestroyable, int lifespan, double health, boolean isEquippable, Battle battle){
 		this.isDestroyable = isDestroyable;
@@ -62,15 +62,16 @@ public abstract	class ItemDrop {
 
 	/**
 	 * Returns the name of the item.
+	 * 
 	 * @return the name of the item
 	 */
-	
 	public String getName(){
 		return this.name;
 	}
 	
 	/**
 	 * Returns the bounding box of the item.
+	 * 
 	 * @return a bounding box representing the location of the item
 	 */
 	public BoundingRectangle getBoundingBox(){
@@ -78,7 +79,7 @@ public abstract	class ItemDrop {
 	}
 
 	/**
-	 * Set the bounding box of the item, with the current x and y coordinates.
+	 * Sets the bounding box of the item, with the current x and y coordinates.
 	 */
 	public void setBoundingBox() {
 		this.boundingBox.setRect(xLocation - width / 2 + 2, yLocation - height / 2 + 2, width - 4, height - 4);
@@ -86,6 +87,7 @@ public abstract	class ItemDrop {
 	
 	/**
 	 * Returns the current x-coordinate of the item.
+	 * 
 	 * @return the x-coordinate of the item
 	 */
 	public double getXLocation() {
@@ -95,6 +97,7 @@ public abstract	class ItemDrop {
 	
 	/**
 	 * Sets a new x-coordinate of the item.
+	 * 
 	 * @param the new x-coordinate of the item
 	 */
 	public void setXLocation(double xLocation) {
@@ -104,6 +107,7 @@ public abstract	class ItemDrop {
 
 	/**
 	 * Returns the current y-coordinate of the item.
+	 * 
 	 * @return the y-coordinate of the item
 	 */
 	public double getYLocation() {
@@ -112,6 +116,7 @@ public abstract	class ItemDrop {
 
 	/**
 	 * Sets a new y-coordinate of the item.
+	 * 
 	 * @param the new y-coordinate of the item
 	 */
 	public void setYLocation(double yLocation) {
@@ -120,7 +125,8 @@ public abstract	class ItemDrop {
 	}
 	
 	/**
-	 * Update the location of the item to a random x-coordinate and y-coordinate.
+	 * Updates the location of the item to a random x-coordinate and y-coordinate.
+	 * 
 	 * @author - Brandon Warwick (team-Telos)
 	 */
 	public void updateToRandomLocation() {
@@ -132,6 +138,7 @@ public abstract	class ItemDrop {
 
 	/**
 	 * Returns the width of the item.
+	 * 
 	 * @return a double representing the width of the item
 	 */
 	public double getWidth(){
@@ -140,6 +147,7 @@ public abstract	class ItemDrop {
 	
 	/**
 	 * Returns the height of the item.
+	 * 
 	 * @return a double representing the height of the item
 	 */
 	public double getHeight(){
@@ -149,6 +157,7 @@ public abstract	class ItemDrop {
 	/**
 	 * Returns whether the item is destroyable or not.
 	 * This will allow the itemDrop class to expand to things like extra walls, traps, etc.
+	 * 
 	 * @return {@code true} if the item is destroyable; {@code false} otherwise
 	 */
 	public boolean getIsDestroyable(){
@@ -157,7 +166,8 @@ public abstract	class ItemDrop {
 	
 	/**
 	 * Sets if the item is destroyable.
-	 * @param {@code true} if the item is destroyable; {@code false} otherwise
+	 * 
+	 * @param isDestroyable the destroyability of the item
 	 */
 	public void setIsDestroyable(boolean isDestroyable){
 		this.isDestroyable = isDestroyable;
@@ -165,6 +175,7 @@ public abstract	class ItemDrop {
 	
 	/**
 	 * Returns the number of turns the item will exist.
+	 * 
 	 * @return the number of turns the item is valid for
 	 */
 	public int getLifespan(){
@@ -173,6 +184,7 @@ public abstract	class ItemDrop {
 	
 	/**
 	 * Sets the number of turns the item will exist.
+	 * 
 	 * @param the lifespan of the item
 	 */
 	public void setLifespan(int lifespan){
@@ -180,8 +192,9 @@ public abstract	class ItemDrop {
 	}
 	
 	/**
-	 * Returns the health of the item. If the health is 0 or below, then it will
+	 * Returns the health of the item. If the health is 0 or below, it will
 	 * be destroyed when a robot collides with the item.
+	 * 
 	 * @return the health of the item
 	 */
 	public double getHealth(){
@@ -189,7 +202,8 @@ public abstract	class ItemDrop {
 	}
 	
 	/**
-	 * Set the health of an item.
+	 * Sets the health of an item.
+	 * 
 	 * @param the health of the item
 	 */
 	public void setHealth(double health){
@@ -199,15 +213,17 @@ public abstract	class ItemDrop {
 	/**
 	 * Returns whether the item is equippable or not.
 	 * Equippable items will be extended for various items (eg. a flag in CTF)
-	 * @return a boolean representing whether the item is equippable or not
+	 * 
+	 * @return {@code true} if the item is equippable; {@code false} otherwise
 	 */
 	public boolean getIsEquippable(){
 		return isEquippable;
 	}
 	
 	/**
-	 * Set whether the item is equippable or not
-	 * @param {@code true} if the item is equippable; {@code false} otherwise
+	 * Set whether the item is equippable or not.
+	 * 
+	 * @param isEquippable the equippability of the item
 	 */
 	public void setIsEquippable(boolean isEquippable){
 		this.isEquippable = isEquippable;
@@ -247,7 +263,11 @@ public abstract	class ItemDrop {
 				}
 			}
 		}
-		//Adds the item to the field.
+		/* Adds the item to the field.
+		 * A RenderObject should not be created unless a valid imageName has been set.
+		 */
+		if(this.imageName == null)
+			return;
 		this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
 	}
 	
@@ -267,6 +287,10 @@ public abstract	class ItemDrop {
 		if (validSpotRobot(robots)) {
 			if (validSpotItem(items)){
 				setBoundingBox();
+				//A RenderObject should not be created unless a valid imageName has been set.
+				if(this.imageName == null)
+					//return true, the item 'can' be added here, except the image is empty.
+					return true;
 				this.battle.getCustomObject().add(new RenderObject(this.name, "/net/sf/robocode/ui/images/" + this.imageName, this.xLocation,this.yLocation));
 				return true;
 			}

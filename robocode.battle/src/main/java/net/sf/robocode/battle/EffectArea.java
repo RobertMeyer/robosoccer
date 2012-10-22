@@ -14,7 +14,7 @@ public class EffectArea {
 	private int tileHeight;
 	private int activeEffect;
 	
-	EffectArea(double xCoord, double yCoord, int tileWidth, int tileHeight, int activeEffect){
+	public EffectArea(double xCoord, double yCoord, int tileWidth, int tileHeight, int activeEffect){
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 		this.tileWidth = tileWidth;
@@ -55,11 +55,15 @@ public class EffectArea {
 		return battleRules.getBattlefieldWidth();
 	}
 	
-
+	/**
+	 * Check if Robot is in effect area
+	 * @param r RobotPeer to check
+	 * @return True if it is in effect area
+	 */
 	public Boolean collision(RobotPeer r){
 		//check collision
-		if(r.getX() > getXCoord() && r.getX() < getXCoord() + 
-			getTileWidth() && r.getY() < getYCoord() 
+		if(r.getX() >= getXCoord() && r.getX() < getXCoord() + 
+			getTileWidth() && r.getY() <= getYCoord() 
 					&& r.getY() > getYCoord() - getTileHeight()
 				){
 				return true;
@@ -67,16 +71,20 @@ public class EffectArea {
 		return false;
 	}
 	
-	protected void handleEffect(RobotPeer r) {
+	/**
+	 * Handle effect to robotpeer according to active effect
+	 * @param r Robot to modify
+	 */
+	public void handleEffect(RobotPeer r) {
 		switch (getActiveEffect()) {
 		case 1: 
 			//decreases energy
-			r.setEnergyEffect(r.getEnergy() - 0.3, false);
+			r.setEnergyEffect(r.getEnergy()-1, false);
 			break;
 		case 2: 
 			//decreases speed
-			if(r.getVelocity() > 0.5){
-				r.setVelocityEffect(0.5);
+			if(r.getVelocity()!=0){
+				r.setVelocityEffect(r.getVelocity()/2);
 			}
 			break;
 		case 3:

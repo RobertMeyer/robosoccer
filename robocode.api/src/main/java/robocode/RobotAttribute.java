@@ -22,7 +22,7 @@ public enum RobotAttribute {
     /** The chasis turn rate of the robot */
     ROBOT_TURN_ANGLE,
     /** How fast the robot moves. */
-    SPEED,
+    VELOCITY,
     /** The energy (aka life) of the robot. */
     ENERGY,
     /** The rate of energy regeneration of the robot. */

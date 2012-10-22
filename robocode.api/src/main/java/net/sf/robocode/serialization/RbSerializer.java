@@ -40,17 +40,21 @@ public final class RbSerializer {
     public final static byte TERMINATOR_TYPE = -1;
     public final static byte ExecCommands_TYPE = 1;
     public final static byte BulletCommand_TYPE = 2;
+    
     public final static byte TeamMessage_TYPE = 3;
     public final static byte DebugProperty_TYPE = 4;
     public final static byte ExecResults_TYPE = 5;
     public final static byte RobotStatus_TYPE = 6;
     public final static byte BulletStatus_TYPE = 7;
+    
     public final static byte BattleResults_TYPE = 8;
     public final static byte Bullet_TYPE = 9;
+    
     public final static byte RobotStatics_TYPE = 10;
     public final static byte BattleEndedEvent_TYPE = 32;
     public final static byte BulletHitBulletEvent_TYPE = 33;
     public final static byte BulletHitEvent_TYPE = 34;
+    
     public final static byte BulletMissedEvent_TYPE = 35;
     public final static byte DeathEvent_TYPE = 36;
     public final static byte WinEvent_TYPE = 37;
@@ -59,6 +63,7 @@ public final class RbSerializer {
     public final static byte SkippedTurnEvent_TYPE = 40;
     public final static byte ScannedRobotEvent_TYPE = 41;
     public final static byte HitByBulletEvent_TYPE = 42;
+    
     public final static byte HitRobotEvent_TYPE = 43;
     public final static byte KeyPressedEvent_TYPE = 44;
     public final static byte KeyReleasedEvent_TYPE = 45;
@@ -68,14 +73,26 @@ public final class RbSerializer {
     public final static byte MouseEnteredEvent_TYPE = 49;
     public final static byte MouseExitedEvent_TYPE = 50;
     public final static byte MouseMovedEvent_TYPE = 51;
+
     public final static byte MousePressedEvent_TYPE = 52;
     public final static byte MouseReleasedEvent_TYPE = 53;
     public final static byte MouseWheelMovedEvent_TYPE = 54;
+
     public final static byte RoundEndedEvent_TYPE = 55;
     public final static byte HitItemEvent_TYPE = 56;
     public final static byte ScannedItemEvent_TYPE = 57;
     public final static byte DroppedItemEvent_TYPE = 58;
     public final static byte WaypointPassedEvent_TYPE = 59;
+
+    
+    public final static byte LandmineStatus_TYPE = 60;
+    public final static byte LandmineCommand_TYPE = 61;
+    public final static byte Landmine_TYPE = 62;
+    public final static byte HitByLandmineEvent_TYPE = 63;
+    public final static byte LandmineHitEvent_TYPE = 64;
+    
+    public final static byte RobotFrozenEvent_TYPE = 65;
+
     private final static ISerializableHelper[] typeToHelper = new ISerializableHelper[256];
     private static Dictionary<Class<?>, Byte> classToType = new Hashtable<Class<?>, Byte>();
     private final static Charset charset;

@@ -18,6 +18,8 @@
 package net.sf.robocode.io;
 
 import java.io.*;
+import java.util.Scanner;
+
 import static net.sf.robocode.io.Logger.logError;
 
 /**
@@ -320,6 +322,42 @@ public class FileUtil {
             } catch (IOException e) {
                 logError(e);
             }
-        }
-    }
+		}
+	}
+
+	/**
+	 * Reads the contents of a scanner into a String using the default encoding
+	 * for the VM. The scanner is always closed. Thanks to:
+	 * http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file
+	 * 
+	 * @param file
+	 *            the file to read, must not be null.
+	 * @return the file contents, never null
+	 * @throws FileNotFoundException
+	 * @author CSSE2003 Team Forkbomb
+	 */
+	public static String readScannerToString(Scanner scanner)
+			throws FileNotFoundException {
+		String text = scanner.useDelimiter("\\A").next();
+		scanner.close();
+		return text;
+	}
+
+	/**
+	 * Reads the contents of a file into a String using the default encoding for
+	 * the VM.
+	 */
+	public static String readFileToString(File file)
+			throws FileNotFoundException {
+		return readScannerToString(new Scanner(file));
+	}
+
+	/**
+	 * Reads the contents of a stream into a String using the default encoding
+	 * for the VM.
+	 */
+	public static String readStreamToString(InputStream stream)
+			throws FileNotFoundException {
+		return readScannerToString(new Scanner(stream));
+	}
 }

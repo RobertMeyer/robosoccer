@@ -41,17 +41,31 @@
  *       as the battleField variable was not intialized
  *     Pavel Savara
  *     - disconnected from Bullet, now we rather send BulletStatus to proxy side
+ *     Jonathan Wong
+ *     - Implemented Friendly Fire.
+ *     	 Added boolean flag for negation of damage when bullet is from a friendly
  *******************************************************************************/
 package net.sf.robocode.battle.peer;
 
-import java.awt.geom.Line2D;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+
+import java.awt.geom.Line2D;
 import java.util.List;
 
+import net.sf.robocode.battle.FreezeRobotDeath;
+import net.sf.robocode.battle.BoundingRectangle;
+import net.sf.robocode.battle.FriendlyFireTracker;
 import net.sf.robocode.battle.KillstreakTracker;
 import net.sf.robocode.peer.BulletStatus;
-import robocode.*;
+import robocode.BattleRules;
+import robocode.Bullet;
+import robocode.BulletHitBulletEvent;
+import robocode.BulletHitEvent;
+import robocode.BulletMissedEvent;
+import robocode.HitByBulletEvent;
+import robocode.RobotAttribute;
+import robocode.Rules;
 import robocode.control.snapshot.BulletState;
 
 /**
@@ -60,6 +74,7 @@ import robocode.control.snapshot.BulletState;
  * @author Luis Crespo (contributor)
  * @author Robert D. Maupin (contributor)
  * @author Titus Chen (constributor)
+ * @author CSSE2003 Team forkbomb (contributor)
  */
 public class BulletPeer {
 	private static final int EXPLOSION_LENGTH = 17;
@@ -81,6 +96,11 @@ public class BulletPeer {
 	protected int frame; // Do not set to -1
 	private final int color;
 	protected int explosionImageIndex; // Do not set to -1
+	//width and height of the bounding box
+	private static final int WIDTH = 40;
+	private static final int HEIGHT = 40;
+	//new bounding box used in get of collision with teleporter
+	private final BoundingRectangle boundingBox;
 
 	// the killstreak tracker belonging to the battle
 	KillstreakTracker ks;
@@ -93,6 +113,8 @@ public class BulletPeer {
 		state = BulletState.FIRED;
 		color = owner.getBulletColor(); // Store current bullet color set on
 										// robot
+		//init the boudning box
+		this.boundingBox = new BoundingRectangle();
 		ks = owner.battle.getKillstreakTracker();
 	}
 
@@ -170,7 +192,8 @@ public class BulletPeer {
 				double damage = Rules.getBulletDamage(power);
 				double score;
 
-				if (otherRobot.attributes.get().get(RobotAttribute.ARMOR) - 1.0 < 0.00001) {
+				if (Math.abs(otherRobot.attributes.get().get(RobotAttribute.ARMOR) 
+						- 1.0) < 0.00001) {
 					score = damage;
 				} else {
 					// Use inverse relationship --> more armor less damage
@@ -189,21 +212,44 @@ public class BulletPeer {
 					if (owner.isDispenser()) {
 						otherRobot.updateEnergy(damage);
 					} else {
-						otherRobot.updateEnergy(-damage);
+						if(!(otherRobot.isParent(owner))) {
+							otherRobot.updateEnergy(-damage);
+						}
+						else {
+							owner.updateEnergy(-(damage*2)-5);
+						}
 					}
 				}
+				
+				/**
+				 * @author CSSE2003 Team MCJJ
+				 *The checkbox will be checked, this will be activated only when it is played in team battles.
+				 *If a friendly fires at a team member with the checkbox checked, damage will be ignored.
+				 */
 				
 				boolean teamFire = (owner.getTeamPeer() != null && owner
 						.getTeamPeer() == otherRobot.getTeamPeer());
 
-				if (!teamFire) {
+				if(FriendlyFireTracker.enableFriendlyfire == true){
+					if(!teamFire){
+						otherRobot.updateEnergy(damage);
+						owner.updateEnergy(-damage);
+					}
+				}
+				
+				if(!teamFire){
 					owner.getRobotStatistics().scoreBulletDamage(
 							otherRobot.getName(), score);
 				}
-
+				
 				if (otherRobot.getEnergy() <= 0) {
+					owner.battle.getBattleMode().robotKill(owner, otherRobot);
 					if (otherRobot.isAlive()) {
 						otherRobot.kill();
+						
+						FreezeRobotDeath massFreeze = new FreezeRobotDeath(otherRobot, owner);
+						massFreeze.freezeEverything(robots);
+						
 						if (owner.battle.getBattleMode().respawnsOn()) {
                     		otherRobot.respawn(robots);
                     	}
@@ -258,6 +304,53 @@ public class BulletPeer {
 		}
 	}
 
+	
+	private void checkTeleporterCollsion(List<TeleporterPeer> teleporters) {
+		/*//x & y are the final result on where to place teleported bullets after checking new teleported location is within bounds of the battlefield
+		double x, y;	
+		for (TeleporterPeer t : teleporters) {
+			if(t.getCircle(Portal.PORTAL1).intersects(boundingBox)){
+				//set x to portal position + WIDTH. If this is will place it outside the battlefield, set it to -WIDTH
+				x = t.getX(Portal.PORTAL2)+WIDTH;
+				if (x > this.battleRules.getBattlefieldWidth()) {
+					x = t.getX(Portal.PORTAL2)-WIDTH;
+				}
+				//set y to portal position + HEIGHT. If this is larger than battlefield, set to -HEIGHT
+				y = t.getY(Portal.PORTAL2)+HEIGHT;
+				if (y > this.battleRules.getBattlefieldWidth()) {
+					y = t.getY(Portal.PORTAL2)-HEIGHT;
+				}
+				setX(x);
+				setY(y);
+				setHeading(getHeading()*Math.random()*Math.PI);
+				//setHeading(getHeading());
+				updateBoundingBox();
+				continue;
+			} else if(t.getCircle(Portal.PORTAL2).intersects(boundingBox)){
+				//same as above but for other portal
+				x = t.getX(Portal.PORTAL1)+WIDTH;
+				if (x > this.battleRules.getBattlefieldWidth()) {
+					x = t.getX(Portal.PORTAL1)-WIDTH;
+				}
+				y = t.getY(Portal.PORTAL1)+HEIGHT;
+				if (y > this.battleRules.getBattlefieldHeight()) {
+					y = t.getY(Portal.PORTAL1)-HEIGHT;
+				}
+				setX(x);
+				setY(y);
+				setHeading(getHeading()*Math.random()*Math.PI);
+				//setHeading(getHeading());
+				updateBoundingBox();
+			}
+		
+		}
+		*/
+	}
+	
+	private void updateBoundingBox() {
+		boundingBox.setRect(getX() - WIDTH / 2 + 2, getY() - HEIGHT / 2 + 2, WIDTH - 4, HEIGHT - 4);
+	}
+	
 	private void checkWallCollision() {
 		double ricochetValue = owner.battle.getBattleMode().modifyRicochet(
 				battleRules);
@@ -315,6 +408,9 @@ public class BulletPeer {
             		state = BulletState.HIT_WALL;
     				frame = 0;
     				owner.addEvent(new BulletMissedEvent(createBullet(false)));
+    				obstacle.destroy();
+    				/* Can only hit 1 obstacle with 1 bullet */
+    				return;
         		}
             }
 		}
@@ -406,11 +502,12 @@ public class BulletPeer {
 		state = newState;
 	}
 
-	public void update(List<RobotPeer> robots, List<BulletPeer> bullets, List<ObstaclePeer> obstacles) {
+	public void update(List<RobotPeer> robots, List<BulletPeer> bullets, List<ObstaclePeer> obstacles, List<TeleporterPeer> teleporters) {
 		frame++;
 		if (isActive()) {
 			updateMovement();
 			checkWallCollision();
+			checkTeleporterCollsion(teleporters);
 			checkObstacleCollision(obstacles);
 			if (isActive()) {
 				checkRobotCollision(robots);
@@ -456,7 +553,7 @@ public class BulletPeer {
 
 		x += v * sin(heading);
 		y += v * cos(heading);
-
+		updateBoundingBox();
 		boundingLine.setLine(lastX, lastY, x, y);
 	}
 

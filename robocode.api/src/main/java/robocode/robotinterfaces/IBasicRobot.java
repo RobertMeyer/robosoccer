@@ -76,4 +76,5 @@ public interface IBasicRobot {
      * @since 1.6
      */
     void setOut(java.io.PrintStream out);
+    
 }

@@ -39,6 +39,8 @@ package net.sf.robocode.battle.peer;
 import java.util.HashMap;
 import java.util.Map;
 import robocode.BattleResults;
+import net.sf.robocode.mode.ClassicMode;
+import net.sf.robocode.battle.BattleProperties;
 
 /**
  * @author Mathew A. Nelson (original)
@@ -49,7 +51,7 @@ import robocode.BattleResults;
  * @author Nathaniel Troutman (contributor)
  */
 public class RobotStatistics implements ContestantStatistics {
-
+	private BattleProperties bp = new BattleProperties();
     private final RobotPeer robotPeer;
     private int rank;
     private final int robots;
@@ -63,6 +65,7 @@ public class RobotStatistics implements ContestantStatistics {
     private double rammingKillBonus;
     // Team-Telos addition
     private double flagScore;
+    private int kills;
     private Map<String, Double> robotDamageMap;
     private double totalScore;
     private double totalSurvivalScore;
@@ -76,6 +79,7 @@ public class RobotStatistics implements ContestantStatistics {
     private int totalFirsts;
     private int totalSeconds;
     private int totalThirds;
+    private int totalKills;
 
     public RobotStatistics(RobotPeer robotPeer, int robots) {
         super();
@@ -97,6 +101,7 @@ public class RobotStatistics implements ContestantStatistics {
         totalFirsts = results.getFirsts();
         totalSeconds = results.getSeconds();
         totalThirds = results.getThirds();
+        totalKills = results.getKills();
     }
 
     @Override
@@ -119,11 +124,11 @@ public class RobotStatistics implements ContestantStatistics {
         bulletKillBonus = 0;
         rammingDamageScore = 0;
         rammingKillBonus = 0;
-        //FIXME - team-Telos
         flagScore = 0;
+        kills = 0;
     }
 
-    public void generateTotals() {
+    public void generateTotals(BattleProperties battleProp) {
         totalSurvivalScore += survivalScore;
         totalLastSurvivorBonus += lastSurvivorBonus;
         totalBulletDamageScore += bulletDamageScore;
@@ -132,12 +137,56 @@ public class RobotStatistics implements ContestantStatistics {
         totalRammingKillBonus += rammingKillBonus;
         // team-Telos addition
         totalFlagScore += flagScore;
+        totalKills += kills;
 
-        totalScore = totalBulletDamageScore + totalRammingDamageScore + totalSurvivalScore + totalRammingKillBonus
-                + totalBulletKillBonus + totalLastSurvivorBonus + totalFlagScore;
+        /* Set battle Properties */
+        bp = battleProp;
+        ClassicMode mode = (ClassicMode) bp.getBattleMode();
+        totalScore = mode.getCustomOverallScore(this);
         isInRound = false;
     }
+    
+    
+    /**
+     * Begin Team Telos custom overall score additions
+     */
+    
+    public double showBulletDamageScore() {
+    	return totalBulletDamageScore;
+    }
+    
+    public double showRammingDamageScore() {
+    	return totalRammingDamageScore;
+    }
+    
+    public double showSurvivalScore() {
+    	return totalSurvivalScore;
+    }
+    
+    public double showRammingKillBonus() {
+    	return totalRammingKillBonus;
+    }
+    
+    public double showBulletKillBonus() {
+    	return totalBulletKillBonus;
+    }
+    
+    public double showLastSurvivorBonus() {
+    	return totalLastSurvivorBonus;
+    }
+    
+    public double showFlagScore() {
+    	return totalFlagScore;
+    }
 
+    public int showKills() {
+    	return totalKills;
+    }
+    
+    /**
+     * End Team Telos custom overall score additions
+     */
+    
     @Override
     public double getTotalScore() {
         return totalScore;
@@ -192,6 +241,11 @@ public class RobotStatistics implements ContestantStatistics {
     public int getTotalThirds() {
         return totalThirds;
     }
+    
+    @Override
+    public int getTotalKills() {
+    	return totalKills;
+    }
 
     @Override
     public double getCurrentScore() {
@@ -229,9 +283,15 @@ public class RobotStatistics implements ContestantStatistics {
         return rammingKillBonus;
     }
     
+	@Override    
     public double getCurrentFlagScore() {
     	return flagScore;
     }
+
+	@Override
+	public int getCurrentKills() {
+		return kills;
+	}
     
     public void scoreSurvival() {
         if (isActive) {
@@ -282,7 +342,9 @@ public class RobotStatistics implements ContestantStatistics {
 
     public void scoreRammingDamage(String robot) {
         if (isActive) {
-            incrementRobotDamage(robot, robocode.Rules.ROBOT_HIT_DAMAGE);
+        	if(Math.abs(robotPeer.getRamDamage() - 1.0) < 0.00001)
+        		incrementRobotDamage(robot, robocode.Rules.ROBOT_HIT_DAMAGE);
+        	else incrementRobotDamage(robot, robotPeer.getRamDamage());
             rammingDamageScore += robotPeer.getRamAttack();
         }
     }
@@ -306,6 +368,8 @@ public class RobotStatistics implements ContestantStatistics {
     }
 
     public void scoreRobotDeath(int enemiesRemaining, Boolean botzillaActive) {
+    	//If botzilla is in the match don't count him as an enemy remaining for
+    	//the purposes of scoring
     	if (botzillaActive) {
     		enemiesRemaining--;
     	}
@@ -359,7 +423,7 @@ public class RobotStatistics implements ContestantStatistics {
     public BattleResults getFinalResults() {
         return new BattleResults(robotPeer.getTeamName(), rank, totalScore, totalSurvivalScore, totalLastSurvivorBonus,
                                  totalBulletDamageScore, totalBulletKillBonus, totalRammingDamageScore, totalRammingKillBonus,
-                                 totalFlagScore, totalFirsts, totalSeconds, totalThirds);
+                                 totalFlagScore, totalFirsts, totalSeconds, totalThirds, totalKills);
     }
 
     private double getRobotDamage(String robot) {
@@ -386,5 +450,9 @@ public class RobotStatistics implements ContestantStatistics {
 
 	@Override
 	public void incrementScore() {	
+	}
+
+	public void scoreKill() {
+		kills++;
 	}
 }

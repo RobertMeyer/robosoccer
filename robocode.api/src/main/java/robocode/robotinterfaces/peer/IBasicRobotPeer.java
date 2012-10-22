@@ -17,6 +17,7 @@
  *******************************************************************************/
 package robocode.robotinterfaces.peer;
 
+
 import java.awt.*;
 import robocode.*;
 import robocode.Robot;
@@ -30,6 +31,7 @@ import robocode.robotinterfaces.IBasicEvents;
  *
  * @author Pavel Savara (original)
  * @author Flemming N. Larsen (javadoc)
+ * @author CSSE2003 Team forkbomb (contributor)
  * @see IStandardRobotPeer
  * @see IAdvancedRobotPeer
  * @see ITeamRobotPeer
@@ -37,8 +39,6 @@ import robocode.robotinterfaces.IBasicEvents;
  * @since 1.6
  */
 public interface IBasicRobotPeer {
-	
-	boolean checkSword();
 
     /**
      * Returns the robot's name.
@@ -46,6 +46,26 @@ public interface IBasicRobotPeer {
      * @return the robot's name.
      */
     String getName();
+    
+    /**
+     * fire a landmine on current posistion
+     * @param power
+     */
+    Landmine fireLandmine(double power);
+    
+    /**
+     * set the power of landmine
+     * @param power
+     */
+    Landmine setLandmine(double power);
+
+    /**
+     * Returns the tactic for the soldierBot to implement
+     * 
+     * @return the tactic the soldierBot should be implementing
+     */
+    int getTactic();
+
 
     /**
      * Returns the game time of the current round, where the time is equal to
@@ -99,11 +119,11 @@ public interface IBasicRobotPeer {
      * Returns the maximum velocity of the robot measured in pixels/turn.
      * <p/>
      * The maximum velocity of a robot is defined as {@link Rules#MAX_VELOCITY}
-     * * {@link RobotAttribute#SPEED}
+     * * {@link RobotAttribute#VELOCITY}
      * 
      * @return the maximum velocity of the robot in pixels/turn
      * @see Rules#MAX_VELOCITY
-     * @see RobotAttribute#SPEED
+     * @see RobotAttribute#VELOCITY
      */
     double getRealMaxVelocity();
     
@@ -762,6 +782,13 @@ public interface IBasicRobotPeer {
      * @since 1.1.2
      */
     void setBulletColor(Color color);
+    
+    
+    /**
+     * set the color of landmine
+     * @param color
+     */
+    void setLandmineColor(Color color);
 
     /**
      * Sets the color of the robot's scan arc.
@@ -883,4 +910,32 @@ public interface IBasicRobotPeer {
      * @param effect
      */
 	void setDeathEffect(int effect);
+	
+    /**
+     * Spawns a minion. This method is called by a parent robot when it intends
+     * to spawn a minion.
+     * <p/>
+     * This call executes immediately.
+     * @param minionType the minion type to be spawned.
+     * @param minionPower the power provided from a parent robot for the minion.
+     */
+	void spawnMinion(int minionType, int minionPower);
+	
+    /**
+     * Retrieves a list of MinionProxy that can be iterated through by a parent robot.
+     * <p/>
+     * MinionProxy can be used to communicate or control spawned minions.
+     * This call executes immediately.
+     */
+	java.util.List<MinionProxy> getMinions();
+
+    /**
+     * Retrieves a MinionProxy that refers to the parent robot.
+     * <p/>
+     * Calling this will return null if the calling robot is not a minion.
+     * This call executes immediately.
+     */
+	MinionProxy getParent();
+
+	void melt();
 }

@@ -1,0 +1,6 @@
+#Robocode robot team
+#Mon Oct 22 03:31:55 EST 2012
+team.members=robotTeam.sampleRobotCollision*,robots.S000001_empty*
+team.author.name=
+robocode.version=1.7.4.2 Alpha 3
+team.description=For Collision Testing

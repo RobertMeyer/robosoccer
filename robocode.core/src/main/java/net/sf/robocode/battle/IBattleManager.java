@@ -99,11 +99,17 @@ public interface IBattleManager extends IBattleManagerBase {
 
     void cleanup();
 
-	<Battle> Battle getBattle();
+    /**
+     * Passes the current battle.
+     *
+     * @param   battle 
+     * @return  Returns the current battle. to where needed.
+     *
+     */
+	  <Battle> Battle getBattle();
 	
-	ArrayList<Integer> saveSpikePosX(ArrayList<Integer> spikeArrayPosX);
-	
-	ArrayList<Integer> saveSpikePosY(ArrayList<Integer> spikeArrayPosY);
+	void saveSpikePos(ArrayList<Integer> spikeArrayPosX,
+			ArrayList<Integer> spikeArrayPosY);
 	
 	ArrayList<Integer> getSpikePosX();
 

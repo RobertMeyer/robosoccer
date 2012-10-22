@@ -27,14 +27,14 @@ public interface IObstacleSnapshot {
 	 *
 	 * @return the height of the obstacle.
 	 */
-	double getHeight();
+	int getHeight();
 	
 	/**
 	 * Returns the width of the obstacle.
 	 *
 	 * @return the width of the obstacle.
 	 */
-	double getWidth();
+	int getWidth();
 
 	/**
 	 * Returns the color of the obstacle.
@@ -51,10 +51,4 @@ public interface IObstacleSnapshot {
 	 * @return the ID of the obstacle.
 	 */
 	int getObstacleId();
-
-	/**
-	 * @return contestantIndex of the victim, or -1 if no one hit the obstacle
-	 */
-	//might need this for obstacles that deals damage (i.e. spiked walls)
-	int getVictimIndex();
 }

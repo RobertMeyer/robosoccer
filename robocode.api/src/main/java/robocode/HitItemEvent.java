@@ -4,10 +4,11 @@ import java.awt.*;
 import java.nio.ByteBuffer;
 
 import net.sf.robocode.peer.IRobotStatics;
-import net.sf.robocode.serialization.RbSerializer;
-import robocode.robotinterfaces.IBasicEvents;
-import robocode.robotinterfaces.IBasicRobot;
 import net.sf.robocode.serialization.ISerializableHelper;
+import net.sf.robocode.serialization.RbSerializer;
+import robocode.robotinterfaces.IBasicRobot;
+import robocode.robotinterfaces.IItemEvents;
+import robocode.robotinterfaces.IItemRobot;
 
 /**
  * A HitItemEvent is sent to {@link Robot#onHitItem(HitItemEvent) onHitItem()}
@@ -17,30 +18,34 @@ import net.sf.robocode.serialization.ISerializableHelper;
  * @author Ameer Sabri (Dream Team)
  *
  */
-public final class HitItemEvent extends Event {
+
+public class HitItemEvent extends Event {
 	
 	private static final long serialVersionUID = 1L;
 	private final static int DEFAULT_PRIORITY = 20;
-	
+
 	private final String itemName;
-	private final String robotName;
+	private final double energy;
 	private final boolean isEquippable;
 	private final boolean isDestroyable;
-	
+
 	/**
 	 * Called by the game to create a new HitItemEvent.
 	 * 
-	 * @param name the name of the item hit
+	 * @param itemName the name of the item hit
+	 * @param energy the energy of the item hit
 	 * @param isEquippable {@code true} if the item hit is equippable;
 	 * 				{@code false} otherwise
+	 * @param isDestroyable {@code true} if the item hit is destroyable;
+	 * 				{@code false} otherwise
 	 */
-	public HitItemEvent(String itemName, String robotName, boolean isEquippable, boolean isDestroyable) {
+	public HitItemEvent(String itemName, double energy, boolean isEquippable, boolean isDestroyable) {
 		this.itemName = itemName;
-		this.robotName = robotName;
+		this.energy = energy;
 		this.isEquippable = isEquippable;
 		this.isDestroyable = isDestroyable;
 	}
-	
+
 	/**
 	 * Returns the name of the item hit.
 	 * 
@@ -51,14 +56,14 @@ public final class HitItemEvent extends Event {
 	}
 	
 	/**
-	 * Returns the name of the robot that hit the item.
+	 * Returns the energy of the item hit.
 	 * 
-	 * @return the name of the robot that hit the item
+	 * @return the energy of the item hit
 	 */
-	public String getRobotName() {
-		return robotName;
+	public double getEnergy() {
+		return energy;
 	}
-	
+
 	/**
 	 * Checks if the item hit is equippable.
 	 * 
@@ -67,7 +72,7 @@ public final class HitItemEvent extends Event {
 	public boolean isEquippable() {
 		return isEquippable;
 	}
-	
+
 	/**
 	 * Checks if the item hit is destroyable.
 	 * 
@@ -76,8 +81,8 @@ public final class HitItemEvent extends Event {
 	public boolean isDestroyable() {
 		return isDestroyable;
 	}
-		
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -85,15 +90,19 @@ public final class HitItemEvent extends Event {
 	final int getDefaultPriority() {
 		return DEFAULT_PRIORITY;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	final void dispatch(IBasicRobot robot, IRobotStatics statics, Graphics2D graphics) {
-		
+		IItemEvents listener = ((IItemRobot) robot).getItemEventListener();
+
+		if (listener != null) {
+			listener.onHitItem(this);
+		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,38 +110,40 @@ public final class HitItemEvent extends Event {
 	byte getSerializationType() {
 		return RbSerializer.HitItemEvent_TYPE;
 	}
-	
+
 	static ISerializableHelper createHiddenSerializer() {
 		return new SerializableHelper();
 	}
-	
+
 	private static class SerializableHelper implements ISerializableHelper {
 		@Override
         public int sizeOf(RbSerializer serializer, Object object) {
             HitItemEvent obj = (HitItemEvent) object;
 
-            return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.itemName) + serializer.sizeOf(obj.robotName)
-                    + 2 * RbSerializer.SIZEOF_BOOL;
+            return RbSerializer.SIZEOF_TYPEINFO + serializer.sizeOf(obj.itemName) + 
+                    + RbSerializer.SIZEOF_DOUBLE + 2 * RbSerializer.SIZEOF_BOOL;
         }
-		
+
 		@Override
         public void serialize(RbSerializer serializer, ByteBuffer buffer, Object object) {
             HitItemEvent obj = (HitItemEvent) object;
 
             serializer.serialize(buffer, obj.itemName);
-            serializer.serialize(buffer, obj.robotName);
+            serializer.serialize(buffer, obj.energy);
             serializer.serialize(buffer, obj.isEquippable);
             serializer.serialize(buffer, obj.isDestroyable);
         }
-		
+
 		@Override
         public Object deserialize(RbSerializer serializer, ByteBuffer buffer) {
             String itemName = serializer.deserializeString(buffer);
-            String robotName = serializer.deserializeString(buffer);
+            double energy = buffer.getDouble();
             boolean isEquippable = serializer.deserializeBoolean(buffer);
             boolean isDestroyable = serializer.deserializeBoolean(buffer);
 
-            return new HitItemEvent(itemName, robotName, isEquippable, isDestroyable);
+            return new HitItemEvent(itemName, energy, isEquippable, isDestroyable);
         }
 	}
+
 }
+

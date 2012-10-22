@@ -23,24 +23,23 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import javax.swing.JFrame;
 import net.sf.robocode.ui.IFullScreenListener;
 
 /**
- *
- * @author lee
+ * @author House Robot Team
+ * @author Lee Symes 42636267
  */
 public class FullScreenUtil {
-// TODO: Implement this as a weak reference to allow for Garbage Collection
 
-    private static final Map<JFrame, WindowInformation> frameInformation = new HashMap<JFrame, WindowInformation>();
+    private static final Map<JFrame, WindowInformation> frameInformation = new WeakHashMap<JFrame, WindowInformation>();
     private static final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
     /**
-     * Enables full screen mode avaliability on OSX 10.7 and later. On other
+     * Enables full screen mode availability on OSX 10.7 and later. On other
      * operating systems, this code will not produce exceptions and will do
      * nothing. This code will also add a listener for changing into Full Screen
      * mode. This will fire any listeners added using {@link #addFullScreenListener(net.sf.robocode.ui.IFullScreenListener)
@@ -103,8 +102,8 @@ public class FullScreenUtil {
                 // Catch all exceptions.
                 // Mainly because the Class.forName is for OS X Only.
                 // If error occured or not using OS X, then use the platform
-                // independant Full Screen Support.
-                // Before that, Just check to se if it is supported.
+                // Independent Full Screen Support.
+                // Before that, Just check to see if it is supported.
                 if (device.isFullScreenSupported()) {
                     return true;
                 } else {
@@ -136,7 +135,8 @@ public class FullScreenUtil {
 
     private static class WindowInformation {
 
-        boolean useOsX = false;
+        @SuppressWarnings("unused")
+		boolean useOsX = false;
         boolean fullScreen = false;
         final List<IFullScreenListener> listeners = new ArrayList<IFullScreenListener>();
     }

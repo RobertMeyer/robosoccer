@@ -10,6 +10,7 @@ import net.sf.robocode.battle.RenderObject;
 import net.sf.robocode.battle.item.Flag;
 import net.sf.robocode.battle.item.ItemDrop;
 import net.sf.robocode.battle.peer.RobotPeer;
+import net.sf.robocode.battle.peer.RobotStatistics;
 
 /**
  * Basic Construct for the CTF mode:
@@ -172,6 +173,8 @@ public class FlagMode extends ClassicMode {
     @Override
 	public List<IRenderable> createRenderables() {    	
     	/* Add the object and print it */
+    	//PATCH: flag.getXLocation(), flag.getYLocation() are invalid until the flag is spawned (-50,-50).
+    	flag.updateToRandomLocation();
     	objects.add(new RenderObject("Flag", imageFile, flag.getXLocation(), flag.getYLocation()));
     	return objects;
     }
@@ -227,10 +230,10 @@ public class FlagMode extends ClassicMode {
     	if (resultsTable == null) {
 			resultsTable = new BattleResultsTableModel();
 		}
-    	resultsTable.showOverallRank(true);
-    	resultsTable.showRobotName(true);
-    	resultsTable.showTotalScore(true);
-    	resultsTable.showFlagScore(true);
+    	
+    	resultsTable.showOverallRank()
+    				.showRobotName()
+    				.showTotalScore("Flag Score");
     	
     	resultsTable.setTitle("Flag Results");
     }
@@ -241,4 +244,15 @@ public class FlagMode extends ClassicMode {
     public BattleResultsTableModel getCustomResultsTable() {
     	return resultsTable;
     }
+
+    /**
+	 * Set Overall Score to only contain the Flag Score
+	 * @param robotStatistics
+	 * @return HashMap containing the scores
+	 */
+	public Double getCustomOverallScore(RobotStatistics robotStatistics) {
+		Double scores = 0.0;
+		scores += robotStatistics.showFlagScore();
+		return scores;
+	}
 }
