@@ -345,6 +345,10 @@ public class BulletPeer {
 		
 		}
 		*/
+		/*
+		 * This code teleports bullets on collision with teleporters
+		 * removed prior to submission due to undesired performance
+		 */
 	}
 	
 	private void updateBoundingBox() {
