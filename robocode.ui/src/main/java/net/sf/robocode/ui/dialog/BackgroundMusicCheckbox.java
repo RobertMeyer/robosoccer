@@ -6,7 +6,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 
 import net.sf.robocode.battle.BattleProperties;
-import net.sf.robocode.sound.BackgroundMusicTracker; //PREVIOUSLY BROKE THE MVN INSTALL
+
+//UNCOMMENT THE CODE BELOW WHEN U NEED TO RUN BACKGROUND MUSIC
+//import net.sf.robocode.sound.BackgroundMusicTracker;  //PREVIOUSLY BROKE THE MVN INSTALL
 
 /**
  * Background music check box will shows on the main frame
@@ -31,9 +33,12 @@ public class BackgroundMusicCheckbox extends JCheckBox{
         this.setText("Background Music");
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-              BackgroundMusicCheckbox mbox = (BackgroundMusicCheckbox) actionEvent.getSource(); 
-              BackgroundMusicTracker.enableMusic(mbox.getModel().isSelected());
-              BackgroundMusicTracker.updateStatus();
+            
+            	//UNCOMMENT THE CODE BELOW WHEN YOU NEED TO RUN BACKGROUND MUSIC
+            	
+              //BackgroundMusicCheckbox mbox = (BackgroundMusicCheckbox) actionEvent.getSource(); 
+              //BackgroundMusicTracker.enableMusic(mbox.getModel().isSelected());
+              //BackgroundMusicTracker.updateStatus();
             }
           };	
         this.addActionListener(actionListener);   
