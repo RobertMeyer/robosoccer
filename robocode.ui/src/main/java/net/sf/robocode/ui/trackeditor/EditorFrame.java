@@ -1,8 +1,10 @@
 package net.sf.robocode.ui.trackeditor;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +44,8 @@ public class EditorFrame extends JFrame {
 	private JMenuItem fileOpen;
 	private JMenuItem fileSave;
 	private JMenuItem fileQuit;
+	private JMenuItem fillWall;
+	private JMenuItem fillTerrain;
 	private JMenuItem trackClear;
 	private JMenuItem helpAbout;
 
@@ -64,6 +68,7 @@ public class EditorFrame extends JFrame {
 				NewTrack();
 			} else if (source == fileOpen) {
 				final JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(new File("/net/sf/robocode/ui/images/tracks"));
 				int returnVal = fc.showOpenDialog(trackEditor);
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -97,14 +102,40 @@ public class EditorFrame extends JFrame {
 
 			} else if (source == fileSave) {
 				final JFileChooser fc = new JFileChooser();
+				fc.setCurrentDirectory(new File("/net/sf/robocode/ui/images/tracks"));
 				int returnVal = fc.showSaveDialog(trackEditor);
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					try {
+						// Write the main BMP file
 						String name = fc.getSelectedFile().getAbsolutePath();
 						BufferedImage bi = (BufferedImage) trackEditor.image;
-						File file = new File(name + ".BMP");
+						File file = new File(name + ".bmp");
 						ImageIO.write(bi, "BMP", file);
+						
+//						// Write all the PNG tile files
+//						for (int i=0; i<bi.getHeight()/64+1; i++) {
+//							for (int j=0; i<bi.getWidth()/64+1; j++) {
+//								BufferedImage wallTile = ImageIO.read(new File("/net/sf/robocode/ui/images/ground/race_track/wall.png"));
+//								BufferedImage grassTile = ImageIO.read(new File("/net/sf/robocode/ui/images/ground/race_track/grass.png"));
+//								BufferedImage roadTile = new BufferedImage(64, 64, BufferedImage.TYPE_INT_RGB);;
+//								int background = bi.getRGB(j*64, i*64);
+//								int foreground = bi.getRGB(j*64+32, i*64+32);
+//								if (background == Color.GREEN.getRGB()) {
+//									ImageIO.write(grassTile, "PNG", new File(""+j+"."+i+".png"));
+//								} else if (background == Color.WHITE.getRGB()) {
+//									ImageIO.write(wallTile, "PNG", new File(""+j+"."+i+".png"));
+//								} else if (background == Color.BLACK.getRGB()) {
+//									ImageIO.write(roadTile, "PNG", new File(""+j+"."+i+".png"));
+//								}
+//								if (foreground == Color.BLUE.getRGB()) {
+//									// Blah
+//								} else if (foreground == Color.BLUE.getRGB()) {
+//									// Blah
+//								}
+//							}
+//						}
+						
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -112,6 +143,14 @@ public class EditorFrame extends JFrame {
 
 			} else if (source == fileQuit) {
 				dispose();
+			} else if (source == fillWall) {
+				if (trackEditor != null) {
+					trackEditor.fill(Color.WHITE);
+				}
+			} else if (source == fillTerrain) {
+				if (trackEditor != null) {
+					trackEditor.fill(Color.GREEN);
+				}
 			} else if (source == trackClear) {
 				if (trackEditor != null) {
 					trackEditor.clear();
@@ -145,6 +184,12 @@ public class EditorFrame extends JFrame {
 
 		fileQuit = new JMenuItem("Quit");
 		fileQuit.addActionListener(eventHandler);
+		
+		fillWall = new JMenuItem("Fill map with Wall");
+		fillWall.addActionListener(eventHandler);
+		
+		fillTerrain = new JMenuItem("Fill map with Terrain");
+		fillTerrain.addActionListener(eventHandler);
 
 		trackClear = new JMenuItem("Clear map");
 		trackClear.addActionListener(eventHandler);
@@ -157,6 +202,8 @@ public class EditorFrame extends JFrame {
 		file.add(fileOpen);
 		file.add(fileSave);
 		file.add(fileQuit);
+		track.add(fillWall);
+		track.add(fillTerrain);
 		track.add(trackClear);
 		help.add(helpAbout);
 
@@ -186,12 +233,9 @@ public class EditorFrame extends JFrame {
 		newTrack = new JDialog(this, "New Track");
 		newTrack.setLayout(new BoxLayout(newTrack.getContentPane(), BoxLayout.Y_AXIS));
 
-		newTrack.setResizable(false);
-		newTrack.setPreferredSize(new Dimension(300, 200));
-		newTrack.setMinimumSize(new Dimension(300, 200));
-		newTrack.setMaximumSize(new Dimension(300, 200));
-		newTrack.pack();
-		newTrack.repaint();
+		newTrack.setPreferredSize(new Dimension(350, 225));
+		newTrack.setMinimumSize(new Dimension(350, 225));
+		newTrack.setMaximumSize(new Dimension(350, 225));
 
 		JLabel trackXSizeFieldLabel = new JLabel("Please enter horizontal track size: ", JLabel.CENTER);
 		trackXSizeFieldLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -242,6 +286,8 @@ public class EditorFrame extends JFrame {
 		newTrack.add(trackYSizeField);
 		newTrack.add(createNewTrack);
 		newTrack.add(cancelWindow);
+		newTrack.pack();
+		newTrack.repaint();
 
 		cancelWindow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

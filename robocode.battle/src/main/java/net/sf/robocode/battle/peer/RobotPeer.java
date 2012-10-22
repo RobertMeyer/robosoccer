@@ -2271,7 +2271,16 @@ public class RobotPeer implements IRobotPeerBattle, IRobotPeer {
 		
 	}
 	
-	
+	/**
+	 * Checks if robot is in the bounds of the track.
+	 */
+	protected void checkBoundaryCollision() {
+		if (battle.getBattleProperties().getTrackField() != null) {
+			if (!battle.getBattleProperties().getTrackField().onBounds(x,y)) {
+				setState(RobotState.HIT_WALL);
+			}
+		}
+	}
 	// TODO: Only add events to robots that are alive? + Remove checks if the Robot is alive before adding the event?
 	public void addEvent(Event event) {
 		if (isRunning()) {
